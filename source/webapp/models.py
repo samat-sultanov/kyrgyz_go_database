@@ -49,12 +49,23 @@ class Player(models.Model):
     age = models.PositiveIntegerField(verbose_name='Age', blank=True, null=True)
     clubs = models.ManyToManyField('webapp.Club', related_name='players')
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
-    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3)
-    EGF_placement = models.PositiveIntegerField(verbose_name='EGF placement', default=0)
-    rating = models.PositiveIntegerField(verbose_name='Rating', blank=True, null=True)
+    tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
+
+class Recommendation(models.Model):
+    text = models.TextField(max_length=400, verbose_name='Рекомендация')
+    author = models.ForeignKey('accounts.User', on_delete=models.SET_DEFAULT, default=1, related_name='author',
+                               verbose_name="Автор")
+    player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name='player',
+                                verbose_name="Игрок")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
+
+    def __str__(self):
+        return f'{self.pk}. {self.text[:20]}'
+
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
@@ -73,3 +84,5 @@ class PlayerInTournament(models.Model):
     game_id = models.PositiveIntegerField(verbose_name="Game id")
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE)
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
+    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3)
+    rating = models.PositiveIntegerField(verbose_name='Rating', blank=True, null=True)
