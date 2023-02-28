@@ -56,6 +56,18 @@ class Player(models.Model):
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
 
+class Recommendation(models.Model):
+    text = models.TextField(max_length=400, verbose_name='Рекомендация')
+    author = models.ForeignKey('accounts.User', on_delete=models.SET_DEFAULT, default=1, related_name='author',
+                               verbose_name="Автор")
+    player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name='player',
+                                verbose_name="Игрок")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
+
+    def __str__(self):
+        return f'{self.pk}. {self.text[:20]}'
+
 
 class PlayerInTournament(models.Model):
     game_id = models.PositiveIntegerField(verbose_name="Game id")

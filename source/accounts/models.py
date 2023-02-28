@@ -7,4 +7,4 @@ class User(AbstractUser):
     phone = models.CharField(max_length=50, null=True, blank=True, verbose_name='Номер телефона')
 
     def __str__(self):
-        return f'{self.first_name} - {self.last_name}'
+        return f'{self.username}'
