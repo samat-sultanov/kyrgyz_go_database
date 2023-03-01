@@ -13,10 +13,13 @@ margin-left: 10px;
 margin-right: 10px;
 }
 
+.file-upload input{
+  width: 100%;
+}
+
 .file-upload input[type=file]::file-selector-button {
   border: none;
   width: 100%;
-  max-width: 290px;
   height: 60px;
   background: #9400D3;
   color: #fff;
@@ -26,7 +29,6 @@ margin-right: 10px;
   justify-content: center;
   border-radius: 5px;
   cursor: pointer;
-  margin: 0 auto;
 }
 
 .file-upload input[type=file]::file-selector-button:hover {
