@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
+import os
 
 
 class Country(models.Model):
@@ -67,22 +69,19 @@ class Recommendation(models.Model):
         return f'{self.pk}. {self.text[:20]}'
 
 
-class Recommendation(models.Model):
-    text = models.TextField(max_length=400, verbose_name='Рекомендация')
-    author = models.ForeignKey('accounts.User', on_delete=models.SET_DEFAULT, default=1, related_name='author',
-                               verbose_name="Автор")
-    player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name='player',
-                                verbose_name="Игрок")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
-
-    def __str__(self):
-        return f'{self.pk}. {self.text[:20]}'
-
-
 class PlayerInTournament(models.Model):
     game_id = models.PositiveIntegerField(verbose_name="Game id")
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE)
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
-    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3)
+    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3 , blank=True, null=True)
     rating = models.PositiveIntegerField(verbose_name='Rating', blank=True, null=True)
+
+
+class File(models.Model):
+    file = models.FileField(upload_to= 'files/',null=True,validators=[FileExtensionValidator(allowed_extensions=['xml'], message=['Загрузите файл в формате XML'], code='invalid_extension')])
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def delete(self,*args,**kwargs):
+        if os.path.isfile(self.file.path):
+            os.remove(self.file.path)
+        super(File, self).delete(*args, **kwargs)
