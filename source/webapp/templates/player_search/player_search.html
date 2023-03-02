@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+{##}
+{% block content %}
+{#<br/>#}
+{#<form action="" method="GET">#}
+{#    <div class="d-flex justify-content-center">#}
+{#        {{ form.search_title }}#}
+{#    </div>#}
+{#<br/>#}
+{#    <div class="d-flex justify-content-center">#}
+{#        {{ form.search_test }}#}
+{#    </div>#}
+{#<br/>#}
+{#    <div class="d-flex justify-content-center">#}
+{#        {{ form.search_categories }}#}
+{#    </div>#}
+{#<br/>#}
+{#    <div class="d-flex justify-content-center">#}
+{#        <input type="submit" class="btn btn-success ms-1" value="Поиск">#}
+{#        </div>#}
+{#    {% for error in form.search.errors %}#}
+{#        <p class="text-danger">{{ error }}</p>#}
+{#    {% endfor %}#}
+{#</form>#}
+{#    {% if search_test or search_title or search_categories %}#}
+        {% include 'partial/player_list.html' %}
+{#    {% endif %}#}
+{% endblock %}

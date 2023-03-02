@@ -1,0 +1,27 @@
+{% load static %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Имя</th>
+      <th scope="col">Фамилия</th>
+        <th scope="col">Клуб</th>
+        <th scope="col">GoLevel</th>
+        <th scope="col">Тотал турниров</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for player in players %}
+    <tr>
+      <td>{{ player.first_name }}</td>
+      <td>{{ player.last_name }}</td>
+        {% for club in player.clubs.all %}
+            <td>{{ club.name }}</td>
+        {% endfor %}
+        {% for tournament in player.playerintournament_set.all %}
+                <td>{{ tournament.GoLevel }}</td>
+        {% endfor %}
+          <td>{{ player.get_total_tournaments }}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>

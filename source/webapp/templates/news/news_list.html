@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block nav %}
+{% endblock %}
+
+
+{% block content %}
+	<h1 class="text-center">Новости</h1>
+	<div>
+        {% for news in news_list %}
+            <p>{{ news.created_at|date:"d F Y H:i" }}</p>
+			<h2>{{ news.title }}</h2>
+			<p>{{ news.text }}</p>
+            {% if news.news_image %}
+			    <img src="{{ news.news_image.url }}" alt="img-1">
+			{% endif %}
+            <hr>
+		{% endfor %}
+    </div>
+{% endblock %}
