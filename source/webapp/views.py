@@ -1,8 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from .handle_upload import handle_uploaded_file
-from .models import File
+from .models import File, News
 from webapp.forms import FileForm
+from django.views.generic import ListView
 
 
 # Create your views here.
@@ -20,4 +21,11 @@ def file_upload(request):
         return HttpResponseRedirect("/")
     else:
         form = FileForm
-    return render(request, 'file_upload.html', {'form':form})
+    return render(request, 'file_upload.html', {'form': form})
+
+
+class NewsListView(ListView):
+    model = News
+    template_name = 'news/news_list.html'
+    context_object_name = 'news_list'
+    ordering = ['-created_at']
