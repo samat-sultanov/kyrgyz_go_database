@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File
+from webapp.models import File , Calendar
 
 
 class FileForm(forms.ModelForm):
@@ -23,3 +23,8 @@ class PlayerSearchForm(forms.Form):
    search_city = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
 
+class CalendarForm(forms.ModelForm):
+    class Meta:
+        model = Calendar
+        fields = ['event_name', 'event_city', 'event_date']
+        widgets = {'event_date': forms.DateInput(attrs={'type': 'date'})}
