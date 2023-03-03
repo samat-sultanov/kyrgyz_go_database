@@ -14,9 +14,13 @@
     <tr>
       <td>{{ player.first_name }}</td>
       <td>{{ player.last_name }}</td>
+                {% if player.clubs.all  %}
         {% for club in player.clubs.all %}
             <td>{{ club.name }}</td>
         {% endfor %}
+                {% else %}
+            <td>Не состоит в клубах</td>
+            {% endif %}
         {% for tournament in player.playerintournament_set.all %}
                 <td>{{ tournament.GoLevel }}</td>
         {% endfor %}
