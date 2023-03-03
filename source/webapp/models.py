@@ -42,21 +42,27 @@ class Tournament(models.Model):
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
+    date = models.DateField(verbose_name="Дата турнира", null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
 
 
 class Player(models.Model):
+    patronymic = models.CharField(verbose_name="Patronymic", max_length=50, blank=True, null=True)
     first_name = models.CharField(verbose_name="First name", max_length=50, blank=True, null=True)
     last_name = models.CharField(verbose_name="Last name", max_length=50, blank=True, null=True)
     age = models.PositiveIntegerField(verbose_name='Age', blank=True, null=True)
     clubs = models.ManyToManyField('webapp.Club', related_name='players')
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
+    city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
+
+    def get_total_tournaments(self):
+        return self.tournaments.count()
 
 
 class Recommendation(models.Model):
