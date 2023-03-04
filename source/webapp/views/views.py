@@ -6,6 +6,7 @@ from webapp.models import File, News , Calendar
 from webapp.forms import FileForm
 from django.views.generic import ListView
 
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
@@ -15,7 +16,6 @@ class IndexView(TemplateView):
         context['calendar'] = calendar
         return context
 
-# Create your views here.
 
 def file_upload(request):
     if request.method == 'POST':
