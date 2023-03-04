@@ -12,10 +12,10 @@ from webapp.models import File, News
 from webapp.forms import FileForm
 from django.views.generic import ListView
 
+
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-# Create your views here.
 
 def file_upload(request):
     if request.method == 'POST':
