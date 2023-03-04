@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES
+from webapp.models import File, CLASS_CHOICES, Calendar
+
 
 
 class FileForm(forms.ModelForm):
@@ -32,6 +33,13 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
+class CalendarForm(forms.ModelForm):
+    class Meta:
+        model = Calendar
+        fields = ['event_name', 'event_city', 'event_date']
+        widgets = {'event_date': forms.DateInput(attrs={'type': 'date'})}
+
+
 class TournamentSearchForm(forms.Form):
     search_name = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(
@@ -43,3 +51,4 @@ class TournamentSearchForm(forms.Form):
                                   widget=DateInput(attrs={'class': "form-control w-30"}))
     search_tournament_class = forms.CharField(required=False, widget=forms.Select(choices=CLASS_CHOICES,
                                                                                   attrs={'class': "form-control w-30"}))
+
