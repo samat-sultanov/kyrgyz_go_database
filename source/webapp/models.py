@@ -54,6 +54,7 @@ class Tournament(models.Model):
 
 
 class Player(models.Model):
+    avatar = models.ImageField(null=True, blank=True, upload_to='user_avatar', verbose_name='Аватар')
     patronymic = models.CharField(verbose_name="Patronymic", max_length=50, blank=True, null=True)
     first_name = models.CharField(verbose_name="First name", max_length=50, blank=True, null=True)
     last_name = models.CharField(verbose_name="Last name", max_length=50, blank=True, null=True)
