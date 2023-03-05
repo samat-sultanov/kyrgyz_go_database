@@ -136,6 +136,7 @@ class News(models.Model):
     def __str__(self):
         return f'{self.title} - {self.created_at.strftime("%d-%m-%Y %H:%M:%S")}'
 
+
 class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
     event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
