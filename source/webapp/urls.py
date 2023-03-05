@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
+from .views import file_upload, IndexView, NewsListView, Player_Search, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, Player_Detail
 
 

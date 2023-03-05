@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 import os
+import re
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
@@ -18,27 +19,26 @@ class City(models.Model):
 class Club(models.Model):
     name = models.CharField(verbose_name="Club title", max_length=50, null=True, blank=True)
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
-    club_players = models.ManyToManyField('webapp.Player', verbose_name='Члены клуба', related_name='clubs_players')
-    club_go_level = models.ManyToManyField('webapp.PlayerInTournament', verbose_name='Средний рейтинг', blank=True,
-                                           related_name='clubs')
 
     def average_go_level(self):
-        total_go_level = 0
-        num_players = self.club_players.count()
-        for player in self.club_players.all():
-            try:
-                pit = PlayerInTournament.objects.get(player=player)
-                go_level = int(pit.GoLevel)
-            except (PlayerInTournament.DoesNotExist, ValueError):
-                if pit.GoLevel:
-                    go_level = int(pit.GoLevel[:-1])
-                else:
-                    go_level = 0
-            total_go_level += go_level
+
+        num_list = []
+        num_players = self.players.count()
+        for player in self.players.all():
+            tournaments = player.playerintournament_set.all()
+            for person in tournaments:
+                if person.GoLevel:
+                    p = re.compile('(\d*)')
+                    m = p.findall(person.GoLevel)
+                    for i in m:
+                        if i != "":
+                            num_list.append(int(i))
+        total_go_level = sum(num_list)
         if num_players > 0:
-            return round(total_go_level / num_players)
+            average_num = total_go_level // num_players
+            return f'{average_num}k'
         else:
-            return None
+            return f'0k'
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
@@ -80,7 +80,7 @@ class Player(models.Model):
     first_name = models.CharField(verbose_name="First name", max_length=50, blank=True, null=True)
     last_name = models.CharField(verbose_name="Last name", max_length=50, blank=True, null=True)
     age = models.PositiveIntegerField(verbose_name='Age', blank=True, null=True)
-    clubs = models.ManyToManyField('webapp.Club', related_name='players', blank=True, null=True)
+    clubs = models.ManyToManyField('webapp.Club', related_name='players', blank=True)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
@@ -93,6 +93,7 @@ class Player(models.Model):
 
     def get_total_clubs(self):
         return self.clubs.count()
+
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
