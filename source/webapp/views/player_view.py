@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from webapp.models import Player
-from webapp.forms import FileForm, PlayerSearchForm
+from webapp.forms import FileForm, PlayerSearchForm, CompetitorSearchForm
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
@@ -82,3 +82,10 @@ class PlayerSearch(ListView):
             context['query'] = urlencode({'search_city': self.search_city})
             context['search_city'] = self.search_city
         return context
+
+
+class CompetitorSearch(View):
+
+    def get(self, request):
+        if request.method == "GET":
+            return render(request, 'competitor/competitor_search.html', {'form': CompetitorSearchForm})
