@@ -18,6 +18,27 @@ class City(models.Model):
 class Club(models.Model):
     name = models.CharField(verbose_name="Club title", max_length=50, null=True, blank=True)
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
+    club_players = models.ManyToManyField('webapp.Player', verbose_name='Члены клуба', related_name='clubs_players')
+    club_go_level = models.ManyToManyField('webapp.PlayerInTournament', verbose_name='Средний рейтинг', blank=True,
+                                           related_name='clubs')
+
+    def average_go_level(self):
+        total_go_level = 0
+        num_players = self.club_players.count()
+        for player in self.club_players.all():
+            try:
+                pit = PlayerInTournament.objects.get(player=player)
+                go_level = int(pit.GoLevel)
+            except (PlayerInTournament.DoesNotExist, ValueError):
+                if pit.GoLevel:
+                    go_level = int(pit.GoLevel[:-1])
+                else:
+                    go_level = 0
+            total_go_level += go_level
+        if num_players > 0:
+            return round(total_go_level / num_players)
+        else:
+            return None
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
