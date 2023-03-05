@@ -21,9 +21,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+
                 <a class="navbar-brand" style="color: white;" href="{% url "webapp:player_search" %}">Игроки</a>
                 <a class="navbar-brand" style="color: white;" href="{% url "webapp:tournament_search" %}">Турниры</a>
-                <a class="navbar-brand" style="color: white;" href="#">Статистика клубов страны</a>
+                <a class="navbar-brand" style="color: white;" href="{% url "webapp:clubs_list" %}">Статистика клубов страны</a>
                 <a class="navbar-brand" style="color: white;" href="#">О нас KGD</a>
                 {% block nav %}
 

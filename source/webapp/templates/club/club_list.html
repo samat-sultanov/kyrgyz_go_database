@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Клубы</h1>
+    <table class="text-center">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Club name</th>
+            <th>EGDName</th>
+            <th style="padding-left: 20px;">Members</th>
+            <th style="padding-left: 20px;">Average GoLevel</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for club in clubs %}
+            <tr>
+                <td>{{ club.id }}</td>
+                <td>{{ club.name }}</td>
+                <td>{{ club.EGDName }}</td>
+                <td>{{ club.num_players }}</td>
+                <td>
+                    {% if club.average_go_level %}
+                        {{ club.average_go_level }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">No clubs found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

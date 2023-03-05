@@ -3,7 +3,6 @@ from django.forms import FileInput, widgets
 from webapp.models import File, CLASS_CHOICES, Calendar
 
 
-
 class FileForm(forms.ModelForm):
     class Meta:
         model = File
@@ -52,3 +51,20 @@ class TournamentSearchForm(forms.Form):
     search_tournament_class = forms.CharField(required=False, widget=forms.Select(choices=CLASS_CHOICES,
                                                                                   attrs={'class': "form-control w-30"}))
 
+
+class CompetitorSearchForm(forms.Form):
+    search_rank = forms.IntegerField(required=True, label='Найти',
+                                     widget=widgets.NumberInput(
+                                         attrs={'class': "form-control w-30", 'placeholder': 'Ранк'}))
+    search_age = forms.IntegerField(required=True, label='Найти',
+                                    widget=widgets.NumberInput(
+                                        attrs={'class': "form-control w-30", 'placeholder': 'Возраст'}))
+    search_clubs = forms.CharField(max_length=50, required=False, label='Найти',
+                                   widget=widgets.TextInput(
+                                       attrs={'class': "form-control w-30", 'placeholder': 'Клуб'}))
+    search_city = forms.CharField(max_length=50, required=False, label='Найти',
+                                  widget=widgets.TextInput(
+                                      attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
+    search_country = forms.CharField(max_length=50, required=False, label='Найти',
+                                     widget=widgets.TextInput(
+                                         attrs={'class': "form-control w-30", 'placeholder': 'Страна'}))
