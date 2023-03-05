@@ -2,6 +2,9 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 import os
 
+DEFAULT_CLASS = 'all'
+CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
+
 
 class Country(models.Model):
     country_code = models.CharField(verbose_name='Country', max_length=2)
@@ -64,6 +67,8 @@ class Tournament(models.Model):
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
     date = models.DateField(verbose_name="Дата турнира", null=True, blank=True)
+    tournament_class = models.CharField(max_length=20, default=DEFAULT_CLASS, choices=CLASS_CHOICES,
+                                        verbose_name='Класс Турнира')
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
@@ -130,3 +135,8 @@ class News(models.Model):
 
     def __str__(self):
         return f'{self.title} - {self.created_at.strftime("%d-%m-%Y %H:%M:%S")}'
+
+class Calendar(models.Model):
+    event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
+    event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
+    event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)

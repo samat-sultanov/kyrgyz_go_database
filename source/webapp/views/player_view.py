@@ -10,7 +10,8 @@ from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-class Player_Search(ListView):
+
+class PlayerSearch(ListView):
     template_name = 'player_search/player_search.html'
     context_object_name = 'players'
     model = Player
