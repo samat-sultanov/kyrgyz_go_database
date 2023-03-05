@@ -6,12 +6,12 @@
 
 {% block content %}
     <div class="container">
-    <div>
-        {% if player.avatar %}
-            <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ player.avatar.url }}" alt="avatar">
-        {% else %}
-            <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
-        {% endif %}
+        <div>
+            {% if player.avatar %}
+                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ player.avatar.url }}" alt="avatar">
+            {% else %}
+                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
+            {% endif %}
             <div>
                 <p>Фамилия: {{ player.last_name }}</p> <p>Имя: {{ player.first_name }}</p> <p>Возраст: {{ player.age }}</p>
                    <div class="btn-group">
@@ -34,7 +34,7 @@
     <br/>
     <hr>
     <div class="container">
-    <h1>Список туниров в которых играл игрок</h1>
+    <h2>Список туниров в которых играл игрок:</h2>
     <br/>
     <table class="table">
   <thead>
@@ -43,19 +43,19 @@
       <th scope="col">Город</th>
         <th scope="col">Размер доски</th>
         <th scope="col">Раунды</th>
-        <th scope="col">Дата турниров</th>
-        <th scope="col">Класс Турниров</th>
+        <th scope="col">Дата</th>
+        <th scope="col">Класс</th>
     </tr>
   </thead>
   <tbody>
-    {% for tournaments in player.tournaments.all %}
+    {% for tournament in player.tournaments.all %}
     <tr>
-      <td>{{ tournaments.name }}</td>
-      <td>{{ tournaments.city }}</td>
-      <td>{{ tournaments.board_size }}</td>
-      <td>{{ tournaments.rounds }}</td>
-      <td>{{ tournaments.date }}</td>
-      <td>{{ tournaments.tournament_class }}</td>
+      <td><a href='{% url "webapp:tournament_detail" tournament.pk %}'>{{ tournament.name }}</a></td>
+      <td>{{ tournament.city }}</td>
+      <td>{{ tournament.board_size }}</td>
+      <td>{{ tournament.rounds }}</td>
+      <td>{{ tournament.date }}</td>
+      <td>{{ tournament.tournament_class }}</td>
     </tr>
       {% endfor %}
   </tbody>

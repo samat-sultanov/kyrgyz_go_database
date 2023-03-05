@@ -21,7 +21,7 @@
                 <td>{{ club.id }}</td>
                 <td>{{ club.name }}</td>
                 <td>{{ club.EGDName }}</td>
-                <td>{{ club.num_players }}</td>
+                <td>{{ club.players.count }}</td>
                 <td>
                     {% if club.average_go_level %}
                         {{ club.average_go_level }}
