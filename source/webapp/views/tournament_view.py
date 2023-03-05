@@ -1,5 +1,6 @@
 from urllib.parse import urlencode
-from django.views.generic import ListView
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, TemplateView
 from django.db.models import Q
 
 from webapp.forms import TournamentSearchForm
@@ -68,3 +69,15 @@ class TournamentSearch(ListView):
             context['query'] = urlencode({'search_tournament_class': self.search_tournament_class})
             context['search_tournament_class'] = self.search_tournament_class
         return context
+
+
+class TournamentDetail(TemplateView):
+    template_name = 'tournament/tournament_detail.html'
+
+    def get_context_data(self, **kwargs):
+        pk = kwargs.get("pk")
+        tournament = get_object_or_404(Tournament, pk=pk)
+        players = tournament.player_set.all()
+        kwargs["tournament"] = tournament
+        kwargs['players'] = players
+        return super().get_context_data(**kwargs)
