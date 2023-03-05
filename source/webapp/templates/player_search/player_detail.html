@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <div>
+        {% if player.avatar %}
+            <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ player.avatar.url }}" alt="avatar">
+        {% else %}
+            <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
+        {% endif %}
+            <div>
+                <p>Фамилия: {{ player.last_name }}</p> <p>Имя: {{ player.first_name }}</p> <p>Возраст: {{ player.age }}</p>
+                   <div class="btn-group">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if player.get_total_clubs >= 1 %}Клубы, Игрок состоит в {{ player.get_total_clubs }}
+                            {% if player.get_total_clubs == 1 %}клубе.{% else %} клубах.{% endif %}
+                          {% else %}
+                          Клубы, Игрок не состоит в клубах.
+                          {% endif %}
+                      </button>
+                      <ul class="dropdown-menu">
+                          {% for club in player.clubs.all %}
+                            <li><a class="dropdown-item" href="#">{{ club.name }}</a></li>
+                          {% endfor %}
+                      </ul>
+                    </div>
+        </div>
+    </div>
+</div>
+    <br/>
+    <hr>
+    <div class="container">
+    <h1>Список туниров в которых играл игрок</h1>
+    <br/>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Турнир</th>
+      <th scope="col">Город</th>
+        <th scope="col">Размер доски</th>
+        <th scope="col">Раунды</th>
+        <th scope="col">Дата турниров</th>
+        <th scope="col">Класс Турниров</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tournaments in player.tournaments.all %}
+    <tr>
+      <td>{{ tournaments.name }}</td>
+      <td>{{ tournaments.city }}</td>
+      <td>{{ tournaments.board_size }}</td>
+      <td>{{ tournaments.rounds }}</td>
+      <td>{{ tournaments.date }}</td>
+      <td>{{ tournaments.tournament_class }}</td>
+    </tr>
+      {% endfor %}
+  </tbody>
+</table>
+    </div>
+{% endblock %}

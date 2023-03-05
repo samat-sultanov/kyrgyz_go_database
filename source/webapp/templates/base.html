@@ -9,25 +9,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static "css/style.css" %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <title>{% block title %}Kyrgyz Go Database{% endblock %}</title>
-    <link rel='icon' type='image/x-icon' href='{% static "images/sengoku_logo.png" %}'>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand" href="{% url "webapp:index" %}"><img width="150px"
-                                                                     src="{% static "images/logo_go.png" %}"></a>
+        <a class="navbar-brand" href="{% url "webapp:index" %}"><img width="150px" src="{% static "images/logo_go.png" %}"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <a class="navbar-brand" style="color: white;" href="{% url "webapp:player_search" %}">Поиск игроков</a>
-                <a class="navbar-brand" style="color: white;" href="{% url "webapp:tournament_search" %}">Поиск турниров</a>
-                <a class="navbar-brand" style="color: white;" href="{% url "webapp:clubs_list" %}">Статистика клубов страны</a>
 
+                <a class="navbar-brand" style="color: white;" href="{% url "webapp:player_search" %}">Игроки</a>
+                <a class="navbar-brand" style="color: white;" href="{% url "webapp:tournament_search" %}">Турниры</a>
+                <a class="navbar-brand" style="color: white;" href="{% url "webapp:clubs_list" %}">Статистика клубов страны</a>
                 <a class="navbar-brand" style="color: white;" href="#">О нас KGD</a>
                 {% block nav %}
 

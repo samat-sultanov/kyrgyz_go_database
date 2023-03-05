@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+    {% block title %}Player{% endblock %}
 
 {% block nav %}
 {% endblock %}
@@ -14,33 +15,36 @@
     <form style="display: flex;justify-content: center;text-align: center;" action="" method="GET">
         <div style="display: inline-block;justify-content:center;border-style: solid; border-radius: 30px;border-color: #9400D3;border-width: 1px;width: 500px; margin: 5px; padding: 30px">
             <div style="display: flex;justify-content: center;">
-                {{ form.search_patronymic }}
-            </div>
-            <br/>
-            <div style="display: flex; justify-content: center;">
-                {{ form.search_first_name }}
-            </div>
-            <br/>
-            <div style="display: flex; justify-content: center;">
-                {{ form.search_last_name }}
-            </div>
-            <br/>
-            <div style="display: flex; justify-content: center;">
-                {{ form.search_clubs }}
-            </div>
-            <br/>
-            <div style="display: flex; justify-content: center;">
-                {{ form.search_city }}
-            </div>
-            <br/>
-            <div class="d-flex justify-content-center">
-                <input type="submit" class="btn ms-1" style="background-color: #9400D3; color: white" value="Поиск">
-            </div>
-            {% for error in form.search.errors %}
-                <p class="text-danger">{{ error }}</p>
-            {% endfor %}
+
+        {{ form.search_last_name }}
+    </div>
+<br/>
+    <div style="display: flex; justify-content: center;">
+        {{ form.search_first_name }}
+    </div>
+<br/>
+    <div style="display: flex; justify-content: center;">
+        {{ form.search_patronymic }}
+    </div>
+<br/>
+    <div style="display: flex; justify-content: center;">
+        {{ form.search_clubs }}
+    </div>
+<br/>
+    <div style="display: flex; justify-content: center;">
+        {{ form.search_city }}
+    </div>
+<br/>
+    <div class="d-flex justify-content-center">
+        <input type="submit" class="btn btn-success ms-1" value="Поиск">
+
         </div>
     </form>
     <br/>
-    {% include 'partial/player_list.html' %}
+
+        {% include 'partial/player_list.html' %}
+        <br/>
+    {% include "partial/pagination.html" %}
+    <br/>
+
 {% endblock %}
