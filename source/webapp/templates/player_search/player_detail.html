@@ -14,6 +14,11 @@
             {% endif %}
             <div>
                 <p>Фамилия: {{ player.last_name }}</p> <p>Имя: {{ player.first_name }}</p> <p>Возраст: {{ player.age }}</p>
+                {% for element in player.get_position_in_kgf %}
+                    {% if player.pk == element.player %}
+                        <p>KGF placement: {{ element.position }}</p>
+                    {% endif %}
+                {% endfor %}
                    <div class="btn-group">
                       <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if player.get_total_clubs >= 1 %}Клубы, Игрок состоит в {{ player.get_total_clubs }}
