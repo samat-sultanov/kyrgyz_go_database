@@ -5,14 +5,18 @@
 
 {% block content %}
     <h1 class="text-center">Клубы</h1>
-    <table class="text-center">
+    <table class="table">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Club name</th>
-            <th>EGDName</th>
-            <th style="padding-left: 20px;">Members</th>
-            <th style="padding-left: 20px;">Average GoLevel</th>
+            <th scope="col">#</th>
+            <th scope="col">Клуб</th>
+            <th scope="col">EGDName</th>
+            <th scope="col">Страна</th>
+            <th scope="col">Город</th>
+            <th scope="col">Количество участников</th>
+            <th scope="col">Средний GoLevel</th>
+            <th scope="col">Победы</th>
+            <th scope="col">Поражения</th>
         </tr>
         </thead>
         <tbody>
@@ -21,6 +25,13 @@
                 <td>{{ club.id }}</td>
                 <td>{{ club.name }}</td>
                 <td>{{ club.EGDName }}</td>
+                {% if club.city.country %}
+                    <td>{{ club.city.country.country_code }}</td>
+                    <td>{{ club.city }}</td>
+                {% else %}
+                    <td>Страна не присвоена</td>
+                    <td>Город не присвоен</td>
+                {% endif %}
                 <td>{{ club.players.count }}</td>
                 <td>
                     {% if club.average_go_level %}
@@ -37,4 +48,8 @@
         {% endfor %}
         </tbody>
     </table>
+     {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <br/>
 {% endblock %}

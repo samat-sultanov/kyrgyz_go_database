@@ -17,8 +17,10 @@ class City(models.Model):
 
 
 class Club(models.Model):
+    logo = models.ImageField(verbose_name='Лого', null=True, blank=True, upload_to='club_logo')
     name = models.CharField(verbose_name="Club title", max_length=50, null=True, blank=True)
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
+    city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
 
     def average_go_level(self):
 
