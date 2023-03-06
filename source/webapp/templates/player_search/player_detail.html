@@ -7,6 +7,9 @@
 {% block content %}
     <div class="container">
         <div>
+        <div style="float: right; padding-right: 600px" id="flag">
+                <p id="country_code">{{ player.country.country_code }}</p>
+        </div>
             {% if player.avatar %}
                 <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ player.avatar.url }}" alt="avatar">
             {% else %}
