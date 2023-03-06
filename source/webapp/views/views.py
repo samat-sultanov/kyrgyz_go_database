@@ -1,10 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import TemplateView
 from webapp.handle_upload import handle_uploaded_file
-from webapp.models import File, News , Calendar
+from webapp.models import File, Calendar
 from webapp.forms import FileForm
-from django.views.generic import ListView
 
 
 class IndexView(TemplateView):
@@ -31,10 +30,3 @@ def file_upload(request):
     else:
         form = FileForm
     return render(request, 'file_upload.html', {'form': form})
-
-
-class NewsListView(ListView):
-    model = News
-    template_name = 'news/news_list.html'
-    context_object_name = 'news_list'
-    ordering = ['-created_at']
