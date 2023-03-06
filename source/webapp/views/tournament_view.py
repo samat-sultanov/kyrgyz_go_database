@@ -4,7 +4,7 @@ from django.views.generic import ListView, TemplateView
 from django.db.models import Q
 
 from webapp.forms import TournamentSearchForm
-from webapp.models import Tournament
+from webapp.models import Tournament, Game
 
 
 class TournamentSearch(ListView):
@@ -80,4 +80,25 @@ class TournamentDetail(TemplateView):
         players = tournament.player_set.all()
         kwargs["tournament"] = tournament
         kwargs['players'] = players
+        games = Game.objects.filter(tournament=tournament)
+        a = []
+        for player in players:
+            new_dict = dict()
+            wins = 0
+            losses = 0
+            for game in games:
+                if game.result:
+                    if game.black == player and game.black_score > 0:
+                        wins += game.black_score
+                    elif game.white == player and game.white_score > 0:
+                        wins += game.white_score
+                    elif game.black == player and game.white_score > 0:
+                        losses += 1
+                    elif game.white == player and game.black_score > 0:
+                        losses += 1
+                new_dict['player'] = player.pk
+                new_dict['wins'] = wins
+                new_dict['losses'] = losses
+            a.append(new_dict)
+        kwargs['wins'] = a
         return super().get_context_data(**kwargs)
