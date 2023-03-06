@@ -40,7 +40,9 @@
     <br/>
     {% include 'partial/player_list.html' %}
     <br/>
-    {% include "partial/pagination.html" %}
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
     <br/>
 
 {% endblock %}
