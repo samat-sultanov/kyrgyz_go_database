@@ -31,5 +31,7 @@
     </div>
 
 </div>
-    {% include "partial/pagination.html" %}
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
 {% endblock %}

@@ -21,6 +21,8 @@ class PlayerSearch(ListView):
     context_object_name = 'players'
     model = Player
     ordering = ['first_name']
+    paginate_by = 15
+    paginate_orphans = 4
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
