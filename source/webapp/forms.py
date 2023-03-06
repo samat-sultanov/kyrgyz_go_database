@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar
+from webapp.models import File, CLASS_CHOICES, Calendar, News
 
 
 class FileForm(forms.ModelForm):
@@ -68,3 +68,12 @@ class CompetitorSearchForm(forms.Form):
     search_country = forms.CharField(max_length=50, required=False, label='Найти',
                                      widget=widgets.TextInput(
                                          attrs={'class': "form-control w-30", 'placeholder': 'Страна'}))
+
+
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['title', 'text', 'news_image']
+        widgets = {
+            'text': widgets.Textarea(attrs={"cols": 24, "rows": 3, 'class': 'form-control', 'placeholder': 'Текст'}),
+            'title': widgets.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'})}
