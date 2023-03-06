@@ -14,7 +14,7 @@ class NewsListView(ListView):
     ordering = ['-created_at']
 
 
-class NewsCreateView(LoginRequiredMixin, CreateView):
+class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, когда будет реализована аутентификация
     model = News
     form_class = NewsForm
     template_name = 'news/news_create.html'
