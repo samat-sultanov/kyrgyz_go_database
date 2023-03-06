@@ -96,6 +96,31 @@ class Player(models.Model):
     def get_total_clubs(self):
         return self.clubs.count()
 
+    def get_position_in_kgf(self):
+        country = Country.objects.get(country_code='kg')
+        players = Player.objects.filter(country=country)
+        tournaments = Tournament.objects.order_by("-date")
+        new_list = []
+        for player in players:
+            new_dict = dict()
+            for tournament in tournaments:
+                for data in tournament.playerintournament_set.all():
+                    if player.pk == data.pk:
+                        if player not in new_dict:
+                            new_dict['player'] = player.pk
+                            p = re.compile('(\d*)')
+                            m = p.findall(data.GoLevel)
+                            for i in m:
+                                if i != "":
+                                    new_dict['GoLevel'] = int(i)
+            new_list.append(new_dict)
+        new_list.sort(key=lambda dictionary: dictionary['GoLevel'])
+        position = 1
+        for element in new_list:
+            element['position'] = position
+            position += 1
+        return new_list
+
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
