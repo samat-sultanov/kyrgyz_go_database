@@ -11,9 +11,8 @@
     <div>
         {% for news in news_list %}
             <h2><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h2>
-            <p>{% if news.author.last_name or news.author.first_name %}{{ news.author.last_name }}
-                {{ news.author.first_name }} {% else %} {{ news.author.username }}{% endif %}/
-                {{ news.created_at|date:"d F Y H:i" }}</p>
+            <p>{% if request.user.is_authenticated %}{{ news.author.username }}
+                / {% endif %}{{ news.created_at|date:"d F Y H:i" }}</p>
             <hr>
         {% endfor %}
     </div>

@@ -7,7 +7,6 @@
 {% block content %}
 
     <div class="card">
-        <img src="..." class="card-img-top" alt="...">
         {% if single_news.news_image %}
             <img src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
         {% else %}
@@ -16,8 +15,9 @@
         <div class="card-body">
             <h5 class="card-title">{{ single_news.title }}</h5>
             <p class="card-text">{{ single_news.text }}</p>
-            <p>Автор: <a href="#">{% if single_news.author.last_name or single_news.author.first_name %}{{ single_news.author.last_name }}
-                {{ single_news.author.first_name }} {% else %} {{ single_news.author.username }}{% endif %} </a></p>
+            {% if request.user.is_authenticated %}
+                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
+            {% endif %}
         </div>
     </div>
 
