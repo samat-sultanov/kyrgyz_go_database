@@ -121,6 +121,23 @@ class Player(models.Model):
             position += 1
         return new_list
 
+    def get_rank(self):
+        players = Player.objects.all()
+        tournaments = Tournament.objects.order_by("-date")
+        new_list = []
+        for player in players:
+            new_dict = dict()
+            for tournament in tournaments:
+                for data in tournament.playerintournament_set.all():
+                    if player.pk == data.pk:
+                        if player not in new_dict:
+                            new_dict['player'] = player.pk
+                            new_dict['GoLevel'] = data.GoLevel
+            new_list.append(new_dict)
+        return new_list
+
+
+
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
