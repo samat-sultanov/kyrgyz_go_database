@@ -7,7 +7,7 @@
         <th scope="col">Отчество</th>
         <th scope="col">Возраст</th>
         <th scope="col">Клуб</th>
-        <th scope="col">GoLevel</th>
+        <th scope="col">Rank</th>
         <th scope="col">Тотал турниров</th>
     </tr>
     </thead>
@@ -33,8 +33,10 @@
         {% else %}
             <td>Не состоит в клубах</td>
         {% endif %}
-        {% for tournament in player.playerintournament_set.all %}
-            <td>{{ tournament.GoLevel }}</td>
+        {% for element in player.get_rank %}
+            {% if player.pk == element.player %}
+            <td>{{ element.GoLevel }}</td>
+            {% endif %}
         {% endfor %}
             <td>{{ player.get_total_tournaments }}</td>
         </tr>
