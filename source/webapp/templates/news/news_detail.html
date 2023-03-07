@@ -11,12 +11,13 @@
         {% if single_news.news_image %}
             <img src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
         {% else %}
-            <img src='{% static "images/no_image.jpg" %}' class="card-img-top" alt="..." width="250" height="250">
+            <img src='{% static "images/no_image.jpg" %}' alt="..." width="250" height="250">
         {% endif %}
         <div class="card-body">
             <h5 class="card-title">{{ single_news.title }}</h5>
             <p class="card-text">{{ single_news.text }}</p>
-            <a href="#">Автор: {{ single_news.author.last_name }} {{ single_news.author.first_name }} </a>
+            <p>Автор: <a href="#">{% if single_news.author.last_name or single_news.author.first_name %}{{ single_news.author.last_name }}
+                {{ single_news.author.first_name }} {% else %} {{ single_news.author.username }}{% endif %} </a></p>
         </div>
     </div>
 
