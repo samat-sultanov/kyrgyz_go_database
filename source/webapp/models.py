@@ -3,6 +3,8 @@ from django.core.validators import FileExtensionValidator
 import os
 import re
 
+from django.urls import reverse
+
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
 
@@ -181,6 +183,9 @@ class News(models.Model):
 
     def __str__(self):
         return f'{self.title} - {self.created_at.strftime("%d-%m-%Y %H:%M:%S")}'
+
+    def get_absolute_url(self):
+        return reverse('webapp:news_detail', kwargs={'pk': self.pk})
 
 
 class Calendar(models.Model):

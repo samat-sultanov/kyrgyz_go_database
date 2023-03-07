@@ -22,7 +22,7 @@ class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, ког
 
     # Когда будет готово представление и шаблон детального просмотра статьи, надо будет success_url поменять
     def get_success_url(self):
-        return reverse('webapp:index')
+        return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         form.instance.author = self.request.user
