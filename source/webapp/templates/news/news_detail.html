@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="card">
+        {% if single_news.news_image %}
+            <img src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
+        {% else %}
+            <img src='{% static "images/no_image.jpg" %}' alt="..." width="250" height="250">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ single_news.title }}</h5>
+            <p class="card-text">{{ single_news.text }}</p>
+            {% if request.user.is_authenticated %}
+                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
