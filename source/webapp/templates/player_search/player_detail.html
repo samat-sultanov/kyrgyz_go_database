@@ -16,10 +16,21 @@
                 <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
             {% endif %}
             <div>
-                <p>Фамилия: {{ player.last_name }}</p> <p>Имя: {{ player.first_name }}</p> <p>Возраст: {{ player.age }}</p>
+                <p>Фамилия: {{ player.last_name }}</p>
+                <p>Имя: {{ player.first_name }}</p>
+                {% if player.age %}
+                    <p>Возраст: {{ player.age }}</p>
+                {% else %}
+                    <p>Возраст: не указан</p>
+                {% endif %}
                 {% for element in player.get_position_in_kgf %}
                     {% if player.pk == element.player %}
                         <p>KGF placement: {{ element.position }}</p>
+                    {% endif %}
+                {% endfor %}
+                {% for element in player.get_rank %}
+                    {% if player.pk == element.player %}
+                        <p>Rank: {{ element.GoLevel }}</p>
                     {% endif %}
                 {% endfor %}
                    <div class="btn-group">
@@ -53,6 +64,7 @@
         <th scope="col">Раунды</th>
         <th scope="col">Дата</th>
         <th scope="col">Класс</th>
+        <th scope="col">Rank</th>
     </tr>
   </thead>
   <tbody>
@@ -64,6 +76,11 @@
       <td>{{ tournament.rounds }}</td>
       <td>{{ tournament.date }}</td>
       <td>{{ tournament.tournament_class }}</td>
+        {% for person in tournament.playerintournament_set.all %}
+            {% if player.pk == person.player_id %}
+        <td>{{ person.GoLevel }}</td>
+            {% endif %}
+        {% endfor %}
     </tr>
       {% endfor %}
   </tbody>
