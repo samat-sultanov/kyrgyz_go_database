@@ -33,12 +33,11 @@
                     <td>Город не присвоен</td>
                 {% endif %}
                 <td>{{ club.players.count }}</td>
-                <td>
-                    {% if club.average_go_level %}
-                        {{ club.average_go_level }}
-                    {% else %}
-                        N/A
+                <td>{% for item in data %}
+                        {% if club.id == item.club %}
+                            {{ item.average }}k
                     {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
         {% empty %}
