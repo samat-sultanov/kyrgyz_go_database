@@ -137,8 +137,6 @@ class Player(models.Model):
         return new_list
 
 
-
-
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
     author = models.ForeignKey('accounts.User', on_delete=models.SET_DEFAULT, default=1, related_name='author',
