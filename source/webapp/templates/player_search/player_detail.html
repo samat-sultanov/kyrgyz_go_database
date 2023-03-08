@@ -23,12 +23,12 @@
                 {% else %}
                     <p>Возраст: не указан</p>
                 {% endif %}
-                {% for element in player.get_position_in_kgf %}
+                {% for element in position %}
                     {% if player.pk == element.player %}
                         <p>KGF placement: {{ element.position }}</p>
                     {% endif %}
                 {% endfor %}
-                {% for element in player.get_rank %}
+                {% for element in rank %}
                     {% if player.pk == element.player %}
                         <p>Rank: {{ element.GoLevel }}</p>
                     {% endif %}

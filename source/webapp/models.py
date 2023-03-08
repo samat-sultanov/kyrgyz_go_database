@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 import os
-import re
 
 from django.urls import reverse
 
@@ -23,26 +22,6 @@ class Club(models.Model):
     name = models.CharField(verbose_name="Club title", max_length=50, null=True, blank=True)
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
-
-    def average_go_level(self):
-
-        num_list = []
-        num_players = self.players.count()
-        for player in self.players.all():
-            tournaments = player.playerintournament_set.all()
-            for person in tournaments:
-                if person.GoLevel:
-                    p = re.compile('(\d*)')
-                    m = p.findall(person.GoLevel)
-                    for i in m:
-                        if i != "":
-                            num_list.append(int(i))
-        total_go_level = sum(num_list)
-        if num_players > 0:
-            average_num = total_go_level // num_players
-            return f'{average_num}k'
-        else:
-            return f'0k'
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
@@ -97,46 +76,6 @@ class Player(models.Model):
 
     def get_total_clubs(self):
         return self.clubs.count()
-
-    def get_position_in_kgf(self):
-        country = Country.objects.get(country_code='kg')
-        players = Player.objects.filter(country=country)
-        tournaments = Tournament.objects.order_by("-date")
-        new_list = []
-        for player in players:
-            new_dict = dict()
-            for tournament in tournaments:
-                for data in tournament.playerintournament_set.all():
-                    if player.pk == data.pk:
-                        if player not in new_dict:
-                            new_dict['player'] = player.pk
-                            p = re.compile('(\d*)')
-                            m = p.findall(data.GoLevel)
-                            for i in m:
-                                if i != "":
-                                    new_dict['GoLevel'] = int(i)
-            new_list.append(new_dict)
-        new_list.sort(key=lambda dictionary: dictionary['GoLevel'])
-        position = 1
-        for element in new_list:
-            element['position'] = position
-            position += 1
-        return new_list
-
-    def get_rank(self):
-        players = Player.objects.all()
-        tournaments = Tournament.objects.order_by("-date")
-        new_list = []
-        for player in players:
-            new_dict = dict()
-            for tournament in tournaments:
-                for data in tournament.playerintournament_set.all():
-                    if player.pk == data.pk:
-                        if player not in new_dict:
-                            new_dict['player'] = player.pk
-                            new_dict['GoLevel'] = data.GoLevel
-            new_list.append(new_dict)
-        return new_list
 
 
 class Recommendation(models.Model):
