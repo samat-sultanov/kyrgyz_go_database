@@ -18,6 +18,7 @@
             {% if request.user.is_authenticated %}
                 <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
             {% endif %}
+            <a href="{% url 'webapp:news_update' single_news.pk %}" class="btn btn-primary">Редактировать</a>
         </div>
     </div>
 

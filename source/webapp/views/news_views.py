@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 
 from webapp.models import News
 from webapp.forms import NewsForm
@@ -20,7 +20,6 @@ class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, ког
     template_name = 'news/news_create.html'
     context_object_name = 'news'
 
-    # Когда будет готово представление и шаблон детального просмотра статьи, надо будет success_url поменять
     def get_success_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
 
@@ -33,3 +32,14 @@ class NewsDetailView(DetailView):
     model = News
     template_name = 'news/news_detail.html'
     context_object_name = 'single_news'
+
+
+class NewsUpdateView(UpdateView):
+    model = News
+    template_name = 'news/news_update.html'
+    form_class = NewsForm
+    context_object_name = 'single_news'
+    queryset = News.objects.all()
+
+    def get_success_url(self):
+        return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
