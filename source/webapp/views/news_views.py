@@ -55,3 +55,9 @@ class NewsDeleteView(DeleteView):
         self.object.is_deleted = True
         self.object.save()
         return HttpResponseRedirect(success_url)
+
+
+class DeletedNewsListPage(ListView):
+    queryset = News.objects.all().filter(is_deleted=True)
+    context_object_name = 'deleted_news_list'
+    template_name = 'news/news_deleted_list.html'
