@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from webapp.models import News
 from webapp.forms import NewsForm
@@ -43,3 +44,15 @@ class NewsUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
+
+
+class NewsDeleteView(DeleteView):
+    model = News
+    context_object_name = 'single_news'
+    success_url = reverse_lazy('webapp:news_list')
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.is_deleted = True
+        self.object.save()
+        return HttpResponseRedirect(success_url)
