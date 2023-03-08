@@ -54,8 +54,11 @@
         {% else %}
             <td>Не состоит в клубах</td>
         {% endif %}
+
         {% for rate in player.playerintournament_set.all %}
+            {% if tournament.id == rate.tournament_id %}
             <td>{{ rate.GoLevel }}</td>
+            {% endif %}
         {% endfor %}
         {% for winner in wins %}
             {% if player.pk == winner.player%}
