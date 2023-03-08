@@ -20,7 +20,6 @@ class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, ког
     template_name = 'news/news_create.html'
     context_object_name = 'news'
 
-    # Когда будет готово представление и шаблон детального просмотра статьи, надо будет success_url поменять
     def get_success_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
 
