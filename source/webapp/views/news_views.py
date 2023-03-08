@@ -9,10 +9,9 @@ from webapp.forms import NewsForm
 
 # Этот класс написан Акрамом(Данияром). Я - Дастан, перенес его в этот файл из views.py
 class NewsListView(ListView):
-    model = News
+    queryset = News.objects.all().filter(is_deleted=False).order_by('-created_at')
     template_name = 'news/news_list.html'
     context_object_name = 'news_list'
-    ordering = ['-created_at']
 
 
 class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, когда будет реализована аутентификация
@@ -30,7 +29,7 @@ class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, ког
 
 
 class NewsDetailView(DetailView):
-    model = News
+    queryset = News.objects.all().filter(is_deleted=False)
     template_name = 'news/news_detail.html'
     context_object_name = 'single_news'
 
@@ -40,7 +39,7 @@ class NewsUpdateView(UpdateView):
     template_name = 'news/news_update.html'
     form_class = NewsForm
     context_object_name = 'single_news'
-    queryset = News.objects.all()
+    queryset = News.objects.all().filter(is_deleted=False)
 
     def get_success_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
