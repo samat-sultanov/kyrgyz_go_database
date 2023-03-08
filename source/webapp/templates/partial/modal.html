@@ -1,0 +1,23 @@
+<!-- Открывает модалку подтверждения -->
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal" id="kgf_modal" data-modal-type="{{ modal_type }}">
+    ...
+</button>
+
+<!-- Модалка подтверждения удаления -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="myModalLabel">...</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                <form method="POST" id="modal_form_link" action="">
+                    {% csrf_token %}<input type="submit" class="btn btn-danger" value="Да">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
