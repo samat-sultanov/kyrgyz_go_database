@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from webapp.models import News
@@ -46,7 +47,7 @@ class NewsUpdateView(UpdateView):
 
 
 class NewsDeleteView(DeleteView):
-    model = News
+    queryset = News.objects.all().filter(is_deleted=False)
     context_object_name = 'single_news'
     success_url = reverse_lazy('webapp:news_list')
 
@@ -57,7 +58,15 @@ class NewsDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class DeletedNewsListPage(ListView):
-    queryset = News.objects.all().filter(is_deleted=True)
+class DeletedNewsListView(ListView):   # Permission будет только у админа(superuser)
+    queryset = News.objects.all().filter(is_deleted=True).order_by('updated_at')
     context_object_name = 'deleted_news_list'
     template_name = 'news/news_deleted_list.html'
+
+
+def restore_one_deleted_news(request, *args, **kwargs):
+    if request.method == 'GET':
+        news = get_object_or_404(News, pk=kwargs.get('pk'))
+        news.is_deleted = False
+        news.save()
+        return redirect('webapp:deleted_news_list')

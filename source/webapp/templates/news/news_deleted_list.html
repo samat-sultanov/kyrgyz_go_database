@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    {% for deleted_news in deleted_news_list %}
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ deleted_news.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ deleted_news.author.username }}.  {{ deleted_news.created_at|date:"d F Y H:i"  }}</h6>
+                <p class="card-text">{{ deleted_news.text }}</p>
+                <a href="{% url 'webapp:restore_one_deleted' deleted_news.pk %}" class="btn btn-secondary btn-sm">Восстановить</a>
+                {% include 'partial/modal.html' with modal_type='hard_delete_one' %}
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock %}
+
+{% block src %}
+{#    <script>#}
+{#        let newsRestoreDeletedUrl = "{% url 'webapp:news_delete' deleted_news.pk %}";#}
+{#    </script>#}
+{% endblock %}

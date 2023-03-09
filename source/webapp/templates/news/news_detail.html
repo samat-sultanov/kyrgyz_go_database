@@ -17,7 +17,8 @@
             <br>
             <p class="card-text">{{ single_news.text }}</p>
             {% if request.user.is_authenticated %}
-                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p><br>
+                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
+                <p>Дата создания: {{ single_news.created_at|date:"d F Y H:i"  }}</p><br>
 
                 <a href="{% url 'webapp:news_update' single_news.pk %}" class="btn btn-primary">Редактировать</a>
 
