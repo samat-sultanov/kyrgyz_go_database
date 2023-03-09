@@ -3,11 +3,11 @@ from urllib.parse import urlencode
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from webapp.models import Player, Country, Tournament
-from webapp.forms import FileForm, PlayerSearchForm, CompetitorSearchForm
+from webapp.forms import FileForm, PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+from django.urls import reverse
 
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
@@ -163,3 +163,10 @@ class CompetitorSearch(View):
         if request.method == "GET":
             return render(request, 'competitor/competitor_search.html', {'form': CompetitorSearchForm})
 
+class UpdatePlayer(UpdateView):
+    template_name = 'player_search/update_player.html'
+    model = Player
+    form_class = PlayerForm
+
+    def get_success_url(self):
+        return reverse('webapp:player_detail', kwargs={'pk': self.object.pk})
