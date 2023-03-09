@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
 from webapp.handle_upload import handle_uploaded_file
-from webapp.models import File, Calendar, Country, Player, Tournament
+from webapp.models import File, Calendar, Country, Player, Tournament, News
 from webapp.forms import FileForm
 
 
@@ -42,7 +42,8 @@ class IndexView(TemplateView):
         context['calendar'] = calendar
         players = get_position_in_kgf()[0:3]
         context['position'] = players
-        print(players)
+        latest_news = News.objects.order_by('-created_at')[:3]
+        context['latest_news'] = latest_news
         return context
 
 
