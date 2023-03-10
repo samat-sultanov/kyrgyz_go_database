@@ -38,7 +38,7 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        calendar = Calendar.objects.order_by('event_date')
+        calendar = Calendar.objects.order_by('event_date')[:3]
         context['calendar'] = calendar
         players = get_position_in_kgf()[0:3]
         context['position'] = players

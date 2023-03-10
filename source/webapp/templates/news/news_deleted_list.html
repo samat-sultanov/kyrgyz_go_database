@@ -3,6 +3,7 @@
 
 
 {% block content %}
+    <div class="container">
     {% for deleted_news in deleted_news_list %}
         <br>
         <div class="card news_to_delete" data-id="{{ deleted_news.pk }}">
@@ -42,5 +43,7 @@
         </div>
 
     {% endfor %}
+    </div>
+
 {% endblock %}
 

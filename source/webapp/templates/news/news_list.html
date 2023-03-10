@@ -7,7 +7,8 @@
 
 
 {% block content %}
-    <h1 class="text-center">Новости</h1>
+    <div class="container">
+    <h3 class="text-center title">Новости</h3>
     <div>
         {% for news in news_list %}
             <h2><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h2>
@@ -16,4 +17,6 @@
             <hr>
         {% endfor %}
     </div>
+    </div>
+
 {% endblock %}

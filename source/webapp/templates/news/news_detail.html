@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-
+    <div class="container">
     <div class="card">
         {% if single_news.news_image %}
             <img src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
@@ -51,6 +51,8 @@
             {% endif %}
             <br><br>
         </div>
+    </div>
+
     </div>
 
 {% endblock %}

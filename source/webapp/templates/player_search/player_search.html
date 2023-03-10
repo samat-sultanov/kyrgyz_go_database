@@ -5,8 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <div style="text-align: center">
-        <h1>Поиск игроков</h1>
+    <div class="container">
+        <div class=" mt-4" style="text-align: center">
+        <h2 class="title">Поиск игрокa:</h2>
     </div>
     <div class="container">
         <form style="display: flex;justify-content: center;text-align: center;" action="" method="GET">
@@ -44,5 +45,7 @@
         {% include 'partial/pagination.html' %}
     {% endif %}
     <br/>
+    </div>
+
 
 {% endblock %}

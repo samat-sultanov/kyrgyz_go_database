@@ -4,7 +4,8 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="text-center">Клубы</h1>
+    <div class="container mt-4">
+    <h2 class="title text-center">Клубы:</h2>
     <table class="table">
         <thead>
         <tr>
@@ -50,5 +51,6 @@
      {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
-    <br/>
+    </div>
+
 {% endblock %}
