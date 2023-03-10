@@ -70,3 +70,10 @@ def restore_one_deleted_news(request, *args, **kwargs):
         news.is_deleted = False
         news.save()
         return redirect('webapp:deleted_news_list')
+
+
+def hard_delete_one_news(request, *args, **kwargs):
+    if request.method == 'POST':
+        news = get_object_or_404(News, pk=kwargs.get('pk'))
+        news.delete()
+        return redirect('webapp:deleted_news_list')
