@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block nav %}
+<a class="navbar-brand" style="color: white;" href="{% url "webapp:update_player" player.pk %}">Редактировать профиль</a>
 {% endblock %}
 
 {% block content %}
@@ -18,8 +19,8 @@
             <div>
                 <p>Фамилия: {{ player.last_name }}</p>
                 <p>Имя: {{ player.first_name }}</p>
-                {% if player.age %}
-                    <p>Возраст: {{ player.age }}</p>
+                {% if player.birth_date %}
+                    <p>Возраст: {{ player.get_age_date }} лет</p>
                 {% else %}
                     <p>Возраст: не указан</p>
                 {% endif %}

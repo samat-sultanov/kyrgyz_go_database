@@ -1,7 +1,6 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News
-
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player
 
 class FileForm(forms.ModelForm):
     class Meta:
@@ -77,3 +76,11 @@ class NewsForm(forms.ModelForm):
         widgets = {
             'text': widgets.Textarea(attrs={"cols": 24, "rows": 3, 'class': 'form-control', 'placeholder': 'Текст'}),
             'title': widgets.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'})}
+
+
+class PlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        fields = ['first_name', "last_name", 'patronymic', 'birth_date', 'avatar']
+        widgets = {
+            'birth_date': widgets.DateInput(attrs={'type': 'date'})}

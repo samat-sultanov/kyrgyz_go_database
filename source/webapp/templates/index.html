@@ -34,4 +34,41 @@
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
+
+    <div class="container">
+        <h3 style="margin-top: 30px; text-align: center">Топ игроков Федерации Кыргызстана:</h3>
+        <div class="card-group">
+            {% for element in position %}
+                <div class="card text-center" style="border: none; align-items: center; margin-top: 40px">
+                    {% if element.player.avatar %}
+                        <img src="{{ element.player.avatar.url }}" style="border-radius: 170px; width: 80%; margin-bottom: 20px;" alt="avatar">
+                    {% else %}
+                        <img style="border-radius: 170px; width: 80%; margin-bottom: 20px;" src="{% static "images/no_image.jpg" %}" alt="no_pic_avatar">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title" style="margin-bottom: 20px">{{ element.player.last_name }} {{ element.player.first_name }}</h5>
+                        <p class="card-text">Позиция в KGF: {{ element.position }}</p>
+                        <a class="btn btn-light" style="margin-bottom: 40px; margin-top: 15px" href="{% url "webapp:player_detail" element.player.pk %}" role="button">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+        <div>
+        <h3 class="text-center">Последние новости</h3>
+        {% for news in latest_news %}
+            <div class="article-block">
+                <article class="article">
+                    <h5><a class="article-link" href="{{ news.get_absolute_url }}">{{ news.title|truncatechars:60 }}</a></h5>
+                    <p>{{ news.text|truncatechars:100 }}</p>
+                    <p>{{ news.created_at|date:"d F Y H:i" }}</p>
+                </article>
+            </div>
+        {% endfor %}
+
+        <div class="text-center">
+            <a href="{% url 'webapp:news_list' %}" class="btn btn-outline-primary btn-md mt-4 mb-5">Все новости</a>
+        </div>
+    </div>
 {% endblock %}

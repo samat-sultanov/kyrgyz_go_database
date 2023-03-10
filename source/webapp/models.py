@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 import os
-
 from django.urls import reverse
+import datetime
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
@@ -59,14 +59,14 @@ class Tournament(models.Model):
 
 class Player(models.Model):
     avatar = models.ImageField(null=True, blank=True, upload_to='user_avatar', verbose_name='Аватар')
-    patronymic = models.CharField(verbose_name="Patronymic", max_length=50, blank=True, null=True)
-    first_name = models.CharField(verbose_name="First name", max_length=50, blank=True, null=True)
-    last_name = models.CharField(verbose_name="Last name", max_length=50, blank=True, null=True)
-    age = models.PositiveIntegerField(verbose_name='Age', blank=True, null=True)
+    patronymic = models.CharField(verbose_name="Отчество", max_length=50, blank=True, null=True)
+    first_name = models.CharField(verbose_name="Имя", max_length=50, blank=True, null=True)
+    last_name = models.CharField(verbose_name="Фамилия", max_length=50, blank=True, null=True)
     clubs = models.ManyToManyField('webapp.Club', related_name='players', blank=True)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
+    birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
@@ -76,6 +76,12 @@ class Player(models.Model):
 
     def get_total_clubs(self):
         return self.clubs.count()
+
+    def get_age_date(self):
+        today = datetime.date.today()
+        days_age = (today - self.birth_date)
+        age = ( days_age.days // 365 )
+        return age
 
 
 class Recommendation(models.Model):
