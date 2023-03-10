@@ -1,8 +1,9 @@
 import re
+from urllib.parse import urlencode
 
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from django.shortcuts import get_object_or_404
-
+from webapp.forms import ClubSearch
 from webapp.models import Club, Country
 from django.views.generic import ListView
 
@@ -14,9 +15,42 @@ class ClubsListView(ListView):
     paginate_by = 15
     paginate_orphans = 4
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
+        self.search_name = self.get_search_name()
+        self.search_city = self.get_search_city()
+        return super().get(request, *args, **kwargs)
+
+    def get_search_form(self):
+        return ClubSearch(self.request.GET)
+
+    def get_search_name(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_name']
+
+    def get_search_city(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_city']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.search_name:
+            queryset = queryset.filter(Q(name__icontains=self.search_name))
+        if self.search_city:
+            queryset = queryset.filter(Q(city__city__icontains=self.search_city))
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        # context = super().get_context_data(**kwargs)
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = self.form
         context['data'] = self.average_go_level()
+        if self.search_name:
+            context['query'] = urlencode({'search_name': self.search_name})
+            context['search_name'] = self.search_name
+        elif self.search_city:
+            context['query'] = urlencode({'search_city': self.search_city})
+            context['search_city'] = self.search_city
         return context
 
     @staticmethod

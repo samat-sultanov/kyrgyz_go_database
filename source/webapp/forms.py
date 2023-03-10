@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club
 
 class FileForm(forms.ModelForm):
     class Meta:
@@ -84,3 +84,11 @@ class PlayerForm(forms.ModelForm):
         fields = ['first_name', "last_name", 'patronymic', 'birth_date', 'avatar']
         widgets = {
             'birth_date': widgets.DateInput(attrs={'type': 'date'})}
+
+class ClubSearch(forms.Form):
+    search_name = forms.CharField(max_length=50, required=False, label='Найти',
+                                        widget=widgets.TextInput(
+                                            attrs={'class': "form-control w-30", 'placeholder': 'Имя клуба'}))
+    search_city = forms.CharField(max_length=50, required=False, label='Найти',
+                                  widget=widgets.TextInput(
+                                      attrs={'class': "form-control w-30", 'placeholder': 'Город'}))

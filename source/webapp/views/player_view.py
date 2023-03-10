@@ -54,7 +54,7 @@ def get_rank():
 class PlayerDetail(TemplateView):
     context_key = 'player'
     key_kwarg = 'pk'
-    template_name = 'player_search/player_detail.html'
+    template_name = 'player/player_detail.html'
     model = Player
 
     def get_context_data(self, **kwargs):
@@ -82,7 +82,7 @@ class PlayerDetail(TemplateView):
 
 
 class PlayerSearch(ListView):
-    template_name = 'player_search/player_search.html'
+    template_name = 'player/player_search.html'
     context_object_name = 'players'
     model = Player
     ordering = ['first_name']
@@ -164,7 +164,7 @@ class CompetitorSearch(View):
             return render(request, 'competitor/competitor_search.html', {'form': CompetitorSearchForm})
 
 class UpdatePlayer(UpdateView):
-    template_name = 'player_search/update_player.html'
+    template_name = 'player/update_player.html'
     model = Player
     form_class = PlayerForm
 
