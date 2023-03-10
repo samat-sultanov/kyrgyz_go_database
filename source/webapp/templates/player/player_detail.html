@@ -2,19 +2,22 @@
 {% load static %}
 
 {% block nav %}
-<a class="navbar-brand" style="color: white;" href="{% url "webapp:update_player" player.pk %}">Редактировать профиль</a>
+    <a class="navbar-brand" style="color: white;" href="{% url "webapp:update_player" player.pk %}">Редактировать
+        профиль</a>
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div>
-        <div style="float: right; padding-right: 600px" id="flag">
+            <div style="float: right; padding-right: 600px" id="flag">
                 <p id="country_code">{{ player.country.country_code }}</p>
-        </div>
+            </div>
             {% if player.avatar %}
-                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ player.avatar.url }}" alt="avatar">
+                <img style="width: 20%; border: solid; border-color: grey; border-width: 1px;"
+                     src="{{ player.avatar.url }}" alt="avatar">
             {% else %}
-                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
+                <img style="width: 20%; border: solid; border-color: grey; border-width: 1px;"
+                     src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
             {% endif %}
             <div>
                 <p>Фамилия: {{ player.last_name }}</p>
@@ -34,60 +37,66 @@
                         <p>Rank: {{ element.GoLevel }}</p>
                     {% endif %}
                 {% endfor %}
-                   <div class="btn-group">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="btn-group">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" style="background-color: #9400D3; color: white"
+                            id="slide_start_button">
                         {% if player.get_total_clubs >= 1 %}Клубы, Игрок состоит в {{ player.get_total_clubs }}
                             {% if player.get_total_clubs == 1 %}клубе.{% else %} клубах.{% endif %}
-                          {% else %}
-                          Клубы, Игрок не состоит в клубах.
-                          {% endif %}
-                      </button>
-                      <ul class="dropdown-menu">
-                          {% for club in player.clubs.all %}
-                            <li><a class="dropdown-item" href="#">{{ club.name }}</a></li>
-                          {% endfor %}
-                      </ul>
-                    </div>
+                        {% else %}
+                            Клубы, Игрок не состоит в клубах.
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for club in player.clubs.all %}
+                            <li><a class="dropdown-item" href="#"
+                                   style="background-color: #9400D3; color: white">{{ club.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <a href="{% url "webapp:competitor_search" %}" class="btn ms-1"
+                   style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск Соперников</a>
+            </div>
         </div>
     </div>
-</div>
     <br/>
     <hr>
     <div class="container">
-    <h2>Список туниров в которых играл игрок:</h2>
-    <br/>
-    <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Турнир</th>
-      <th scope="col">Город</th>
-        <th scope="col">Размер доски</th>
-        <th scope="col">Раунды</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Класс</th>
-        <th scope="col">Rank</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for tournament in player.tournaments.all %}
-    <tr>
-      <td><a href='{% url "webapp:tournament_detail" tournament.pk %}'>{{ tournament.name }}</a></td>
-      <td>{{ tournament.city }}</td>
-      <td>{{ tournament.board_size }}</td>
-      <td>{{ tournament.rounds }}</td>
-      <td>{{ tournament.date }}</td>
-      <td>{{ tournament.tournament_class }}</td>
-        {% for person in tournament.playerintournament_set.all %}
-            {% if player.pk == person.player_id %}
-        <td>{{ person.GoLevel }}</td>
-            {% endif %}
-        {% endfor %}
-    </tr>
-      {% endfor %}
-  </tbody>
-</table>
+        <h4 style="color: #9400D3; text-align: center;">Список турниров в которых играл игрок:</h4>
+        <br/>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Турнир</th>
+                <th scope="col">Город</th>
+                <th scope="col">Размер доски</th>
+                <th scope="col">Раунды</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Класс</th>
+                <th scope="col">Rank</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tournament in player.tournaments.all %}
+                <tr>
+                    <td><a href='{% url "webapp:tournament_detail" tournament.pk %}'
+                           class="text-decoration-none link-dark">{{ tournament.name }}</a></td>
+                    <td>{{ tournament.city }}</td>
+                    <td>{{ tournament.board_size }}</td>
+                    <td>{{ tournament.rounds }}</td>
+                    <td>{{ tournament.date }}</td>
+                    <td>{{ tournament.tournament_class }}</td>
+                    {% for person in tournament.playerintournament_set.all %}
+                        {% if player.pk == person.player_id %}
+                            <td>{{ person.GoLevel }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
 {% block src %}
-<script src="{% static "js/country.js" %}"></script>
+    <script src="{% static "js/country.js" %}"></script>
 {% endblock %}

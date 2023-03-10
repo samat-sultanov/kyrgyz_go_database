@@ -9,6 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse
 
+
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
     players = Player.objects.filter(country=country)
@@ -157,11 +158,79 @@ class PlayerSearch(ListView):
         return context
 
 
-class CompetitorSearch(View):
+class CompetitorSearch(ListView):
+    template_name = 'competitor/competitor_search.html'
+    context_object_name = 'competitors'
+    model = Player
 
-    def get(self, request):
-        if request.method == "GET":
-            return render(request, 'competitor/competitor_search.html', {'form': CompetitorSearchForm})
+    # ordering = ['-rank']
+
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
+        self.search_rank = self.get_search_rank()
+        self.search_age = self.get_search_age()
+        self.search_clubs = self.get_search_clubs()
+        self.search_city = self.get_search_city()
+        self.search_country = self.get_search_country()
+        return super().get(request, *args, **kwargs)
+
+    def get_search_form(self):
+        return CompetitorSearchForm(self.request.GET)
+
+    def get_search_rank(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_rank']
+
+    def get_search_age(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_age']
+
+    def get_search_clubs(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_clubs']
+
+    def get_search_city(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_city']
+
+    def get_search_country(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_country']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # if self.search_rank:
+        #     queryset = queryset.filter(Q(rank__exact=self.search_rank))
+        if self.search_age:
+            queryset = queryset.filter(Q(age__exact=self.search_age))
+        if self.search_clubs:
+            queryset = queryset.filter(Q(clubs__name__icontains=self.search_clubs))
+        if self.search_city:
+            queryset = queryset.filter(Q(city__city__icontains=self.search_city))
+        if self.search_country:
+            queryset = queryset.filter(Q(city__city__icontains=self.search_country))  # check
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = self.form
+        # if self.search_rank:
+        #     context['query'] = urlencode({'search_rank': self.search_rank})
+        #     context['search_rank'] = self.search_rank
+        if self.search_age:
+            context['query'] = urlencode({'search_age': self.search_age})
+            context['search_age'] = self.search_age
+        elif self.search_clubs:
+            context['query'] = urlencode({'search_clubs': self.search_clubs})
+            context['search_clubs'] = self.search_clubs
+        elif self.search_city:
+            context['query'] = urlencode({'search_city': self.search_city})
+            context['search_city'] = self.search_city
+        elif self.search_country:
+            context['query'] = urlencode({'search_country': self.search_country})
+            context['search_country'] = self.search_country
+        return context
+
 
 class UpdatePlayer(UpdateView):
     template_name = 'player/update_player.html'

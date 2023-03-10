@@ -3,15 +3,15 @@
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">Номер</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Название</th>
-        <th scope="col">Город</th>
-        <th scope="col">Страна</th>
-        <th scope="col">Партия</th>
-        <th scope="col">Раунды</th>
-        <th scope="col">Класс</th>
-        <th scope="col">Загружено</th>
+        <th scope="col" class="header">Номер</th>
+        <th scope="col" class="header">Дата</th>
+        <th scope="col" class="header">Название</th>
+        <th scope="col" class="header">Город</th>
+        <th scope="col" class="header">Страна</th>
+        <th scope="col" class="header">Партия</th>
+        <th scope="col" class="header">Раунды</th>
+        <th scope="col" class="header">Класс</th>
+        <th scope="col" class="header">Загружено</th>
     </tr>
     </thead>
     <tbody>
@@ -23,7 +23,8 @@
             {% else %}
                 <td></td>
             {% endif %}
-            <td><a href="{% url "webapp:tournament_detail" tournament.pk %}">{{ tournament.name }}</a></td>
+            <td><a href="{% url "webapp:tournament_detail" tournament.pk %}"
+                   class="text-decoration-none link-dark">{{ tournament.name }}</a></td>
             <td>{{ tournament.city.city }}</td>
             <td>{{ tournament.city.country.country_code.upper }}</td>
             <td>{{ tournament.board_size }}</td>
