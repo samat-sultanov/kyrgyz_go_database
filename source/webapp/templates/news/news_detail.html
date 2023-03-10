@@ -17,21 +17,40 @@
             <br>
             <p class="card-text">{{ single_news.text }}</p>
             {% if request.user.is_authenticated %}
-                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p><br>
+                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
+                <p>Дата создания: {{ single_news.created_at|date:"d F Y H:i"  }}</p><br>
 
                 <a href="{% url 'webapp:news_update' single_news.pk %}" class="btn btn-primary">Редактировать</a>
 
-                {% include 'partial/modal.html' with modal_type='delete_news'%}
+                <!-- Открывает модалку подтверждения -->
+                <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal">
+                    Удалить
+                </button>
+
+                <!-- Модалка подтверждения -->
+                <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите удалить эту статью?</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                                <form method="POST" id="modal_form_link" action="{% url 'webapp:news_delete' single_news.pk %}">
+                                    {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-danger"
+                                                           value="Да">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             {% endif %}
             <br><br>
         </div>
     </div>
 
-{% endblock %}
-
-{% block src %}
-    <script>
-        let newsDeleteUrl = "{% url 'webapp:news_delete' single_news.pk %}";
-    </script>
 {% endblock %}

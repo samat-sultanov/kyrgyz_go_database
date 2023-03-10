@@ -42,7 +42,7 @@ class IndexView(TemplateView):
         context['calendar'] = calendar
         players = get_position_in_kgf()[0:3]
         context['position'] = players
-        latest_news = News.objects.order_by('-created_at')[:3]
+        latest_news = News.objects.filter(is_deleted=False).order_by('-created_at')[:3]
         context['latest_news'] = latest_news
         return context
 
