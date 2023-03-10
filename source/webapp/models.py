@@ -1,8 +1,10 @@
+import os
+import datetime
+
 from django.db import models
 from django.core.validators import FileExtensionValidator
-import os
 from django.urls import reverse
-import datetime
+from django.dispatch import receiver
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
@@ -138,3 +140,24 @@ class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
     event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
     event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)
+
+
+@receiver(models.signals.post_delete, sender=News)
+def auto_delete_img_on_delete(sender, instance, **kwargs):
+    if instance.news_image:
+        if os.path.isfile(instance.news_image.path):
+            os.remove(instance.news_image.path)
+
+
+@receiver(models.signals.pre_save, sender=News)
+def auto_delete_img_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False
+
+    old_img = News.objects.get(pk=instance.pk).news_image
+
+    if old_img:
+        new_img = instance.news_image
+        if not old_img == new_img:
+            if os.path.isfile(old_img.path):
+                os.remove(old_img.path)
