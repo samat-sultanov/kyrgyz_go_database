@@ -5,7 +5,7 @@ body {
 }
 
 .container{
-    max-width: 1200px;
+    max-width: 1000px;
 }
 
 .header {
@@ -100,3 +100,11 @@ h1 {
   align-items: stretch;
 }
 
+.footer-list-group-item {
+    background: transparent;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: white;
+}

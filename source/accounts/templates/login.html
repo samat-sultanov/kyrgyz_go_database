@@ -7,25 +7,24 @@
 {% endblock %}
 
 {% block content %}
-    <br/>
-    <div style="text-align: center">
-        <h1 class="header">Вход</h1>
+    <div class="container mb-5">
+    <div class="mt-4" style="text-align: center">
+        <h3 class="title">Вход</h3>
     </div>
-    <br/>
-    <form action="" method="post" class="w-50 mx-auto">
+    <form action="" method="post" class="w-50 text-center mx-auto">
         {% csrf_token %}
         {% if has_error %}
             <p class="text-danger">Неверное имя пользователя или пароль.</p>
         {% endif %}
         <div class="row mb-3">
-            <label for="username" class="col-sm-4 col-form-label header">Имя пользователя: </label>
-            <div class="col-sm-8">
+            <div class="col-sm-12">
+                <label for="username" class="col-sm-12 col-form-label">Имя пользователя: </label>
                 <input type="text" name="username" id="username" class="form-control">
             </div>
         </div>
         <div class="row mb-3">
-            <label for="password" class="col-sm-4 col-form-label header">Пароль: </label>
-            <div class="col-sm-8">
+            <div class="col-sm-12">
+                <label for="password" class="col-sm-12 col-form-label">Пароль: </label>
                 <input type="password" class="form-control" name="password" id="password">
             </div>
         </div>
@@ -37,5 +36,7 @@
         </div>
 
     </form>
+    </div>
+
 
 {% endblock %}
