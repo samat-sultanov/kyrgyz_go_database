@@ -3,46 +3,50 @@
 
 {% block nav %}
 {% endblock %}
-
 {% block content %}
-    <div style="text-align: center">
-        <h1>Поиск игроков</h1>
-    </div>
-    <div class="container">
-        <form style="display: flex;justify-content: center;text-align: center;" action="" method="GET">
-            <div style="display: inline-block;justify-content:center;border-style: solid; border-radius: 30px;border-color: #9400D3;border-width: 1px;width: 500px; margin: 5px; padding: 30px">
-                <div style="display: flex;justify-content: center;">
-                    {{ form.search_last_name }}
-                </div>
+ <div class="container">
+        <div class=" mt-4" style="text-align: center">
+            <h2 class="title">Поиск игрокa:</h2>
+        </div>
+        <div class="container">
+            <form style="display: flex;justify-content: center;text-align: center;" action="" method="GET">
+                <div style="display: inline-block;justify-content:center;border-style: solid; border-radius: 30px;border-color: #9400D3;border-width: 1px;width: 500px; margin: 5px; padding: 30px">
+                    <div style="display: flex;justify-content: center;">
+                        {{ form.search_last_name }}
+                    </div>
                 <br/>
-                <div style="display: flex; justify-content: center;">
-                    {{ form.search_first_name }}
-                </div>
+                    <div style="display: flex; justify-content: center;">
+                        {{ form.search_first_name }}
+                    </div>
                 <br/>
-                <div style="display: flex; justify-content: center;">
-                    {{ form.search_patronymic }}
-                </div>
+                    <div style="display: flex; justify-content: center;">
+                        {{ form.search_patronymic }}
+                    </div>
                 <br/>
-                <div style="display: flex; justify-content: center;">
-                    {{ form.search_clubs }}
-                </div>
+                    <div style="display: flex; justify-content: center;">
+                        {{ form.search_clubs }}
+                    </div>
                 <br/>
-                <div style="display: flex; justify-content: center;">
-                    {{ form.search_city }}
-                </div>
+                    <div style="display: flex; justify-content: center;">
+                        {{ form.search_city }}
+                    </div>
                 <br/>
                 <div class="d-flex justify-content-center">
-                    <input type="submit" class="btn btn-success ms-1" value="Поиск">
+                    <input type="submit" class="btn ms-1" style="background-color: #9400D3; color: white" value="Поиск">
                 </div>
             </div>
         </form>
     </div>
     <br/>
-    {% include 'partial/player_list.html' %}
+    <div class="container">
+        {% include 'partial/player_list.html' %}
+    </div>
     <br/>
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
     <br/>
+    </div>
+
 
 {% endblock %}

@@ -7,13 +7,16 @@
 
 
 {% block content %}
-    <h1 class="text-center">Новости</h1>
+    <div class="container">
+    <h2 class="text-center title">Новости</h2>
     <div>
         {% for news in news_list %}
-            <h2><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h2>
+            <h3 class="title"><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h3>
             <p>{% if request.user.is_authenticated %}{{ news.author.username }}
                 / {% endif %}{{ news.created_at|date:"d F Y H:i" }}</p>
             <hr>
         {% endfor %}
     </div>
+    </div>
+
 {% endblock %}
