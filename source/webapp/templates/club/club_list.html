@@ -4,20 +4,24 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="text-center">Клубы</h1>
+    <br/>
+    <div style="text-align: center">
+        <h2 class="header">Клубы</h2>
+    </div>
+    <br/>
     {% include "club/club_search.html" %}
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Клуб</th>
-            <th scope="col">EGDName</th>
-            <th scope="col">Страна</th>
-            <th scope="col">Город</th>
-            <th scope="col">Количество участников</th>
-            <th scope="col">Средний GoLevel</th>
-            <th scope="col">Победы</th>
-            <th scope="col">Поражения</th>
+            <th scope="col" class="header">#</th>
+            <th scope="col" class="header">Клуб</th>
+            <th scope="col" class="header">EGDName</th>
+            <th scope="col" class="header">Страна</th>
+            <th scope="col" class="header">Город</th>
+            <th scope="col" class="header">Количество участников</th>
+            <th scope="col" class="header">Средний GoLevel</th>
+            <th scope="col" class="header">Победы</th>
+            <th scope="col" class="header">Поражения</th>
         </tr>
         </thead>
         <tbody>

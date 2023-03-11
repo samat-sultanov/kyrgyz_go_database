@@ -22,8 +22,8 @@
             {% else %}
                 <td></td>
             {% endif %}
-            {% if player.age is not None %}
-                <td>{{ player.age }}</td>
+            {% if player.birth_date %}
+                <td>{{ player.get_age_date }}</td>
             {% else %}
                 <td></td>
             {% endif %}

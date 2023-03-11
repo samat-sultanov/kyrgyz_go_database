@@ -82,7 +82,7 @@ class Player(models.Model):
     def get_age_date(self):
         today = datetime.date.today()
         days_age = (today - self.birth_date)
-        age = ( days_age.days // 365 )
+        age = (days_age.days // 365)
         return age
 
 

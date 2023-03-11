@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from urllib.parse import urlencode
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
@@ -158,12 +159,20 @@ class PlayerSearch(ListView):
         return context
 
 
+class UpdatePlayer(UpdateView):
+    template_name = 'player/update_player.html'
+    model = Player
+    form_class = PlayerForm
+
+    def get_success_url(self):
+        return reverse('webapp:player_detail', kwargs={'pk': self.object.pk})
+
+
 class CompetitorSearch(ListView):
     template_name = 'competitor/competitor_search.html'
-    context_object_name = 'competitors'
+    context_object_name = 'players'
     model = Player
-
-    # ordering = ['-rank']
+    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -199,25 +208,36 @@ class CompetitorSearch(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        # if self.search_rank:
-        #     queryset = queryset.filter(Q(rank__exact=self.search_rank))
         if self.search_age:
-            queryset = queryset.filter(Q(age__exact=self.search_age))
+            check_year = datetime.now().year - self.search_age
+            queryset = queryset.filter(Q(birth_date__gte=datetime.strptime(f"{check_year}0101", '%Y%m%d')))
         if self.search_clubs:
             queryset = queryset.filter(Q(clubs__name__icontains=self.search_clubs))
         if self.search_city:
             queryset = queryset.filter(Q(city__city__icontains=self.search_city))
         if self.search_country:
-            queryset = queryset.filter(Q(city__city__icontains=self.search_country))  # check
+            queryset = queryset.filter(Q(country__country_code__icontains=self.search_country))  # check
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
-        # if self.search_rank:
-        #     context['query'] = urlencode({'search_rank': self.search_rank})
-        #     context['search_rank'] = self.search_rank
-        if self.search_age:
+        if self.search_rank:
+            players = Player.objects.all()
+            tournaments = Tournament.objects.order_by("date")
+            new_list = []
+            for player in players:
+                new_dict = dict()
+                for tournament in tournaments:
+                    for data in tournament.playerintournament_set.all():
+                        if player.pk == data.player_id:
+                            if player not in new_dict:
+                                if self.search_rank - 3 <= int(data.GoLevel[:-1]) <= self.search_rank + 3:
+                                    new_dict['player'] = player.pk
+                                    new_dict['GoLevel'] = data.GoLevel
+                new_list.append(new_dict)
+            context['rank'] = new_list
+        elif self.search_age:
             context['query'] = urlencode({'search_age': self.search_age})
             context['search_age'] = self.search_age
         elif self.search_clubs:
@@ -230,12 +250,3 @@ class CompetitorSearch(ListView):
             context['query'] = urlencode({'search_country': self.search_country})
             context['search_country'] = self.search_country
         return context
-
-
-class UpdatePlayer(UpdateView):
-    template_name = 'player/update_player.html'
-    model = Player
-    form_class = PlayerForm
-
-    def get_success_url(self):
-        return reverse('webapp:player_detail', kwargs={'pk': self.object.pk})

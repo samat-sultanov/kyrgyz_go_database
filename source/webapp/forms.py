@@ -2,6 +2,7 @@ from django import forms
 from django.forms import FileInput, widgets
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club
 
+
 class FileForm(forms.ModelForm):
     class Meta:
         model = File
@@ -52,9 +53,9 @@ class TournamentSearchForm(forms.Form):
 
 
 class CompetitorSearchForm(forms.Form):
-    search_rank = forms.IntegerField(required=True, label='Найти',
-                                     widget=widgets.NumberInput(
-                                         attrs={'class': "form-control w-30", 'placeholder': 'Ранк'}))
+    search_rank = forms.IntegerField(required=True, min_value=0, label='Найти',
+                                  widget=widgets.TextInput(
+                                      attrs={'class': "form-control w-30", 'placeholder': 'Ранк'}))
     search_age = forms.IntegerField(required=True, label='Найти',
                                     widget=widgets.NumberInput(
                                         attrs={'class': "form-control w-30", 'placeholder': 'Возраст'}))
@@ -85,10 +86,11 @@ class PlayerForm(forms.ModelForm):
         widgets = {
             'birth_date': widgets.DateInput(attrs={'type': 'date'})}
 
+
 class ClubSearch(forms.Form):
     search_name = forms.CharField(max_length=50, required=False, label='Найти',
-                                        widget=widgets.TextInput(
-                                            attrs={'class': "form-control w-30", 'placeholder': 'Имя клуба'}))
+                                  widget=widgets.TextInput(
+                                      attrs={'class': "form-control w-30", 'placeholder': 'Имя клуба'}))
     search_city = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(
                                       attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
