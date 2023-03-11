@@ -12,6 +12,21 @@
     <title>{% block title %}Kyrgyz Go Database{% endblock %}</title>
 </head>
 <body>
+
+<div class="container d-grid gap-2 d-md-flex justify-content-md-end">
+    {% if request.user.is_authenticated %}
+        <p class="ms-auto d-inline-block my-0 py-auto">Привет, <a href="#">{{ user.username }}</a>!</p>
+        <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:logout' %}?next={{ request.get_full_path }}">Выйти</a>
+    {% else %}
+        {% block login %}
+            <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:login' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.get_full_path }}{% endif %}">Войти</a>
+        {% endblock %}
+{#        {% block registration %}#}
+{#            <a class="btn btn-outline-secondary btn-sm ms-2" href="{% url 'accounts:register' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.get_full_path }}{% endif %}">Регистрация</a>#}
+{#        {% endblock %}#}
+    {% endif %}
+</div>
+
 <header class="header pb-2">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
@@ -20,7 +35,9 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
+
                 <ul class="navbar-nav fw-bold pt-2 text-uppercase">
                     <li class="nav-item ms-4">
                         <a class="nav-link active" aria-current="page" href="{% url "webapp:index" %}">Home</a>
@@ -43,20 +60,11 @@
                     {% block nav %}{% endblock %}
                 </ul>
 
-
             </div>
         </div>
     </nav>
 
 </header>
-    <div class="container">
-        {% if request.user.is_authenticated %}
-            <p class="ms-auto d-inline-block my-0 py-auto">Привет, {{ request.user.username }}</p>
-            <a class="link ms-3" style="color: black" href="{% url 'accounts:logout' %}">Выйти</a>
-        {% else %}
-            <a class="link" style="color: black" href="{% url 'accounts:login' %}">Войти</a>
-        {% endif %}
-    </div>
 
 
 {% block content %}{% endblock %}
