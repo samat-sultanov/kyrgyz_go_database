@@ -25,23 +25,20 @@
                     <li class="nav-item ms-4">
                         <a class="nav-link active" aria-current="page" href="{% url "webapp:index" %}">Home</a>
                     </li>
-                    <li class="nav-item ms-4">
+                    <li class="nav-item ms-3">
                         <a class="nav-link" style="color: white;" href="{% url "webapp:player_search" %}">Игроки</a>
                     </li>
-                    <li class="nav-item ms-4">
+                    <li class="nav-item ms-3">
                         <a class="nav-link" style="color: white;" href="{% url "webapp:tournament_search" %}">Турниры</a>
                     </li>
-                    <li class="nav-item ms-4">
+                    <li class="nav-item ms-3">
                         <a class="nav-link" style="color: white;" href="{% url "webapp:clubs_list" %}">Статистика клубов</a>
                     </li>
-                    <li class="nav-item ms-4">
+                    <li class="nav-item ms-3">
                         <a class="nav-link" style="color: white;" href="#">О KGF</a>
                     </li>
-                    <li class="nav-item ms-4">
+                    <li class="nav-item ms-3">
                         <a class="nav-link" style="color: white;" href="#">FAQ</a>
-                    </li>
-                    <li class="nav-item ms-4">
-
                     </li>
                     {% block nav %}{% endblock %}
                 </ul>
@@ -55,9 +52,9 @@
     <div class="container">
         {% if request.user.is_authenticated %}
             <p class="ms-auto d-inline-block my-0 py-auto">Привет, {{ request.user.username }}</p>
-            <a class="btn btn-dark ms-2" href="{% url 'accounts:logout' %}">Выйти</a>
+            <a class="link ms-3" style="color: black" href="{% url 'accounts:logout' %}">Выйти</a>
         {% else %}
-            <a class="btn btn-dark ms-auto" href="{% url 'accounts:login' %}">Войти</a>
+            <a class="link" style="color: black" href="{% url 'accounts:login' %}">Войти</a>
         {% endif %}
     </div>
 
