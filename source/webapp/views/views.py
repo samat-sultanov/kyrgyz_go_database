@@ -61,3 +61,8 @@ def file_upload(request):
     else:
         form = FileForm
     return render(request, 'file_upload.html', {'form': form})
+
+
+def about_us_view(request, *args, **kwargs):
+    if request.method == 'GET':
+        return render(request, 'about_us.html')
