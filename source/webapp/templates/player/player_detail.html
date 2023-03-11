@@ -14,6 +14,30 @@
                     <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
                 {% endif %}
             <a class="btn btn-light mt-2" href="{% url "webapp:update_player" player.pk %}">Редактировать профиль</a>
+               <button type="button" class="btn btn-light mt-2 kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal">
+                    Удалить профиль
+                </button>
+
+                <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-5" id="myModalLabel">Вы точно хотите удалить игрока
+                                    {{ player.first_name }}?</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
+                                <form method="POST" id="modal_form_link" action="{% url 'webapp:delete_player' player.pk %}">
+                                    {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-danger"
+                                                           value="Да">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-4">
                 <div>

@@ -170,3 +170,9 @@ class UpdatePlayer(UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:player_detail', kwargs={'pk': self.object.pk})
+
+class DeletePlayer(DeleteView):
+    model = Player
+
+    def get_success_url(self):
+        return reverse('webapp:player_search')
