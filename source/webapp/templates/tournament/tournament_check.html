@@ -43,7 +43,7 @@
             {% for player in players %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+                    <td><a style="color: black;"
                            href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
                     <td>{{ player.first_name }}</td>
                     {% if not player.patronymic %}
