@@ -54,3 +54,8 @@ body {
   color: inherit;
   text-decoration: none;
 }
+
+.header {
+    color: #9400D3;
+    font-weight: bold;
+}
