@@ -1,10 +1,10 @@
 import re
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import TemplateView
 from webapp.handle_upload import handle_uploaded_file
-from webapp.models import File, Calendar, Country, Player, Tournament, News
-from webapp.forms import FileForm
+from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
+from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm
 
 
 def get_position_in_kgf():
@@ -52,15 +52,80 @@ def file_upload(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             a = form.save()
-            handle_uploaded_file(request.FILES['file'])
+            tournament = handle_uploaded_file(request.FILES['file'])
             file = get_object_or_404(File, pk=a.id)
             file.delete()
         else:
             return render(request, 'file_upload.html', {'form': form})
-        return HttpResponseRedirect("/")
+        return redirect('webapp:file_check', pk=tournament.pk)
     else:
         form = FileForm
     return render(request, 'file_upload.html', {'form': form})
+
+
+def file_upload_check(request, pk):
+    if request.method == 'POST':
+        tournament = Tournament.objects.get(pk=pk)
+        players = tournament.player_set.all()
+        patronymic = request.POST.getlist('patronymic')
+        birth_date = request.POST.getlist('birth_date')
+        # print(birth_date)
+        tournament_form = CheckTournamentForm(request.POST)
+        city = request.POST.get('city')
+        date = request.POST.get('date')
+        print(tournament.city)
+        if tournament_form.is_valid():
+            if city and date !='':
+                tournament_form = CheckTournamentForm({'city': city, 'date': date}, instance=tournament)
+            else:
+                tournament_form = CheckTournamentForm({'city': tournament.city, 'date': tournament.date}, instance=tournament)
+            tournament_form.save()
+
+        form = CheckPlayerForm(request.POST)
+        if form.is_valid():
+            for player, patron, bd in zip(players, patronymic,birth_date):
+                print(player, patron, bd)
+                if patron == '' and bd == '':
+                    form = CheckPlayerForm({'patronymic': player.patronymic, 'birth_date': player.birth_date}, instance=player)
+                elif patron == '' and bd != '':
+                    form = CheckPlayerForm({'patronymic': player.patronymic,'birth_date': bd}, instance=player)
+                elif patron != '' and bd == '':
+                    form = CheckPlayerForm({'patronymic': patron, 'birth_date': player.birth_date}, instance=player)
+                else:
+                    form = CheckPlayerForm({'patronymic': patron, 'birth_date': bd}, instance=player)
+                form.save()
+            return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
+        else:
+            return render(request, 'webapp:file_upload.html', {'form': form})
+
+    if request.method == 'GET':
+        tournament = Tournament.objects.get(pk=pk)
+        players = tournament.player_set.all()
+        player_form = CheckPlayerForm()
+        tournament_form = CheckTournamentForm()
+        games = Game.objects.filter(tournament=tournament)
+        a = []
+        for player in players:
+            new_dict = dict()
+            wins = 0
+            losses = 0
+            for game in games:
+                if game.result:
+                    if game.black == player and game.black_score > 0:
+                        wins += game.black_score
+                    elif game.white == player and game.white_score > 0:
+                        wins += game.white_score
+                    elif game.black == player and game.white_score > 0:
+                        losses += 1
+                    elif game.white == player and game.black_score > 0:
+                        losses += 1
+                new_dict['player'] = player.pk
+                new_dict['wins'] = wins
+                new_dict['losses'] = losses
+            a.append(new_dict)
+        return render(request, 'tournament/tournament_check.html',
+                      {'tournament': tournament, 'players': players, 'wins': a, 'player_form': player_form,
+                       'tournament_form': tournament_form})
 
 
 def about_us_view(request, *args, **kwargs):

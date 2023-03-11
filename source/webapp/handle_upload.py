@@ -152,3 +152,5 @@ def handle_uploaded_file(thisFile):
                                                     board_number=board_num, date=date, round_num=round_number,
                                                     tournament=tournament, black_score=black_score,
                                                     white_score=white_score)
+
+    return tournament

@@ -1,6 +1,5 @@
 import os
 import datetime
-
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
@@ -13,11 +12,15 @@ CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'),
 class Country(models.Model):
     country_code = models.CharField(verbose_name='Country', max_length=2)
 
+    def __str__(self):
+        return f'{self.country_code}'
 
 class City(models.Model):
     city = models.CharField(verbose_name="City", max_length=50)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.city}'
 
 class Club(models.Model):
     logo = models.ImageField(verbose_name='Лого', null=True, blank=True, upload_to='club_logo')

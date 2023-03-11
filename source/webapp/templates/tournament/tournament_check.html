@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="">
+    {% csrf_token %}
+
+    <div class="container">
+        <div>
+            <h2>Tournament: {{ tournament.name }}</h2>
+            {% if tournament.date and tournament.city  %}
+                <p>Date: {{ tournament.date }}</p>
+                <p>City: {{ tournament.city }}</p>
+            {% else %}
+                {{ tournament_form.as_p }}
+            {% endif %}
+            <p>Number of participants: {{ tournament.player_set.count }}</p>
+            <p>Rounds: {{ tournament.rounds }}</p>
+            <p>Board size: {{ tournament.board_size }}</p>
+            <p>Class: {{ tournament.tournament_class }}</p>
+        </div>
+
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Дата рождения</th>
+                <th scope="col">Клуб</th>
+                <th scope="col">GoLevel</th>
+                <th scope="col">Wins</th>
+                <th scope="col">Loses</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in players %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+                           href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
+                    <td>{{ player.first_name }}</td>
+                    {% if not player.patronymic %}
+                        <td>
+                        {{ player_form.patronymic }}
+                        </td>
+                    {% else %}
+                        <td>{{ player.patronymic }}{{ player_form.patronymic.as_hidden }}</td>
+                    {% endif %}
+                    {% if player.birth_date is not None %}
+                        <td>{{ player.birth_date }}{{ player_form.birth_date.as_hidden }}</td>
+                    {% else %}
+                        <td>{{ player_form.birth_date }}</td>
+                    {% endif %}
+                    {% if player.clubs.all %}
+                        {% for club in player.clubs.all %}
+                            <td>{{ club.name }}</td>
+                        {% endfor %}
+                    {% else %}
+                        <td>Не состоит в клубах</td>
+                    {% endif %}
+                    {% for rate in player.playerintournament_set.all %}
+                        <td>{{ rate.GoLevel }}</td>
+                    {% endfor %}
+                    {% for winner in wins %}
+                        {% if player.pk == winner.player %}
+                            <td>{{ winner.wins }}</td>
+                            <td>{{ winner.losses }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    <p class="mt-4"><input class="btn" style="background: #9400D3;color: white;" type="submit" value="Подтвердить"></p>
+    <a class="btn btn-danger mb-5" href="{% url 'webapp:file_upload' %}">Отмена</a>
+    </div>
+    </form>
+{% endblock %}
