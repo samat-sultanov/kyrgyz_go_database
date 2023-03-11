@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-
+    <div class="container">
     <div class="card">
         {% if single_news.news_image %}
             <img src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
@@ -33,12 +33,12 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите удалить эту статью?</h1>
+                                <h3 class="modal-title fs-5" id="myModalLabel">Вы точно хотите удалить эту статью?</h3>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
                                 <form method="POST" id="modal_form_link" action="{% url 'webapp:news_delete' single_news.pk %}">
                                     {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-danger"
                                                            value="Да">
@@ -52,5 +52,7 @@
             <br><br>
         </div>
     </div>
+    </div>
+
 
 {% endblock %}

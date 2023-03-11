@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container mb-4 mt-4">
         <div>
-            <h2>Tournament: {{ tournament.name }}</h2>
+            <h2 class="title">Турнир: {{ tournament.name }}</h2>
                 <p>Date: {{ tournament.date }}</p>
                 <p>City: {{ tournament.city }}</p>
                 <p>Number of participants: {{ tournament.player_set.count }}</p>
