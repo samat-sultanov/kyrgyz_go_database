@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-3">
+        <div class=" mt-4">
+            <h2 class="title">Страница Тренера:</h2>
+        </div>
+        <div class="row mb-4">
+            <div class="col-5">
+                {% if user_obj.avatar %}
+                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px"
+                         src="{{ user_obj.avatar.url }}" alt="avatar">
+                {% else %}
+                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;"
+                         src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
+                {% endif %}
+            </div>
+            <div class="col-4">
+                <div>
+                    <p style="font-size: 20px">Имя пользователя: {{ user_obj.username }}</p>
+                    <p style="font-size: 20px">Имя: {{ user_obj.first_name }}</p>
+                    <p style="font-size: 20px">Фамилия: {{ user_obj.last_name }}</p>
+                    <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
+                    <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+    <div class="container mt-5 mb-5">
+        <h3 class="title">Список учеников:</h3>
+        {% include 'partial/player_list.html' %}
+    </div>
+    <br/>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <br/>
+
+{% endblock %}
