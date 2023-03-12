@@ -15,12 +15,14 @@ class Country(models.Model):
     def __str__(self):
         return f'{self.country_code}'
 
+
 class City(models.Model):
     city = models.CharField(verbose_name="City", max_length=50)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.city}'
+
 
 class Club(models.Model):
     logo = models.ImageField(verbose_name='Лого', null=True, blank=True, upload_to='club_logo')
@@ -85,7 +87,7 @@ class Player(models.Model):
     def get_age_date(self):
         today = datetime.date.today()
         days_age = (today - self.birth_date)
-        age = ( days_age.days // 365 )
+        age = (days_age.days // 365)
         return age
 
 
