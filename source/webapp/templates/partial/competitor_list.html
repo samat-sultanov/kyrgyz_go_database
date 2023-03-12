@@ -36,11 +36,7 @@
                     {% else %}
                         <td>Не состоит в клубах</td>
                     {% endif %}
-                    {% for element in rank %}
-                        {% if player.pk == element.player %}
-                            <td>{{ element.GoLevel }}</td>
-                        {% endif %}
-                    {% endfor %}
+                    <td>{{ element.GoLevel }}</td>
                     <td>{{ player.get_total_tournaments }}</td>
                 </tr>
             {% endif %}

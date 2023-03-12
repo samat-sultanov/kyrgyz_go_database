@@ -180,6 +180,7 @@ class CompetitorSearch(ListView):
     context_object_name = 'players'
     model = Player
     paginate_by = 10
+    ordering = ['-id']
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -230,21 +231,13 @@ class CompetitorSearch(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         if self.search_rank:
-            players = Player.objects.all()
-            tournaments = Tournament.objects.order_by("date")
-            new_list = []
-            for player in players:
-                new_dict = dict()
-                for tournament in tournaments:
-                    for data in tournament.playerintournament_set.all():
-                        if player.pk == data.player_id:
-                            if player not in new_dict:
-                                if self.search_rank - 3 <= int(data.GoLevel[:-1]) <= self.search_rank + 3:
-                                    new_dict['player'] = player.pk
-                                    new_dict['GoLevel'] = data.GoLevel
-                new_list.append(new_dict)
-
-            context['rank'] = new_list
+            ranks = get_rank()
+            filtered_ranks = []
+            for each_dict in ranks:
+                if self.search_rank - 3 <= int(each_dict['GoLevel'][:-1]) and int(
+                        each_dict['GoLevel'][:-1]) <= self.search_rank + 3:
+                    filtered_ranks.append(each_dict)
+            context['rank'] = filtered_ranks
         elif self.search_age:
             context['query'] = urlencode({'search_age': self.search_age})
             context['search_age'] = self.search_age
