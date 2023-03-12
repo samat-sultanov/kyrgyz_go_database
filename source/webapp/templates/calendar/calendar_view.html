@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mb-4 mt-4">
+        <div>
+            <h2 class="title">Мероприятие: {{ event.event_name }}</h2>
+            <p>Город: {{ event.event_city }}</p>
+            <p>Дата: {{ event.event_date }}</p>
+        </div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Возраст</th>
+                <th scope="col">Клуб</th>
+                <th scope="col">Rank</th>
+                <th scope="col">Тотал турниров</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}
