@@ -100,3 +100,11 @@ h1 {
   align-items: stretch;
 }
 
+.footer-list-group-item {
+    background: transparent;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: white;
+}
