@@ -111,6 +111,9 @@ class PlayerInTournament(models.Model):
     GoLevel = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
     rating = models.PositiveIntegerField(verbose_name='Rating', blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.id} - {self.player}: {self.tournament}, {self.GoLevel}'
+
 
 class File(models.Model):
     file = models.FileField(upload_to='files/', null=True, validators=[

@@ -3,7 +3,7 @@ from django.urls import path
 from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
-    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView
+    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, ClubView
 
 app_name = 'webapp'
 
@@ -23,6 +23,7 @@ urlpatterns = [
     path('news_update/<int:pk>/', NewsUpdateView.as_view(), name='news_update'),
     path('news_delete/<int:pk>/', NewsDeleteView.as_view(), name='news_delete'),
     path('clubs/', ClubsListView.as_view(), name='clubs_list'),
+    path('clubs/<int:pk>/', ClubView.as_view(), name='club_view'),
     path('event_create/', CalendarCreateView.as_view(), name='event_create'),
     path('event_update/<int:pk>/', CalendarUpdateView.as_view(), name='event_update'),
     path('event_delete/<int:pk>/', CalendarDeleteView.as_view(), name='event_delete'),

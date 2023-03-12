@@ -9,8 +9,8 @@
         <div>
             <h2 class="title">Клуб: {{ club.name }}</h2>
                 <p>Город:</p>
-                <p>Число участников: </p>
-                <p>Средний ранг: </p>
+                <p>Число участников: {{ num_participants }}</p>
+                <p>Средний ранг: {{ average }}k</p>
         </div>
     </div>
     <div class="container">
@@ -50,9 +50,9 @@
             <td>Не состоит в клубах</td>
         {% endif %}
 
-        {% for rate in player.playerintournament_set.all %}
-            {% if tournament.id == rate.tournament_id %}
-            <td>{{ rate.GoLevel }}</td>
+        {% for element in rating %}
+            {% if player.pk == element.player %}
+            <td>{{ element.GoLevel }}</td>
             {% endif %}
         {% endfor %}
         </tr>
