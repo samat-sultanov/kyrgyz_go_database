@@ -1,7 +1,7 @@
 import re
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm
@@ -47,6 +47,13 @@ class IndexView(TemplateView):
         return context
 
 
+class QuestionsListView(View):
+
+    def get(self, request):
+        if request.method == 'GET':
+            return render(request, 'faq/questions_list.html')
+
+
 def file_upload(request):
     if request.method == 'POST':
         form = FileForm(request.POST, request.FILES)
@@ -75,20 +82,22 @@ def file_upload_check(request, pk):
         date = request.POST.get('date')
         print(tournament.city)
         if tournament_form.is_valid():
-            if city and date !='':
+            if city and date != '':
                 tournament_form = CheckTournamentForm({'city': city, 'date': date}, instance=tournament)
             else:
-                tournament_form = CheckTournamentForm({'city': tournament.city, 'date': tournament.date}, instance=tournament)
+                tournament_form = CheckTournamentForm({'city': tournament.city, 'date': tournament.date},
+                                                      instance=tournament)
             tournament_form.save()
 
         form = CheckPlayerForm(request.POST)
         if form.is_valid():
-            for player, patron, bd in zip(players, patronymic,birth_date):
+            for player, patron, bd in zip(players, patronymic, birth_date):
                 print(player, patron, bd)
                 if patron == '' and bd == '':
-                    form = CheckPlayerForm({'patronymic': player.patronymic, 'birth_date': player.birth_date}, instance=player)
+                    form = CheckPlayerForm({'patronymic': player.patronymic, 'birth_date': player.birth_date},
+                                           instance=player)
                 elif patron == '' and bd != '':
-                    form = CheckPlayerForm({'patronymic': player.patronymic,'birth_date': bd}, instance=player)
+                    form = CheckPlayerForm({'patronymic': player.patronymic, 'birth_date': bd}, instance=player)
                 elif patron != '' and bd == '':
                     form = CheckPlayerForm({'patronymic': patron, 'birth_date': player.birth_date}, instance=player)
                 else:
