@@ -243,6 +243,7 @@ class CompetitorSearch(ListView):
                                     new_dict['player'] = player.pk
                                     new_dict['GoLevel'] = data.GoLevel
                 new_list.append(new_dict)
+
             context['rank'] = new_list
         elif self.search_age:
             context['query'] = urlencode({'search_age': self.search_age})

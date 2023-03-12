@@ -26,8 +26,8 @@
         <tbody>
         {% for club in clubs %}
             <tr>
-                <td>{{ club.id }}</td>
-                <td>{{ club.name }}</td>
+                <td>{{ forloop.counter }}</td>
+                <td><a style="color: black;" href="{% url 'webapp:club_view' club.pk %}">{{ club.name }}</a></td>
                 <td>{{ club.EGDName }}</td>
                 {% if club.city.country %}
                     <td>{{ club.city.country.country_code }}</td>
