@@ -11,6 +11,10 @@
                 <p>Город:</p>
                 <p>Число участников: {{ num_participants }}</p>
                 <p>Средний ранг: {{ average }}k</p>
+                <p>Тренеры: </p>
+                {% for coach in club.coaches.all %}
+                    <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>
+                {% endfor %}
         </div>
     </div>
     <div class="container">
