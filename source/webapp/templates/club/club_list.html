@@ -20,7 +20,6 @@
             <th scope="col">Количество участников</th>
             <th scope="col">Средний GoLevel</th>
             <th scope="col">Победы</th>
-            <th scope="col">Поражения</th>
         </tr>
         </thead>
         <tbody>
@@ -43,6 +42,8 @@
                     {% endif %}
                     {% endfor %}
                 </td>
+            <td>{{ club.total_wins }}</td>
+
             </tr>
         {% empty %}
             <tr>
