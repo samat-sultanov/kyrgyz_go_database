@@ -1,5 +1,7 @@
 import os
 import datetime
+
+from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
@@ -29,6 +31,7 @@ class Club(models.Model):
     name = models.CharField(verbose_name="Club title", max_length=50, null=True, blank=True)
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
+    coaches = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='clubs')
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
@@ -93,7 +96,7 @@ class Player(models.Model):
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
-    author = models.ForeignKey('accounts.User', on_delete=models.SET_DEFAULT, default=1, related_name='author',
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, related_name='author',
                                verbose_name="Автор")
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name='player',
                                verbose_name="Игрок")
