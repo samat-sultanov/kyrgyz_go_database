@@ -4,7 +4,7 @@
 {% block content %}
     <div class="container mt-3">
         <div class=" mt-4">
-            <h2 class="title">Страница профиля игрокa:</h2>
+            <h2 class="title">Страница профиля игрокa: {{ player.first_name }}</h2>
         </div>
         <div class="row mb-4">
             <div class="col-5">
@@ -93,6 +93,7 @@
         </div>
         <a href="{% url "webapp:competitor_search" %}" class="btn ms-1"
            style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск Соперников</a>
+    {% include "modal_partial/share.html" %}
     </div>
 
     <div class="container mt-5 mb-5">
@@ -131,5 +132,6 @@
     </div>
 {% endblock %}
 {% block src %}
+    <script src="{% static "js/share.js" %}"></script>
     <script src="{% static "js/country.js" %}"></script>
 {% endblock %}

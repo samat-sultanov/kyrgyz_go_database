@@ -1,0 +1,33 @@
+{% load static %}
+
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+style="background-color: #9400D3; color: white">
+  Поделиться пользователем
+</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Поделиться</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <div>
+              <a href="http://vkontakte.ru/share.php?url=http://127.0.0.1:8000/player_detail/{{ player.pk }}"><img style="width: 37px; padding-bottom: 10px" src="{% static "images/icons8-vk-в-круге-48.png" %}"></a>
+              <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://127.0.0.1:8000/player_detail/{{ player.pk }}"><i style="font-size: 30px" class="bi bi-facebook"></i></a>
+              &nbsp;<a href="https://api.whatsapp.com/send/?text=http://127.0.0.1:8000/player_detail/{{ player.pk }}"><i style="font-size: 30px; color: #40C351" class="bi bi-whatsapp"></i></a>
+          </div>
+          <br/>
+        <div class="text-nowrap bg-body-secondary border" style="width: 20rem;">
+            <input style="width: 20rem" type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
+        </div>
+          <br/>
+          <button class="btn btn-secondary" style="background-color: #9400D3; color: white" onclick="myFunction()">Скопировать ссылку</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
