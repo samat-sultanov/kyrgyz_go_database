@@ -2,10 +2,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, FormView
 
 from webapp.models import News
-from webapp.forms import NewsForm
+from webapp.forms import NewsForm, NewsBulkDeleteForm
 
 
 # Этот класс написан Акрамом(Данияром). Я - Дастан, перенес его в этот файл из views.py
@@ -58,10 +58,31 @@ class NewsDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class DeletedNewsListView(ListView):   # Permission будет только у админа(superuser)
-    queryset = News.objects.all().filter(is_deleted=True).order_by('updated_at')
-    context_object_name = 'deleted_news_list'
+# class DeletedNewsListView(ListView):   # Permission будет только у админа(superuser)
+#     queryset = News.objects.all().filter(is_deleted=True).order_by('updated_at')
+#     context_object_name = 'deleted_news_list'
+#     template_name = 'news/news_deleted_list.html'
+
+
+class DeletedNewsListView(FormView):
+    form_class = NewsBulkDeleteForm
     template_name = 'news/news_deleted_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['deleted_news_list'] = News.objects.all().filter(is_deleted=True).order_by('updated_at')
+        return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['checkboxes'].queryset = News.objects.all().filter(is_deleted=True).order_by('updated_at')
+        return form
+
+    def form_valid(self, form):
+        selected_to_delete = News.objects.filter(pk__in=list(map(int, self.request.POST.getlist('checkboxes'))))
+        print(selected_to_delete)
+        selected_to_delete.delete()
+        return HttpResponseRedirect(reverse_lazy('webapp:deleted_news_list'))
 
 
 def restore_one_deleted_news(request, *args, **kwargs):

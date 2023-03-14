@@ -79,12 +79,17 @@ class NewsForm(forms.ModelForm):
             'title': widgets.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'})}
 
 
+class NewsBulkDeleteForm(forms.Form):
+    checkboxes = forms.ModelMultipleChoiceField(News.objects.all(), widget=forms.CheckboxSelectMultiple)
+
+
 class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
         fields = ['first_name', "last_name", 'patronymic', 'birth_date', 'avatar']
         widgets = {
             'birth_date': widgets.DateInput(attrs={'type': 'date'})}
+
 
 class ClubSearch(forms.Form):
     search_name = forms.CharField(max_length=50, required=False, label='Найти',
@@ -93,6 +98,7 @@ class ClubSearch(forms.Form):
     search_city = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(
                                       attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
+
 
 class CheckPlayerForm(forms.ModelForm):
     class Meta:
