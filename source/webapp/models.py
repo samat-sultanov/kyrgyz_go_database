@@ -7,6 +7,7 @@ from django.core.validators import FileExtensionValidator
 from django.db.models import Q
 from django.urls import reverse
 from django.dispatch import receiver
+from phonenumber_field.modelfields import PhoneNumberField
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
@@ -18,6 +19,10 @@ class Country(models.Model):
     def __str__(self):
         return f'{self.country_code}'
 
+    class Meta:
+        verbose_name = "Страна"
+        verbose_name_plural = "Страны"
+
 
 class City(models.Model):
     city = models.CharField(verbose_name="City", max_length=50)
@@ -25,6 +30,10 @@ class City(models.Model):
 
     def __str__(self):
         return f'{self.city}'
+
+    class Meta:
+        verbose_name = "Город"
+        verbose_name_plural = "Города"
 
 
 class Club(models.Model):
@@ -53,6 +62,10 @@ class Club(models.Model):
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
 
+    class Meta:
+        verbose_name = "Клуб"
+        verbose_name_plural = "Клубы"
+
 
 class Game(models.Model):
     black = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="black_player", null=True,
@@ -70,6 +83,10 @@ class Game(models.Model):
     def __str__(self):
         return f'{self.id}. {self.black} : {self.white} = {self.result}'
 
+    class Meta:
+        verbose_name = "Игра"
+        verbose_name_plural = "Игры"
+
 
 class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament name", max_length=50, null=True, blank=True)
@@ -82,6 +99,10 @@ class Tournament(models.Model):
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
+
+    class Meta:
+        verbose_name = "Турнир"
+        verbose_name_plural = "Турниры"
 
 
 class Player(models.Model):
@@ -110,6 +131,10 @@ class Player(models.Model):
         age = (days_age.days // 365)
         return age
 
+    class Meta:
+        verbose_name = "Игрок"
+        verbose_name_plural = "Игроки"
+
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
@@ -122,6 +147,10 @@ class Recommendation(models.Model):
 
     def __str__(self):
         return f'{self.pk}. {self.text[:20]}'
+
+    class Meta:
+        verbose_name = "Рекомендация"
+        verbose_name_plural = "Рекомендации"
 
 
 class PlayerInTournament(models.Model):
@@ -157,6 +186,10 @@ class News(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
 
+    class Meta:
+        verbose_name = "Новость"
+        verbose_name_plural = "Новости"
+
     def __str__(self):
         return f'{self.title} - {self.created_at.strftime("%d-%m-%Y %H:%M:%S")}'
 
@@ -170,6 +203,10 @@ class Calendar(models.Model):
     event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
 
+    class Meta:
+        verbose_name = "Событие"
+        verbose_name_plural = "События"
+
 
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='First name', null=False, blank=False)
@@ -177,6 +214,12 @@ class Participant(models.Model):
     patronymic = models.CharField(max_length=20, verbose_name="Father's name", null=False, blank=False)
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
+    phonenumber = PhoneNumberField(unique=True, null=True, blank=False, max_length=16, default=None)
+
+    class Meta:
+        db_table = "participant"
+        verbose_name = "Участник"
+        verbose_name_plural = "Участники"
 
     def __str__(self):
         return f'{self.id} - {self.surname}: {self.name}'
