@@ -115,6 +115,8 @@ class Player(models.Model):
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
+    coach = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, related_name='coach',
+                               verbose_name="Тренер")
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'

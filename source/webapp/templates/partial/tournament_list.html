@@ -23,7 +23,8 @@
             {% else %}
                 <td></td>
             {% endif %}
-            <td><a style="color: black;" href="{% url "webapp:tournament_detail" tournament.pk %}">{{ tournament.name }}</a></td>
+            <td><a class="text-decoration-none link-dark"
+                   href="{% url "webapp:tournament_detail" tournament.pk %}">{{ tournament.name }}</a></td>
             <td>{{ tournament.city.city }}</td>
             <td>{{ tournament.city.country.country_code.upper }}</td>
             <td>{{ tournament.board_size }}</td>

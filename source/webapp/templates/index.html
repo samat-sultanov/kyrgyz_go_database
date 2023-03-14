@@ -76,7 +76,8 @@
                             <td>{{ event.event_date|date:"d.m.y" }}</td>
                             <td>{{ event.event_city }}</td>
                             <td class="text-break"><a
-                                    href="{% url 'webapp:event_view' event.pk %}">{{ event.event_name }}</a></td>
+                                    href="{% url 'webapp:event_view' event.pk %}"
+                                    class="text-decoration-none link-dark">{{ event.event_name }}</a></td>
                             {% if request.user.is_authenticated %}
                                 <td><a style="color: black" class="ms-2"
                                        href="{% url 'webapp:event_update' event.pk %}"><i class="bi bi-pencil-fill"></i></a>
@@ -120,8 +121,8 @@
             </div>
         </div>
     </div>
-    <div class="container border-top mt-4" ">
-    <a class="btn btn-light mt-4" href="{% url 'webapp:news_list' %}">Все новости >></a>
+    <div class="container border-top mt-4">
+        <a class="btn btn-light mt-4" href="{% url 'webapp:news_list' %}">Все новости >></a>
     </div>
     <div class="bg-light">
         <div class="container mt-5 mb-2 pt-3">
