@@ -7,10 +7,9 @@
         {% if deleted_news_list %}
             <div id="source">
                 {% csrf_token %}
-                <br><input type="submit" value="Удалить выбранные" class="btn btn-danger">
-
-                <input type="checkbox" onClick="toggle(this)" class="form-check-input ms-3" id="All">
-                <label class="form-check-label" for="All">Выбрать все</label><br/>
+                <br><input type="checkbox" onClick="toggle(this)" class="form-check-input" id="All">
+                <label class="form-check-label" for="All">Выбрать все</label>
+                <input type="submit" value="Удалить выбранные" class="btn btn-danger ms-3"><br/>
 
                 {% for deleted_news in deleted_news_list %}
                     <br>
