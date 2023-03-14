@@ -3,44 +3,89 @@
 
 
 {% block content %}
-    {% for deleted_news in deleted_news_list %}
-        <br>
-        <div class="card news_to_delete" data-id="{{ deleted_news.pk }}">
-            <div class="card-body">
-                <h5 class="card-title">{{ deleted_news.title }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{ deleted_news.author.username }}.  {{ deleted_news.created_at|date:"d F Y H:i"  }}</h6>
-                <p class="card-text">{{ deleted_news.text }}</p>
-                <a href="{% url 'webapp:news_restore_one_deleted' deleted_news.pk %}" class="btn btn-secondary btn-sm">Восстановить</a>
+    <div class="container deleted_list_container">
+        {% if deleted_news_list %}
+            <div id="source">
+                {% csrf_token %}
+                <br><input type="checkbox" onClick="toggle(this)" class="form-check-input" id="All">
+                <label class="form-check-label" for="All">Выбрать все</label>
+                <input type="submit" value="Удалить выбранные" class="btn btn-danger ms-3"><br/>
 
-                <!-- Открывает модалку подтверждения -->
-                <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal_{{ deleted_news.pk }}">
-                    Удалить
-                </button>
+                {% for deleted_news in deleted_news_list %}
+                    <br>
+                    <div class="card news_to_delete" data-id="{{ deleted_news.pk }}">
+                        <input type="checkbox" name="checkboxes" value="{{ deleted_news.pk }}" class="form-check-input">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ deleted_news.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ deleted_news.author.username }}.
+                                {{ deleted_news.created_at|date:"d F Y H:i"  }}</h6>
+                            <p class="card-text">{{ deleted_news.text }}</p>
+                            <a href="{% url 'webapp:news_restore_one_deleted' deleted_news.pk %}"
+                               class="btn btn-secondary btn-sm">Восстановить</a>
 
-                <!-- Модалка подтверждения -->
-                <div class="modal fade" id="myModal_{{ deleted_news.pk }}" tabindex="-1" aria-labelledby="myModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите безвозвратно удалить эту статью? Его потом невозможно будет восстановить.</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                            <!-- Открывает модалку подтверждения -->
+                            <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal"
+                                    data-bs-target="#myModal_{{ deleted_news.pk }}">
+                                Удалить
+                            </button>
+
+                            <!-- Модалка подтверждения -->
+                            <div class="modal fade" id="myModal_{{ deleted_news.pk }}" tabindex="-1"
+                                 aria-labelledby="myModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите безвозвратно
+                                                удалить эту статью? Его потом невозможно будет восстановить.</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет
+                                            </button>
+                                            <form method="POST" id="modal_form_link"
+                                                  action="{% url 'webapp:news_hard_delete_one' deleted_news.pk %}">
+                                                {% csrf_token %}<input type="submit" id="confirm_button"
+                                                                       class="btn btn-danger"
+                                                                       value="Да">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
-                                <form method="POST" id="modal_form_link" action="{% url 'webapp:news_hard_delete_one' deleted_news.pk %}">
-                                    {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-danger"
-                                                           value="Да">
-                                </form>
-                            </div>
+
                         </div>
                     </div>
-                </div>
 
+                {% endfor %}
             </div>
-        </div>
-
-    {% endfor %}
+        {% else %}
+            <br><h1>Нет удаленных статей</h1><br>
+        {% endif %}
+    </div><br>
 {% endblock %}
 
+{% block src %}
+    <script type="text/javascript">
+        function onLoad() {
+            let container = document.getElementsByClassName('deleted_list_container')[0];
+            const form = document.createElement('form');
+            form.setAttribute('action', "{% url 'webapp:deleted_news_list' %}");
+            form.setAttribute('method', 'POST');
+            form.setAttribute('id', 'destination');
+            form.appendChild(document.getElementById('source'));
+            container.innerHTML = '';
+            container.appendChild(form);
+        }
+
+        function toggle(source) {
+            let checkboxes = document.getElementsByName('checkboxes');
+            for (let checkbox of checkboxes){
+                checkbox.checked = source.checked;
+            }
+        }
+
+        window.addEventListener('load', onLoad);
+    </script>
+{% endblock %}
