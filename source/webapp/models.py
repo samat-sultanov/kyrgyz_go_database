@@ -171,6 +171,17 @@ class Calendar(models.Model):
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
 
 
+class Participant(models.Model):
+    name = models.CharField(max_length=20, verbose_name='First name', null=False, blank=False)
+    surname = models.CharField(max_length=20, verbose_name='Last name', null=False, blank=False)
+    patronymic = models.CharField(max_length=20, verbose_name="Father's name", null=False, blank=False)
+    rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
+    event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.id} - {self.surname}: {self.name}'
+
+
 @receiver(models.signals.post_delete, sender=News)
 def auto_delete_img_on_delete(sender, instance, **kwargs):
     if instance.news_image:
