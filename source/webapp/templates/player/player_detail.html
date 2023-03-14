@@ -103,19 +103,21 @@
            style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск Соперников</a>
         <div>
                 <button class="share-btn" id="shareBtn">
-                  <i style="z-index: 1" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
+                  <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
                   <span class="social-icons">
                         <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
                             <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
                         </a>
-                        <i style="color: #40C351" class="fa-brands fa-whatsapp"></i>
-                        <i style="color:#4C75A3;" class="fa-brands fa-vk"></i>
+                        <a href="https://api.whatsapp.com/send/?text=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
+                            <i style="color: #40C351" class="fa-brands fa-whatsapp"></i></a>
+                         <a href="http://vkontakte.ru/share.php?url=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
+                             <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
                   </span>
                 </button>
                     <a style="padding-left: 12px" onclick="copyfunc()"><img
                             style="width: 37px;"
-                            src="{% static 'images/copy.png' %}"></a >
-                    <input style="width: 20rem"
+                            src="{% static 'images/copy.png' %}"></a>
+                    <input readonly="readonly" style="width: 20rem; border-radius: 5px; border-color: #9400D3"
                            type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
         </div>
     </div>
