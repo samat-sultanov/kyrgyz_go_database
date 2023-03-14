@@ -1,8 +1,9 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
 from webapp.models import Calendar
 from webapp.forms import CalendarForm
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
 
 
@@ -35,10 +36,12 @@ class CalendarUpdateView(UpdateView):
 
 
 class CalendarDeleteView(DeleteView):
-    model = Calendar
+    queryset = Calendar.objects.all().filter(is_deleted=False)
+    context_object_name = 'event'
+    success_url = reverse_lazy('webapp:index')
 
-    def get(self, request, *args, **kwargs):
-        return self.delete(request, *args, **kwargs)
-
-    def get_success_url(self):
-        return reverse('webapp:index')
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.is_deleted = True
+        self.object.save()
+        return HttpResponseRedirect(success_url)

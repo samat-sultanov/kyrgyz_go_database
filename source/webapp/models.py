@@ -168,6 +168,7 @@ class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
     event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
     event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)
+    is_deleted = models.BooleanField(default=False, verbose_name='Удален')
 
 
 @receiver(models.signals.post_delete, sender=News)
