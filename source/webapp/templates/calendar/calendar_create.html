@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
 
 <div class="container">
-    <form action="" method="post">
+    <form action="{% url 'webapp:event_create' %}" method="post">
         {% include "partial/form.html" with button_text="Создать" %}
     </form>
 </div>
