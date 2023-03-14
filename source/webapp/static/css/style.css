@@ -129,3 +129,10 @@ h1 {
 .accordion-title {
     font-weight: bold;
 }
+
+.card{
+    margin-bottom: 15px;
+    border-width: thin;
+    border-color: #9400D3;
+    border-radius: 20px;
+}
