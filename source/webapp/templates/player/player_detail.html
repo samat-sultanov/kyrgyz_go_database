@@ -93,7 +93,7 @@
         </div>
         <a href="{% url "webapp:competitor_search" %}" class="btn ms-1"
            style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск Соперников</a>
-    {% include "modal_partial/share.html" %}
+        {% include "modal_partial/share.html" %}
     </div>
 
     <div class="container mt-5 mb-5">
@@ -113,7 +113,7 @@
             <tbody>
             {% for tournament in player.tournaments.all %}
                 <tr>
-                    <td><a style="color: black;"
+                    <td><a class="text-decoration-none link-dark"
                            href='{% url "webapp:tournament_detail" tournament.pk %}'>{{ tournament.name }}</a></td>
                     <td>{{ tournament.city }}</td>
                     <td>{{ tournament.board_size }}</td>
@@ -130,6 +130,24 @@
             </tbody>
         </table>
     </div>
+    {% if player.player.all %}
+        <div class="container mt-5 mb-5">
+            <h3 class="title">Рекоммендации:</h3>
+            {% for recommendation in player.player.all|dictsortreversed:"created_at" %}
+                <div class="card">
+                    <div class="card-body">
+                        <div style="text-align: left;">
+                            {{ recommendation.text }}
+                        </div>
+                        <div style="text-align: right; padding-right: 40px;">
+                            <a href="{% url 'accounts:detail' request.user.pk %}"
+                               class="text-decoration-none link-dark">{{ recommendation.author }}</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
 {% block src %}
     <script src="{% static "js/share.js" %}"></script>

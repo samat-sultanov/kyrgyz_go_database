@@ -5,56 +5,57 @@
 
 {% block content %}
     <div class="container mt-4">
-    <h2 class="title text-center">Поиск клуба:</h2>
-    <div class="container">
-        {% include 'club/club_search.html' %}
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Клуб</th>
-            <th scope="col">EGDName</th>
-            <th scope="col">Страна</th>
-            <th scope="col">Город</th>
-            <th scope="col">Количество участников</th>
-            <th scope="col">Средний GoLevel</th>
-            <th scope="col">Победы</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for club in clubs %}
+        <h2 class="title text-center">Поиск клуба:</h2>
+        <div class="container">
+            {% include 'club/club_search.html' %}
+        </div>
+        <table class="table">
+            <thead>
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td><a style="color: black;" href="{% url 'webapp:club_view' club.pk %}">{{ club.name }}</a></td>
-                <td>{{ club.EGDName }}</td>
-                {% if club.city.country %}
-                    <td>{{ club.city.country.country_code }}</td>
-                    <td>{{ club.city }}</td>
-                {% else %}
-                    <td>Страна не присвоена</td>
-                    <td>Город не присвоен</td>
-                {% endif %}
-                <td>{{ club.players.count }}</td>
-                <td>{% for item in data %}
+                <th scope="col">#</th>
+                <th scope="col">Клуб</th>
+                <th scope="col">EGDName</th>
+                <th scope="col">Страна</th>
+                <th scope="col">Город</th>
+                <th scope="col">Количество участников</th>
+                <th scope="col">Средний GoLevel</th>
+                <th scope="col">Победы</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for club in clubs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a class="text-decoration-none link-dark"
+                           href="{% url 'webapp:club_view' club.pk %}">{{ club.name }}</a></td>
+                    <td>{{ club.EGDName }}</td>
+                    {% if club.city.country %}
+                        <td>{{ club.city.country.country_code }}</td>
+                        <td>{{ club.city }}</td>
+                    {% else %}
+                        <td>Страна не присвоена</td>
+                        <td>Город не присвоен</td>
+                    {% endif %}
+                    <td>{{ club.players.count }}</td>
+                    <td>{% for item in data %}
                         {% if club.id == item.club %}
                             {{ item.average }}k
-                    {% endif %}
+                        {% endif %}
                     {% endfor %}
-                </td>
-            <td>{{ club.total_wins }}</td>
+                    </td>
+                    <td>{{ club.total_wins }}</td>
 
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="4">No clubs found.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-     {% if is_paginated %}
-        {% include 'partial/pagination.html' %}
-    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No clubs found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if is_paginated %}
+            {% include 'partial/pagination.html' %}
+        {% endif %}
     </div>
 
 {% endblock %}
