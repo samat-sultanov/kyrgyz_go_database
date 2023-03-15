@@ -86,10 +86,10 @@
                                         {% if request.user.is_superuser %}
                                             <!-- Открывает модалку подтверждения -->
                                             <a style="color: black" class="ms-2 kgf_modal" href="" data-bs-toggle="modal"
-                                               data-bs-target="#myModal" type="button"><i class="bi bi-trash3-fill"></i></a>
+                                               data-bs-target="#myModal_{{ event.pk }}" type="button"><i class="bi bi-trash3-fill"></i></a>
 
                                             <!-- Модалка подтверждения -->
-                                            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+                                            <div class="modal fade" id="myModal_{{ event.pk }}" tabindex="-1" aria-labelledby="myModalLabel"
                                                  aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
