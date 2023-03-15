@@ -9,48 +9,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse
-
-
-def get_position_in_kgf():
-    country = Country.objects.get(country_code='kg')
-    players = Player.objects.filter(country=country)
-    tournaments = Tournament.objects.order_by("date")
-    new_list = []
-    for player in players:
-        new_dict = dict()
-        for tournament in tournaments:
-            for data in tournament.playerintournament_set.all():
-                if player.pk == data.player_id:
-                    if player.pk not in new_dict:
-                        new_dict['player'] = player.pk
-                        p = re.compile('(\d*)')
-                        m = p.findall(data.GoLevel)
-                        for i in m:
-                            if i != "":
-                                new_dict['GoLevel'] = int(i)
-        new_list.append(new_dict)
-    new_list.sort(key=lambda dictionary: dictionary['GoLevel'])
-    position = 1
-    for element in new_list:
-        element['position'] = position
-        position += 1
-    return new_list
-
-
-def get_rank():
-    players = Player.objects.all()
-    tournaments = Tournament.objects.order_by("date")
-    new_list = []
-    for player in players:
-        new_dict = dict()
-        for tournament in tournaments:
-            for data in tournament.playerintournament_set.all():
-                if player.pk == data.player_id:
-                    if player not in new_dict:
-                        new_dict['player'] = player.pk
-                        new_dict['GoLevel'] = data.GoLevel
-        new_list.append(new_dict)
-    return new_list
+from webapp.views.functions import get_position_in_kgf, get_rank, sorted_list_of_players
 
 
 class PlayerDetail(TemplateView):
@@ -155,7 +114,11 @@ class PlayerSearch(ListView):
         elif self.search_city:
             context['query'] = urlencode({'search_city': self.search_city})
             context['search_city'] = self.search_city
-        context['rank'] = get_rank()
+        data = get_rank()
+        players_with_rate_k = sorted_list_of_players(data, 'k', key_reverse=False)
+        players_with_rate_d = sorted_list_of_players(data, 'd', key_reverse=True)
+        sorted_players = players_with_rate_d + players_with_rate_k
+        context['sorted_players'] = sorted_players
         return context
 
 
