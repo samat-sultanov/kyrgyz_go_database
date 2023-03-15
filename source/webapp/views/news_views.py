@@ -58,12 +58,6 @@ class NewsDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-# class DeletedNewsListView(ListView):   # Permission будет только у админа(superuser)
-#     queryset = News.objects.all().filter(is_deleted=True).order_by('updated_at')
-#     context_object_name = 'deleted_news_list'
-#     template_name = 'news/news_deleted_list.html'
-
-
 class DeletedNewsListView(FormView):
     form_class = NewsBulkDeleteForm
     template_name = 'news/news_deleted_list.html'
