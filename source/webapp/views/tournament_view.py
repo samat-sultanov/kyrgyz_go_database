@@ -7,6 +7,8 @@ from django.db.models import Q
 from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament, Game
 
+from webapp.views.functions import sorted_list
+
 
 class TournamentSearch(ListView):
     template_name = 'tournament/tournament_search.html'
@@ -107,21 +109,4 @@ class TournamentDetail(TemplateView):
             a.append(new_dict)
         kwargs['wins'] = a
         return super().get_context_data(**kwargs)
-
-
-def get_element_to_sort(x):
-    return x['position']
-
-
-def sorted_list(data, key_word, reverse):
-    new_list = []
-    for el in data:
-        new_dict = dict()
-        if el.GoLevel.endswith(key_word):
-            new_dict['player'] = el.player
-            new_dict['GoLevel'] = el.GoLevel
-            new_dict['position'] = int(el.GoLevel[:-1])
-            new_list.append(new_dict)
-    result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
-    return result
 
