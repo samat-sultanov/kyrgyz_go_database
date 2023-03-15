@@ -13,28 +13,28 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Клуб</th>
+                <th scope="col">Club</th>
                 <th scope="col">EGDName</th>
-                <th scope="col">Страна</th>
-                <th scope="col">Город</th>
-                <th scope="col">Количество участников</th>
-                <th scope="col">Средний GoLevel</th>
-                <th scope="col">Победы</th>
+                <th scope="col">Country</th>
+                <th scope="col">City</th>
+                <th scope="col">Players</th>
+                <th scope="col">Ave/rank</th>
+                <th scope="col">Wins</th>
             </tr>
             </thead>
             <tbody>
             {% for club in clubs %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td><a class="text-decoration-none link-dark"
+                    <td><a style="color: black"
                            href="{% url 'webapp:club_view' club.pk %}">{{ club.name }}</a></td>
                     <td>{{ club.EGDName }}</td>
                     {% if club.city.country %}
                         <td>{{ club.city.country.country_code }}</td>
                         <td>{{ club.city }}</td>
                     {% else %}
-                        <td>Страна не присвоена</td>
-                        <td>Город не присвоен</td>
+                        <td></td>
+                        <td></td>
                     {% endif %}
                     <td>{{ club.players.count }}</td>
                     <td>{% for item in data %}
