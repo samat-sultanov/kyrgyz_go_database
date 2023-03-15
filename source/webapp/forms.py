@@ -39,6 +39,10 @@ class CalendarForm(forms.ModelForm):
         widgets = {'event_date': forms.DateInput(attrs={'type': 'date'})}
 
 
+class CalendarBulkDeleteForm(forms.Form):
+    checkboxes = forms.ModelMultipleChoiceField(Calendar.objects.all(), widget=forms.CheckboxSelectMultiple)
+
+
 class TournamentSearchForm(forms.Form):
     search_name = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(

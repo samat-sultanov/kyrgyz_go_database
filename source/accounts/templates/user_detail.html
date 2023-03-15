@@ -7,7 +7,7 @@
 {% block content %}
     <div class="container mt-3">
         <div class=" mt-4">
-            <h2 class="title">Страница Тренера:</h2>
+            <h2 class="title">Страница {% if request.user.is_superuser %}Админа:{% else %}Тренера:{% endif %}</h2>
         </div>
         <div class="row mb-4">
             <div class="col-5">
@@ -26,6 +26,11 @@
                     <p style="font-size: 20px">Фамилия: {{ user_obj.last_name }}</p>
                     <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
                     <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
+
+                    {% if request.user.is_superuser %}
+                        {% include 'partial/admin_features_offcanvas.html' %}
+                    {% endif %}
+
                 </div>
             </div>
         </div>

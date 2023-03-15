@@ -3,8 +3,8 @@ from django.urls import path
 from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
-    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, CalendarDetailView, ClubView
-
+    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, \
+    CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, hard_delete_one_event
 
 app_name = 'webapp'
 
@@ -29,6 +29,9 @@ urlpatterns = [
     path('event_update/<int:pk>/', CalendarUpdateView.as_view(), name='event_update'),
     path('event_delete/<int:pk>/', CalendarDeleteView.as_view(), name='event_delete'),
     path('event_view/<int:pk>/', CalendarDetailView.as_view(), name='event_view'),
+    path('event_restore/<int:pk>/', restore_one_deleted_event, name='event_restore_one_deleted'),
+    path('event_hard_delete/<int:pk>/', hard_delete_one_event, name='event_hard_delete_one'),
+    path('deleted_events_list/', DeletedCalendarListView.as_view(), name='deleted_calendar_list'),
     path('tournament_search/', TournamentSearch.as_view(), name='tournament_search'),
     path('tournament_search/<int:pk>/', TournamentDetail.as_view(), name='tournament_detail'),
     path('competitors/', CompetitorSearch.as_view(), name='competitor_search'),
