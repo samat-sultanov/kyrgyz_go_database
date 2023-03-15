@@ -2,9 +2,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
 from webapp.models import Calendar
-from webapp.forms import CalendarForm
+from webapp.forms import CalendarForm, CalendarBulkDeleteForm
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView
 
 
 class CalendarDetailView(TemplateView):
@@ -45,3 +45,24 @@ class CalendarDeleteView(DeleteView):
         self.object.is_deleted = True
         self.object.save()
         return HttpResponseRedirect(success_url)
+
+
+class DeletedNewsListView(FormView):
+    form_class = CalendarBulkDeleteForm
+    template_name = 'calendar/calendar_deleted_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['deleted_calendar_list'] = Calendar.objects.all().filter(is_deleted=True).order_by('updated_at')
+        return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['checkboxes'].queryset = News.objects.all().filter(is_deleted=True).order_by('updated_at')
+        return form
+
+    def form_valid(self, form):
+        selected_to_delete = News.objects.filter(pk__in=list(map(int, self.request.POST.getlist('checkboxes'))))
+        print(selected_to_delete)
+        selected_to_delete.delete()
+        return HttpResponseRedirect(reverse_lazy('webapp:deleted_news_list'))

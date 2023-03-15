@@ -26,9 +26,11 @@
                     <p style="font-size: 20px">Фамилия: {{ user_obj.last_name }}</p>
                     <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
                     <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
+
                     {% if request.user.is_superuser %}
                         {% include 'partial/admin_features_offcanvas.html' %}
                     {% endif %}
+
                 </div>
             </div>
         </div>
