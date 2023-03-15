@@ -4,40 +4,43 @@
 
 {% block content %}
     <div class="container deleted_list_container">
-        {% if deleted_news_list %}
+        {% if deleted_calendar_list %}
             <div id="source">
                 {% csrf_token %}
                 <br><input type="checkbox" onClick="toggle(this)" class="form-check-input" id="All">
                 <label class="form-check-label" for="All">Выбрать все</label>
                 <input type="submit" value="Удалить выбранные" class="btn btn-danger ms-3"><br/>
 
-                {% for deleted_news in deleted_news_list %}
+                {% for deleted_calendar in deleted_calendar_list %}
                     <br>
-                    <div class="card news_to_delete" data-id="{{ deleted_news.pk }}">
-                        <input type="checkbox" name="checkboxes" value="{{ deleted_news.pk }}" class="form-check-input">
+                    <div class="card news_to_delete" data-id="{{ deleted_calendar.pk }}">
+                        <input type="checkbox" name="checkboxes" value="{{ deleted_calendar.pk }}" class="form-check-input">
                         <div class="card-body">
-                            <h5 class="card-title">{{ deleted_news.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ deleted_news.author.username }}.
-                                {{ deleted_news.created_at|date:"d F Y H:i"  }}</h6>
-                            <p class="card-text">{{ deleted_news.text }}</p>
-                            <a href="{% url 'webapp:news_restore_one_deleted' deleted_news.pk %}"
+                            <h5 class="card-title">{{ deleted_calendar.event_name }}</h5>
+{#                            <h6 class="card-subtitle mb-2 text-muted">{{ deleted_calendar.author.username }}.#}
+{#                                {{ deleted_news.created_at|date:"d F Y H:i"  }}</h6>#}
+
+                            {#Надо добавить поля "автор", "время создания", "время обновления", "Описание" и возможно еще и "регламент" отдельно#}
+                            <p class="card-text">{{ deleted_calendar.event_city }}</p>
+                            <p class="card-text">{{ deleted_calendar.event_date }}</p>
+                            <a href="{% url 'webapp:event_restore_one_deleted' deleted_calendar.pk %}"
                                class="btn btn-secondary">Восстановить</a>
 
                             <!-- Открывает модалку подтверждения -->
                             <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal"
-                                    data-bs-target="#myModal_{{ deleted_news.pk }}">
+                                    data-bs-target="#myModal_{{ deleted_calendar.pk }}">
                                 Удалить
                             </button>
 
                             <!-- Модалка подтверждения -->
-                            <div class="modal fade" id="myModal_{{ deleted_news.pk }}" tabindex="-1"
+                            <div class="modal fade" id="myModal_{{ deleted_calendar.pk }}" tabindex="-1"
                                  aria-labelledby="myModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите безвозвратно
-                                                удалить эту статью? Его потом невозможно будет восстановить.</h1>
+                                                удалить этот ивент? Его потом невозможно будет восстановить.</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
@@ -45,7 +48,7 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет
                                             </button>
                                             <form method="POST" id="modal_form_link"
-                                                  action="{% url 'webapp:news_hard_delete_one' deleted_news.pk %}">
+                                                  action="{% url 'webapp:event_hard_delete_one' deleted_calendar.pk %}">
                                                 {% csrf_token %}<input type="submit" id="confirm_button"
                                                                        class="btn btn-danger"
                                                                        value="Да">
@@ -61,7 +64,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <br><h1>Нет удаленных статей</h1><br>
+            <br><h1>Нет удаленных ивентов</h1><br>
         {% endif %}
     </div><br>
 {% endblock %}
@@ -71,7 +74,7 @@
         function onLoad() {
             let container = document.getElementsByClassName('deleted_list_container')[0];
             const form = document.createElement('form');
-            form.setAttribute('action', "{% url 'webapp:deleted_news_list' %}");
+            form.setAttribute('action', "{% url 'webapp:deleted_calendar_list' %}");
             form.setAttribute('method', 'POST');
             form.setAttribute('id', 'destination');
             form.appendChild(document.getElementById('source'));
