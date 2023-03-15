@@ -8,25 +8,26 @@
     <div class="container mb-4 mt-4">
         <div>
             <h2 class="title">Клуб: {{ club.name }}</h2>
-                <p>Город:</p>
-                <p>Число участников: {{ num_participants }}</p>
-                <p>Средний ранг: {{ average }}k</p>
-                <p>Тренеры: </p>
+                <p>City:</p>
+                <p>Number of active players: {{ num_participants }}</p>
+                <p>Average rank: {{ average }}k</p>
+                <p>Coaches: </p>
                 {% for coach in club.coaches.all %}
                     <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>
                 {% endfor %}
         </div>
     </div>
-    <div class="container">
+    <div class="container mt-4 mb-4">
+    <h3 class="title">Список участников:</h3>
     <table class="table">
     <thead>
     <tr>
         <th scope="col"></th>
-      <th scope="col">Фамилия</th>
-      <th scope="col">Имя</th>
-      <th scope="col">Отчество</th>
-      <th scope="col">Возраст</th>
-      <th scope="col">Клуб</th>
+      <th scope="col">Last name</th>
+      <th scope="col">First name</th>
+      <th scope="col">Patronymic</th>
+      <th scope="col">Age</th>
+      <th scope="col">Club</th>
       <th scope="col">Rank</th>
     </tr>
     </thead>
