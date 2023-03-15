@@ -6,7 +6,7 @@
 
 {% block content %}
     <div class="container mb-4 mt-4">
-        <div>
+        <div class="mb-4">
             <h2 class="title">Турнир: {{ tournament.name }}</h2>
             <p>Date: {{ tournament.date }}</p>
             <p>City: {{ tournament.city }}</p>
@@ -16,16 +16,17 @@
             <p>Class: {{ tournament.tournament_class }}</p>
         </div>
     </div>
-    <div class="container">
+    <div class="container mt-4 mb-4">
+        <h3 class="title">Список участников:</h3>
         <table class="table">
             <thead>
             <tr>
-                <th scope="col"></th>
-                <th scope="col">Фамилия</th>
-                <th scope="col">Имя</th>
-                <th scope="col">Отчество</th>
-                <th scope="col">Возраст</th>
-                <th scope="col">Клуб</th>
+                <th scope="col">#</th>
+                <th scope="col">Last name</th>
+                <th scope="col">First name</th>
+                <th scope="col">Patronymic</th>
+                <th scope="col">Age</th>
+                <th scope="col">Club</th>
                 <th scope="col">Rank</th>
                 <th scope="col">Wins</th>
                 <th scope="col">Losses</th>
@@ -35,7 +36,7 @@
             {% for player in players %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td><a class="text-decoration-none link-dark"
+                    <td><a style="color: black"
                            href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
                     <td>{{ player.first_name }}</td>
                     {% if player.patronymic is not None %}
@@ -53,7 +54,7 @@
                             <td>{{ club.name }}</td>
                         {% endfor %}
                     {% else %}
-                        <td>Не состоит в клубах</td>
+                        <td></td>
                     {% endif %}
 
                     {% for rate in player.playerintournament_set.all %}
@@ -71,6 +72,7 @@
             {% endfor %}
             </tbody>
         </table>
-
     </div>
 {% endblock %}
+
+{##}
