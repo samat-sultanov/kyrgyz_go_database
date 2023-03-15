@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlencode
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, TemplateView
@@ -78,8 +79,12 @@ class TournamentDetail(TemplateView):
         pk = kwargs.get("pk")
         tournament = get_object_or_404(Tournament, pk=pk)
         players = tournament.player_set.all()
+        data = tournament.playerintournament_set.all()
+        players_with_rate_k = sorted_list(data, 'k', reverse=False)
+        players_with_rate_d = sorted_list(data, 'd', reverse=True)
+        sorted_players = players_with_rate_d + players_with_rate_k
         kwargs["tournament"] = tournament
-        kwargs['players'] = players
+        kwargs['sorted_players'] = sorted_players
         games = Game.objects.filter(tournament=tournament)
         a = []
         for player in players:
@@ -102,3 +107,21 @@ class TournamentDetail(TemplateView):
             a.append(new_dict)
         kwargs['wins'] = a
         return super().get_context_data(**kwargs)
+
+
+def get_element_to_sort(x):
+    return x['position']
+
+
+def sorted_list(data, key_word, reverse):
+    new_list = []
+    for el in data:
+        new_dict = dict()
+        if el.GoLevel.endswith(key_word):
+            new_dict['player'] = el.player
+            new_dict['GoLevel'] = el.GoLevel
+            new_dict['position'] = int(el.GoLevel[:-1])
+            new_list.append(new_dict)
+    result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
+    return result
+
