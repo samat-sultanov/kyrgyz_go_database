@@ -26,7 +26,6 @@
                 <th scope="col">Last name</th>
                 <th scope="col">First name</th>
                 <th scope="col">Patronymic</th>
-                <th scope="col">Age</th>              
                 <th scope="col">Club</th>
                 <th scope="col">Rank</th>
                 <th scope="col">Wins</th>
@@ -40,10 +39,10 @@
                     <td>{{ forloop.counter }}</td>
 
                     <td><a style="color: black"
-                           href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
-                    <td>{{ player.first_name }}</td>
-                    {% if player.patronymic is not None %}
-                        <td>{{ player.patronymic }}</td>
+                           href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
+                    <td>{{ el.player.first_name }}</td>
+                    {% if el.player.patronymic is not None %}
+                        <td>{{ el.player.patronymic }}</td>
                     {% else %}
                         <td></td>
                     {% endif %}
