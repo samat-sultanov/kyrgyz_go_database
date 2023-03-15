@@ -21,11 +21,12 @@
         <table class="table">
             <thead>
             <tr>
+
                 <th scope="col">#</th>
                 <th scope="col">Last name</th>
                 <th scope="col">First name</th>
                 <th scope="col">Patronymic</th>
-                <th scope="col">Age</th>
+                <th scope="col">Age</th>              
                 <th scope="col">Club</th>
                 <th scope="col">Rank</th>
                 <th scope="col">Wins</th>
@@ -33,9 +34,11 @@
             </tr>
             </thead>
             <tbody>
-            {% for player in players %}
+            {% if sorted_players %}
+                {% for el in sorted_players %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
+
                     <td><a style="color: black"
                            href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
                     <td>{{ player.first_name }}</td>
@@ -44,32 +47,26 @@
                     {% else %}
                         <td></td>
                     {% endif %}
-                    {% if player.get_age_date is not None %}
-                        <td>{{ player.get_age_date }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    {% if player.clubs.all %}
-                        {% for club in player.clubs.all %}
+                    {% if el.player.clubs.all %}
+                        {% for club in el.player.clubs.all %}
                             <td>{{ club.name }}</td>
                         {% endfor %}
                     {% else %}
                         <td></td>
                     {% endif %}
-
-                    {% for rate in player.playerintournament_set.all %}
-                        {% if tournament.id == rate.tournament_id %}
-                            <td>{{ rate.GoLevel }}</td>
-                        {% endif %}
-                    {% endfor %}
+                    <td>{{ el.GoLevel }}</td>
                     {% for winner in wins %}
-                        {% if player.pk == winner.player %}
+                        {% if el.player.pk == winner.player %}
                             <td>{{ winner.wins }}</td>
                             <td>{{ winner.losses }}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
+            {% if players_with_rate_k %}
+
+            {% endif %}
             </tbody>
         </table>
     </div>
