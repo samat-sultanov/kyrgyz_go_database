@@ -1,15 +1,13 @@
-import re
+
 from datetime import datetime
 from urllib.parse import urlencode
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
-from webapp.models import Player, Country, Tournament
-from webapp.forms import FileForm, PlayerSearchForm, CompetitorSearchForm, PlayerForm
-from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.shortcuts import get_object_or_404
+from webapp.models import Player
+from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
+from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
-from webapp.views.functions import get_position_in_kgf, get_rank, sorted_list_of_players
+from webapp.views.functions import get_position_in_kgf, get_rank, get_list_of_filtered_players, sorted_list_of_players
 
 
 class PlayerDetail(TemplateView):
@@ -31,7 +29,7 @@ class PlayerDetail(TemplateView):
 
     def get_rank(self):
         player = self.get_object()
-        tournament = player.tournaments.order_by("-date")[0]
+        tournament = player.tournaments.order_by("date")[0]
         new_list = []
         new_dict = dict()
         for data in tournament.playerintournament_set.all():
@@ -46,7 +44,6 @@ class PlayerSearch(ListView):
     template_name = 'player/player_search.html'
     context_object_name = 'players'
     model = Player
-    ordering = ['first_name']
     paginate_by = 15
     paginate_orphans = 4
 
@@ -114,11 +111,10 @@ class PlayerSearch(ListView):
         elif self.search_city:
             context['query'] = urlencode({'search_city': self.search_city})
             context['search_city'] = self.search_city
-        data = get_rank()
-        players_with_rate_k = sorted_list_of_players(data, 'k', key_reverse=False)
-        players_with_rate_d = sorted_list_of_players(data, 'd', key_reverse=True)
-        sorted_players = players_with_rate_d + players_with_rate_k
-        context['sorted_players'] = sorted_players
+        players = Player.objects.all()
+        data = get_rank(players)
+        sorted_players = get_list_of_filtered_players(data, sorted_list_of_players)
+        context['players'] = sorted_players
         return context
 
 
@@ -194,7 +190,8 @@ class CompetitorSearch(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         if self.search_rank:
-            ranks = get_rank()
+            players = Player.objects.all()
+            ranks = get_rank(players)
             filtered_ranks = []
             for each_dict in ranks:
                 if self.search_rank - 3 <= int(each_dict['GoLevel'][:-1]) and int(
