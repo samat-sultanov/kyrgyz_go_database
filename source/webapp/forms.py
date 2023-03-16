@@ -116,3 +116,19 @@ class CheckTournamentForm(forms.ModelForm):
         model = Tournament
         fields = ['date', 'city']
         widgets = {'date': DateInput(attrs={'type': 'date'})}
+
+
+class ClubForm(forms.ModelForm):
+    class Meta:
+        model = Club
+        fields = ['logo', 'name', 'EGDName', 'city', 'coaches']
+        widgets = {
+            'coaches': forms.CheckboxSelectMultiple(),
+        }
+        labels = {
+            'logo': 'Logo:',
+            'name': 'Club name:',
+            'EGDName': 'EGD name:',
+            'city': 'City:',
+            'coaches': 'Coaches:'
+        }

@@ -3,9 +3,11 @@ from urllib.parse import urlencode
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.forms import ClubSearch
+from django.urls import reverse
+
+from webapp.forms import ClubSearch, ClubForm
 from webapp.models import Club, Country, PlayerInTournament
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, UpdateView
 
 
 def average_go_level():
@@ -107,3 +109,12 @@ class ClubView(TemplateView):
             if club.pk == element['club']:
                 kwargs['average'] = element['average']
         return super().get_context_data(**kwargs)
+
+
+class ClubUpdate(UpdateView):
+    template_name = 'club/club_update.html'
+    model = Club
+    form_class = ClubForm
+
+    def get_success_url(self):
+        return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
