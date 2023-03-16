@@ -15,7 +15,7 @@
                 <p>Date: {{ tournament.date }}</p>
                 <p>City: {{ tournament.city }}</p>
                 <p>Class: {{ tournament.tournament_class }}</p>
-                <p>Regulations: {{ tournament.regulations }}</p>
+                <p>Regulations: {{ tournament.regulations|linebreaks }}</p>
             {% else %}
                 {{ tournament_form.as_p }}
             {% endif %}
