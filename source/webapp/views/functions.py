@@ -1,5 +1,35 @@
 import re
-from webapp.models import Country, Player, Tournament
+from django.shortcuts import get_object_or_404
+from webapp.models import Country, Player, Tournament, Club, Game
+
+
+def average_go_level():
+    # Здесь нужно будет привязать фильтр через страну клуба, чтобы выводил только по Кыргызстану
+    clubs = Club.objects.all()
+    club_list = []
+    for club in clubs:
+        new_dict = dict()
+        num_list = []
+        num_players = club.players.count()
+        for player in club.players.all():
+            tournament = player.tournaments.all().order_by('-date')[:1]
+            data = player.playerintournament_set.get(tournament_id=tournament)
+            if data.GoLevel:
+                p = re.compile('(\d*)')
+                m = p.findall(data.GoLevel)
+                for i in m:
+                    if i != "":
+                        num_list.append(int(i))
+        total_go_level = sum(num_list)
+        if num_players > 0:
+            average_num = total_go_level // num_players
+            new_dict['club'] = club.pk
+            new_dict['average'] = average_num
+        else:
+            new_dict['club'] = club.pk
+            new_dict['average'] = 0
+        club_list.append(new_dict)
+    return club_list
 
 
 def get_position_in_kgf():
@@ -28,23 +58,22 @@ def get_position_in_kgf():
     return new_list
 
 
-def get_rank():
-    players = Player.objects.all()
-    tournaments = Tournament.objects.order_by("date")
+def get_rank(data):
+    tournaments = Tournament.objects.order_by("-date")
     new_list = []
-    for player in players:
+    for player in data:
         new_dict = dict()
         for tournament in tournaments:
-            for data in tournament.playerintournament_set.all():
-                if player.pk == data.player_id:
+            for el in tournament.playerintournament_set.all():
+                if player.pk == el.player_id:
                     if player not in new_dict:
                         new_dict['player'] = player
-                        new_dict['GoLevel'] = data.GoLevel
+                        new_dict['GoLevel'] = el.GoLevel
         new_list.append(new_dict)
     return new_list
 
 
-def sorted_list_of_players(data, key_word, key_reverse):
+def sorted_list_of_players(data, key_word, reverse):
     new_list = []
     for el in data:
         new_dict = dict()
@@ -54,7 +83,7 @@ def sorted_list_of_players(data, key_word, key_reverse):
                 new_dict['GoLevel'] = el['GoLevel']
                 new_dict['position'] = int(el['GoLevel'][:-1])
                 new_list.append(new_dict)
-    result = sorted(new_list, key=get_element_to_sort, reverse=key_reverse)
+    result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
     return result
 
 
@@ -73,4 +102,37 @@ def sorted_list(data, key_word, reverse):
             new_list.append(new_dict)
     result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
     return result
+
+
+def get_list_of_filtered_players(data, function_name):
+    players_with_rate_k = function_name(data, 'k', reverse=False)
+    players_with_rate_d = function_name(data, 'd', reverse=True)
+    sorted_players = players_with_rate_d + players_with_rate_k
+    return sorted_players
+
+
+def get_wins_losses(pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
+    players = tournament.player_set.all()
+    games = Game.objects.filter(tournament=tournament)
+    new_list = []
+    for player in players:
+        new_dict = dict()
+        wins = 0
+        losses = 0
+        for game in games:
+            if game.result:
+                if game.black == player and game.black_score > 0:
+                    wins += game.black_score
+                elif game.white == player and game.white_score > 0:
+                    wins += game.white_score
+                elif game.black == player and game.white_score > 0:
+                    losses += 1
+                elif game.white == player and game.black_score > 0:
+                    losses += 1
+            new_dict['player'] = player.pk
+            new_dict['wins'] = wins
+            new_dict['losses'] = losses
+        new_list.append(new_dict)
+    return new_list
 

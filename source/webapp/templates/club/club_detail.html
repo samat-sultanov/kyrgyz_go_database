@@ -16,7 +16,7 @@
                          src="{% static "images/no_image.jpg" %}" alt="no_logo_pic">
                 {% endif %}
                 <p class="mt-3">City:</p>
-                <p>Number of active players: {{ num_participants }}</p>
+                <p>Number of active players: {{ club.players.count }}</p>
                 <p>Average rank: {{ average }}k</p>
                 <p>Coaches: </p>
                 {% for coach in club.coaches.all %}
@@ -30,51 +30,13 @@
     </div>
     <div class="container mt-4 mb-4">
     <h3 class="title">Список участников:</h3>
-    <table class="table">
-    <thead>
-    <tr>
-        <th scope="col"></th>
-      <th scope="col">Last name</th>
-      <th scope="col">First name</th>
-      <th scope="col">Patronymic</th>
-      <th scope="col">Age</th>
-      <th scope="col">Club</th>
-      <th scope="col">Rank</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for player in players %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td><a style="color: black;" href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
-        <td>{{ player.first_name }}</td>
-        {% if player.patronymic is not None %}
-            <td>{{ player.patronymic }}</td>
-        {% else %}
-            <td></td>
-        {% endif %}
-        {% if player.get_age_date is not None %}
-            <td>{{ player.get_age_date }}</td>
-        {% else %}
-            <td></td>
-        {% endif %}
-        {% if player.clubs.all  %}
-            {% for club in player.clubs.all %}
-                <td>{{ club.name }}</td>
-            {% endfor %}
-        {% else %}
-            <td>Не состоит в клубах</td>
-        {% endif %}
+    <div class="container">
+        {% include 'partial/player_list.html' %}
 
-        {% for element in rating %}
-            {% if player.pk == element.player %}
-            <td>{{ element.GoLevel }}</td>
-            {% endif %}
-        {% endfor %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
     </div>
+    </div>
+
 {% endblock %}
