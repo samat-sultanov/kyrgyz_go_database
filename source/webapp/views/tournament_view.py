@@ -3,11 +3,10 @@ from urllib.parse import urlencode
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, TemplateView
 from django.db.models import Q
-
 from webapp.forms import TournamentSearchForm
-from webapp.models import Tournament, Game
+from webapp.models import Tournament
 
-from webapp.views.functions import sorted_list, get_list_of_filtered_players, get_wins_losses
+from webapp.views.functions import get_list_of_filtered_players, get_wins_losses
 
 
 class TournamentSearch(ListView):
@@ -81,7 +80,7 @@ class TournamentDetail(TemplateView):
         pk = kwargs.get("pk")
         tournament = get_object_or_404(Tournament, pk=pk)
         data = tournament.playerintournament_set.all()
-        sorted_players = get_list_of_filtered_players(data, sorted_list)
+        sorted_players = get_list_of_filtered_players(data)
         kwargs["tournament"] = tournament
         kwargs['sorted_players'] = sorted_players
         kwargs['wins'] = get_wins_losses(pk=pk)

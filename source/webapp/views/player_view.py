@@ -7,7 +7,7 @@ from webapp.models import Player
 from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
-from webapp.views.functions import get_position_in_kgf, get_rank, get_list_of_filtered_players, sorted_list_of_players
+from webapp.views.functions import get_position_in_kgf, get_rank, get_list_of_filtered_players
 
 
 class PlayerDetail(TemplateView):
@@ -113,7 +113,7 @@ class PlayerSearch(ListView):
             context['search_city'] = self.search_city
         players = Player.objects.all()
         data = get_rank(players)
-        sorted_players = get_list_of_filtered_players(data, sorted_list_of_players)
+        sorted_players = get_list_of_filtered_players(data)
         context['players'] = sorted_players
         return context
 

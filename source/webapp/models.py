@@ -204,6 +204,10 @@ class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
     event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
     event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)
+    text = models.TextField(max_length=5000, verbose_name='Описание события')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, verbose_name='Автор')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
 
     class Meta:
