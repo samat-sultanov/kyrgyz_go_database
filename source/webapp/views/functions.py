@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
 
 
+# Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
+# (содержит pk клуба) и average (посчитанное значение). На доработке
 def average_go_level():
     # Здесь нужно будет привязать фильтр через страну клуба, чтобы выводил только по Кыргызстану
     clubs = Club.objects.all()
@@ -32,6 +34,7 @@ def average_go_level():
     return club_list
 
 
+# На доработке
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
     players = Player.objects.filter(country=country)
@@ -58,6 +61,8 @@ def get_position_in_kgf():
     return new_list
 
 
+# Функция принимает список игроков, возвращает список из словарей с ключами Player и Golevel из последнего турнира,
+# в котором участвовал игрок
 def get_rank(data):
     tournaments = Tournament.objects.order_by("-date")
     new_list = []
@@ -73,44 +78,47 @@ def get_rank(data):
     return new_list
 
 
-def sorted_list_of_players(data, key_word, reverse):
+def get_element_to_sort(x):
+    return x['position']
+
+
+# Функция принимает список игроков формата tournament.playerintournament_set.all или после функции get_rank(), key_word
+# (буква от Golevel - k  или d), и reverse (прямую или обратную сортировку), возвращает отсортированный список из
+# словарей с ключами player, Golevel и position (позиция здесь - это цифра Golevel без учёта буквы).
+# Список сортируется в прямом или обратном порядке, зависит от значения reverse.
+def sort_players(data, key_word, reverse):
     new_list = []
     for el in data:
         new_dict = dict()
-        for key, value in el.items():
-            if key == "GoLevel" and value.endswith(key_word):
-                new_dict['player'] = el['player']
-                new_dict['GoLevel'] = el['GoLevel']
-                new_dict['position'] = int(el['GoLevel'][:-1])
+        if isinstance(el, dict):
+            for key, value in el.items():
+                if key == "GoLevel" and value.endswith(key_word):
+                    new_dict['player'] = el['player']
+                    new_dict['GoLevel'] = el['GoLevel']
+                    new_dict['position'] = int(el['GoLevel'][:-1])
+                    new_list.append(new_dict)
+        else:
+            if el.GoLevel.endswith(key_word):
+                new_dict['player'] = el.player
+                new_dict['GoLevel'] = el.GoLevel
+                new_dict['position'] = int(el.GoLevel[:-1])
                 new_list.append(new_dict)
     result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
     return result
 
 
-def get_element_to_sort(x):
-    return x['position']
+# Функция принимает список игроков формата tournament.playerintournament_set.all или после функции get_rank(),
+# вызывает у себя функцию sort_players, делает сортировку игроков по рангу d от большего к меньшему и сортировку по
+# рангу k от меньшего к большему, соединяет два списка словарей и возвращает одним списком
+def get_list_of_filtered_players(data):
+    players_with_rate_k = sort_players(data, 'k', reverse=False)
+    players_with_rate_d = sort_players(data, 'd', reverse=True)
+    filtered_players_list = players_with_rate_d + players_with_rate_k
+    return filtered_players_list
 
 
-def sorted_list(data, key_word, reverse):
-    new_list = []
-    for el in data:
-        new_dict = dict()
-        if el.GoLevel.endswith(key_word):
-            new_dict['player'] = el.player
-            new_dict['GoLevel'] = el.GoLevel
-            new_dict['position'] = int(el.GoLevel[:-1])
-            new_list.append(new_dict)
-    result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
-    return result
-
-
-def get_list_of_filtered_players(data, function_name):
-    players_with_rate_k = function_name(data, 'k', reverse=False)
-    players_with_rate_d = function_name(data, 'd', reverse=True)
-    sorted_players = players_with_rate_d + players_with_rate_k
-    return sorted_players
-
-
+# Функция принимает pk турнира и возвращает список из словарей с ключами - player, wins (победы в этом турнире), losses
+# (поражения в рамках турнира)
 def get_wins_losses(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.player_set.all()
