@@ -1,4 +1,4 @@
-import re
+
 from urllib.parse import urlencode
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -6,7 +6,7 @@ from django.urls import reverse
 from webapp.forms import ClubSearch, ClubForm
 from webapp.models import Club
 from django.views.generic import ListView, TemplateView, UpdateView
-from webapp.views.functions import get_list_of_filtered_players, get_rank, average_go_level
+from webapp.views.functions import get_list_of_filtered_players, get_rank, average_go_level, get_total_wins
 
 
 class ClubsListView(ListView):
@@ -46,6 +46,8 @@ class ClubsListView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         context['data'] = average_go_level()
+        clubs = Club.objects.all()
+        context['wins'] = get_total_wins(clubs)
         if self.search_name:
             context['query'] = urlencode({'search_name': self.search_name})
             context['search_name'] = self.search_name

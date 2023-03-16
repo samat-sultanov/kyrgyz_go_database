@@ -1,4 +1,6 @@
 import re
+
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
 
@@ -32,6 +34,29 @@ def average_go_level():
             new_dict['average'] = 0
         club_list.append(new_dict)
     return club_list
+
+
+def get_total_wins(data):
+    new_list = []
+    for club in data:
+        new_dict = dict()
+        total_wins = 0
+        for player in club.players.all():
+            player_wins = 0
+            games = Game.objects.filter(Q(black=player) | Q(white=player))
+            for game in games:
+                if game.result is not None:
+                    if game.result.startswith('1'):
+                        if game.black == player:
+                            player_wins += 1
+                    elif game.result.startswith('0'):
+                        if game.white == player:
+                            player_wins += 1
+            total_wins += player_wins
+        new_dict['club'] = club.pk
+        new_dict['total'] = total_wins
+        new_list.append(new_dict)
+    return new_list
 
 
 # На доработке
