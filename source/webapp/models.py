@@ -1,10 +1,8 @@
 import os
 import datetime
-
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.db.models import Q
 from django.urls import reverse
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
@@ -42,22 +40,6 @@ class Club(models.Model):
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
     coaches = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='clubs')
-
-    def total_wins(self):
-        total_wins = 0
-        for player in self.players.all():
-            player_wins = 0
-            games = Game.objects.filter(Q(black=player) | Q(white=player))
-            for game in games:
-                if game.result is not None:
-                    if game.result.startswith('1'):
-                        if game.black == player:
-                            player_wins += 1
-                    elif game.result.startswith('0'):
-                        if game.white == player:
-                            player_wins += 1
-            total_wins += player_wins
-        return total_wins
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
