@@ -25,7 +25,7 @@ class Country(models.Model):
 
 
 class City(models.Model):
-    city = models.CharField(verbose_name="City", max_length=50)
+    city = models.CharField(verbose_name="Город", max_length=50)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -93,9 +93,10 @@ class Tournament(models.Model):
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
-    date = models.DateField(verbose_name="Дата турнира", null=True, blank=True)
-    tournament_class = models.CharField(max_length=20, default=DEFAULT_CLASS, choices=CLASS_CHOICES,
-                                        verbose_name='Класс Турнира')
+    date = models.DateField(verbose_name="Date", null=True, blank=True)
+    tournament_class = models.CharField(max_length=20,default=DEFAULT_CLASS, choices=CLASS_CHOICES,
+                                        verbose_name='Class', blank=True, null=True)
+    regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
