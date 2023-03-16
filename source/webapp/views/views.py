@@ -76,17 +76,17 @@ def file_upload_check(request, pk):
         players = tournament.player_set.all()
         patronymic = request.POST.getlist('patronymic')
         birth_date = request.POST.getlist('birth_date')
-        # print(birth_date)
         tournament_form = CheckTournamentForm(request.POST)
         city = request.POST.get('city')
         date = request.POST.get('date')
-        print(tournament.city)
+        regulations = request.POST.get('regulations')
+        tournament_class = request.POST.get('tournament_class')
+        print(tournament_class, tournament.tournament_class)
         if tournament_form.is_valid():
-            if city and date != '':
-                tournament_form = CheckTournamentForm({'city': city, 'date': date}, instance=tournament)
+            if city == '' and date == '' and tournament_class == '' and regulations =='':
+                tournament_form = CheckTournamentForm({'city': tournament.city, 'date': tournament.date, 'tournament_class':tournament.tournament_class, 'regulations':tournament.regulations}, instance=tournament)
             else:
-                tournament_form = CheckTournamentForm({'city': tournament.city, 'date': tournament.date},
-                                                      instance=tournament)
+                tournament_form = CheckTournamentForm({'city': city, 'date': date, 'tournament_class':tournament_class, 'regulations':regulations}, instance=tournament)
             tournament_form.save()
 
         form = CheckPlayerForm(request.POST)

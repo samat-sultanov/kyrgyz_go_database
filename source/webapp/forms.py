@@ -114,7 +114,7 @@ class CheckPlayerForm(forms.ModelForm):
 class CheckTournamentForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ['date', 'city']
+        fields = ['date', 'city', 'tournament_class', 'regulations']
         widgets = {'date': DateInput(attrs={'type': 'date'})}
 
 
