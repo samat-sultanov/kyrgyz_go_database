@@ -1,12 +1,13 @@
+import json
 from urllib.parse import urlencode
 
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, View
 
 
 class CalendarDetailView(TemplateView):
@@ -107,16 +108,20 @@ class ParticipantCreate(CreateView):
         if self.form.is_valid():
             return self.form.cleaned_data['search_player']
     def get_players(self):
-        return Player.objects.filter(first_name__icontains=self.search)
+        return Player.objects.filter(last_name__icontains=self.search)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['forms'] = self.form
         context['player'] = self.player
+        # context['qs_json'] = json.dumps(list(Player.objects.values()))
+        context['qs_json'] = json.dumps(list(Player.objects.values()))
         if self.search:
             context['query'] = urlencode({'search_player': self.search})
             context['search_player'] = self.search
         return context
+
     def get_success_url(self):
-        return reverse('webapp:event_view', )
+        return reverse('webapp:index')
+
 

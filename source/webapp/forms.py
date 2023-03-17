@@ -123,4 +123,8 @@ class ParticipantForm(forms.ModelForm):
         fields = ['name', 'surname', 'patronymic', 'rank', 'phonenumber']
 
 class Search_Par_Player(forms.Form):
-    search_player = forms.CharField(required=False, label='Чтобы найти себя начните печатать имя или фамилию')
+    search_player = forms.CharField(required=False, label='Чтобы найти себя начните печатать имя или фамилию',
+                                  widget=widgets.TextInput(
+                                      attrs={'class': "form-control w-30", 'id': "search_last_name"}))
+
+
