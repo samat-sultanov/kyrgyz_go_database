@@ -37,7 +37,9 @@
             console.log(filteredArr)
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
-                    box.innerHTML += `<b>${item['last_name']}</b><br/>`
+                    box.innerHTML += `<b>${item['first_name']} ${item['last_name']} ${item['patronymic']}
+                    ${item['patronymic']}
+                    </b><br/>`
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
