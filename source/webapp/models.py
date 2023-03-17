@@ -1,10 +1,8 @@
 import os
 import datetime
-
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.db.models import Q
 from django.urls import reverse
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
@@ -25,7 +23,7 @@ class Country(models.Model):
 
 
 class City(models.Model):
-    city = models.CharField(verbose_name="City", max_length=50)
+    city = models.CharField(verbose_name="Город", max_length=50)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -42,22 +40,6 @@ class Club(models.Model):
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
     coaches = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='clubs')
-
-    def total_wins(self):
-        total_wins = 0
-        for player in self.players.all():
-            player_wins = 0
-            games = Game.objects.filter(Q(black=player) | Q(white=player))
-            for game in games:
-                if game.result is not None:
-                    if game.result.startswith('1'):
-                        if game.black == player:
-                            player_wins += 1
-                    elif game.result.startswith('0'):
-                        if game.white == player:
-                            player_wins += 1
-            total_wins += player_wins
-        return total_wins
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
@@ -93,9 +75,10 @@ class Tournament(models.Model):
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
-    date = models.DateField(verbose_name="Дата турнира", null=True, blank=True)
-    tournament_class = models.CharField(max_length=20, default=DEFAULT_CLASS, choices=CLASS_CHOICES,
-                                        verbose_name='Класс Турнира')
+    date = models.DateField(verbose_name="Date", null=True, blank=True)
+    tournament_class = models.CharField(max_length=20,default=DEFAULT_CLASS, choices=CLASS_CHOICES,
+                                        verbose_name='Class', blank=True, null=True)
+    regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
@@ -203,6 +186,10 @@ class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
     event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
     event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)
+    text = models.TextField(max_length=5000, verbose_name='Описание события')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, verbose_name='Автор')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
 
     class Meta:

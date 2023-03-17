@@ -3,28 +3,28 @@
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">Номер</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Название</th>
-        <th scope="col">Город</th>
-        <th scope="col">Страна</th>
-        <th scope="col">Партия</th>
-        <th scope="col">Раунды</th>
-        <th scope="col">Класс</th>
-        <th scope="col">Загружено</th>
+        <th scope="col">#</th>
+        <th scope="col">Description</th>
+        <th scope="col">Date</th>
+        <th scope="col">City</th>
+        <th scope="col">Country</th>
+        <th scope="col">B/size</th>
+        <th scope="col">Rnds</th>
+        <th scope="col">Class</th>
+        <th scope="col">Uploaded by</th>
     </tr>
     </thead>
     <tbody>
     {% for tournament in tournaments %}
         <tr>
             <td>{{ forloop.counter }}</td>
+            <td><a style="color: black"
+                   href="{% url "webapp:tournament_detail" tournament.pk %}">{{ tournament.name }}</a></td>
             {% if tournament.date %}
                 <td>{{ tournament.date }}</td>
             {% else %}
                 <td></td>
             {% endif %}
-            <td><a class="text-decoration-none link-dark"
-                   href="{% url "webapp:tournament_detail" tournament.pk %}">{{ tournament.name }}</a></td>
             <td>{{ tournament.city.city }}</td>
             <td>{{ tournament.city.country.country_code.upper }}</td>
             <td>{{ tournament.board_size }}</td>
@@ -34,8 +34,10 @@
             {% else %}
                 <td>{{ tournament.tournament_class }}</td>
             {% endif %}
-            <td>Даврон Юлдашев</td>
+            <td></td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
+{##}

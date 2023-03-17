@@ -35,7 +35,7 @@ class DateInput(forms.DateInput):
 class CalendarForm(forms.ModelForm):
     class Meta:
         model = Calendar
-        fields = ['event_name', 'event_city', 'event_date']
+        fields = ['event_name', 'event_city', 'event_date', 'text']
         widgets = {'event_date': forms.DateInput(attrs={'type': 'date'})}
 
 
@@ -114,8 +114,24 @@ class CheckPlayerForm(forms.ModelForm):
 class CheckTournamentForm(forms.ModelForm):
     class Meta:
         model = Tournament
-        fields = ['date', 'city']
+        fields = ['date', 'city', 'tournament_class', 'regulations']
         widgets = {'date': DateInput(attrs={'type': 'date'})}
+
+
+class ClubForm(forms.ModelForm):
+    class Meta:
+        model = Club
+        fields = ['logo', 'name', 'EGDName', 'city', 'coaches']
+        widgets = {
+            'coaches': forms.CheckboxSelectMultiple(),
+        }
+        labels = {
+            'logo': 'Logo:',
+            'name': 'Club name:',
+            'EGDName': 'EGD name:',
+            'city': 'City:',
+            'coaches': 'Coaches:'
+        }
 
 class ParticipantForm(forms.ModelForm):
     class Meta:

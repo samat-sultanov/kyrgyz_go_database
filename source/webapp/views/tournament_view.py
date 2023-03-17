@@ -1,10 +1,12 @@
+import re
 from urllib.parse import urlencode
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, TemplateView
 from django.db.models import Q
-
 from webapp.forms import TournamentSearchForm
-from webapp.models import Tournament, Game
+from webapp.models import Tournament
+
+from webapp.views.functions import get_list_of_filtered_players, get_wins_losses
 
 
 class TournamentSearch(ListView):
@@ -77,28 +79,10 @@ class TournamentDetail(TemplateView):
     def get_context_data(self, **kwargs):
         pk = kwargs.get("pk")
         tournament = get_object_or_404(Tournament, pk=pk)
-        players = tournament.player_set.all()
+        data = tournament.playerintournament_set.all()
+        sorted_players = get_list_of_filtered_players(data)
         kwargs["tournament"] = tournament
-        kwargs['players'] = players
-        games = Game.objects.filter(tournament=tournament)
-        a = []
-        for player in players:
-            new_dict = dict()
-            wins = 0
-            losses = 0
-            for game in games:
-                if game.result:
-                    if game.black == player and game.black_score > 0:
-                        wins += game.black_score
-                    elif game.white == player and game.white_score > 0:
-                        wins += game.white_score
-                    elif game.black == player and game.white_score > 0:
-                        losses += 1
-                    elif game.white == player and game.black_score > 0:
-                        losses += 1
-                new_dict['player'] = player.pk
-                new_dict['wins'] = wins
-                new_dict['losses'] = losses
-            a.append(new_dict)
-        kwargs['wins'] = a
+        kwargs['sorted_players'] = sorted_players
+        kwargs['wins'] = get_wins_losses(pk=pk)
         return super().get_context_data(**kwargs)
+

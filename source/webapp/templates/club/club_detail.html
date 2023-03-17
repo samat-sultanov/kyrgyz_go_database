@@ -8,61 +8,35 @@
     <div class="container mb-4 mt-4">
         <div>
             <h2 class="title">Клуб: {{ club.name }}</h2>
-                <p>Город:</p>
-                <p>Число участников: {{ num_participants }}</p>
-                <p>Средний ранг: {{ average }}k</p>
-                <p>Тренеры: </p>
+                {% if club.logo %}
+                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px"
+                         src="{{ club.logo.url }}" alt="logo">
+                {% else %}
+                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;"
+                         src="{% static "images/no_image.jpg" %}" alt="no_logo_pic">
+                {% endif %}
+                <p class="mt-3">City:</p>
+                <p>Number of active players: {{ club.players.count }}</p>
+                <p>Average rank: {{ average }}k</p>
+                <p>Coaches: </p>
                 {% for coach in club.coaches.all %}
                     <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>
                 {% endfor %}
+                {% if request.user.is_authenticated %}
+                    <a class="btn btn-light mt-2" href="{% url "webapp:club_update" club.pk %}">Редактировать
+                                 клуб</a>
+                {% endif %}
         </div>
     </div>
+    <div class="container mt-4 mb-4">
+    <h3 class="title">Список участников:</h3>
     <div class="container">
-    <table class="table">
-    <thead>
-    <tr>
-        <th scope="col"></th>
-      <th scope="col">Фамилия</th>
-      <th scope="col">Имя</th>
-      <th scope="col">Отчество</th>
-      <th scope="col">Возраст</th>
-      <th scope="col">Клуб</th>
-      <th scope="col">Rank</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for player in players %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td><a style="color: black;" href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
-        <td>{{ player.first_name }}</td>
-        {% if player.patronymic is not None %}
-            <td>{{ player.patronymic }}</td>
-        {% else %}
-            <td></td>
-        {% endif %}
-        {% if player.get_age_date is not None %}
-            <td>{{ player.get_age_date }}</td>
-        {% else %}
-            <td></td>
-        {% endif %}
-        {% if player.clubs.all  %}
-            {% for club in player.clubs.all %}
-                <td>{{ club.name }}</td>
-            {% endfor %}
-        {% else %}
-            <td>Не состоит в клубах</td>
-        {% endif %}
+        {% include 'partial/player_list.html' %}
 
-        {% for element in rating %}
-            {% if player.pk == element.player %}
-            <td>{{ element.GoLevel }}</td>
-            {% endif %}
-        {% endfor %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
     </div>
+    </div>
+
 {% endblock %}
