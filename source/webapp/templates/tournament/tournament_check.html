@@ -67,7 +67,9 @@
                         <td>Not a member of clubs</td>
                     {% endif %}
                     {% for rate in player.playerintournament_set.all %}
-                        <td>{{ rate.GoLevel }}</td>
+                        {% if rate.tournament_id == tournament.pk %}
+                            <td>{{ rate.GoLevel }}</td>
+                        {% endif %}
                     {% endfor %}
                     {% for winner in wins %}
                         {% if player.pk == winner.player %}
