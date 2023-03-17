@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+<br/>
+    <form action="" method="post">
+        {% include "partial/form.html" with button_text="Записаться" %}
+        <br/>
+        <br/>
+    </form>
+                <form style="display: flex;justify-content: center;text-align: center;" action="" method="GET">
+        {{ forms.search_player }}
+        <input type="submit" class="btn ms-1" style="background-color: #9400D3; color: white" value="Поиск">
+                    </form>
+        {% for players in player %}
+            <p>{{ players.first_name }}</p>
+        {% endfor %}
+</div>
+{% endblock %}

@@ -10,6 +10,8 @@
             <h2 class="title">Мероприятие: {{ event.event_name }}</h2>
             <p>Город: {{ event.event_city }}</p>
             <p>Дата: {{ event.event_date }}</p>
+             <a href="{% url "webapp:ParticipantCreate" event.pk %}" class="btn"
+                style="background-color: #9400D3; color: white" id="slide_stop_button">Записаться</a>
         </div>
     </div>
     <div class="container">
@@ -27,8 +29,17 @@
             </tr>
             </thead>
             <tbody>
+            {% for player in event.participant_set.all %}
+                <tr>
+                    <td>{{ player.name }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
 
     </div>
+           {% for player in event.Participant %}
+                    <p>{{ player.name }}</p>
+            {% endfor %}
+    <p>{{ event.Participant_set.all }}</p>
 {% endblock %}

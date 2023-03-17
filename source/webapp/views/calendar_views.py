@@ -1,8 +1,10 @@
+from urllib.parse import urlencode
+
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
-
-from webapp.models import Calendar
-from webapp.forms import CalendarForm, CalendarBulkDeleteForm
+from webapp.models import Calendar, Participant, Player
+from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView
 
@@ -81,3 +83,40 @@ def hard_delete_one_event(request, *args, **kwargs):
         event = get_object_or_404(Calendar, pk=kwargs.get('pk'))
         event.delete()
         return redirect('webapp:deleted_calendar_list')
+
+class ParticipantCreate(CreateView):
+    template_name = 'calendar/participiantcreate.html'
+    form_class = ParticipantForm
+    ordering = ['first_name']
+
+    def form_valid(self, form):
+        event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
+        form.instance.event = event
+        return super().form_valid(form)
+
+    def get_search_form(self):
+        return Search_Par_Player(self.request.GET)
+
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
+        self.search = self.get_search()
+        self.player = self.get_players()
+        return super().get(request, *args, **kwargs)
+
+    def get_search(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data['search_player']
+    def get_players(self):
+        return Player.objects.filter(first_name__icontains=self.search)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['forms'] = self.form
+        context['player'] = self.player
+        if self.search:
+            context['query'] = urlencode({'search_player': self.search})
+            context['search_player'] = self.search
+        return context
+    def get_success_url(self):
+        return reverse('webapp:event_view', )
+

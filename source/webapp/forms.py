@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant
 
 
 class FileForm(forms.ModelForm):
@@ -116,3 +116,11 @@ class CheckTournamentForm(forms.ModelForm):
         model = Tournament
         fields = ['date', 'city']
         widgets = {'date': DateInput(attrs={'type': 'date'})}
+
+class ParticipantForm(forms.ModelForm):
+    class Meta:
+        model = Participant
+        fields = ['name', 'surname', 'patronymic', 'rank', 'phonenumber']
+
+class Search_Par_Player(forms.Form):
+    search_player = forms.CharField(required=False, label='Чтобы найти себя начните печатать имя или фамилию')
