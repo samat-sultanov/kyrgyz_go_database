@@ -137,3 +137,67 @@ h1 {
     border-radius: 20px;
 }
 
+.icon{
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    background: rgb(255, 255, 255);
+    text-align: center;
+    font-size: 15px;
+    line-height: 30px;
+    font-family: sans-serif;
+    overflow: hidden;
+    transition: all .3s ease-out;
+    margin-top: 20px;
+}
+
+.icon:hover{
+    width: 130px;
+    justify-content: space-evenly;
+    color: #fff;
+}
+
+.icon:hover i{
+    color: #fff;
+}
+
+.icon .fa-facebook-f{
+    color: #1A6ED8;
+}
+
+.fb a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.fb:hover{
+    background: #1A6ED8;
+}
+
+.icon .fa-instagram{
+    color: #C13584;
+}
+
+.inst a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.inst:hover{
+    background: #E1306C;
+}
+
+.icon .fa-youtube{
+    color: #FE0000;
+}
+
+.yt a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.yt:hover{
+    background: #FE0000;
+}
+
+
