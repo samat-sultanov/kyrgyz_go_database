@@ -3,10 +3,12 @@
 
 {% block link %}
     <link rel="stylesheet" href="{% static "css/style_share.css" %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+          integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
@@ -55,8 +57,10 @@
             </div>
             <div class="col-4">
                 <div>
-                    <p style="font-size: 24px"><span style="font-weight: bold">Last name:</span> {{ player.last_name }}</p>
-                    <p style="font-size: 24px"><span style="font-weight: bold">First name:</span> {{ player.first_name }}</p>
+                    <p style="font-size: 24px"><span style="font-weight: bold">Last name:</span> {{ player.last_name }}
+                    </p>
+                    <p style="font-size: 24px"><span
+                            style="font-weight: bold">First name:</span> {{ player.first_name }}</p>
                     <p style="font-size: 20px">Country: </p>
                 </div>
                 <div id="flag">
@@ -102,9 +106,9 @@
         <a href="{% url "webapp:competitor_search" %}" class="btn ms-1"
            style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск Соперников</a>
         <div>
-                <button class="share-btn" id="shareBtn">
-                  <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
-                  <span class="social-icons">
+            <button class="share-btn" id="shareBtn">
+                <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
+                <span class="social-icons">
                         <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
                             <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
                         </a>
@@ -113,12 +117,12 @@
                          <a href="http://vkontakte.ru/share.php?url=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
                              <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
                   </span>
-                </button>
-                    <a style="padding-left: 12px" onclick="copyfunc()"><img
-                            style="width: 37px;"
-                            src="{% static 'images/copy.png' %}"></a>
-                    <input readonly="readonly" style="width: 20rem; border-radius: 5px; border-color: #9400D3"
-                           type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
+            </button>
+            <a style="padding-left: 12px" onclick="copyfunc()"><img
+                    style="width: 37px;"
+                    src="{% static 'images/copy.png' %}"></a>
+            <input readonly="readonly" style="width: 20rem; border-radius: 5px; border-color: #9400D3"
+                   type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
         </div>
 
     </div>
@@ -161,7 +165,7 @@
     </div>
     {% if player.player.all %}
         <div class="container mt-5 mb-5">
-            <h3 class="title">Рекомендации:</h3>
+            <h3 class="title">Recommendations:</h3>
             {% for recommendation in player.player.all|dictsortreversed:"created_at" %}
                 <div class="card">
                     <div class="card-body">
@@ -169,8 +173,12 @@
                             {{ recommendation.text }}
                         </div>
                         <div style="text-align: right; padding-right: 40px;">
-                            <a href="{% url 'accounts:detail' request.user.pk %}"
-                               class="link-dark">{{ recommendation.author }}</a>
+                            {% if request.user.pk %}
+                                <a href="{% url 'accounts:detail' request.user.pk %}"
+                                   class="link-dark">{{ recommendation.author }}</a>
+                            {% else %}
+                                {{ recommendation.author }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
