@@ -137,13 +137,13 @@ class ParticipantForm(forms.ModelForm):
     name = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
                                                          "Name", "id": "id_name", 'style': "width:200px"}))
     surname = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
-                                                         "surname", "id": "id_surname", 'style': "width:200px"}))
+                                                         "Surname", "id": "id_surname", 'style': "width:200px"}))
     patronymic = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
-                                                         "patronymic", "id": "id_patronymic", 'style': "width:200px"}))
+                                                         "Patronymic", "id": "id_patronymic", 'style': "width:200px"}))
     rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
-                                                         "rank", "id": "id_rank", 'style': "width:200px"}))
+                                                         "GoLevel", "id": "id_rank", 'style': "width:200px"}))
     phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
-                                                         "phonenumber", "id": "id_phonenumber", 'style': "width:200px"}))
+                                                         "Phone-number", "id": "id_phonenumber", 'style': "width:200px"}))
     class Meta:
         model = Participant
         fields = ['name', 'surname', 'patronymic', 'rank', 'phonenumber']

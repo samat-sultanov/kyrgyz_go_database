@@ -22,15 +22,6 @@
                 </div>
 </ul>
 </div>
-{#  {{ forms.search_player }}#}
-{#<ul style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">#}
-{#                <div id="box">#}
-{#         {% for data in player %}#}
-{##}
-{#        {% endfor %}#}
-{#                </div>#}
-{#</ul>#}
-
 </div>
 
 
@@ -86,17 +77,28 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
         let chxbox = document.getElementById('check_butt');
           if (chxbox.checked) {
             let div = document.getElementById('cont-1');
-            {#div.innerText = ''#}
               let name_id = document.getElementById('id_name')
               let surname_id = document.getElementById('id_surname')
               let patronymic_id = document.getElementById('id_patronymic')
               let id_rank = document.getElementById('id_rank')
               let input_search = document.getElementById('search_last_name')
-                input_search.type = 'text'
+              input_search.type = 'text'
+              name_id.type = 'hidden'
+              surname_id.type = 'hidden'
+              patronymic_id.type = 'hidden'
+              id_rank.type = 'hidden'
           }
           else {
                 let input_search = document.getElementById('search_last_name')
                 let box = document.getElementById('box')
+                let name_id = document.getElementById('id_name')
+                let surname_id = document.getElementById('id_surname')
+                let patronymic_id = document.getElementById('id_patronymic')
+                let id_rank = document.getElementById('id_rank')
+                name_id.type = 'text'
+                surname_id.type = 'text'
+                patronymic_id.type = 'text'
+                id_rank.type = 'text'
                 box.innerHTML = ''
                 input_search.type = 'hidden'
           }
