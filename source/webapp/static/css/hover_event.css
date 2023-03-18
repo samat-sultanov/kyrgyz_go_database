@@ -1,0 +1,8 @@
+#a_d:hover {
+    color: #7a00ae;
+    cursor: pointer;
+}
+#a_d {
+      transition-property: background-color;
+    transition-duration: 3s;
+}

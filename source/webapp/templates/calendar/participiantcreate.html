@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block link %}
+    <link rel="stylesheet" href="{% static "css/hover_event.css" %}">
+{% endblock %}
 {% block content %}
 
 <div id="cont-1" class="container">
@@ -23,7 +26,9 @@
 </ul>
 </div>
 </div>
+    <div class="container" id="show_date">
 
+    </div>
 
     <br/>
 {% endblock %}
@@ -32,16 +37,16 @@
         const data = '{{qs_json}}'
         const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
         const input = document.getElementById('search_last_name')
-        console.log(rdata)
+        {#console.log(rdata)#}
         let filteredArr = []
 
         input.addEventListener('keyup', (e)=>{
             box.innerHTML = ''
             filteredArr = rdata.filter(info=> info['last_name'].includes(e.target.value))
-            console.log(filteredArr)
+            {#console.log(filteredArr)#}
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
-                    box.innerHTML += `<li id='a_d' class="list-group-item">
+                    box.innerHTML += `<li onclick="show_date(this)" id='a_d' class="list-group-item">
 ${item['first_name']} ${item['last_name']} ${item['patronymic']}
                     ${item['GoLevel']}
                     </li>`
@@ -58,7 +63,7 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
             if (el.id == "a_d") {
               let name = el.innerText;
               let clean_arr = name.split(" ")
-              console.log(clean_arr[0])
+              {#console.log(clean_arr[0])#}
               let name_id = document.getElementById('id_name')
               let surname_id = document.getElementById('id_surname')
               let patronymic_id = document.getElementById('id_patronymic')
@@ -103,10 +108,19 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
                 input_search.type = 'hidden'
           }
         }
-let formss = document.getElementById('actionpost');
+        let formss = document.getElementById('actionpost');
         for (let i = 0; i < 5; i++) {
             let child = formss.getElementsByTagName("p")[i];
             formss.removeChild(child);
+        }
+
+        function show_date(obj) {
+            let show_date = document.getElementById('show_date')
+            let obj_2 = obj.innerText
+            let clean_date = obj_2.split(" ")
+            show_date.innerHTML =  `<h1 style="font-size: 40px">${clean_date[0]}</h1>
+            <label>Surname: ${clean_date[1]}</label><br/><label>Patronymic: ${clean_date[2]}</label><br/>
+            <label>GoLevel: ${clean_date[3]}</label>`
         }
     </script>
 {% endblock %}
