@@ -139,9 +139,12 @@ def handle_uploaded_file(thisFile):
                             elif result == '0-1':
                                 black_score = 0
                                 white_score = 1
+                            elif result == '0-0':
+                                black_score = 0.5
+                                white_score = 0.5
                             else:
-                                black_score = 0
-                                white_score = 0
+                                black_score = None
+                                white_score = None
                             try:
                                 game = get_object_or_404(Game, black=black, white=white, result=result,
                                                          board_number=board_num, date=date, round_num=round_number,
