@@ -25,11 +25,10 @@
                     <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;"
                          src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
                 {% endif %}
-                <a class="btn btn-light mt-2" href="{% url "webapp:update_player" player.pk %}">Редактировать
-                    профиль</a>
+                <a class="btn btn-light mt-2" href="{% url "webapp:update_player" player.pk %}">Edit Profile</a>
                 <button type="button" class="btn btn-light mt-2 kgf_modal" data-bs-toggle="modal"
                         data-bs-target="#myModal">
-                    Удалить профиль
+                    Delete Profile
                 </button>
 
                 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
@@ -72,7 +71,7 @@
         </div>
 
         {% if player.birth_date %}
-            <p>Age: {{ player.get_age_date }} лет</p>
+            <p>Age: {{ player.get_age_date }} </p>
         {% else %}
             <p>Age: N/A</p>
         {% endif %}
@@ -128,7 +127,7 @@
     </div>
 
     <div class="container mt-5 mb-5">
-        <h3 class="title">Список турниров:</h3>
+        <h3 class="title">Tournaments:</h3>
         <table class="table">
             <thead>
             <tr>
@@ -174,10 +173,10 @@
                         </div>
                         <div style="text-align: right; padding-right: 40px;">
                             {% if request.user.pk %}
-                                <a href="{% url 'accounts:detail' request.user.pk %}"
-                                   class="link-dark">{{ recommendation.author }}</a>
+                                <a href="{% url 'accounts:detail' recommendation.author.pk %}"
+                                   class="link-dark">{{ recommendation.author.first_name }} {{ recommendation.author.last_name }}</a>
                             {% else %}
-                                {{ recommendation.author }}
+                                {{ recommendation.author.first_name }} {{ recommendation.author.last_name }}
                             {% endif %}
                         </div>
                     </div>
