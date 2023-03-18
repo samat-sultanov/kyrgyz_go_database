@@ -152,6 +152,6 @@ class Search_Par_Player(forms.Form):
     search_player = forms.CharField(required=False,
                                   widget=widgets.TextInput(
                                       attrs={'class': "form-control", 'placeholder': "Enter your last name",
-                                      'id': "search_last_name", 'style': "width: 400px"}))
+                                      'id': "search_last_name", 'style': "width: 400px", 'type': "hidden"}))
 
 

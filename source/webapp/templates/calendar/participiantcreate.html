@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block link %}
-    <link rel="stylesheet" href="{% static "css/scroll.css" %}">
-{% endblock %}
 {% block content %}
 
 <div id="cont-1" class="container">
@@ -15,6 +12,7 @@
 <input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
 <br/>
 <br/>
+<div id="i_have">
   {{ forms.search_player }}
 <ul style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
                 <div id="box">
@@ -23,6 +21,16 @@
         {% endfor %}
                 </div>
 </ul>
+</div>
+{#  {{ forms.search_player }}#}
+{#<ul style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">#}
+{#                <div id="box">#}
+{#         {% for data in player %}#}
+{##}
+{#        {% endfor %}#}
+{#                </div>#}
+{#</ul>#}
+
 </div>
 
 
@@ -83,10 +91,14 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
               let surname_id = document.getElementById('id_surname')
               let patronymic_id = document.getElementById('id_patronymic')
               let id_rank = document.getElementById('id_rank')
-              {#name_id.type = 'hidden'#}
+              let input_search = document.getElementById('search_last_name')
+                input_search.type = 'text'
           }
           else {
-
+                let input_search = document.getElementById('search_last_name')
+                let box = document.getElementById('box')
+                box.innerHTML = ''
+                input_search.type = 'hidden'
           }
         }
 let formss = document.getElementById('actionpost');
