@@ -17,7 +17,12 @@
                 <p>Class: {{ tournament.tournament_class }}</p>
                 <p>Regulations: {{ tournament.regulations|linebreaks }}</p>
             {% else %}
-                {{ tournament_form.as_p }}
+{#                {{ tournament_form.as_p }}#}
+                <p>Date: {{ tournament_form.date }}</p>
+                <p>City: {{ tournament_form.city }}</p>
+                <p>Class: {{ tournament_form.tournament_class }}</p>
+                <p>Regulations: {{ tournament_form.regulations }}</p>
+                <p>{{ tournament_form.uploaded_by.as_hidden }}</p>
             {% endif %}
             <p>Number of players: {{ tournament.player_set.count }}</p>
             <p>Rounds: {{ tournament.rounds }}</p>

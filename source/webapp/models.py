@@ -79,6 +79,8 @@ class Tournament(models.Model):
     tournament_class = models.CharField(max_length=20,default=DEFAULT_CLASS, choices=CLASS_CHOICES,
                                         verbose_name='Class', blank=True, null=True)
     regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
+                                    verbose_name="Автор")
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
