@@ -1,34 +1,42 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block link %}
+    <link rel="stylesheet" href="{% static "css/scroll.css" %}">
+{% endblock %}
 {% block content %}
 
 <div class="container">
-<br/>
+    <br/>
     <form action="" method="post">
         {% include "partial/form.html" with button_text="Записаться" %}
         <br/>
         <br/>
     </form>
-                <form style="display: flex;justify-content: center;text-align: center;" action="" method="GET">
-        {{ forms.search_player }}
-        <input type="submit" class="btn ms-1" style="background-color: #9400D3; color: white" value="Поиск">
-                    </form>
-        <div id="box">
-            {% for players in player %}
-            <b>{{ players.last_name }}</b><br/>
+<input type="checkbox" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
+<br/>
+<br/>
+        <div class="list-group">
+          <button style="width: 350px" type="button" class="list-group-item list-group-item-action active" aria-current="true">
+            <span style="display: flex; justify-content: center">{{ forms.search_player }}</span>
+          </button>
+                      <ul class="for-ul">
+                <div id="box">
+         {% for data in player %}
+
         {% endfor %}
+                </div>
+      </ul>
         </div>
 </div>
+
+    <br/>
 {% endblock %}
 {% block src %}
     <script>
         const data = '{{qs_json}}'
-        console.log(data)
         const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
-        console.log(rdata)
         const input = document.getElementById('search_last_name')
-        console.log(input)
+        console.log(rdata)
         let filteredArr = []
 
         input.addEventListener('keyup', (e)=>{
@@ -37,13 +45,37 @@
             console.log(filteredArr)
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
-                    box.innerHTML += `<b>${item['first_name']} ${item['last_name']} ${item['patronymic']}
-                    ${item['patronymic']}
-                    </b><br/>`
+                    box.innerHTML += `<li><button style="width: 350px;" id='a_d' type="button" class="list-group-item list-group-item-action">
+${item['first_name']} ${item['last_name']} ${item['patronymic']}
+                    ${item['GoLevel']}
+                    </button></li>`
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
             }
         })
+
+    window.onload = function () {
+    box.onclick = function (e) {
+          let el = e ? e.target : window.event.srcElement;
+          while (el !== this) {
+            if (el.id == "a_d") {
+              let name = el.innerText;
+              let clean_arr = name.split(" ")
+              console.log(clean_arr[0])
+              let name_id = document.getElementById('id_name')
+              let surname_id = document.getElementById('id_surname')
+              let patronymic_id = document.getElementById('id_patronymic')
+              let id_rank = document.getElementById('id_rank')
+              name_id.value = clean_arr[0]
+              surname_id.value = clean_arr[1]
+              patronymic_id.value = clean_arr[2]
+              id_rank.value = clean_arr[3]
+              break;
+            }
+            el = el.parentNode;
+          }
+        };
+      };
     </script>
 {% endblock %}

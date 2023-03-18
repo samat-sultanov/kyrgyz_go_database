@@ -8,7 +8,7 @@ from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, View
-
+from .functions import get_rank, get_rank_for_json
 
 class CalendarDetailView(TemplateView):
     template_name = 'calendar/calendar_view.html'
@@ -88,7 +88,6 @@ def hard_delete_one_event(request, *args, **kwargs):
 class ParticipantCreate(CreateView):
     template_name = 'calendar/participiantcreate.html'
     form_class = ParticipantForm
-    ordering = ['first_name']
 
     def form_valid(self, form):
         event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
@@ -99,29 +98,21 @@ class ParticipantCreate(CreateView):
         return Search_Par_Player(self.request.GET)
 
     def get(self, request, *args, **kwargs):
-        self.form = self.get_search_form()
-        self.search = self.get_search()
-        self.player = self.get_players()
+        self.forms = self.get_search_form()
         return super().get(request, *args, **kwargs)
 
-    def get_search(self):
-        if self.form.is_valid():
-            return self.form.cleaned_data['search_player']
     def get_players(self):
-        return Player.objects.filter(last_name__icontains=self.search)
+        return Player.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
-        context['forms'] = self.form
-        context['player'] = self.player
-        # context['qs_json'] = json.dumps(list(Player.objects.values()))
-        context['qs_json'] = json.dumps(list(Player.objects.values()))
-        if self.search:
-            context['query'] = urlencode({'search_player': self.search})
-            context['search_player'] = self.search
+        context['forms'] = self.get_search_form()
+        data = get_rank_for_json(self.get_players())
+        context['player'] = data
+        context['qs_json'] = json.dumps(list(data), default = str)
         return context
 
     def get_success_url(self):
-        return reverse('webapp:index')
+        return reverse('webapp:event_view', kwargs={'pk': self.object.event.pk})
 
 
