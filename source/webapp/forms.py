@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant
 
 
 class FileForm(forms.ModelForm):
@@ -132,3 +132,26 @@ class ClubForm(forms.ModelForm):
             'city': 'City:',
             'coaches': 'Coaches:'
         }
+
+class ParticipantForm(forms.ModelForm):
+    name = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
+                                                         "Name", "id": "id_name", 'style': "width:200px"}))
+    surname = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
+                                                         "Surname", "id": "id_surname", 'style': "width:200px"}))
+    patronymic = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
+                                                         "Patronymic", "id": "id_patronymic", 'style': "width:200px"}))
+    rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
+                                                         "GoLevel", "id": "id_rank", 'style': "width:200px"}))
+    phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
+                                                         "Phone-number", "id": "id_phonenumber", 'style': "width:200px"}))
+    class Meta:
+        model = Participant
+        fields = ['name', 'surname', 'patronymic', 'rank', 'phonenumber']
+
+class Search_Par_Player(forms.Form):
+    search_player = forms.CharField(required=False,
+                                  widget=widgets.TextInput(
+                                      attrs={'class': "form-control", 'placeholder': "Enter your last name",
+                                      'id': "search_last_name", 'style': "width: 400px", 'type': "hidden"}))
+
+

@@ -4,8 +4,7 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
     hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, \
-    CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, hard_delete_one_event, \
-    ClubUpdate
+    ClubUpdate, ParticipantCreate,CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, hard_delete_one_event
 
 app_name = 'webapp'
 
@@ -40,4 +39,5 @@ urlpatterns = [
     path('about/', about_us_view, name='about'),
     path('file_check/<int:pk>/', file_upload_check, name='file_check'),
     path('questions/', QuestionsListView.as_view(), name='questions_list'),
+    path('participiant_create/<int:pk>/', ParticipantCreate.as_view(), name='ParticipantCreate'),
 ]

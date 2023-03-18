@@ -1,11 +1,14 @@
-from django.http import HttpResponseRedirect
+import json
+from urllib.parse import urlencode
+
+from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-
-from webapp.models import Calendar
-from webapp.forms import CalendarForm, CalendarBulkDeleteForm
+from webapp.models import Calendar, Participant, Player
+from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView
-
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, View
+from .functions import get_rank, get_rank_for_json
 
 class CalendarDetailView(TemplateView):
     template_name = 'calendar/calendar_view.html'
@@ -81,3 +84,35 @@ def hard_delete_one_event(request, *args, **kwargs):
         event = get_object_or_404(Calendar, pk=kwargs.get('pk'))
         event.delete()
         return redirect('webapp:deleted_calendar_list')
+
+class ParticipantCreate(CreateView):
+    template_name = 'calendar/participiantcreate.html'
+    form_class = ParticipantForm
+
+    def form_valid(self, form):
+        event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
+        form.instance.event = event
+        return super().form_valid(form)
+
+    def get_search_form(self):
+        return Search_Par_Player(self.request.GET)
+
+    def get(self, request, *args, **kwargs):
+        self.forms = self.get_search_form()
+        return super().get(request, *args, **kwargs)
+
+    def get_players(self):
+        return Player.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['forms'] = self.get_search_form()
+        data = get_rank_for_json(self.get_players())
+        context['player'] = data
+        context['qs_json'] = json.dumps(list(data), default = str)
+        return context
+
+    def get_success_url(self):
+        return reverse('webapp:event_view', kwargs={'pk': self.object.event.pk})
+
+

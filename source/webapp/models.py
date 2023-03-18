@@ -200,12 +200,13 @@ class Calendar(models.Model):
 
 
 class Participant(models.Model):
-    name = models.CharField(max_length=20, verbose_name='First name', null=False, blank=False)
-    surname = models.CharField(max_length=20, verbose_name='Last name', null=False, blank=False)
-    patronymic = models.CharField(max_length=20, verbose_name="Father's name", null=False, blank=False)
+    name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)
+    surname = models.CharField(max_length=20, verbose_name='Фамилия', null=False, blank=False)
+    patronymic = models.CharField(max_length=20, verbose_name="Отчество", null=False, blank=False)
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
-    phonenumber = PhoneNumberField(unique=True, null=True, blank=False, max_length=16, default=None)
+    phonenumber = PhoneNumberField(unique=True, verbose_name='Номер телефона'
+                                   ,null=True, blank=False, max_length=16, default=None)
 
     class Meta:
         db_table = "participant"
