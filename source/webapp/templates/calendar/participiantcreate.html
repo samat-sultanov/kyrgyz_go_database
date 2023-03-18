@@ -5,29 +5,26 @@
 {% endblock %}
 {% block content %}
 
-<div class="container">
+<div id="cont-1" class="container">
     <br/>
-    <form action="" method="post">
+    <form action="" id="actionpost" method="post">
         {% include "partial/form.html" with button_text="Записаться" %}
         <br/>
         <br/>
     </form>
-<input type="checkbox" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
+<input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
 <br/>
 <br/>
-        <div class="list-group">
-          <button style="width: 350px" type="button" class="list-group-item list-group-item-action active" aria-current="true">
-            <span style="display: flex; justify-content: center">{{ forms.search_player }}</span>
-          </button>
-                      <ul class="for-ul">
+  {{ forms.search_player }}
+<ul style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
                 <div id="box">
          {% for data in player %}
 
         {% endfor %}
                 </div>
-      </ul>
-        </div>
+</ul>
 </div>
+
 
     <br/>
 {% endblock %}
@@ -45,10 +42,10 @@
             console.log(filteredArr)
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
-                    box.innerHTML += `<li><button style="width: 350px;" id='a_d' type="button" class="list-group-item list-group-item-action">
+                    box.innerHTML += `<li id='a_d' class="list-group-item">
 ${item['first_name']} ${item['last_name']} ${item['patronymic']}
                     ${item['GoLevel']}
-                    </button></li>`
+                    </li>`
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
@@ -77,5 +74,25 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
           }
         };
       };
+        function change_tamp() {
+        let chxbox = document.getElementById('check_butt');
+          if (chxbox.checked) {
+            let div = document.getElementById('cont-1');
+            {#div.innerText = ''#}
+              let name_id = document.getElementById('id_name')
+              let surname_id = document.getElementById('id_surname')
+              let patronymic_id = document.getElementById('id_patronymic')
+              let id_rank = document.getElementById('id_rank')
+              {#name_id.type = 'hidden'#}
+          }
+          else {
+
+          }
+        }
+let formss = document.getElementById('actionpost');
+        for (let i = 0; i < 5; i++) {
+            let child = formss.getElementsByTagName("p")[i];
+            formss.removeChild(child);
+        }
     </script>
 {% endblock %}
