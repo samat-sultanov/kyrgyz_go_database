@@ -76,7 +76,7 @@ class Tournament(models.Model):
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
     date = models.DateField(verbose_name="Date", null=True, blank=True)
-    tournament_class = models.CharField(max_length=20,default=DEFAULT_CLASS, choices=CLASS_CHOICES,
+    tournament_class = models.CharField(max_length=20, default=DEFAULT_CLASS, choices=CLASS_CHOICES,
                                         verbose_name='Class', blank=True, null=True)
     regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
@@ -100,8 +100,6 @@ class Player(models.Model):
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
-    coach = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, related_name='coach',
-                               verbose_name="Тренер")
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
@@ -206,7 +204,7 @@ class Participant(models.Model):
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
     phonenumber = PhoneNumberField(unique=True, verbose_name='Номер телефона'
-                                   ,null=True, blank=False, max_length=16, default=None)
+                                   , null=True, blank=False, max_length=16, default=None)
 
     class Meta:
         db_table = "participant"
