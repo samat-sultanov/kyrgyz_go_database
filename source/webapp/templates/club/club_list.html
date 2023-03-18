@@ -36,7 +36,11 @@
                         <td></td>
                         <td></td>
                     {% endif %}
-                    <td>{{ club.players.count }}</td>
+                    {% if club.num_players %}
+                        <td>{{ club.num_players }}</td>
+                    {% else %}
+                        <td>{{ club.players.count }}</td>
+                    {% endif %}
                     <td>{% for item in data %}
                         {% if club.id == item.club %}
                             {{ item.average }}k
