@@ -168,5 +168,7 @@ class FeedbackToEmailForm(forms.Form):
     phone_number = forms.CharField(required=False, max_length=50,
                                    widget=widgets.TextInput(
                                        attrs={'class': "form-control", 'placeholder': "Ваш номер телефона"}))
-    email = forms.EmailField(required=True, max_length=150)
-    message = forms.CharField(required=True, widget=widgets.Textarea, max_length=3000)
+    email = forms.EmailField(required=True, max_length=150,
+                             widget=widgets.EmailInput(attrs={'class': "form-control", 'placeholder': "ваш e-mail"}))
+    message = forms.CharField(required=True, widget=widgets.Textarea(
+        attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание"}), max_length=3000)
