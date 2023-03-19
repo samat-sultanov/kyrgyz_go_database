@@ -69,7 +69,7 @@
                 </div>
                 <div class="offcanvas-body">
 
-                    <form action="#" method="post">
+                    <form action="{% url 'webapp:feedback_to_admin' %}" method="post">
                         {% csrf_token %}
 
                         {% for error in form.non_field_errors %}

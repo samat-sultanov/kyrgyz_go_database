@@ -160,15 +160,14 @@ class Search_Par_Player(forms.Form):
 
 
 class FeedbackToEmailForm(forms.Form):
-    first_name = forms.CharField(required=True, max_length=50,
-                                 widget=widgets.TextInput(attrs={'class': "form-control", 'placeholder': "Ваше имя"}))
-    last_name = forms.CharField(required=True, max_length=50,
-                                widget=widgets.TextInput(
-                                    attrs={'class': "form-control", 'placeholder': "Ваша фамилия"}))
-    phone_number = forms.CharField(required=False, max_length=50,
-                                   widget=widgets.TextInput(
-                                       attrs={'class': "form-control", 'placeholder': "Ваш номер телефона"}))
-    email = forms.EmailField(required=True, max_length=150,
-                             widget=widgets.EmailInput(attrs={'class': "form-control", 'placeholder': "ваш e-mail"}))
+    first_name = forms.CharField(required=True, max_length=50, widget=widgets.TextInput(
+        attrs={'class': "form-control", 'placeholder': "Ваше имя", 'name': "first_name"}))
+    last_name = forms.CharField(required=True, max_length=50, widget=widgets.TextInput(
+        attrs={'class': "form-control", 'placeholder': "Ваша фамилия", 'name': "last_name"}))
+    phone_number = forms.CharField(required=False, max_length=50, widget=widgets.TextInput(
+        attrs={'class': "form-control", 'placeholder': "Ваш номер телефона", 'name': "phone_number"}))
+    email = forms.EmailField(required=True, max_length=150, widget=widgets.EmailInput(
+        attrs={'class': "form-control", 'placeholder': "ваш e-mail", 'name': "email"}))
     message = forms.CharField(required=True, widget=widgets.Textarea(
-        attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание"}), max_length=3000)
+        attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание", 'name': "message"}),
+                              max_length=3000)

@@ -1,6 +1,10 @@
 import re
+
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
@@ -124,3 +128,25 @@ def about_us_view(request, *args, **kwargs):
         form = FeedbackToEmailForm()
         context = {'form': form}
         return render(request, 'about_us.html', context)
+
+
+def send_feedback_to_admin(request, *args, **kwargs):
+    if request.method == 'POST':
+        admin = get_user_model().objects.all().get(pk=1)
+        form = FeedbackToEmailForm(request.POST)
+        if form.is_valid():
+            subject = "Сообщение из формы отбратной связи с сайта kgf.kg"
+            body = {
+                'first_name': form.cleaned_data.get('first_name', None),
+                'last_name': form.cleaned_data.get('last_name', None),
+                'email': form.cleaned_data.get('email', None),
+                'phone_number': form.cleaned_data.get('phone_number', 'Номера нет'),
+                'message': form.cleaned_data['message'],
+            }
+            message = "\n".join(body.values())
+
+            try:
+                send_mail(subject, message, admin.email, [admin.email, ])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect("webapp:about")
