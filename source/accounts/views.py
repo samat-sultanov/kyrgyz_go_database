@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.views.generic import DetailView
 
 from webapp.models import Player
+from webapp.views.functions import get_rank, get_list_of_filtered_players
 
 
 class UserDetailView(DetailView):
@@ -20,5 +21,7 @@ class UserDetailView(DetailView):
             for each_club in player.clubs.all():
                 if each_club.pk in coach_clubs:
                     coach_students.append(player.pk)
-        context['players'] = [{'player': player} for player in Player.objects.filter(pk__in=coach_students)]
+        data = get_rank(Player.objects.filter(pk__in=coach_students))
+        sorted_players = get_list_of_filtered_players(data)
+        context['players'] = sorted_players
         return context
