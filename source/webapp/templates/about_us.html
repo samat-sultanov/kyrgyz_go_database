@@ -55,5 +55,39 @@
             <p>Тел.: +996 (778) 381 785</p>
         </div>
 
+        <div class="contact_form">
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                    aria-controls="offcanvasRight" style="background-color: #9400D3; color: white">
+                Оставить отзыв или предложение
+            </button>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                 aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Заполните эту форму и отправьте нам</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+
+                    <form action="{% url 'webapp:feedback_to_admin' %}" method="post">
+                        {% csrf_token %}
+
+                        {% for error in form.non_field_errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                            <p>{{ field }}</p>
+                        {% endfor %}
+                        <input type="submit" class="btn" style="background-color: #9400D3; color: white" value="Отправить">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
