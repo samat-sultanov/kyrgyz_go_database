@@ -141,3 +141,5 @@ LOGIN_URL = 'accounts:login'
 
 LOGIN_REDIRECT_URL = 'webapp:file_upload'
 LOGOUT_REDIRECT_URL = 'webapp:index'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
