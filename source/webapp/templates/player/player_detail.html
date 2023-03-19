@@ -183,6 +183,41 @@
                                    href="{% url 'webapp:recommendation_update' recommendation.pk %}"><i
                                         class="bi bi-pencil-fill"></i></a>
                             {% endif %}
+
+                            {% if perms.webapp.delete_recommendation or recommendation.author == request.user %}
+                                <!-- Открывает модалку подтверждения -->
+                                <a style="color: black" class="ms-2 kgf_modal" href="" data-bs-toggle="modal"
+                                   data-bs-target="#myModal_{{ recommendation.pk }}" type="button"><i
+                                        class="bi bi-trash3-fill"></i></a>
+
+                                <!-- Модалка подтверждения -->
+                                <div class="modal fade" id="myModal_{{ recommendation.pk }}" tabindex="-1"
+                                     aria-labelledby="myModalLabel"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title fs-5" style="text-align: center" id="myModalLabel">Do you want to delete
+                                                    this recommendation?</h3>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                        data-bs-dismiss="modal">No
+                                                </button>
+                                                <form method="POST" id="modal_form_link"
+                                                      action="{% url 'webapp:recommendation_delete' recommendation.pk %}">
+                                                    {% csrf_token %}<input type="submit" id="confirm_button"
+                                                                           class="btn btn-danger"
+                                                                           value="Yes">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
