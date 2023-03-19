@@ -40,6 +40,7 @@ class Club(models.Model):
     EGDName = models.CharField(verbose_name='EGDName', max_length=6, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
     coaches = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='clubs')
+    num_players = models.PositiveIntegerField(null=True, blank=True, verbose_name='Количество участников клуба')
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
