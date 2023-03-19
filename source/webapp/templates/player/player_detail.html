@@ -177,6 +177,12 @@
                         <div style="text-align: right; padding-right: 40px;">
                             <a href="{% url 'accounts:detail' recommendation.author.pk %}"
                                class="link-dark">{{ recommendation.author.first_name }} {{ recommendation.author.last_name }}</a>
+                            &nbsp;
+                            {% if perms.webapp.change_recommendation or recommendation.author == request.user %}
+                                <a style="color: black"
+                                   href="{% url 'webapp:recommendation_update' recommendation.pk %}"><i
+                                        class="bi bi-pencil-fill"></i></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
