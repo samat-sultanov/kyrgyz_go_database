@@ -4,10 +4,20 @@
 {% block content %}
 
     <div class="container">
-        <h2 class="title">Add recommendation</h2>
-        <form action="" method="post">
-            {% include "partial/form.html" with button_text="Add recommendation" %}
-        </form>
+        <br/>
+        {% if message %}
+            <h2 class="title">{{ message }}</h2>
+            <form action="" method="post">
+                {% include "partial/form.html" with button_text="Add" %}
+            </form>
+            <br/>
+        {% else %}
+            <h2 class="title">Add recommendation</h2>
+            <form action="" method="post">
+                {% include "partial/form.html" with button_text="Add" %}
+            </form>
+            <br/>
+        {% endif %}
     </div>
 
 {% endblock %}

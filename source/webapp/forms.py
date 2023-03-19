@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation
 
 
 class FileForm(forms.ModelForm):
@@ -169,6 +169,12 @@ class Search_Par_Player(forms.Form):
                                                'id': "search_last_name", 'style': "width: 400px", 'type': "hidden"}))
 
 
+class RecommendationForm(forms.ModelForm):
+    class Meta:
+        model = Recommendation
+        fields = ['text']
+        
+        
 class FeedbackToEmailForm(forms.Form):
     first_name = forms.CharField(required=True, max_length=50, widget=widgets.TextInput(
         attrs={'class': "form-control", 'placeholder': "Ваше имя", 'name': "first_name"}))
@@ -181,3 +187,4 @@ class FeedbackToEmailForm(forms.Form):
     message = forms.CharField(required=True, widget=widgets.Textarea(
         attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание", 'name': "message"}),
                               max_length=3000)
+

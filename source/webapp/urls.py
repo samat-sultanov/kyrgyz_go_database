@@ -5,7 +5,8 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
     hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, \
     ClubUpdate, ParticipantCreate, CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
-    hard_delete_one_event, send_feedback_to_admin
+    hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin
+
 
 app_name = 'webapp'
 
@@ -42,4 +43,5 @@ urlpatterns = [
     path('file_check/<int:pk>/', file_upload_check, name='file_check'),
     path('questions/', QuestionsListView.as_view(), name='questions_list'),
     path('participiant_create/<int:pk>/', ParticipantCreate.as_view(), name='ParticipantCreate'),
+    path('player_detail/<int:pk>/recommendation_add/', RecommendationCreateView.as_view(), name='recommendation_add'),
 ]
