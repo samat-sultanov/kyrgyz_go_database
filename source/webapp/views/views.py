@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
-from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm
+from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.functions import get_wins_losses
 
 
@@ -121,4 +121,6 @@ def file_upload_check(request, pk):
 
 def about_us_view(request, *args, **kwargs):
     if request.method == 'GET':
-        return render(request, 'about_us.html')
+        form = FeedbackToEmailForm()
+        context = {'form': form}
+        return render(request, 'about_us.html', context)
