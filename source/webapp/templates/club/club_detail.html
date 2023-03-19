@@ -16,6 +16,9 @@
                          src="{% static "images/no_image.jpg" %}" alt="no_logo_pic">
                 {% endif %}
                 <p class="mt-3">City:</p>
+                {% if club.num_players %}
+                    <p>Number of members: {{ club.num_players }}</p>
+                {% endif %}
                 <p>Number of active players: {{ club.players.count }}</p>
                 <p>Average rank: {{ average }}k</p>
                 <p>Coaches: </p>
