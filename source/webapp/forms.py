@@ -134,6 +134,7 @@ class ClubForm(forms.ModelForm):
             'num_players': 'Number of players:'
         }
 
+
 class ParticipantForm(forms.ModelForm):
     name = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
                                                          "Name", "id": "id_name", 'style': "width:200px"}))
@@ -148,6 +149,7 @@ class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
         fields = ['name', 'surname', 'patronymic', 'rank', 'phonenumber']
+
 
 class Search_Par_Player(forms.Form):
     search_player = forms.CharField(required=False,
