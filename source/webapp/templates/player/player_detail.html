@@ -86,10 +86,10 @@
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false" style="background-color: #9400D3; color: white"
                     id="slide_start_button">
-                {% if player.get_total_clubs >= 1 %}Клубы: состоит в {{ player.get_total_clubs }}
-                    {% if player.get_total_clubs == 1 %}клубе{% else %} клубах{% endif %}
+                {% if player.get_total_clubs >= 1 %}Clubs: member of {{ player.get_total_clubs }}
+                    {% if player.get_total_clubs == 1 %} club {% else %} clubs {% endif %}
                 {% else %}
-                    Клубы: Hе состоит в клубах
+                    Clubs: Not a member
                 {% endif %}
             </button>
             <ul class="dropdown-menu">
@@ -100,7 +100,9 @@
             </ul>
         </div>
         <a href="{% url "webapp:competitor_search" %}" class="btn ms-1"
-           style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск Соперников</a>
+           style="background-color: #9400D3; color: white" id="slide_stop_button">Opponents Search</a>
+        <a href="#" class="btn ms-1"
+           style="background-color: #9400D3; color: white" id="slide_stop_button">Add Recommendation</a>
         <div>
                 <button class="share-btn" id="shareBtn">
                   <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
@@ -124,7 +126,7 @@
     </div>
 
     <div class="container mt-5 mb-5">
-        <h3 class="title">Список турниров:</h3>
+        <h3 class="title">Tournaments:</h3>
         <table class="table">
             <thead>
             <tr>
@@ -161,7 +163,7 @@
     </div>
     {% if player.player.all %}
         <div class="container mt-5 mb-5">
-            <h3 class="title">Рекомендации:</h3>
+            <h3 class="title">Recommendations:</h3>
             {% for recommendation in player.player.all|dictsortreversed:"created_at" %}
                 <div class="card">
                     <div class="card-body">
