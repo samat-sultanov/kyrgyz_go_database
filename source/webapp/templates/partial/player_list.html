@@ -6,7 +6,9 @@
         <th scope="col">Last name</th>
         <th scope="col">First name</th>
         <th scope="col">Patronymic</th>
-        <th scope="col">Age</th>
+        {% if request.user.is_authenticated %}
+            <th scope="col">Age</th>
+        {% endif %}
         <th scope="col">Club</th>
         <th scope="col">Rank</th>
         <th scope="col">Tot/tournaments</th>
@@ -24,10 +26,12 @@
             {% else %}
                 <td></td>
             {% endif %}
-            {% if el.player.birth_date %}
-                <td>{{ el.player.get_age_date }}</td>
-            {% else %}
-                <td></td>
+            {% if request.user.is_authenticated %}
+                {% if el.player.birth_date %}
+                    <td>{{ el.player.get_age_date }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
             {% endif %}
             {% if el.player.clubs.all %}
                 {% for club in el.player.clubs.all %}

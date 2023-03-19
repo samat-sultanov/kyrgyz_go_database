@@ -70,11 +70,12 @@
             </div>
 
         </div>
-
-        {% if player.birth_date %}
-            <p>Age: {{ player.get_age_date }} лет</p>
-        {% else %}
-            <p>Age: N/A</p>
+        {% if request.user.is_authenticated %}
+            {% if player.birth_date %}
+                <p>Age: {{ player.get_age_date }} лет</p>
+            {% else %}
+                <p>Age: N/A</p>
+            {% endif %}
         {% endif %}
         {% for element in position %}
             {% if player.pk == element.player %}

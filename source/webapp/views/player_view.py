@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from urllib.parse import urlencode
 from django.db.models import Q
@@ -144,7 +143,6 @@ class CompetitorSearch(ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_rank = self.get_search_rank()
-        self.search_age = self.get_search_age()
         self.search_clubs = self.get_search_clubs()
         self.search_city = self.get_search_city()
         self.search_country = self.get_search_country()
@@ -156,10 +154,6 @@ class CompetitorSearch(ListView):
     def get_search_rank(self):
         if self.form.is_valid():
             return self.form.cleaned_data['search_rank']
-
-    def get_search_age(self):
-        if self.form.is_valid():
-            return self.form.cleaned_data['search_age']
 
     def get_search_clubs(self):
         if self.form.is_valid():
@@ -175,9 +169,6 @@ class CompetitorSearch(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.search_age:
-            check_year = datetime.now().year - self.search_age
-            queryset = queryset.filter(Q(birth_date__gte=datetime.strptime(f"{check_year}0101", '%Y%m%d')))
         if self.search_clubs:
             queryset = queryset.filter(Q(clubs__name__icontains=self.search_clubs))
         if self.search_city:
@@ -198,9 +189,6 @@ class CompetitorSearch(ListView):
                         each_dict['GoLevel'][:-1]) <= self.search_rank + 3:
                     filtered_ranks.append(each_dict)
             context['rank'] = filtered_ranks
-        elif self.search_age:
-            context['query'] = urlencode({'search_age': self.search_age})
-            context['search_age'] = self.search_age
         elif self.search_clubs:
             context['query'] = urlencode({'search_clubs': self.search_clubs})
             context['search_clubs'] = self.search_clubs
