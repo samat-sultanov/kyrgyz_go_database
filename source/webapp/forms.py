@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import FileInput, widgets
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant
 
@@ -133,6 +134,15 @@ class ClubForm(forms.ModelForm):
             'coaches': 'Coaches:',
             'num_players': 'Number of players:'
         }
+
+    def clean_num_players(self):
+        num_players = self.cleaned_data.get('num_players')
+        active_players_count = self.instance.players.count()
+        if num_players < active_players_count:
+            raise ValidationError(
+                'Number of players cannot be less than the number of active players!')
+        return num_players
+
 
 class ParticipantForm(forms.ModelForm):
     name = forms.CharField(label='', widget=forms.TextInput(attrs={'class':"form-control", 'placeholder':
