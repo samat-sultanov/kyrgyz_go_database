@@ -132,7 +132,7 @@ class ClubForm(forms.ModelForm):
             'EGDName': 'EGD name:',
             'city': 'City:',
             'coaches': 'Coaches:',
-            'num_players': 'Number of players:'
+            'num_players': 'Number of members:'
         }
 
     def clean_num_players(self):
@@ -140,7 +140,7 @@ class ClubForm(forms.ModelForm):
         active_players_count = self.instance.players.count()
         if num_players < active_players_count:
             raise ValidationError(
-                'Number of players cannot be less than the number of active players!')
+                'Number of members cannot be less than the number of active players!')
         return num_players
 
 
