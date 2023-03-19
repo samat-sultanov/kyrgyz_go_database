@@ -5,7 +5,9 @@
         <th scope="col" class="header">Фамилия</th>
         <th scope="col" class="header">Имя</th>
         <th scope="col" class="header">Отчество</th>
-        <th scope="col" class="header">Возраст</th>
+        {% if request.user.is_authenticated %}
+            <th scope="col" class="header">Возраст</th>
+        {% endif %}
         <th scope="col" class="header">Клуб</th>
         <th scope="col" class="header">Rank</th>
         <th scope="col" class="header">Тотал турниров</th>
@@ -21,11 +23,6 @@
                     <td>{{ player.first_name }}</td>
                     {% if player.patronymic is not None %}
                         <td>{{ player.patronymic }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    {% if player.birth_date %}
-                        <td>{{ player.get_age_date }}</td>
                     {% else %}
                         <td></td>
                     {% endif %}
