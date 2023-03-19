@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container">
+        <br/>
+        <h2 class="title">Update recommendation</h2>
+        <form action="" method="post">
+            {% include "partial/form.html" with button_text="Update" %}
+        </form>
+        <br/>
+    </div>
+
+{% endblock %}
