@@ -14,7 +14,7 @@
                 {% for deleted_calendar in deleted_calendar_list %}
                     <br>
                     <div class="card news_to_delete" data-id="{{ deleted_calendar.pk }}">
-                        <input type="checkbox" name="checkboxes" value="{{ deleted_calendar.pk }}" class="form-check-input">
+                        <input type="checkbox" name="checkboxes" value="{{ deleted_calendar.pk }}" class="form-check-input mt-3 ms-3">
                         <div class="card-body">
                             <h5 class="card-title">{{ deleted_calendar.event_name }}</h5>
 {#                            <h6 class="card-subtitle mb-2 text-muted">{{ deleted_calendar.author.username }}.#}
