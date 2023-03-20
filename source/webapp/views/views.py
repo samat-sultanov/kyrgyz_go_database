@@ -1,6 +1,7 @@
 import re
 
 from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -146,7 +147,11 @@ def send_feedback_to_admin(request, *args, **kwargs):
             message = "\n".join(body.values())
 
             try:
-                send_mail(subject, message, admin.email, [admin.email, ])
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[settings.EMAIL_HOST_USER])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect("webapp:about")
