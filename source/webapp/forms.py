@@ -61,9 +61,6 @@ class CompetitorSearchForm(forms.Form):
     search_rank = forms.IntegerField(required=True, min_value=0, label='Найти',
                                      widget=widgets.TextInput(
                                          attrs={'class': "form-control w-30", 'placeholder': 'Ранк'}))
-    search_age = forms.IntegerField(required=True, label='Найти',
-                                    widget=widgets.NumberInput(
-                                        attrs={'class': "form-control w-30", 'placeholder': 'Возраст'}))
     search_clubs = forms.CharField(max_length=50, required=False, label='Найти',
                                    widget=widgets.TextInput(
                                        attrs={'class': "form-control w-30", 'placeholder': 'Клуб'}))
@@ -144,7 +141,6 @@ class ClubForm(forms.ModelForm):
         return num_players
 
 
-
 class ParticipantForm(forms.ModelForm):
     name = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Name", "id": "id_name", 'style': "width:200px"}))
@@ -173,8 +169,8 @@ class RecommendationForm(forms.ModelForm):
     class Meta:
         model = Recommendation
         fields = ['text']
-        
-        
+
+
 class FeedbackToEmailForm(forms.Form):
     first_name = forms.CharField(required=True, max_length=50, widget=widgets.TextInput(
         attrs={'class': "form-control", 'placeholder': "Ваше имя", 'name': "first_name"}))
@@ -187,4 +183,3 @@ class FeedbackToEmailForm(forms.Form):
     message = forms.CharField(required=True, widget=widgets.Textarea(
         attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание", 'name': "message"}),
                               max_length=3000)
-
