@@ -142,7 +142,6 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'webapp:file_upload'
 LOGOUT_REDIRECT_URL = 'webapp:index'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
