@@ -6,3 +6,4 @@ from .tournament_view import *
 from .news_views import *
 from .functions import *
 from .recommendation_view import *
+from .GoR_calculator import *
