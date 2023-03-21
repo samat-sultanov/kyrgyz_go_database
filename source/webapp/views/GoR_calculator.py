@@ -55,3 +55,8 @@ def get_new_rank_from_rating(num):
         for k, v in element.items():
             if num <= k:
                 return v
+
+
+def get_bonus():
+    # bonus = ln(1 + exp((2300 - rating) / 80)) / 5
+    pass
