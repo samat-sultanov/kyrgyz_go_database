@@ -27,6 +27,10 @@
                     <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
                     <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
 
+                    {% if request.user.is_authenticated %}
+                        <a class="btn btn-outline-secondary mt-2 mb-2" href="{% url 'webapp:news_create' %}">Создать новость</a>
+                    {% endif %}
+
                     {% if request.user.is_superuser %}
                         {% include 'partial/admin_features_offcanvas.html' %}
                     {% endif %}
