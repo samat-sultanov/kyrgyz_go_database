@@ -1,5 +1,6 @@
-from datetime import datetime
 from urllib.parse import urlencode
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Player
@@ -117,17 +118,19 @@ class PlayerSearch(ListView):
         return context
 
 
-class UpdatePlayer(UpdateView):
+class UpdatePlayer(PermissionRequiredMixin, UpdateView):
     template_name = 'player/update_player.html'
     model = Player
     form_class = PlayerForm
+    permission_required = ('webapp.change_player',)
 
     def get_success_url(self):
         return reverse('webapp:player_detail', kwargs={'pk': self.object.pk})
 
 
-class DeletePlayer(DeleteView):
+class DeletePlayer(PermissionRequiredMixin, DeleteView):
     model = Player
+    permission_required = ('webapp.delete_player',)
 
     def get_success_url(self):
         return reverse('webapp:player_search')
