@@ -21,17 +21,16 @@ def get_data():
             if element.player.pk == game.black_id:
                 new_dict['player'] = element.player
                 new_dict['rating'] = element.rating
-                new_dict['con'] = get_con(element.rating)
                 con = get_con(element.rating)
                 bonus = get_bonus(element.rating)
                 se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num))
                 score = get_score(con, game.black_score, se, bonus)
-                new_dict['bonus'] = bonus
-                new_dict['se'] = se
                 new_dict['score'] = score
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
                 new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
+                opponent_rating = get_opponent_rating(game.white_id, game.round_num)
+                opponent_con = get_con()
                 new_dict['round'] = game.round_num
                 new_list.append(new_dict)
     print(new_list)
