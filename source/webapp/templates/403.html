@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
-    {{ error_title }}
+    forbidden
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <h4>{{ error_message }}</h4>
+        <br><br><h1>Ошибка 403.</h1>
+        <h4>Доступ запрещен.</h4><br><br>
     </div>
 {% endblock %}

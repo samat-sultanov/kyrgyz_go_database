@@ -8,8 +8,6 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView
 
-handler404 = 'webapp.views.error_views.custom_handler404'
-
 app_name = 'webapp'
 
 urlpatterns = [
@@ -49,3 +47,8 @@ urlpatterns = [
     path('recommendation/<int:pk>/update', RecommendationUpdateView.as_view(), name='recommendation_update'),
     path('recommendation_delete/<int:pk>/', RecommendationDeleteView.as_view(), name='recommendation_delete'),
 ]
+
+handler400 = 'webapp.views.error_views.custom_handler400'
+handler403 = 'webapp.views.error_views.custom_handler403'
+handler404 = 'webapp.views.error_views.custom_handler404'
+handler500 = 'webapp.views.error_views.custom_handler500'
