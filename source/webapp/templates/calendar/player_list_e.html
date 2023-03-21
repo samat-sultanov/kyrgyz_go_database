@@ -12,7 +12,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col"></th>
+          <th scope="col">#</th>
           <th scope="col">Имя</th>
           <th scope="col">Город</th>
           <th scope="col">Рейтинг</th>
@@ -20,15 +20,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-{#          {% for players in  event_set. %}#}
+          {% for players in  event.participant_set.all %}
+                      <tr>
           <th scope="row">{{ forloop.counter }}</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>@mdo</td>
-{#          {% endfor %}#}
-        </tr>
+          <td>{{ players.name }}</td>
+          <td>{{ players.city }}</td>
+          <td>{{ players.rank }}</td>
+          <td>{{ players.status }}</td>
+                      </tr>
+          {% endfor %}
       </tbody>
     </table>
 </div>
