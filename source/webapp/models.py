@@ -101,6 +101,8 @@ class Player(models.Model):
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
+    current_rank = models.CharField(verbose_name='GoLevel', max_length=3, default="0k")
+    current_rating = models.IntegerField(verbose_name='Rating', default=0)
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
