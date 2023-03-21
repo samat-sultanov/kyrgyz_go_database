@@ -1,5 +1,13 @@
 from django.shortcuts import get_object_or_404
 from webapp.models import Tournament, Game
+import math
+
+RANK_FROM_RATING = [{-400: "25k"}, {-300: "24k"}, {-200: "23k"}, {-100: "22k"}, {0: "21k"}, {100: "20k"}, {200: "19k"},
+                    {300: "18k"}, {400: "17k"}, {500: "16k"}, {600: "15k"}, {700: "14k"}, {800: "13k"}, {900: "12k"},
+                    {1000: "11k"}, {1100: "10k"}, {1200: "9k"}, {1300: "8k"}, {1400: "7k"}, {1500: "6k"}, {1600: "5k"},
+                    {1700: "4k"}, {1800: "3k"}, {1900: "2k"}, {2000: "1k"}, {2100: "1d"}, {2200: '2d'}, {2300: "3d"},
+                    {2400: "4d"}, {2500: "5d"}, {2600: "6d"}, {2700: "7d"}, {2800: "8d"}, {2900: "9d"}, {3000: "10d"},
+                    ]
 
 
 def get_data():
@@ -14,6 +22,8 @@ def get_data():
                 new_dict['player'] = element.player
                 new_dict['rating'] = element.rating
                 new_dict['con'] = get_con(element.rating)
+                bonus = get_bonus(element.rating)
+                new_dict['bonus'] = bonus
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
                 new_dict['opponent_rating'] = get_rating(game.white_id, game.round_num)
@@ -39,3 +49,15 @@ def get_rating(pk, number):
 def get_con(num):
     con = ((3300 - num) / 200) ** 1.6
     return con
+
+
+def get_bonus(num):
+    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+    return bonus
+
+
+def get_new_rank_from_rating(num):
+    for element in RANK_FROM_RATING:
+        for k, v in element.items():
+            if num <= k:
+                return v
