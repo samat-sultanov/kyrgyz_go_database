@@ -25,7 +25,7 @@
                 {% for coach in club.coaches.all %}
                     <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>
                 {% endfor %}
-                {% if request.user.is_authenticated %}
+                {% if perms.webapp.change_club %}
                     <a class="btn btn-light mt-2" href="{% url "webapp:club_update" club.pk %}">Редактировать
                                  клуб</a>
                 {% endif %}
