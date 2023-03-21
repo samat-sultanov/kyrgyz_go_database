@@ -56,8 +56,8 @@ class Game(models.Model):
     white = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="white_player", null=True,
                               blank=True)
     result = models.CharField(verbose_name="Result", max_length=10, null=True, blank=True)
-    black_score = models.PositiveIntegerField(verbose_name="Black score")
-    white_score = models.PositiveIntegerField(verbose_name='White score')
+    black_score = models.PositiveIntegerField(verbose_name="Black score", null=True, blank=True)
+    white_score = models.PositiveIntegerField(verbose_name='White score', null=True, blank=True)
     board_number = models.PositiveIntegerField(verbose_name="BoardNumber", default=0)
     date = models.DateTimeField(verbose_name='Date')
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
@@ -101,6 +101,8 @@ class Player(models.Model):
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
+    current_rank = models.CharField(verbose_name='GoLevel', max_length=3, default="0k")
+    current_rating = models.IntegerField(verbose_name='Rating', default=0)
 
     def __str__(self):
         return f'{self.id} - {self.last_name}: {self.first_name}'
@@ -144,7 +146,7 @@ class PlayerInTournament(models.Model):
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE)
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
     GoLevel = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
-    rating = models.PositiveIntegerField(verbose_name='Rating', blank=True, null=True)
+    rating = models.IntegerField(verbose_name='Rating', blank=True, null=True)
 
     def __str__(self):
         return f'{self.id} - {self.player}: {self.tournament}, {self.GoLevel}'

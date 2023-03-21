@@ -1,48 +1,47 @@
 {% load static %}
-<table class="table">
+<table class="table adaptive">
     <thead>
     <tr>
         <th scope="col">#</th>
-        <th scope="col">Last name</th>
-        <th scope="col">First name</th>
-        <th scope="col">Patronymic</th>
+        <th scope="col">Фамилия</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Отчество</th>
         {% if request.user.is_authenticated %}
-            <th scope="col">Age</th>
+            <th scope="col">Возраст</th>
         {% endif %}
-        <th scope="col">Club</th>
-        <th scope="col">Rank</th>
-        <th scope="col">Tot/tournaments</th>
+        <th scope="col">Клуб</th>
+        <th scope="col">Ранг</th>
+        <th scope="col">Кол-во Турниров</th>
     </tr>
     </thead>
     <tbody>
     {% for el in players %}
         <tr>
-            <td>{{ forloop.counter }}</td>
-            <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="Фамилия"><a style="text-decoration: underline dotted ghostwhite; color: black;"
                    href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
-            <td>{{ el.player.first_name }}</td>
+            <td data-label="Имя">{{ el.player.first_name }}</td>
             {% if el.player.patronymic is not None %}
-                <td>{{ el.player.patronymic }}</td>
+                <td data-label="Отчество">{{ el.player.patronymic }}</td>
             {% else %}
-                <td></td>
+                <td data-label="Отчество"></td>
             {% endif %}
             {% if request.user.is_authenticated %}
                 {% if el.player.birth_date %}
-                    <td>{{ el.player.get_age_date }}</td>
+                    <td data-label="Возраст">{{ el.player.get_age_date }}</td>
                 {% else %}
-                    <td></td>
+                    <td data-label="Возраст"></td>
                 {% endif %}
             {% endif %}
             {% if el.player.clubs.all %}
                 {% for club in el.player.clubs.all %}
-                    <td>{{ club.name }}</td>
+                    <td data-label="Клуб">{{ club.name }}</td>
                 {% endfor %}
             {% else %}
-                <td></td>
+                <td data-label="Клуб"></td>
             {% endif %}
-            <td>{{ el.GoLevel }}</td>
-
-            <td>{{ el.player.get_total_tournaments }}</td>
+            <td data-label="Ранг">{{ el.GoLevel }}</td>
+            <td data-label="Кол-во Турниров">{{ el.player.get_total_tournaments }}</td>
         </tr>
     {% endfor %}
     </tbody>

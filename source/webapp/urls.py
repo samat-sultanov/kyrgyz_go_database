@@ -48,3 +48,8 @@ urlpatterns = [
     path('recommendation_delete/<int:pk>/', RecommendationDeleteView.as_view(), name='recommendation_delete'),
     path('event_player/<int:pk>/', CalendarPlayerList.as_view(), name='CalendarPlayerList'),
 ]
+
+handler400 = 'webapp.views.error_views.custom_handler400'
+handler403 = 'webapp.views.error_views.custom_handler403'
+handler404 = 'webapp.views.error_views.custom_handler404'
+handler500 = 'webapp.views.error_views.custom_handler500'
