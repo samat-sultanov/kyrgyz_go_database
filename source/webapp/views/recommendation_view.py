@@ -27,7 +27,7 @@ class RecommendationCreateView(LoginRequiredMixin, CreateView):
         else:
             form = RecommendationForm()
         args['form'] = form
-        args['message'] = 'You can add recommendation only for your students!'
+        args['message'] = 'Вы можете добавлять рекомендации только для своих студентов!'
         return render(self.request, 'recommendation/recommendation_create.html', args)
 
 
