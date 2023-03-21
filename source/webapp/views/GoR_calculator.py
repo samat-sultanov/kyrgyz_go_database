@@ -22,18 +22,22 @@ def get_data():
                 new_dict['player'] = element.player
                 new_dict['rating'] = element.rating
                 new_dict['con'] = get_con(element.rating)
+                con = get_con(element.rating)
                 bonus = get_bonus(element.rating)
                 new_dict['bonus'] = bonus
+
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
-                new_dict['opponent_rating'] = get_rating(game.white_id, game.round_num)
+                new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
                 new_dict['round'] = game.round_num
                 new_list.append(new_dict)
     print(new_list)
+    for item in new_list:
+        print(item)
     return new_list
 
 
-def get_rating(pk, number):
+def get_opponent_rating(pk, number):
     tournament = get_object_or_404(Tournament, pk=13)
     games = Game.objects.all().filter(tournament_id=tournament.pk)
     players = tournament.playerintournament_set.all()
@@ -47,13 +51,27 @@ def get_rating(pk, number):
 
 
 def get_con(num):
-    con = ((3300 - num) / 200) ** 1.6
-    return con
+    if num:
+        con = ((3300 - num) / 200) ** 1.6
+        return con
+    else:
+        return None
 
 
 def get_bonus(num):
-    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
-    return bonus
+    if num:
+        bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+        return bonus
+    else:
+        return None
+
+
+def get_beta(num):
+    if num is not None:
+        beta = -7 * math.log(3300 - num)
+        return beta
+    else:
+        return None
 
 
 def get_new_rank_from_rating(num):
@@ -61,3 +79,5 @@ def get_new_rank_from_rating(num):
         for k, v in element.items():
             if num <= k:
                 return v
+
+
