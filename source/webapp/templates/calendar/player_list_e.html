@@ -26,11 +26,17 @@
           <td>{{ players.name }}</td>
           <td>{{ players.city }}</td>
           <td>{{ players.rank }}</td>
-          <td>{{ players.status }}</td>
+          <td id="status-{{ players.pk }}">{{ players.status }}</td>
+          <td>
+          <button class="btn btn-primary" id="butt-{{ players.pk }}" data-id="{{ players.pk }}" onclick="ChangeConf(event)" data-index-link="{% url "webapp:status_change" players.pk %}">{% if players.status == "Confirmed" %}Not confirmed{% else %}Confirmed{% endif %}</button>
+          </td>
                       </tr>
           {% endfor %}
       </tbody>
     </table>
 </div>
     <br/>
+{% endblock %}
+{% block src %}
+    <script src="{% static "js/confirm.js" %}"></script>
 {% endblock %}

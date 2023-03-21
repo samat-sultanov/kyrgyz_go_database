@@ -9,7 +9,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
-STATUS = [('Confirmed', 'Confirmed'), ('No Confirmed ', 'No Confirmed')]
+STATUS = [('Confirmed', 'Confirmed'), ('Not confirmed', 'Not confirmed')]
 
 
 class Country(models.Model):
