@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from webapp.models import Tournament, Game
+import math
 
 RANK_FROM_RATING = [{-400: "25k"}, {-300: "24k"}, {-200: "23k"}, {-100: "22k"}, {0: "21k"}, {100: "20k"}, {200: "19k"},
                     {300: "18k"}, {400: "17k"}, {500: "16k"}, {600: "15k"}, {700: "14k"}, {800: "13k"}, {900: "12k"},
@@ -21,8 +22,8 @@ def get_data():
                 new_dict['player'] = element.player
                 new_dict['rating'] = element.rating
                 new_dict['con'] = get_con(element.rating)
-                new_rating = get_new_rank_from_rating(element.rating)
-                new_dict['try'] = new_rating
+                bonus = get_bonus(element.rating)
+                new_dict['bonus'] = bonus
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
                 new_dict['opponent_rating'] = get_rating(game.white_id, game.round_num)
@@ -57,6 +58,7 @@ def get_new_rank_from_rating(num):
                 return v
 
 
-def get_bonus():
-    # bonus = ln(1 + exp((2300 - rating) / 80)) / 5
-    pass
+def get_bonus(num):
+    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+    return bonus
+
