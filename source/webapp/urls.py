@@ -8,6 +8,8 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView
 
+handler404 = 'webapp.views.error_views.custom_handler404'
+
 app_name = 'webapp'
 
 urlpatterns = [
