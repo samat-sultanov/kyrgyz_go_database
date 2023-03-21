@@ -61,11 +61,11 @@
             </div>
             <div class="col-4">
                 <div>
-                    <p style="font-size: 24px"><span style="font-weight: bold">Last name:</span> {{ player.last_name }}
+                    <p style="font-size: 24px"><span style="font-weight: bold">Фамилия:</span> {{ player.last_name }}
                     </p>
                     <p style="font-size: 24px"><span
-                            style="font-weight: bold">First name:</span> {{ player.first_name }}</p>
-                    <p style="font-size: 20px">Country: </p>
+                            style="font-weight: bold">Имя:</span> {{ player.first_name }}</p>
+                    <p style="font-size: 20px">Страна: </p>
                 </div>
                 <div id="flag">
                     <p id="country_code">{{ player.country.country_code }}</p>
@@ -76,19 +76,19 @@
         </div>
         {% if request.user.is_authenticated %}
             {% if player.birth_date %}
-                <p>Age: {{ player.get_age_date }} лет</p>
+                <p>Возраст: {{ player.get_age_date }} лет</p>
             {% else %}
-                <p>Age: N/A</p>
+                <p>Возраст: N/A</p>
             {% endif %}
         {% endif %}
         {% for element in position %}
             {% if player.pk == element.player %}
-                <p>KGF placement: {{ element.position }}</p>
+                <p>Позиция в KGF: {{ element.position }}</p>
             {% endif %}
         {% endfor %}
         {% for element in rank %}
             {% if player.pk == element.player %}
-                <p>Rank: {{ element.GoLevel }}</p>
+                <p>Ранг: {{ element.GoLevel }}</p>
             {% endif %}
         {% endfor %}
         <div class="btn-group">
@@ -142,13 +142,13 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Tournament</th>
-                <th scope="col">City</th>
-                <th scope="col">Board size</th>
-                <th scope="col">Rounds</th>
-                <th scope="col">Date</th>
-                <th scope="col">Class</th>
-                <th scope="col">Rank</th>
+                <th scope="col">Турнир</th>
+                <th scope="col">Город</th>
+                <th scope="col">Доска</th>
+                <th scope="col">Раунды</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Класс</th>
+                <th scope="col">Ранг</th>
             </tr>
             </thead>
             <tbody>
@@ -160,7 +160,7 @@
                     <td>{{ tournament.city }}</td>
                     <td>{{ tournament.board_size }}</td>
                     <td>{{ tournament.rounds }}</td>
-                    <td>{{ tournament.date }}</td>
+                    <td>{{ tournament.date|date:"d-m-Y" }}</td>
                     <td>{{ tournament.tournament_class }}</td>
                     {% for person in tournament.playerintournament_set.all %}
                         {% if player.pk == person.player_id %}

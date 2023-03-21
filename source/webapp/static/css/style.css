@@ -211,10 +211,8 @@ h1 {
 }
 
 
-@media screen and (max-width: 680px) {
+@media screen and (max-width: 762px) {
   .adaptive {
-
-  table {
     border: 0;
   }
 
