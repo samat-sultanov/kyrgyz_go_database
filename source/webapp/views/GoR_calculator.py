@@ -25,8 +25,10 @@ def get_data():
                 con = get_con(element.rating)
                 bonus = get_bonus(element.rating)
                 se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num))
+                score = get_score(con, game.black_score, se, bonus)
                 new_dict['bonus'] = bonus
                 new_dict['se'] = se
+                new_dict['score'] = score
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
                 new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
@@ -90,3 +92,9 @@ def get_new_rank_from_rating(num):
                 return v
 
 
+def get_score(con, result, se, bonus):
+    if se:
+        score = con * (result - se) + bonus
+        return score
+    else:
+        return None
