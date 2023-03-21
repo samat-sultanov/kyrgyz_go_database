@@ -15,7 +15,7 @@ class NewsListView(ListView):
     context_object_name = 'news_list'
 
 
-class NewsCreateView(CreateView):  # добавить LoginRequiredMixin, когда будет реализована аутентификация
+class NewsCreateView(LoginRequiredMixin, CreateView):
     model = News
     form_class = NewsForm
     template_name = 'news/news_create.html'
