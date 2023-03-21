@@ -21,19 +21,32 @@ def get_data():
             if element.player.pk == game.black_id:
                 new_dict['player'] = element.player
                 new_dict['rating'] = element.rating
-                new_dict['con'] = get_con(element.rating)
+                con = get_con(element.rating)
                 bonus = get_bonus(element.rating)
-                new_dict['bonus'] = bonus
+                se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num))
+                score = get_score(con, game.black_score, se, bonus)
+                new_dict['score'] = score
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
-                new_dict['opponent_rating'] = get_rating(game.white_id, game.round_num)
+                new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
+                if game.white_id:
+                    opponent_rating = get_opponent_rating(game.white_id, game.round_num)
+                    opponent_con = get_con(opponent_rating)
+                    opponent_bonus = get_bonus(opponent_rating)
+                    opponent_se = get_se(opponent_rating, element.rating)
+                    opponent_score = get_score(opponent_con, game.white_score, opponent_se, opponent_bonus)
+                    new_dict['opponent_score'] = opponent_score
+                else:
+                    pass
                 new_dict['round'] = game.round_num
                 new_list.append(new_dict)
     print(new_list)
+    for item in new_list:
+        print(item)
     return new_list
 
 
-def get_rating(pk, number):
+def get_opponent_rating(pk, number):
     tournament = get_object_or_404(Tournament, pk=13)
     games = Game.objects.all().filter(tournament_id=tournament.pk)
     players = tournament.playerintournament_set.all()
@@ -47,13 +60,35 @@ def get_rating(pk, number):
 
 
 def get_con(num):
-    con = ((3300 - num) / 200) ** 1.6
-    return con
+    if num:
+        con = ((3300 - num) / 200) ** 1.6
+        return con
+    else:
+        return None
 
 
 def get_bonus(num):
-    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
-    return bonus
+    if num:
+        bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+        return bonus
+    else:
+        return None
+
+
+def get_beta(num):
+    if num is not None:
+        beta = -7 * math.log(3300 - num)
+        return beta
+    else:
+        return None
+
+
+def get_se(num1, num2):
+    if num2 and num1:
+        se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
+        return se
+    else:
+        return None
 
 
 def get_new_rank_from_rating(num):
@@ -61,3 +96,11 @@ def get_new_rank_from_rating(num):
         for k, v in element.items():
             if num <= k:
                 return v
+
+
+def get_score(con, result, se, bonus):
+    if se:
+        score = con * (result - se) + bonus
+        return score
+    else:
+        return None

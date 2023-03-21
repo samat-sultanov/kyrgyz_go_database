@@ -1,5 +1,6 @@
-
 from urllib.parse import urlencode
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -75,10 +76,11 @@ class ClubView(TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class ClubUpdate(UpdateView):
+class ClubUpdate(PermissionRequiredMixin, UpdateView):
     template_name = 'club/club_update.html'
     model = Club
     form_class = ClubForm
+    permission_required = ('webapp.change_club',)
 
     def get_success_url(self):
         return reverse('webapp:club_view', kwargs={'pk': self.object.pk})

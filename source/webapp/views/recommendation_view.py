@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse
@@ -27,7 +27,7 @@ class RecommendationCreateView(LoginRequiredMixin, CreateView):
         else:
             form = RecommendationForm()
         args['form'] = form
-        args['message'] = 'You can add recommendation only for your students!'
+        args['message'] = 'Вы можете добавлять рекомендации только для своих студентов!'
         return render(self.request, 'recommendation/recommendation_create.html', args)
 
 
