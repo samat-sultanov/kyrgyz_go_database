@@ -24,8 +24,9 @@ def get_data():
                 new_dict['con'] = get_con(element.rating)
                 con = get_con(element.rating)
                 bonus = get_bonus(element.rating)
+                se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num))
                 new_dict['bonus'] = bonus
-
+                new_dict['se'] = se
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
                 new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
@@ -70,6 +71,14 @@ def get_beta(num):
     if num is not None:
         beta = -7 * math.log(3300 - num)
         return beta
+    else:
+        return None
+
+
+def get_se(num1, num2):
+    if num2 and num1:
+        se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
+        return se
     else:
         return None
 
