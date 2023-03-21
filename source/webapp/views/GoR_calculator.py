@@ -29,8 +29,15 @@ def get_data():
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white_id
                 new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
-                opponent_rating = get_opponent_rating(game.white_id, game.round_num)
-                opponent_con = get_con()
+                if game.white_id:
+                    opponent_rating = get_opponent_rating(game.white_id, game.round_num)
+                    opponent_con = get_con(opponent_rating)
+                    opponent_bonus = get_bonus(opponent_rating)
+                    opponent_se = get_se(opponent_rating, element.rating)
+                    opponent_score = get_score(opponent_con, game.white_score, opponent_se, opponent_bonus)
+                    new_dict['opponent_score'] = opponent_score
+                else:
+                    pass
                 new_dict['round'] = game.round_num
                 new_list.append(new_dict)
     print(new_list)
