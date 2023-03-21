@@ -8,13 +8,13 @@
     <div class="container mb-4 mt-4">
         <div class="mb-4">
             <h2 class="title">Турнир: {{ tournament.name }}</h2>
-            <p>Date: {{ tournament.date }}</p>
-            <p>City: {{ tournament.city }}</p>
-            <p>Number of participants: {{ tournament.player_set.count }}</p>
-            <p>Rounds: {{ tournament.rounds }}</p>
-            <p>Board size: {{ tournament.board_size }}</p>
-            <p>Class: {{ tournament.tournament_class }}</p>
-            <p>Regulations: {{ tournament.regulations|linebreaks }}</p>
+            <p>Дата: {{ tournament.date|date:"d-m-Y" }}</p>
+            <p>Город: {{ tournament.city }}</p>
+            <p>Число участников: {{ tournament.player_set.count }}</p>
+            <p>Раунды: {{ tournament.rounds }}</p>
+            <p>Размер доски: {{ tournament.board_size }}</p>
+            <p>Класс: {{ tournament.tournament_class }}</p>
+            <p>Регламент: {{ tournament.regulations|linebreaks }}</p>
         </div>
     </div>
     <div class="container mt-4 mb-4">
@@ -23,13 +23,13 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Last name</th>
-                <th scope="col">First name</th>
-                <th scope="col">Patronymic</th>
-                <th scope="col">Club</th>
-                <th scope="col">Rank</th>
-                <th scope="col">Wins</th>
-                <th scope="col">Losses</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Клуб</th>
+                <th scope="col">Ранг</th>
+                <th scope="col">Победы</th>
+                <th scope="col">Поражения</th>
             </tr>
             </thead>
             <tbody>
