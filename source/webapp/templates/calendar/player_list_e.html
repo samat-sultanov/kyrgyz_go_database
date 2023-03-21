@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <br/>
+<div class="container">
+<h1 style="font-size: 30px">Players Lists {{ event.event_name }}</h1>
+    <br/>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Имя</th>
+          <th scope="col">Город</th>
+          <th scope="col">Рейтинг</th>
+          <th scope="col">Статус</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+{#          {% for players in  event_set. %}#}
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>Mark</td>
+          <td>Otto</td>
+          <td>@mdo</td>
+          <td>@mdo</td>
+{#          {% endfor %}#}
+        </tr>
+      </tbody>
+    </table>
+</div>
+    <br/>
+{% endblock %}
