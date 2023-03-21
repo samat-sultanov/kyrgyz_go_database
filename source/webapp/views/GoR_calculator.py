@@ -51,14 +51,13 @@ def get_con(num):
     return con
 
 
+def get_bonus(num):
+    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+    return bonus
+
+
 def get_new_rank_from_rating(num):
     for element in RANK_FROM_RATING:
         for k, v in element.items():
             if num <= k:
                 return v
-
-
-def get_bonus(num):
-    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
-    return bonus
-
