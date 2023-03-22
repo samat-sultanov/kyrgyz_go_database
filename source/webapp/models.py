@@ -6,6 +6,7 @@ from django.core.validators import FileExtensionValidator
 from django.urls import reverse
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
+from PIL import Image
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
@@ -123,6 +124,15 @@ class Player(models.Model):
     class Meta:
         verbose_name = "Игрок"
         verbose_name_plural = "Игроки"
+
+    def save(self):
+        super().save()
+        if self.avatar:
+            img = Image.open(self.avatar.path)
+            if img.height > 720 or img.width > 720:
+                output_size = (720, 720)
+                img.thumbnail(output_size)
+                img.save(self.avatar.path)
 
 
 class Recommendation(models.Model):
