@@ -94,7 +94,7 @@
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h3 class="modal-title fs-5" id="myModalLabel">Вы точно хотите
+                                                            <h3 class="modal-title fs-5" id="myModalLabel">Вы уверены, что хотите
                                                                 удалить это событие?</h3>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
@@ -106,7 +106,7 @@
                                                             <form method="POST" id="modal_form_link"
                                                                   action="{% url 'webapp:event_delete' event.pk %}">
                                                                 {% csrf_token %}<input type="submit" id="confirm_button"
-                                                                                       class="btn btn-danger"
+                                                                                       class="btn btn-outline-secondary"
                                                                                        value="Да">
                                                             </form>
                                                         </div>
