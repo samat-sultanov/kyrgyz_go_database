@@ -27,7 +27,7 @@ def get_data():
                 score = get_score(con, game.black_score, se, bonus)
                 new_dict['score'] = score
                 new_dict['result'] = game.black_score
-                new_dict['opponent'] = game.white_id
+                new_dict['opponent'] = game.white
                 new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num)
                 if game.white_id:
                     opponent_rating = get_opponent_rating(game.white_id, game.round_num)
@@ -40,9 +40,6 @@ def get_data():
                     pass
                 new_dict['round'] = game.round_num
                 new_list.append(new_dict)
-    print(new_list)
-    for item in new_list:
-        print(item)
     return new_list
 
 
@@ -104,3 +101,25 @@ def get_score(con, result, se, bonus):
         return score
     else:
         return None
+
+
+def get_total_score_for_player():
+    tournament = get_object_or_404(Tournament, pk=13)
+    players = tournament.player_set.all()
+    data = get_data()
+    new_list = []
+    for player in players:
+        new_dict = dict()
+        score = []
+        new_dict['player'] = player
+        for element in data:
+            if player == element['player'] and element['score']:
+                score.append(element['score'])
+            if player == element['opponent'] and element['opponent_score']:
+                score.append(element['opponent_score'])
+        total = sum(score)
+        new_dict['total'] = total
+        new_list.append(new_dict)
+    return new_list
+
+
