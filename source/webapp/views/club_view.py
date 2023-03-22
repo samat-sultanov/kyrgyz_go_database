@@ -43,7 +43,6 @@ class ClubsListView(ListView):
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        # context = super().get_context_data(**kwargs)
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         context['data'] = average_go_level()

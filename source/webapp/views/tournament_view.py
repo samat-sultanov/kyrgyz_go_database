@@ -1,4 +1,3 @@
-import re
 from urllib.parse import urlencode
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, TemplateView
@@ -85,4 +84,3 @@ class TournamentDetail(TemplateView):
         kwargs['sorted_players'] = sorted_players
         kwargs['wins'] = get_wins_losses(pk=pk)
         return super().get_context_data(**kwargs)
-
