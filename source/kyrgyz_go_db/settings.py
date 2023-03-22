@@ -73,6 +73,10 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.auth.EmailAuthBackend',
+]
+
 WSGI_APPLICATION = 'kyrgyz_go_db.wsgi.application'
 
 # Database
