@@ -106,7 +106,7 @@ def get_score(con, result, se, bonus):
         return None
 
 
-def get_total_score():
+def get_total_score_for_player():
     tournament = get_object_or_404(Tournament, pk=13)
     players = tournament.player_set.all()
     data = get_data()
@@ -120,6 +120,9 @@ def get_total_score():
                 score.append(element['score'])
             if player == element['opponent'] and element['opponent_score']:
                 score.append(element['opponent_score'])
-        new_dict['total'] = score
+        total = sum(score)
+        new_dict['total'] = total
         new_list.append(new_dict)
     return new_list
+
+
