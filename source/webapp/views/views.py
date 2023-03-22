@@ -61,7 +61,7 @@ class QuestionsListView(View):
 
 
 def file_upload(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             a = form.save()
@@ -71,13 +71,15 @@ def file_upload(request):
         else:
             return render(request, 'file_upload.html', {'form': form})
         return redirect('webapp:file_check', pk=tournament.pk)
-    else:
+    elif request.method == 'GET' and request.user.is_authenticated:
         form = FileForm
-    return render(request, 'file_upload.html', {'form': form})
+        return render(request, 'file_upload.html', {'form': form})
+    else:
+        return render(request, '403.html')
 
 
 def file_upload_check(request, pk):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         tournament = Tournament.objects.get(pk=pk)
         players = tournament.player_set.all()
         patronymic = request.POST.getlist('patronymic')
@@ -89,10 +91,14 @@ def file_upload_check(request, pk):
         tournament_class = request.POST.get('tournament_class')
         uploaded_by = request.user
         if tournament_form.is_valid():
-            if city == '' and date == '' and tournament_class == '' and regulations =='':
-                tournament_form = CheckTournamentForm({'city': tournament.city, 'date': tournament.date, 'tournament_class':tournament.tournament_class, 'regulations':tournament.regulations, 'uploaded_by': uploaded_by}, instance=tournament)
+            if city == '' and date == '' and tournament_class == '' and regulations == '':
+                tournament_form = CheckTournamentForm(
+                    {'city': tournament.city, 'date': tournament.date, 'tournament_class': tournament.tournament_class,
+                     'regulations': tournament.regulations, 'uploaded_by': uploaded_by}, instance=tournament)
             else:
-                tournament_form = CheckTournamentForm({'city': city, 'date': date, 'tournament_class':tournament_class, 'regulations':regulations, 'uploaded_by': uploaded_by}, instance=tournament)
+                tournament_form = CheckTournamentForm(
+                    {'city': city, 'date': date, 'tournament_class': tournament_class, 'regulations': regulations,
+                     'uploaded_by': uploaded_by}, instance=tournament)
             tournament_form.save()
 
         form = CheckPlayerForm(request.POST)
@@ -113,7 +119,7 @@ def file_upload_check(request, pk):
         else:
             return render(request, 'webapp:file_upload.html', {'form': form})
 
-    if request.method == 'GET':
+    if request.method == 'GET' and request.user.is_authenticated:
         tournament = Tournament.objects.get(pk=pk)
         players = tournament.player_set.all()
         player_form = CheckPlayerForm()
@@ -122,6 +128,8 @@ def file_upload_check(request, pk):
         return render(request, 'tournament/tournament_check.html',
                       {'tournament': tournament, 'players': players, 'wins': wins, 'player_form': player_form,
                        'tournament_form': tournament_form})
+    else:
+        return render(request, '403.html')
 
 
 def about_us_view(request, *args, **kwargs):
