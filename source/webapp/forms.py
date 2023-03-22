@@ -135,10 +135,13 @@ class ClubForm(forms.ModelForm):
     def clean_num_players(self):
         num_players = self.cleaned_data.get('num_players')
         active_players_count = self.instance.players.count()
-        if num_players < active_players_count:
-            raise ValidationError(
-                'Number of members cannot be less than the number of active players!')
-        return num_players
+        if active_players_count and num_players:
+            if num_players < active_players_count:
+                raise ValidationError(
+                    'Number of members cannot be less than the number of active players!')
+            return num_players
+        else:
+            return num_players
 
 
 class ParticipantForm(forms.ModelForm):
