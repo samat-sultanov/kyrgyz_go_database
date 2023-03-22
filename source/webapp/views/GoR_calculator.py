@@ -40,9 +40,6 @@ def get_data():
                     pass
                 new_dict['round'] = game.round_num
                 new_list.append(new_dict)
-    # print(new_list)
-    # for item in new_list:
-    #     print(item)
     return new_list
 
 
