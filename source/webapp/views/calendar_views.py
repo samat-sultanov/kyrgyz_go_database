@@ -2,12 +2,12 @@ import json
 from urllib.parse import urlencode
 
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, View
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, ListView, DetailView, View
 from .functions import get_rank, get_rank_for_json
 
 class CalendarDetailView(TemplateView):
@@ -116,3 +116,23 @@ class ParticipantCreate(CreateView):
         return reverse('webapp:event_view', kwargs={'pk': self.object.event.pk})
 
 
+class CalendarPlayerList(DetailView):
+    template_name = 'calendar/player_list_e.html'
+    context_object_name = 'event'
+    model = Calendar
+
+
+class Status_change(View):
+    def get(self, request, *args, **kwargs):
+        part = get_object_or_404(Participant, pk=self.kwargs.get('pk'))
+        status_res = None
+        if part.status == 'Confirmed':
+            part.status = 'Not confirmed'
+            part.save()
+            status_res = True
+        else:
+            part.status = 'Confirmed'
+            part.save()
+            status_res = False
+        response = JsonResponse({'status_res': status_res})
+        return response

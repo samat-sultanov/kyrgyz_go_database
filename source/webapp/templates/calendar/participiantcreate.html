@@ -62,6 +62,7 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
           while (el !== this) {
             if (el.id == "a_d") {
               let name = el.innerText;
+              {#console.log(name)#}
               let clean_arr = name.split(" ")
               {#console.log(clean_arr[0])#}
               let name_id = document.getElementById('id_name')

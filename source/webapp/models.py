@@ -9,6 +9,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
+STATUS = [('Confirmed', 'Confirmed'), ('Not confirmed', 'Not confirmed')]
 
 
 class Country(models.Model):
@@ -206,8 +207,10 @@ class Participant(models.Model):
     patronymic = models.CharField(max_length=20, verbose_name="Отчество", null=False, blank=False)
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
+    city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
     phonenumber = PhoneNumberField(unique=True, verbose_name='Номер телефона'
                                    ,null=True, blank=False, max_length=16, default=None)
+    status = models.CharField(max_length=50, default=STATUS[1][1], choices=STATUS, verbose_name='Статус')
 
     class Meta:
         db_table = "participant"
