@@ -1,14 +1,14 @@
 import json
-from urllib.parse import urlencode
 
-from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, ListView, DetailView, View
-from .functions import get_rank, get_rank_for_json
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, DetailView, View
+from .functions import get_rank_for_json
+
 
 class CalendarDetailView(TemplateView):
     template_name = 'calendar/calendar_view.html'
@@ -20,7 +20,7 @@ class CalendarDetailView(TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class CalendarCreateView(CreateView):
+class CalendarCreateView(LoginRequiredMixin, CreateView):
     template_name = 'calendar/calendar_create.html'
     model = Calendar
     form_class = CalendarForm
@@ -29,7 +29,7 @@ class CalendarCreateView(CreateView):
         return reverse('webapp:index')
 
 
-class CalendarUpdateView(UpdateView):
+class CalendarUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'calendar/calendar_update.html'
     model = Calendar
     form_class = CalendarForm
@@ -38,10 +38,11 @@ class CalendarUpdateView(UpdateView):
         return reverse('webapp:index')
 
 
-class CalendarDeleteView(DeleteView):
+class CalendarDeleteView(PermissionRequiredMixin, DeleteView):
     queryset = Calendar.objects.all().filter(is_deleted=False)
     context_object_name = 'event'
     success_url = reverse_lazy('webapp:index')
+    permission_required = ('webapp.delete_calendar',)
 
     def form_valid(self, form):
         success_url = self.get_success_url()
@@ -85,6 +86,7 @@ def hard_delete_one_event(request, *args, **kwargs):
         event.delete()
         return redirect('webapp:deleted_calendar_list')
 
+
 class ParticipantCreate(CreateView):
     template_name = 'calendar/participiantcreate.html'
     form_class = ParticipantForm
@@ -109,7 +111,7 @@ class ParticipantCreate(CreateView):
         context['forms'] = self.get_search_form()
         data = get_rank_for_json(self.get_players())
         context['player'] = data
-        context['qs_json'] = json.dumps(list(data), default = str)
+        context['qs_json'] = json.dumps(list(data), default=str)
         return context
 
     def get_success_url(self):
