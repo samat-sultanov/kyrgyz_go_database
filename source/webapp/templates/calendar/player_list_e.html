@@ -6,14 +6,17 @@
 
 {% block content %}
     <br/>
+    <br/>
 <div class="container">
-<h1 style="font-size: 30px">Players Lists {{ event.event_name }}</h1>
+<h3 class="title" style="font-size: 30px">Список зарегистрированных игроков на турнир {{ event.event_name }}</h3>
     <br/>
     <table class="table">
       <thead>
         <tr>
           <th scope="col">#</th>
+          <th scope="col">Фамилия</th>
           <th scope="col">Имя</th>
+          <th scope="col">Отчество</th>
           <th scope="col">Город</th>
           <th scope="col">Рейтинг</th>
           <th scope="col">Статус</th>
@@ -23,7 +26,9 @@
           {% for players in  event.participant_set.all %}
                       <tr>
           <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ players.surname }}</td>
           <td>{{ players.name }}</td>
+          <td>{{ players.patronymic }}</td>
           <td>{{ players.city }}</td>
           <td>{{ players.rank }}</td>
           <td id="status-{{ players.pk }}">{{ players.status }}</td>
@@ -35,6 +40,7 @@
       </tbody>
     </table>
 </div>
+    <br/>
     <br/>
 {% endblock %}
 {% block src %}
