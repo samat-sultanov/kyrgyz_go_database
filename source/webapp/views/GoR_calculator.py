@@ -123,3 +123,23 @@ def get_total_score_for_player():
     return new_list
 
 
+def get_new_rating():
+    tournament = get_object_or_404(Tournament, pk=13)
+    players = tournament.playerintournament_set.all()
+    data = get_total_score_for_player()
+    for element in data:
+        for player in players:
+            if element['player'].pk == player.player.pk:
+                print(player.player)
+                if player.rating >= 100:
+                    new_rating = player.rating + element['total']
+                    # print(f'{element["player"]} {new_rating}')
+                    player.rating_after = new_rating
+                    player.save()
+                elif 100 > player.rating > player.rating + element['total']:
+                    new_rating = player.rating
+                    # print(f'{element["player"]} {new_rating}')
+                    player.rating_after = new_rating
+                    player.save()
+
+
