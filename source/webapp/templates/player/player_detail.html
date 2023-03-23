@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block link %}
     <link rel="stylesheet" href="{% static "css/style_share.css" %}">
@@ -19,8 +20,10 @@
         <div class="row mb-4">
             <div class="col-5">
                 {% if player.avatar %}
-                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px"
-                         src="{{ player.avatar.url }}" alt="avatar">
+                     {% thumbnail player.avatar "500x500" crop="center" as im %}
+                        <img style="width: 75%; border: solid; border-color: grey; border-width: 1px"
+                             src="{{ im.url }}" alt="avatar">
+                    {% endthumbnail %}
                 {% else %}
                     <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;"
                          src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">

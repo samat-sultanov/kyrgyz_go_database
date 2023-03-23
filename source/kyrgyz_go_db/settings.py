@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'webapp',
     'accounts',
     'phonenumber_field',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [

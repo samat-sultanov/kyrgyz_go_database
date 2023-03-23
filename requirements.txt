@@ -9,6 +9,7 @@ psycopg2-binary==2.9.5
 pycodestyle==2.10.0
 python-dotenv==0.21.1
 pytz==2022.7.1
+sorl-thumbnail==12.9.0
 sqlparse==0.4.3
 tzdata==2022.7
 xmltodict==0.13.0
