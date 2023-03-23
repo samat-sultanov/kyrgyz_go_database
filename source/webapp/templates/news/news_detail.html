@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block link %}
+    <link rel="stylesheet" href="{% static "css/share.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+          integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap" rel="stylesheet"/>
+{% endblock %}
+
 {% block nav %}
 {% endblock %}
 
 {% block content %}
+    <br/>
     <div class="container">
     <div class="card">
         {% if single_news.news_image %}
@@ -27,7 +38,6 @@
                 <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal">
                     Удалить
                 </button>
-
                 <!-- Модалка подтверждения -->
                 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
                      aria-hidden="true">
@@ -50,10 +60,37 @@
                 </div>
 
             {% endif %}
+        <!-- Поделиться новостью в соц-сетях, Share news -->
+                <div>
+                    <button class="share-btn" id="shareBtn">
+                    <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
+                    <span class="social-icons">
+                            <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
+                                <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
+                            </a>
+                            <a href="https://api.whatsapp.com/send/?text=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
+                                <i style="color: #40C351" class="fa-brands fa-whatsapp"></i></a>
+                             <a href="http://vkontakte.ru/share.php?url=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
+                                 <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
+                             <a href="https://telegram.me/share/url?url=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}&text={{ single_news.title }}">
+                                 <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
+                      </span>
+                    </button>
+                     <a style="padding-left: 12px" onclick="copyfunc()"><img
+                    style="width: 37px;"
+                    src="{% static 'images/copy.png' %}"></a>
+                    <input readonly="readonly" style="width: 20rem; border-radius: 5px; border-color: #9400D3"
+                    type="text" value="http://127.0.0.1:8000/news_detail/{{ single_news.pk }}" id="myInput">
+                </div>
             <br><br>
         </div>
     </div>
     </div>
 
+    <br/>
+{% endblock %}
 
+{% block src %}
+    <script src="{% static "js/copy_input.js" %}"></script>
+    <script src="{% static "js/open_button.js" %}"></script>
 {% endblock %}

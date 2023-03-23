@@ -53,7 +53,8 @@
 
 .fa-facebook,
 .fa-whatsapp,
-.fa-vk {
+.fa-vk,
+.fa-telegram{
   transform: scale(0);
   transition: transform 300ms ease-in-out;
 }
@@ -71,7 +72,7 @@
   background-color: #9400D3;
 }
 
-.share-btn.open :is(.fa-facebook, .fa-whatsapp, .fa-vk) {
+.share-btn.open :is(.fa-facebook, .fa-whatsapp, .fa-vk, .fa-telegram) {
   transform: scale(1);
   color: #9400D3;
 }
