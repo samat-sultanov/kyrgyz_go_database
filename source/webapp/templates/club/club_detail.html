@@ -6,15 +6,16 @@
 
 {% block content %}
     <div class="container mb-4 mt-4">
-        <div>
+        <div >
             <h2 class="title">Клуб: {{ club.name }}</h2>
-                {% if club.logo %}
-                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px"
-                         src="{{ club.logo.url }}" alt="logo">
-                {% else %}
-                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;"
-                         src="{% static "images/no_image.jpg" %}" alt="no_logo_pic">
-                {% endif %}
+            {% if club.logo %}
+                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ club.logo.url }}" alt="logo">
+            {% else %}
+                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/no_image.jpg" %}" alt="no_logo_pic">
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-5">
                 <p class="mt-3">City:</p>
                 {% if club.num_players %}
                     <p>Number of members: {{ club.num_players }}</p>
@@ -25,7 +26,24 @@
                 {% for coach in club.coaches.all %}
                     <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>
                 {% endfor %}
-                {% if perms.webapp.change_club %}
+            </div>
+            <div class="col-4">
+                {% if club.address %}
+                    <p class="mt-3">Address: {{ club.address }}</p>
+                {% endif %}
+                {% if club.phonenumber %}
+                    <p>Phone number: {{ club.phonenumber }}k</p>
+                {% endif %}
+                {% if club.web_link %}
+                    <p>Web-site: {{ club.web_link }}k</p>
+                {% endif %}
+                {% if club.schedule %}
+                    <p>Working hours: {{ club.schedule }}k</p>
+                {% endif %}
+            </div>
+        </div>
+
+                {% if request.user.is_authenticated%}
                     <a class="btn btn-light mt-2" href="{% url "webapp:club_update" club.pk %}">Редактировать
                                  клуб</a>
                 {% endif %}
