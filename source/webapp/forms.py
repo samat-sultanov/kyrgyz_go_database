@@ -119,7 +119,8 @@ class CheckTournamentForm(forms.ModelForm):
 class ClubForm(forms.ModelForm):
     class Meta:
         model = Club
-        fields = ['logo', 'name', 'EGDName', 'num_players', 'city', 'coaches']
+        fields = ['logo', 'name', 'EGDName', 'num_players', 'city', 'coaches', 'address', 'phonenumber', 'web_link',
+                  'schedule']
         widgets = {
             'coaches': forms.CheckboxSelectMultiple(),
         }
@@ -129,7 +130,11 @@ class ClubForm(forms.ModelForm):
             'EGDName': 'EGD name:',
             'city': 'City:',
             'coaches': 'Coaches:',
-            'num_players': 'Number of members:'
+            'num_players': 'Number of members:',
+            'address': "Address",
+            'phonenumber': "Phone number",
+            'web_link': "Link to social media or web-site",
+            'schedule': 'Working hours',
         }
 
     def clean_num_players(self):

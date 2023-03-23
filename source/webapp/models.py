@@ -43,6 +43,10 @@ class Club(models.Model):
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True, related_name='clubs')
     coaches = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='clubs')
     num_players = models.PositiveIntegerField(null=True, blank=True, verbose_name='Количество участников клуба')
+    address = models.CharField(verbose_name='Address', max_length=50, null=True, blank=True)
+    phonenumber = PhoneNumberField(verbose_name='Номер телефона', null=True, blank=True)
+    web_link = models.URLField(verbose_name='Интернет-ссылка', null=True, blank=True)
+    schedule = models.CharField(verbose_name='Расписание', max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
