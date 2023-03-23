@@ -91,7 +91,7 @@ def get_se(num1, num2):
 def get_new_rank_from_rating(num):
     for element in RANK_FROM_RATING:
         for k, v in element.items():
-            if num <= k:
+            if num >= k:
                 return v
 
 
@@ -128,18 +128,34 @@ def get_new_rating():
     players = tournament.playerintournament_set.all()
     data = get_total_score_for_player()
     for element in data:
-        for player in players:
-            if element['player'].pk == player.player.pk:
-                print(player.player)
-                if player.rating >= 100:
-                    new_rating = player.rating + element['total']
+        for item in players:
+            if element['player'].pk == item.player.pk:
+                if item.rating >= 100:
+                    new_rating = item.rating + element['total']
                     # print(f'{element["player"]} {new_rating}')
-                    player.rating_after = new_rating
-                    player.save()
-                elif 100 > player.rating > player.rating + element['total']:
-                    new_rating = player.rating
+                    new_rank = get_new_rank_from_rating(new_rating)
+                    item.rating_after = new_rating
+                    item.save()
+                    item.player.current_rating = new_rating
+                    item.player.current_rank = new_rank
+                    item.player.save()
+                elif 100 > item.rating > item.rating + element['total']:
+                    new_rating = item.rating
                     # print(f'{element["player"]} {new_rating}')
-                    player.rating_after = new_rating
-                    player.save()
+                    item.rating_after = new_rating
+                    item.save()
+                    new_rank = get_new_rank_from_rating(new_rating)
+                    item.player.current_rating = new_rating
+                    item.player.current_rank = new_rank
+                    item.player.save()
+                elif 100 > item.rating < item.rating + element['total']:
+                    new_rating = item.rating + element['total']
+                    item.rating_after = new_rating
+                    item.save()
+                    new_rank = get_new_rank_from_rating(new_rating)
+                    item.player.current_rating = new_rating
+                    item.player.current_rank = new_rank
+                    item.player.save()
+
 
 
