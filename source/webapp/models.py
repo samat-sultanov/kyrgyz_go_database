@@ -196,6 +196,15 @@ class News(models.Model):
     def get_absolute_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.pk})
 
+    def save(self):
+        super().save()
+        if self.news_image:
+            img = Image.open(self.news_image.path)
+            if img.height > 1500 or img.width > 1500:
+                output_size = (1500, 1500)
+                img.thumbnail(output_size)
+                img.save(self.news_image.path)
+
 
 class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
