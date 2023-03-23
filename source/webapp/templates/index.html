@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load thumbnail %}
+
 
 {% block content %}
     <div id="carousel-main" class="carousel slide" data-bs-ride="carousel">
@@ -143,7 +145,9 @@
                 {% for element in position %}
                     <div class="card text-center card-player bg-light">
                         {% if element.player.avatar %}
-                            <img class="img-main-player" src="{{ element.player.avatar.url }}" alt="avatar">
+                            {% thumbnail element.player.avatar "500x500" crop="center" as im %}
+                                <img class="img-main-player" src="{{ im.url }}" alt="avatar">
+                            {% endthumbnail %}
                         {% else %}
                             <img class="img-main-player" src="{% static "images/no_image.jpg" %}" alt="no_pic_avatar">
                         {% endif %}
