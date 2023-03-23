@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
@@ -100,6 +101,10 @@ class ParticipantCreate(CreateView):
         return Search_Par_Player(self.request.GET)
 
     def get(self, request, *args, **kwargs):
+        event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
+        print(event.deadline)
+        if datetime.now() > event.deadline:
+            return redirect(reverse('webapp:index'))
         self.forms = self.get_search_form()
         return super().get(request, *args, **kwargs)
 
