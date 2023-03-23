@@ -117,7 +117,7 @@ def file_upload_check(request, pk):
                 form.save()
             return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
         else:
-            return render(request, 'webapp:file_upload.html', {'form': form})
+            return render(request, 'file_upload.html', {'form': form})
 
     if request.method == 'GET' and request.user.is_authenticated:
         tournament = Tournament.objects.get(pk=pk)
