@@ -158,6 +158,7 @@ class PlayerInTournament(models.Model):
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
     GoLevel = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
     rating = models.IntegerField(verbose_name='Rating', blank=True, null=True)
+    rating_after = models.IntegerField(verbose_name='Rating after', blank=True, null=True)
 
     def __str__(self):
         return f'{self.id} - {self.player}: {self.tournament}, {self.GoLevel}'
