@@ -3,7 +3,7 @@
 {% load thumbnail %}
 
 {% block link %}
-    <link rel="stylesheet" href="{% static "css/style_share.css" %}">
+    <link rel="stylesheet" href="{% static "css/share.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
           integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -128,6 +128,8 @@
                             <i style="color: #40C351" class="fa-brands fa-whatsapp"></i></a>
                          <a href="http://vkontakte.ru/share.php?url=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
                              <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
+                         <a href="https://telegram.me/share/url?url=http://127.0.0.1:8000/player_detail/{{ player.pk }}">
+                             <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
                   </span>
             </button>
             <a style="padding-left: 12px" onclick="copyfunc()"><img
