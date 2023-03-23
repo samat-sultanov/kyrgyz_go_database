@@ -10,8 +10,8 @@ RANK_FROM_RATING = [{-400: "25k"}, {-300: "24k"}, {-200: "23k"}, {-100: "22k"}, 
                     ]
 
 
-def get_data():
-    tournament = get_object_or_404(Tournament, pk=13)
+def get_data(pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.playerintournament_set.all()
     games = Game.objects.all().filter(tournament_id=tournament.pk)
     new_list = []
@@ -43,14 +43,14 @@ def get_data():
     return new_list
 
 
-def get_opponent_rating(pk, number):
-    tournament = get_object_or_404(Tournament, pk=13)
+def get_opponent_rating(opponent_id, number_of_round, pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
     games = Game.objects.all().filter(tournament_id=tournament.pk)
     players = tournament.playerintournament_set.all()
     for game in games:
         for element in players:
             try:
-                if element.player.pk == pk and game.round_num == number:
+                if element.player.pk == opponent_id and game.round_num == number_of_round:
                     return element.rating
             except:
                 pass
@@ -91,7 +91,7 @@ def get_se(num1, num2):
 def get_new_rank_from_rating(num):
     for element in RANK_FROM_RATING:
         for k, v in element.items():
-            if num >= k:
+            if num <= k + 100:
                 return v
 
 
@@ -103,8 +103,8 @@ def get_score(con, result, se, bonus):
         return None
 
 
-def get_total_score_for_player():
-    tournament = get_object_or_404(Tournament, pk=13)
+def get_total_score_for_player(pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.player_set.all()
     data = get_data()
     new_list = []
@@ -123,8 +123,8 @@ def get_total_score_for_player():
     return new_list
 
 
-def get_new_rating():
-    tournament = get_object_or_404(Tournament, pk=13)
+def get_new_rating(pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.playerintournament_set.all()
     data = get_total_score_for_player()
     for element in data:
@@ -132,7 +132,6 @@ def get_new_rating():
             if element['player'].pk == item.player.pk:
                 if item.rating >= 100:
                     new_rating = item.rating + element['total']
-                    # print(f'{element["player"]} {new_rating}')
                     new_rank = get_new_rank_from_rating(new_rating)
                     item.rating_after = new_rating
                     item.save()
@@ -141,7 +140,6 @@ def get_new_rating():
                     item.player.save()
                 elif 100 > item.rating > item.rating + element['total']:
                     new_rating = item.rating
-                    # print(f'{element["player"]} {new_rating}')
                     item.rating_after = new_rating
                     item.save()
                     new_rank = get_new_rank_from_rating(new_rating)
