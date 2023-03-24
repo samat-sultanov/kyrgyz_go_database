@@ -129,8 +129,8 @@ class Player(models.Model):
         verbose_name = "Игрок"
         verbose_name_plural = "Игроки"
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super(Player, self).save(*args, **kwargs)
         if self.avatar:
             img = Image.open(self.avatar.path)
             if img.height > 720 or img.width > 720:
