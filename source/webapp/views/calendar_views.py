@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -8,7 +7,6 @@ from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, DetailView, View
-from .functions import get_rank_for_json
 
 
 class CalendarDetailView(TemplateView):
@@ -108,15 +106,9 @@ class ParticipantCreate(CreateView):
         self.forms = self.get_search_form()
         return super().get(request, *args, **kwargs)
 
-    def get_players(self):
-        return Player.objects.all()
-
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['forms'] = self.get_search_form()
-        data = get_rank_for_json(self.get_players())
-        context['player'] = data
-        context['qs_json'] = json.dumps(list(data), default=str)
         return context
 
     def get_success_url(self):

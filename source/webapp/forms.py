@@ -164,7 +164,7 @@ class ParticipantForm(forms.ModelForm):
 
     class Meta:
         model = Participant
-        fields = ['name', 'surname', 'patronymic', 'rank', 'phonenumber']
+        fields = ['name', 'surname', 'rank', 'phonenumber']
 
 
 class Search_Par_Player(forms.Form):

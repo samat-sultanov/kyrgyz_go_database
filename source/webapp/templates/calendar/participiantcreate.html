@@ -7,24 +7,32 @@
 
 <div id="cont-1" class="container">
     <br/>
+    <input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
+    <div id="i_have">
+    <br/>
+      {{ forms.search_player }}
+    <ul id="box" style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
+             {% for data in player %}
+
+            {% endfor %}
+    </ul>
+    </div>
     <form action="" id="actionpost" method="post">
         {% include "partial/form.html" with button_text="Записаться" %}
         <br/>
         <br/>
     </form>
-<input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
-<br/>
-<br/>
-<div id="i_have">
-  {{ forms.search_player }}
-<ul id="box" style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
-{#                <div id="box">#}
-         {% for data in player %}
-
-        {% endfor %}
-{#                </div>#}
-</ul>
-</div>
+{#<input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>#}
+{#<br/>#}
+{#<br/>#}
+{#<div id="i_have">#}
+{#  {{ forms.search_player }}#}
+{#<ul id="box" style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">#}
+{#         {% for data in player %}#}
+{##}
+{#        {% endfor %}#}
+{#</ul>#}
+{#</div>#}
 </div>
     <div class="container" id="show_date">
 
@@ -66,8 +74,10 @@
                     const listItem = document.createElement('li');
                     listItem.addEventListener('click', ()=>show_data(item));
                     listItem.setAttribute("class", "list-group-item");
-                    listItem.innerText = `${item['last_name']} ${item['first_name']} ${item['GoLevel']}`;
+                    listItem.innerText = `${item['last_name']} ${item['first_name']} ${item['current_rank']}`;
                     box.appendChild(listItem);
+                    {#box.innerHTML = listItem#}
+
 
                     {#box.innerHTML += listItem;#}
                     {#box.innerHTML += `<li data-name="${item['id']}" class="list-group-item">#}
@@ -111,13 +121,11 @@
             let div = document.getElementById('cont-1');
               let name_id = document.getElementById('id_name')
               let surname_id = document.getElementById('id_surname')
-              let patronymic_id = document.getElementById('id_patronymic')
               let id_rank = document.getElementById('id_rank')
               let input_search = document.getElementById('search_last_name')
               input_search.type = 'text'
               name_id.type = 'hidden'
               surname_id.type = 'hidden'
-              patronymic_id.type = 'hidden'
               id_rank.type = 'hidden'
           }
           else {
@@ -125,11 +133,9 @@
                 let box = document.getElementById('box')
                 let name_id = document.getElementById('id_name')
                 let surname_id = document.getElementById('id_surname')
-                let patronymic_id = document.getElementById('id_patronymic')
                 let id_rank = document.getElementById('id_rank')
                 name_id.type = 'text'
                 surname_id.type = 'text'
-                patronymic_id.type = 'text'
                 id_rank.type = 'text'
                 box.innerHTML = ''
                 input_search.type = 'hidden'
@@ -137,7 +143,7 @@
         }
 
         let formss = document.getElementById('actionpost');
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 4; i++) {
             let child = formss.getElementsByTagName("p")[i];
             formss.removeChild(child);
         }
