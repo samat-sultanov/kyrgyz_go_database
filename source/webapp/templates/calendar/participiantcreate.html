@@ -17,12 +17,12 @@
 <br/>
 <div id="i_have">
   {{ forms.search_player }}
-<ul style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
-                <div id="box">
+<ul id="box" style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
+{#                <div id="box">#}
          {% for data in player %}
 
         {% endfor %}
-                </div>
+{#                </div>#}
 </ul>
 </div>
 </div>
@@ -34,12 +34,7 @@
 {% endblock %}
 {% block src %}
     <script>
-        const base_url = '/api/v1/player/'
-        const data = '{{qs_json}}'
-        const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
-        const input = document.getElementById('search_last_name')
-        {#console.log(rdata)#}
-        let filteredArr = []
+       const base_url = '/api/v1/player/'
        function makeRequest(url, method='GET') {
         return new Promise(function(resolve, reject) {
             let xhr = new XMLHttpRequest();
@@ -48,52 +43,68 @@
                 else reject(this);
                 req = this.responseText;
                 JsonFile = JSON.parse(req);
-                console.log(JsonFile)
             };
             xhr.open(method, url);
             xhr.send();
         });
     }
-    let current = makeRequest(base_url)
-        input.addEventListener('keyup', (e)=>{
+
+    const input = document.getElementById('search_last_name')
+    let filteredArr = []
+        input.addEventListener('keyup', async (e)=>{
             box.innerHTML = ''
+            let curva = await makeRequest(base_url);
+            let rdata = JSON.parse(curva)
+            console.log(rdata)
             filteredArr = rdata.filter(info=> info['last_name'].includes(e.target.value))
-            {#console.log(filteredArr)#}
+            console.log(filteredArr)
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
-                    box.innerHTML += `<li onclick="show_date(this)" id='a_d' class="list-group-item">
-${item['first_name']} ${item['last_name']} ${item['patronymic']}
-                    ${item['GoLevel']}
-                    </li>`
+                    function show_data(obj) {
+                        console.log(obj['first_name']);
+                     }
+                    const listItem = document.createElement('li');
+                    listItem.addEventListener('click', ()=>show_data(item));
+                    listItem.setAttribute("class", "list-group-item");
+                    listItem.innerText = `${item['last_name']} ${item['first_name']} ${item['GoLevel']}`;
+                    box.appendChild(listItem);
+
+                    {#box.innerHTML += listItem;#}
+                    {#box.innerHTML += `<li data-name="${item['id']}" class="list-group-item">#}
+                    {#${item['first_name']} ${item['last_name']} ${item['patronymic']}#}
+                    {#${item['GoLevel']}#}
+                    {#</li>`#}
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
             }
         })
 
-    window.onload = function () {
-    box.onclick = function (e) {
-          let el = e ? e.target : window.event.srcElement;
-          while (el !== this) {
-            if (el.id == "a_d") {
-              let name = el.innerText;
+    {#window.onload = function () {#}
+    {#box.onclick = function (e) {#}
+          {#console.log(e.target.data);#}
+    {#      let el = e ? e.target : window.event.srcElement;#}
+    {#      while (el !== this) {#}
+    {#        if (el.id == "a_d") {#}
+    {#          let name = el.innerText;#}
               {#console.log(name)#}
-              let clean_arr = name.split(" ")
+    {#          let clean_arr = name.split(" ")#}
               {#console.log(clean_arr[0])#}
-              let name_id = document.getElementById('id_name')
-              let surname_id = document.getElementById('id_surname')
-              let patronymic_id = document.getElementById('id_patronymic')
-              let id_rank = document.getElementById('id_rank')
-              name_id.value = clean_arr[0]
-              surname_id.value = clean_arr[1]
-              patronymic_id.value = clean_arr[2]
-              id_rank.value = clean_arr[3]
-              break;
-            }
-            el = el.parentNode;
-          }
-        };
-      };
+    {#          let name_id = document.getElementById('id_name')#}
+    {#          let surname_id = document.getElementById('id_surname')#}
+    {#          let patronymic_id = document.getElementById('id_patronymic')#}
+    {#          let id_rank = document.getElementById('id_rank')#}
+    {#          name_id.value = clean_arr[0]#}
+    {#          surname_id.value = clean_arr[1]#}
+    {#          patronymic_id.value = clean_arr[2]#}
+    {#          id_rank.value = clean_arr[3]#}
+    {#          break;#}
+    {#        }#}
+    {#        el = el.parentNode;#}
+    {#      }#}
+    {#    };#}
+    {#  };#}
+
         function change_tamp() {
         let chxbox = document.getElementById('check_butt');
           if (chxbox.checked) {
@@ -124,28 +135,21 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
                 input_search.type = 'hidden'
           }
         }
+
         let formss = document.getElementById('actionpost');
         for (let i = 0; i < 5; i++) {
             let child = formss.getElementsByTagName("p")[i];
             formss.removeChild(child);
         }
 
-        function show_date(obj) {
-            let show_date = document.getElementById('show_date')
-            let obj_2 = obj.innerText
-            let clean_date = obj_2.split(" ")
-            show_date.innerHTML =  `<h1 style="font-size: 40px">${clean_date[0]}</h1>
-            <label>Surname: ${clean_date[1]}</label><br/><label>Patronymic: ${clean_date[2]}</label><br/>
-            <label>GoLevel: ${clean_date[3]}</label>`
-        }
-
-        {#fetch('/api/v1/player/')#}
-        {#    .then(response => {#}
-        {#        console.log('hi')#}
-        {#        console.log(response.json())#}
-        {#    })#}
-        {#    .catch(error => {#}
-        {#        console.log('errro')#}
-        {#    });#}
+        {#function show_date(obj) {#}
+        {#    console.log(obj)#}
+        {#    let show_date = document.getElementById('show_date')#}
+        {#    let obj_2 = obj.innerText#}
+        {#    let clean_date = obj_2.split(" ")#}
+        {#    show_date.innerHTML =  `<h1 style="font-size: 40px">${clean_date[0]}</h1>#}
+        {#    <label>Surname: ${clean_date[1]}</label><br/><label>Patronymic: ${clean_date[2]}</label><br/>#}
+        {#    <label>GoLevel: ${clean_date[3]}</label>`#}
+       // }
     </script>
 {% endblock %}

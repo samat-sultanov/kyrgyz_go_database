@@ -157,8 +157,6 @@ class ParticipantForm(forms.ModelForm):
         "Name", "id": "id_name", 'style': "width:200px"}))
     surname = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Surname", "id": "id_surname", 'style': "width:200px"}))
-    patronymic = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Patronymic", "id": "id_patronymic", 'style': "width:200px"}))
     rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "GoLevel", "id": "id_rank", 'style': "width:200px"}))
     phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
