@@ -55,6 +55,14 @@ class Club(models.Model):
         verbose_name = "Клуб"
         verbose_name_plural = "Клубы"
 
+    def save(self, *args, **kwargs):
+        super(Club, self).save(*args, **kwargs)
+        if self.logo:
+            img = Image.open(self.logo.path)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.logo.path)
 
 class Game(models.Model):
     black = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="black_player", null=True,
@@ -133,11 +141,10 @@ class Player(models.Model):
         super(Player, self).save(*args, **kwargs)
         if self.avatar:
             img = Image.open(self.avatar.path)
-            if img.height > 720 or img.width > 720:
-                output_size = (720, 720)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
                 img.thumbnail(output_size)
                 img.save(self.avatar.path)
-
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
@@ -200,8 +207,8 @@ class News(models.Model):
     def get_absolute_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.pk})
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super(News, self).save(*args, **kwargs)
         if self.news_image:
             img = Image.open(self.news_image.path)
             if img.height > 1500 or img.width > 1500:
