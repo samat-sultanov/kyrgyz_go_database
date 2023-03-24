@@ -11,8 +11,12 @@
             <p>Город: {{ event.event_city }}</p>
             <p>Дата: {{ event.event_date }}</p>
             <p>{{ event.text }}</p>
+            {% if event.is_end_date %}
+                <p><em><strong>Регистрация на турнир {{ event.event_name }} закончена.</strong></em></p>
+            {% else %}
              <a href="{% url "webapp:ParticipantCreate" event.pk %}" class="btn"
                 style="background-color: #9400D3; color: white" id="slide_stop_button">Записаться</a>
+            {% endif %}
              &nbsp;&nbsp;<a href="{% url "webapp:CalendarPlayerList" event.pk %}" class="btn"
                 style="background-color: #9400D3; color: white" id="slide_stop_button">Список зарегистрировавшихся</a>
         </div>

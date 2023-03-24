@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
@@ -219,11 +219,14 @@ class Calendar(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
+    deadline = models.DateTimeField(verbose_name='Дата окончания регистрации', null=True, blank=True)
 
     class Meta:
         verbose_name = "Событие"
         verbose_name_plural = "События"
 
+    def is_end_date(self):
+        return datetime.now() > self.deadline
 
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)

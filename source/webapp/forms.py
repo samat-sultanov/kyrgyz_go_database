@@ -36,8 +36,11 @@ class DateInput(forms.DateInput):
 class CalendarForm(forms.ModelForm):
     class Meta:
         model = Calendar
-        fields = ['event_name', 'event_city', 'event_date', 'text']
-        widgets = {'event_date': forms.DateInput(attrs={'type': 'date'})}
+        fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline']
+        widgets = {
+            'event_date': forms.DateInput(attrs={'type': 'date'}),
+            'deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+        }
 
 
 class CalendarBulkDeleteForm(forms.Form):
