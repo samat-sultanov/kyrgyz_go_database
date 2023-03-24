@@ -143,3 +143,4 @@ class Status_change(View):
             status_res = False
         response = JsonResponse({'status_res': status_res})
         return response
+

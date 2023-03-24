@@ -34,12 +34,27 @@
 {% endblock %}
 {% block src %}
     <script>
+        const base_url = '/api/v1/player/'
         const data = '{{qs_json}}'
         const rdata = JSON.parse(data.replace(/&quot;/g, '"'))
         const input = document.getElementById('search_last_name')
         {#console.log(rdata)#}
         let filteredArr = []
-
+       function makeRequest(url, method='GET') {
+        return new Promise(function(resolve, reject) {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                if (this.status === 200) resolve(this.response);
+                else reject(this);
+                req = this.responseText;
+                JsonFile = JSON.parse(req);
+                console.log(JsonFile)
+            };
+            xhr.open(method, url);
+            xhr.send();
+        });
+    }
+    let current = makeRequest(base_url)
         input.addEventListener('keyup', (e)=>{
             box.innerHTML = ''
             filteredArr = rdata.filter(info=> info['last_name'].includes(e.target.value))
@@ -123,5 +138,14 @@ ${item['first_name']} ${item['last_name']} ${item['patronymic']}
             <label>Surname: ${clean_date[1]}</label><br/><label>Patronymic: ${clean_date[2]}</label><br/>
             <label>GoLevel: ${clean_date[3]}</label>`
         }
+
+        {#fetch('/api/v1/player/')#}
+        {#    .then(response => {#}
+        {#        console.log('hi')#}
+        {#        console.log(response.json())#}
+        {#    })#}
+        {#    .catch(error => {#}
+        {#        console.log('errro')#}
+        {#    });#}
     </script>
 {% endblock %}
