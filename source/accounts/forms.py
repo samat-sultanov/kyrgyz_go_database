@@ -17,3 +17,15 @@ class CustomUserCreationForm(UserCreationForm):
         return email
 
 
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'avatar')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise ValidationError("Email field is required.")
+        return email
+
+
