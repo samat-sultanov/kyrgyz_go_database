@@ -61,12 +61,15 @@
                         let name_id = document.getElementById('id_name')
                         let surname_id = document.getElementById('id_surname')
                         let id_rank = document.getElementById('id_rank')
+                        let search = document.getElementById('search_last_name')
+                        search.type = 'hidden'
+                        box.innerHTML = ''
                         name_id.value = obj['first_name']
                         surname_id.value = obj['last_name']
                         id_rank.value = obj['current_rank']
                         sho_data.innerHTML =  `
-                        <label>Player: ${obj['first_name']} ${obj['last_name']}</label><br/>
-                        <label>Rank: ${obj['current_rank']}</label>`
+                        <label><span style="font-size: 20px">Player</span>: ${obj['first_name']} ${obj['last_name']}</label><br/>
+                        <label><span style="font-size: 20px">Rank</span>: ${obj['current_rank']}</label>`
                      }
                     const listItem = document.createElement('li');
                     listItem.addEventListener('click', ()=>show_data(item));
