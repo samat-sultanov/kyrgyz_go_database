@@ -78,7 +78,6 @@ def get_position_in_kgf():
     for element in new_list:
         element['position'] = position
         position += 1
-    print(new_list)
     return new_list
 
 

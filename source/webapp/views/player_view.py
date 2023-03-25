@@ -20,7 +20,7 @@ class PlayerDetail(TemplateView):
         context = super().get_context_data(**kwargs)
         context[self.context_key] = self.get_object()
         context['position'] = get_position_in_kgf()
-        context['rank'] = self.get_rank()
+        print(context)
         return context
 
     def get_object(self):
