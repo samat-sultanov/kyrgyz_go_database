@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block link %}
-    <link rel="stylesheet" href="{% static "css/hover_event.css" %}">
+    <link rel="stylesheet" href="{% static "css/li_hover.css" %}">
 {% endblock %}
 {% block content %}
 <div id="cont-1" class="container">
@@ -21,17 +21,6 @@
         <br/>
         <br/>
     </form>
-{#<input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>#}
-{#<br/>#}
-{#<br/>#}
-{#<div id="i_have">#}
-{#  {{ forms.search_player }}#}
-{#<ul id="box" style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">#}
-{#         {% for data in player %}#}
-{##}
-{#        {% endfor %}#}
-{#</ul>#}
-{#</div>#}
 </div>
     <div class="container" id="show_date">
 
@@ -45,7 +34,7 @@
        async function makeRequest(url, method) {
         let response = await fetch(url, method);
         if (response.ok) {
-            console.log('ok')
+            {#console.log('ok')#}
             return await response.json();
         } else {
             let error = new Error(response.statusText);
@@ -61,68 +50,37 @@
     let curva
     async function req(){
         curva = await makeRequest(base_url);
-        console.log(curva)
     }
     req()
          customtimeout = setTimeout(function() { input.addEventListener('keyup', (e)=>{
             clearTimeout(customtimeout)
             box.innerHTML = ''
-            {#setTimeout(#}
-            {#let rdata = JSON.parse(curva)#}
             filteredArr = curva.filter(info=> info['last_name'].includes(e.target.value))
             {#console.log(filteredArr)#}
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
                     function show_data(obj) {
-                        console.log(obj['first_name']);
+                        let name_id = document.getElementById('id_name')
+                        let surname_id = document.getElementById('id_surname')
+                        let id_rank = document.getElementById('id_rank')
+                        name_id.value = obj['first_name']
+                        surname_id.value = obj['last_name']
+                        id_rank.value = obj['current_rank']
                      }
                     const listItem = document.createElement('li');
                     listItem.addEventListener('click', ()=>show_data(item));
                     listItem.setAttribute("class", "list-group-item");
                     listItem.innerText = `${item['last_name']} ${item['first_name']} ${item['current_rank']}`;
                     box.appendChild(listItem);
-
-                    {#box.innerHTML += listItem#}
-                    {#box.innerHTML += listItem;#}
-                    {#box.innerHTML += `<li data-name="${item['id']}" class="list-group-item">#}
-                    {#${item['first_name']} ${item['last_name']} ${item['patronymic']}#}
-                    {#${item['GoLevel']}#}
-                    {#</li>`#}
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
             }}, 1000);
         })
 
-    {#window.onload = function () {#}
-    {#box.onclick = function (e) {#}
-          {#console.log(e.target.data);#}
-    {#      let el = e ? e.target : window.event.srcElement;#}
-    {#      while (el !== this) {#}
-    {#        if (el.id == "a_d") {#}
-    {#          let name = el.innerText;#}
-              {#console.log(name)#}
-    {#          let clean_arr = name.split(" ")#}
-              {#console.log(clean_arr[0])#}
-    {#          let name_id = document.getElementById('id_name')#}
-    {#          let surname_id = document.getElementById('id_surname')#}
-    {#          let patronymic_id = document.getElementById('id_patronymic')#}
-    {#          let id_rank = document.getElementById('id_rank')#}
-    {#          name_id.value = clean_arr[0]#}
-    {#          surname_id.value = clean_arr[1]#}
-    {#          patronymic_id.value = clean_arr[2]#}
-    {#          id_rank.value = clean_arr[3]#}
-    {#          break;#}
-    {#        }#}
-    {#        el = el.parentNode;#}
-    {#      }#}
-    {#    };#}
-    {#  };#}
-
         function change_tamp() {
         let chxbox = document.getElementById('check_butt');
           if (chxbox.checked) {
-            let div = document.getElementById('cont-1');
               let name_id = document.getElementById('id_name')
               let surname_id = document.getElementById('id_surname')
               let id_rank = document.getElementById('id_rank')
@@ -161,5 +119,6 @@
         {#    <label>Surname: ${clean_date[1]}</label><br/><label>Patronymic: ${clean_date[2]}</label><br/>#}
         {#    <label>GoLevel: ${clean_date[3]}</label>`#}
        // }
+
     </script>
 {% endblock %}

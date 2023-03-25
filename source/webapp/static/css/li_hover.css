@@ -1,8 +1,8 @@
-#a_d:hover {
+li:hover {
     color: #7a00ae;
     cursor: pointer;
 }
-#a_d {
+li {
       transition-property: background-color;
     transition-duration: 3s;
 }
