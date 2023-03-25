@@ -92,7 +92,7 @@ def get_se(num1, num2):
 def get_new_rank_from_rating(num):
     for element in RANK_FROM_RATING:
         for k, v in element.items():
-            if num <= k + 100:
+            if num <= k + 99:
                 return v
 
 
