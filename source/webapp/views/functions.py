@@ -1,4 +1,5 @@
 import re
+from operator import itemgetter
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -63,26 +64,21 @@ def get_total_wins(data):
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
     players = Player.objects.filter(country=country)
-    tournaments = Tournament.objects.order_by("date")
+    # tournaments = Tournament.objects.order_by("date")
     new_list = []
     for player in players:
         new_dict = dict()
-        for tournament in tournaments:
-            for data in tournament.playerintournament_set.all():
-                if player.pk == data.player_id:
-                    if player.pk not in new_dict:
-                        new_dict['player'] = player.pk
-                        p = re.compile('(\d*)')
-                        m = p.findall(data.GoLevel)
-                        for i in m:
-                            if i != "":
-                                new_dict['GoLevel'] = int(i)
+        new_dict['player'] = player
+        new_dict['rating'] = player.current_rating
+        new_dict['rank'] = player.current_rank
         new_list.append(new_dict)
-    new_list.sort(key=lambda dictionary: dictionary['GoLevel'])
+    new_list.sort(key=itemgetter('rating'))
+    new_list.reverse()
     position = 1
     for element in new_list:
         element['position'] = position
         position += 1
+    print(new_list)
     return new_list
 
 
