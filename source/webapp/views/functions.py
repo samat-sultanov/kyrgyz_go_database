@@ -175,15 +175,6 @@ def get_rank_for_json(data):
     return new_list
 
 
-def get_competitors(some_list, some_rating):
-    new_list = []
-    for player in some_list:
-        if some_rating - 299 <= player.current_rating <= some_rating + 299:
-            new_list.append(player)
-    print(new_list)
-    return new_list
-
-
 def get_rating_from_rank(x):
     for element in RANK_FROM_RATING:
         for k, v in element.items():
