@@ -1,5 +1,5 @@
 import os
-import datetime
+from datetime import datetime
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
@@ -55,6 +55,14 @@ class Club(models.Model):
         verbose_name = "Клуб"
         verbose_name_plural = "Клубы"
 
+    def save(self, *args, **kwargs):
+        super(Club, self).save(*args, **kwargs)
+        if self.logo:
+            img = Image.open(self.logo.path)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.logo.path)
 
 class Game(models.Model):
     black = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="black_player", null=True,
@@ -109,9 +117,10 @@ class Player(models.Model):
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
     current_rank = models.CharField(verbose_name='GoLevel', max_length=3, default="0k")
     current_rating = models.IntegerField(verbose_name='Rating', default=0)
+    EgdPin = models.PositiveIntegerField(verbose_name='EgdPin')
 
     def __str__(self):
-        return f'{self.id} - {self.last_name}: {self.first_name}'
+        return f'{self.id} - {self.last_name} {self.first_name} {self.current_rank}'
 
     def get_total_tournaments(self):
         return self.tournaments.count()
@@ -129,15 +138,14 @@ class Player(models.Model):
         verbose_name = "Игрок"
         verbose_name_plural = "Игроки"
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super(Player, self).save(*args, **kwargs)
         if self.avatar:
             img = Image.open(self.avatar.path)
-            if img.height > 720 or img.width > 720:
-                output_size = (720, 720)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
                 img.thumbnail(output_size)
                 img.save(self.avatar.path)
-
 
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
@@ -200,8 +208,8 @@ class News(models.Model):
     def get_absolute_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.pk})
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super(News, self).save(*args, **kwargs)
         if self.news_image:
             img = Image.open(self.news_image.path)
             if img.height > 1500 or img.width > 1500:
@@ -219,11 +227,14 @@ class Calendar(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
+    deadline = models.DateTimeField(verbose_name='Дата окончания регистрации', null=True, blank=True)
 
     class Meta:
         verbose_name = "Событие"
         verbose_name_plural = "События"
 
+    def is_end_date(self):
+        return datetime.now() > self.deadline
 
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)

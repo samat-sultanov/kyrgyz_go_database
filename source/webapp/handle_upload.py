@@ -68,11 +68,12 @@ def handle_uploaded_file(thisFile):
                         GoLevel = person.get('GoLevel')
                         rating = person.get('Rating')
                         country_code = person.get('Country')
+                        EgdPin = person.get('EgdPin')
                         country = get_object_or_404(Country, country_code=country_code)
                         club_name = person.get('Club')
 
                         try:
-                            player = get_object_or_404(Player, last_name=last_name, first_name=first_name)
+                            player = get_object_or_404(Player, last_name=last_name, first_name=first_name, EgdPin=EgdPin)
 
                             try:
                                 player_in_tour = get_object_or_404(PlayerInTournament, game_id=id_in_game,
@@ -88,9 +89,8 @@ def handle_uploaded_file(thisFile):
                             except:
                                 pass
                         except:
-                            new_player = Player.objects.create(first_name=first_name,
-                                                               last_name=last_name,
-                                                               country=country)
+                            new_player = Player.objects.create(first_name=first_name, last_name=last_name,
+                                                               country=country, EgdPin=EgdPin)
                             try:
                                 player_in_tour = get_object_or_404(PlayerInTournament, game_id=id_in_game,
                                                                    player=new_player, tournament=tournament)
