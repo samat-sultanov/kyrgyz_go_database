@@ -1,5 +1,4 @@
 from urllib.parse import urlencode
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -7,7 +6,7 @@ from webapp.models import Player
 from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
-from webapp.views.functions import get_position_in_kgf, get_rank, get_list_of_filtered_players
+from webapp.views.functions import get_position_in_kgf, get_rating_from_rank
 
 
 class PlayerDetail(TemplateView):
@@ -125,7 +124,6 @@ class CompetitorSearch(ListView):
     context_object_name = 'players'
     model = Player
     paginate_by = 10
-    ordering = ['-id']
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -156,6 +154,9 @@ class CompetitorSearch(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        rating = get_rating_from_rank(self.search_rank)
+        if self.search_rank:
+            queryset = queryset.filter(Q(current_rating__range=(rating-300, rating+300)))
         if self.search_clubs:
             queryset = queryset.filter(Q(clubs__name__icontains=self.search_clubs))
         if self.search_city:
@@ -168,14 +169,8 @@ class CompetitorSearch(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         if self.search_rank:
-            players = Player.objects.all()
-            ranks = get_rank(players)
-            filtered_ranks = []
-            for each_dict in ranks:
-                if self.search_rank - 3 <= int(each_dict['GoLevel'][:-1]) and int(
-                        each_dict['GoLevel'][:-1]) <= self.search_rank + 3:
-                    filtered_ranks.append(each_dict)
-            context['rank'] = filtered_ranks
+            context['query'] = urlencode({'search_rank': self.search_rank})
+            context['search_rank'] = self.search_rank
         elif self.search_clubs:
             context['query'] = urlencode({'search_clubs': self.search_clubs})
             context['search_clubs'] = self.search_clubs

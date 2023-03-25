@@ -4,7 +4,7 @@ from operator import itemgetter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
-from webapp.views.GoR_calculator import get_new_rank_from_rating
+from webapp.views.GoR_calculator import get_new_rank_from_rating, RANK_FROM_RATING
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
@@ -157,4 +157,29 @@ def get_wins_losses(pk):
             new_dict['losses'] = losses
         new_list.append(new_dict)
     return new_list
+
+
+
+def get_rank_for_json(data):
+    tournaments = Tournament.objects.order_by("-date")
+    new_list = []
+    for player in data:
+        new_dict = dict()
+        for tournament in tournaments:
+            for el in tournament.playerintournament_set.all():
+                if player.pk == el.player_id:
+                    if player not in new_dict:
+                        new_dict['last_name'] = player.last_name
+                        new_dict['first_name'] = player.first_name
+                        new_dict['patronymic'] = player.patronymic
+                        new_dict['GoLevel'] = el.GoLevel
+        new_list.append(new_dict)
+    return new_list
+
+
+def get_rating_from_rank(x):
+    for element in RANK_FROM_RATING:
+        for k, v in element.items():
+            if x == v:
+                return k
 
