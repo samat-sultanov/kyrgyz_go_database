@@ -158,18 +158,3 @@ def get_wins_losses(pk):
         new_list.append(new_dict)
     return new_list
 
-def get_rank_for_json(data):
-    tournaments = Tournament.objects.order_by("-date")
-    new_list = []
-    for player in data:
-        new_dict = dict()
-        for tournament in tournaments:
-            for el in tournament.playerintournament_set.all():
-                if player.pk == el.player_id:
-                    if player not in new_dict:
-                        new_dict['last_name'] = player.last_name
-                        new_dict['first_name'] = player.first_name
-                        new_dict['patronymic'] = player.patronymic
-                        new_dict['GoLevel'] = el.GoLevel
-        new_list.append(new_dict)
-    return new_list
