@@ -16,6 +16,7 @@ class ClubsListView(ListView):
     context_object_name = 'clubs'
     paginate_by = 15
     paginate_orphans = 4
+    queryset = Club.objects.order_by('-num_players')
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
