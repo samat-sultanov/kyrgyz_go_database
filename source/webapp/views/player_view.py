@@ -26,22 +26,11 @@ class PlayerDetail(TemplateView):
         pk = self.kwargs.get(self.key_kwarg)
         return get_object_or_404(self.model, pk=pk)
 
-    def get_rank(self):
-        player = self.get_object()
-        tournament = player.tournaments.order_by("date")[0]
-        new_list = []
-        new_dict = dict()
-        for data in tournament.playerintournament_set.all():
-            if player.pk == data.player_id and player.pk not in new_dict:
-                new_dict['player'] = player.pk
-                new_dict['GoLevel'] = data.GoLevel
-        new_list.append(new_dict)
-        return new_list
-
 
 class PlayerSearch(ListView):
     template_name = 'player/player_search.html'
     context_object_name = 'players'
+    queryset = Player.objects.order_by('-current_rating')
     model = Player
     paginate_by = 15
     paginate_orphans = 4
@@ -110,10 +99,6 @@ class PlayerSearch(ListView):
         elif self.search_city:
             context['query'] = urlencode({'search_city': self.search_city})
             context['search_city'] = self.search_city
-        players = Player.objects.all()
-        data = get_rank(players)
-        sorted_players = get_list_of_filtered_players(data)
-        context['players'] = sorted_players
         return context
 
 
