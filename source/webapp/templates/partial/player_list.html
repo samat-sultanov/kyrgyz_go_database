@@ -15,33 +15,33 @@
     </tr>
     </thead>
     <tbody>
-    {% for el in players %}
+    {% for player in players %}
         <tr>
             <td data-label="#">{{ forloop.counter }}</td>
             <td data-label="Фамилия"><a style="text-decoration: underline dotted ghostwhite; color: black;"
-                   href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
-            <td data-label="Имя">{{ el.player.first_name }}</td>
+                   href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
+            <td data-label="Имя">{{ player.first_name }}</td>
             {% if el.player.patronymic is not None %}
-                <td data-label="Отчество">{{ el.player.patronymic }}</td>
+                <td data-label="Отчество">{{ player.patronymic }}</td>
             {% else %}
                 <td data-label="Отчество"></td>
             {% endif %}
             {% if request.user.is_authenticated %}
-                {% if el.player.birth_date %}
-                    <td data-label="Возраст">{{ el.player.get_age_date }}</td>
+                {% if player.birth_date %}
+                    <td data-label="Возраст">{{ player.get_age_date }}</td>
                 {% else %}
                     <td data-label="Возраст"></td>
                 {% endif %}
             {% endif %}
-            {% if el.player.clubs.all %}
-                {% for club in el.player.clubs.all %}
+            {% if player.clubs.all %}
+                {% for club in player.clubs.all %}
                     <td data-label="Клуб">{{ club.name }}</td>
                 {% endfor %}
             {% else %}
                 <td data-label="Клуб"></td>
             {% endif %}
-            <td data-label="Ранг">{{ el.GoLevel }}</td>
-            <td data-label="Кол-во Турниров">{{ el.player.get_total_tournaments }}</td>
+            <td data-label="Ранг">{{ player.current_rank}}</td>
+            <td data-label="Кол-во Турниров">{{ player.get_total_tournaments }}</td>
         </tr>
     {% endfor %}
     </tbody>

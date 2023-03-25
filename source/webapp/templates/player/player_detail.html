@@ -85,15 +85,11 @@
             {% endif %}
         {% endif %}
         {% for element in position %}
-            {% if player.pk == element.player %}
+            {% if player.pk == element.player.pk %}
                 <p>Позиция в KGF: {{ element.position }}</p>
             {% endif %}
         {% endfor %}
-        {% for element in rank %}
-            {% if player.pk == element.player %}
-                <p>Ранг: {{ element.GoLevel }}</p>
-            {% endif %}
-        {% endfor %}
+            <p>Ранг: {{ player.current_rank }}</p>
         <div class="btn-group">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false" style="background-color: #9400D3; color: white"
