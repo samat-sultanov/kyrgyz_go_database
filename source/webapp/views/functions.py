@@ -158,6 +158,7 @@ def get_wins_losses(pk):
         new_list.append(new_dict)
     return new_list
 
+
 def get_rank_for_json(data):
     tournaments = Tournament.objects.order_by("-date")
     new_list = []
