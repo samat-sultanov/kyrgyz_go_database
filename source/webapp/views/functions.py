@@ -4,6 +4,7 @@ from operator import itemgetter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
+from webapp.views.GoR_calculator import get_new_rank_from_rating
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
@@ -14,20 +15,13 @@ def average_go_level():
     club_list = []
     for club in clubs:
         new_dict = dict()
-        num_list = []
+        total_rating = 0
         num_players = club.players.count()
         for player in club.players.all():
-            tournament = player.tournaments.all().order_by('-date')[:1]
-            data = player.playerintournament_set.get(tournament_id=tournament)
-            if data.GoLevel:
-                p = re.compile('(\d*)')
-                m = p.findall(data.GoLevel)
-                for i in m:
-                    if i != "":
-                        num_list.append(int(i))
-        total_go_level = sum(num_list)
+            total_rating += player.current_rating
         if num_players > 0:
-            average_num = total_go_level // num_players
+            result = total_rating // num_players
+            average_num = get_new_rank_from_rating(result)
             new_dict['club'] = club.pk
             new_dict['average'] = average_num
         else:
