@@ -147,6 +147,7 @@ class Player(models.Model):
                 img.thumbnail(output_size)
                 img.save(self.avatar.path)
 
+
 class Recommendation(models.Model):
     text = models.TextField(max_length=400, verbose_name='Рекомендация')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, related_name='author',

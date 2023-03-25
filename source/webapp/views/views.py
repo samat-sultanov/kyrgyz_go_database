@@ -10,6 +10,7 @@ from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
+from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses
 
 
@@ -95,10 +96,12 @@ def file_upload_check(request, pk):
                 tournament_form = CheckTournamentForm(
                     {'city': tournament.city, 'date': tournament.date, 'tournament_class': tournament.tournament_class,
                      'regulations': tournament.regulations, 'uploaded_by': uploaded_by}, instance=tournament)
+                get_new_rating(tournament.pk)
             else:
                 tournament_form = CheckTournamentForm(
                     {'city': city, 'date': date, 'tournament_class': tournament_class, 'regulations': regulations,
                      'uploaded_by': uploaded_by}, instance=tournament)
+                get_new_rating(tournament.pk)
             tournament_form.save()
 
         form = CheckPlayerForm(request.POST)
