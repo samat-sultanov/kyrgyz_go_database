@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="{% static "css/hover_event.css" %}">
 {% endblock %}
 {% block content %}
-
 <div id="cont-1" class="container">
     <br/>
     <input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
@@ -43,29 +42,35 @@
 {% block src %}
     <script>
        const base_url = '/api/v1/player/'
-       function makeRequest(url, method='GET') {
-        return new Promise(function(resolve, reject) {
-            let xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-                if (this.status === 200) resolve(this.response);
-                else reject(this);
-                req = this.responseText;
-                JsonFile = JSON.parse(req);
-            };
-            xhr.open(method, url);
-            xhr.send();
-        });
+       async function makeRequest(url, method) {
+        let response = await fetch(url, method);
+        if (response.ok) {
+            console.log('ok')
+            return await response.json();
+        } else {
+            let error = new Error(response.statusText);
+            console.log(error)
+            error.response = response;
+            throw error;
+        }
     }
 
     const input = document.getElementById('search_last_name')
     let filteredArr = []
-        input.addEventListener('keyup', async (e)=>{
+    let customtimeout
+    let curva
+    async function req(){
+        curva = await makeRequest(base_url);
+        console.log(curva)
+    }
+    req()
+         customtimeout = setTimeout(function() { input.addEventListener('keyup', (e)=>{
+            clearTimeout(customtimeout)
             box.innerHTML = ''
-            let curva = await makeRequest(base_url);
-            let rdata = JSON.parse(curva)
-            console.log(rdata)
-            filteredArr = rdata.filter(info=> info['last_name'].includes(e.target.value))
-            console.log(filteredArr)
+            {#setTimeout(#}
+            {#let rdata = JSON.parse(curva)#}
+            filteredArr = curva.filter(info=> info['last_name'].includes(e.target.value))
+            {#console.log(filteredArr)#}
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
                     function show_data(obj) {
@@ -76,9 +81,8 @@
                     listItem.setAttribute("class", "list-group-item");
                     listItem.innerText = `${item['last_name']} ${item['first_name']} ${item['current_rank']}`;
                     box.appendChild(listItem);
-                    {#box.innerHTML = listItem#}
 
-
+                    {#box.innerHTML += listItem#}
                     {#box.innerHTML += listItem;#}
                     {#box.innerHTML += `<li data-name="${item['id']}" class="list-group-item">#}
                     {#${item['first_name']} ${item['last_name']} ${item['patronymic']}#}
@@ -87,7 +91,7 @@
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
-            }
+            }}, 1000);
         })
 
     {#window.onload = function () {#}
