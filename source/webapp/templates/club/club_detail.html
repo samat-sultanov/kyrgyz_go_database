@@ -25,7 +25,7 @@
                     <p>Number of members: {{ club.num_players }}</p>
                 {% endif %}
                 <p>Number of active players: {{ club.players.count }}</p>
-                <p>Average rank: {{ average }}k</p>
+                <p>Average rank: {{ average }}</p>
                 <p>Coaches: </p>
                 {% for coach in club.coaches.all %}
                     <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>

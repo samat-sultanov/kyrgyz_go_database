@@ -7,7 +7,7 @@ from django.urls import reverse
 from webapp.forms import ClubSearch, ClubForm
 from webapp.models import Club
 from django.views.generic import ListView, TemplateView, UpdateView
-from webapp.views.functions import get_list_of_filtered_players, get_rank, average_go_level, get_total_wins
+from webapp.views.functions import average_go_level, get_total_wins
 
 
 class ClubsListView(ListView):
@@ -16,6 +16,7 @@ class ClubsListView(ListView):
     context_object_name = 'clubs'
     paginate_by = 15
     paginate_orphans = 4
+    queryset = Club.objects.order_by('-num_players')
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -64,10 +65,8 @@ class ClubView(TemplateView):
         pk = kwargs.get("pk")
         club = get_object_or_404(Club, pk=pk)
         players = club.players.all()
-        data = get_rank(players)
-        sorted_players = get_list_of_filtered_players(data)
         kwargs["club"] = club
-        kwargs['players'] = sorted_players
+        kwargs['players'] = players
         club_list = average_go_level()
         for element in club_list:
             if club.pk == element['club']:
