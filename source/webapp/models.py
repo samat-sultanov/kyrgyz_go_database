@@ -55,6 +55,14 @@ class Club(models.Model):
         verbose_name = "Клуб"
         verbose_name_plural = "Клубы"
 
+    def save(self, *args, **kwargs):
+        super(Club, self).save(*args, **kwargs)
+        if self.logo:
+            img = Image.open(self.logo.path)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.logo.path)
 
 class Game(models.Model):
     black = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="black_player", null=True,
@@ -109,9 +117,10 @@ class Player(models.Model):
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
     current_rank = models.CharField(verbose_name='GoLevel', max_length=3, default="0k")
     current_rating = models.IntegerField(verbose_name='Rating', default=0)
+    EgdPin = models.PositiveIntegerField(verbose_name='EgdPin')
 
     def __str__(self):
-        return f'{self.id} - {self.last_name}: {self.first_name}'
+        return f'{self.id} - {self.last_name} {self.first_name} {self.current_rank}'
 
     def get_total_tournaments(self):
         return self.tournaments.count()
@@ -133,8 +142,8 @@ class Player(models.Model):
         super(Player, self).save(*args, **kwargs)
         if self.avatar:
             img = Image.open(self.avatar.path)
-            if img.height > 720 or img.width > 720:
-                output_size = (720, 720)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
                 img.thumbnail(output_size)
                 img.save(self.avatar.path)
 
@@ -200,8 +209,8 @@ class News(models.Model):
     def get_absolute_url(self):
         return reverse('webapp:news_detail', kwargs={'pk': self.pk})
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super(News, self).save(*args, **kwargs)
         if self.news_image:
             img = Image.open(self.news_image.path)
             if img.height > 1500 or img.width > 1500:

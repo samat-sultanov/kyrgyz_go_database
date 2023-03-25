@@ -3,13 +3,17 @@
 
 {% block nav %}
 {% endblock %}
+{% load thumbnail %}
+
 
 {% block content %}
     <div class="container mb-4 mt-4">
         <div >
             <h2 class="title">Клуб: {{ club.name }}</h2>
             {% if club.logo %}
-                <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ club.logo.url }}" alt="logo">
+                {% thumbnail club.logo "500x500" crop="center" as im %}
+                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px" src="{{ im.url }}" alt="logo">
+                {% endthumbnail %}
             {% else %}
                 <img style="width: 25%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/no_image.jpg" %}" alt="no_logo_pic">
             {% endif %}
@@ -21,7 +25,7 @@
                     <p>Number of members: {{ club.num_players }}</p>
                 {% endif %}
                 <p>Number of active players: {{ club.players.count }}</p>
-                <p>Average rank: {{ average }}k</p>
+                <p>Average rank: {{ average }}</p>
                 <p>Coaches: </p>
                 {% for coach in club.coaches.all %}
                     <p><a style="color: black;" href="{% url 'accounts:detail' coach.pk %}">{{ coach.username }}</a></p>

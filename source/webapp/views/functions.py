@@ -1,8 +1,10 @@
 import re
+from operator import itemgetter
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
+from webapp.views.GoR_calculator import get_new_rank_from_rating
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
@@ -13,20 +15,13 @@ def average_go_level():
     club_list = []
     for club in clubs:
         new_dict = dict()
-        num_list = []
+        total_rating = 0
         num_players = club.players.count()
         for player in club.players.all():
-            tournament = player.tournaments.all().order_by('-date')[:1]
-            data = player.playerintournament_set.get(tournament_id=tournament)
-            if data.GoLevel:
-                p = re.compile('(\d*)')
-                m = p.findall(data.GoLevel)
-                for i in m:
-                    if i != "":
-                        num_list.append(int(i))
-        total_go_level = sum(num_list)
+            total_rating += player.current_rating
         if num_players > 0:
-            average_num = total_go_level // num_players
+            result = total_rating // num_players
+            average_num = get_new_rank_from_rating(result)
             new_dict['club'] = club.pk
             new_dict['average'] = average_num
         else:
@@ -63,22 +58,16 @@ def get_total_wins(data):
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
     players = Player.objects.filter(country=country)
-    tournaments = Tournament.objects.order_by("date")
+    # tournaments = Tournament.objects.order_by("date")
     new_list = []
     for player in players:
         new_dict = dict()
-        for tournament in tournaments:
-            for data in tournament.playerintournament_set.all():
-                if player.pk == data.player_id:
-                    if player.pk not in new_dict:
-                        new_dict['player'] = player.pk
-                        p = re.compile('(\d*)')
-                        m = p.findall(data.GoLevel)
-                        for i in m:
-                            if i != "":
-                                new_dict['GoLevel'] = int(i)
+        new_dict['player'] = player
+        new_dict['rating'] = player.current_rating
+        new_dict['rank'] = player.current_rank
         new_list.append(new_dict)
-    new_list.sort(key=lambda dictionary: dictionary['GoLevel'])
+    new_list.sort(key=itemgetter('rating'))
+    new_list.reverse()
     position = 1
     for element in new_list:
         element['position'] = position
