@@ -8,7 +8,6 @@
     <br/>
     <input type="checkbox" onchange="change_tamp()" id="check_butt"><label>&nbsp;&nbsp;I'm already in the database</label>
     <div id="i_have">
-    <br/>
       {{ forms.search_player }}
     <ul id="box" style="list-style-type: none;max-height: 200px;overflow-y: scroll;width: 400px;" class="list-group">
              {% for data in player %}
@@ -16,16 +15,15 @@
             {% endfor %}
     </ul>
     </div>
+    <div class="container" id="sho_data">
+    <br/>
+    </div>
     <form action="" id="actionpost" method="post">
         {% include "partial/form.html" with button_text="Записаться" %}
         <br/>
         <br/>
     </form>
 </div>
-    <div class="container" id="show_date">
-
-    </div>
-
     <br/>
 {% endblock %}
 {% block src %}
@@ -66,6 +64,9 @@
                         name_id.value = obj['first_name']
                         surname_id.value = obj['last_name']
                         id_rank.value = obj['current_rank']
+                        sho_data.innerHTML =  `
+                        <label>Player: ${obj['first_name']} ${obj['last_name']}</label><br/>
+                        <label>Rank: ${obj['current_rank']}</label>`
                      }
                     const listItem = document.createElement('li');
                     listItem.addEventListener('click', ()=>show_data(item));
@@ -91,6 +92,7 @@
               id_rank.type = 'hidden'
           }
           else {
+                sho_data.innerHTML = ''
                 let input_search = document.getElementById('search_last_name')
                 let box = document.getElementById('box')
                 let name_id = document.getElementById('id_name')
@@ -101,6 +103,9 @@
                 id_rank.type = 'text'
                 box.innerHTML = ''
                 input_search.type = 'hidden'
+                name_id.value = ''
+                surname_id.value = ''
+                id_rank.value = ''
           }
         }
 

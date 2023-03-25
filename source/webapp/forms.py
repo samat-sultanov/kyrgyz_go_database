@@ -154,17 +154,17 @@ class ClubForm(forms.ModelForm):
 
 class ParticipantForm(forms.ModelForm):
     name = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Name", "id": "id_name", 'style': "width:200px"}))
+        "First name", "id": "id_name", 'style': "width:200px"}))
     surname = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Surname", "id": "id_surname", 'style': "width:200px"}))
+        "Last name", "id": "id_surname", 'style': "width:200px"}))
     rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "GoLevel", "id": "id_rank", 'style': "width:200px"}))
+        "Rank", "id": "id_rank", 'style': "width:200px"}))
     phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Phone-number", "id": "id_phonenumber", 'style': "width:200px"}))
+        "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
 
     class Meta:
         model = Participant
-        fields = ['name', 'surname', 'rank', 'phonenumber']
+        fields = ['surname', 'name', 'rank', 'phonenumber']
 
 
 class Search_Par_Player(forms.Form):
