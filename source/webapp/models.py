@@ -117,9 +117,10 @@ class Player(models.Model):
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
     current_rank = models.CharField(verbose_name='GoLevel', max_length=3, default="0k")
     current_rating = models.IntegerField(verbose_name='Rating', default=0)
+    EgdPin = models.PositiveIntegerField(verbose_name='EgdPin')
 
     def __str__(self):
-        return f'{self.id} - {self.last_name}: {self.first_name}'
+        return f'{self.id} - {self.last_name} {self.first_name} {self.current_rank}'
 
     def get_total_tournaments(self):
         return self.tournaments.count()
