@@ -117,16 +117,5 @@
             let child = formss.getElementsByTagName("p")[i];
             formss.removeChild(child);
         }
-
-        {#function show_date(obj) {#}
-        {#    console.log(obj)#}
-        {#    let show_date = document.getElementById('show_date')#}
-        {#    let obj_2 = obj.innerText#}
-        {#    let clean_date = obj_2.split(" ")#}
-        {#    show_date.innerHTML =  `<h1 style="font-size: 40px">${clean_date[0]}</h1>#}
-        {#    <label>Surname: ${clean_date[1]}</label><br/><label>Patronymic: ${clean_date[2]}</label><br/>#}
-        {#    <label>GoLevel: ${clean_date[3]}</label>`#}
-       // }
-
     </script>
 {% endblock %}
