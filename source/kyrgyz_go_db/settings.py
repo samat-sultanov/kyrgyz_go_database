@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'api_v1',
     'phonenumber_field',
     'sorl.thumbnail',
+    'captcha',
 ]
 
 MIDDLEWARE = [

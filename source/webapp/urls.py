@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
@@ -49,6 +49,7 @@ urlpatterns = [
     path('event_player/<int:pk>/', CalendarPlayerList.as_view(), name='CalendarPlayerList'),
     path('change_event_reg_info/<int:pk>/', email_to_change_reg_info, name='change_event_reg_info'),
     path('status/<int:pk>/', Status_change.as_view(), name='status_change'),
+    path('captcha/', include('captcha.urls')),
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
