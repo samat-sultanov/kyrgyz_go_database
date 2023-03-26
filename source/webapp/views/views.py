@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
-from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
+from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm, EmailToChangeRegInfoFrom
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses, get_position_in_kgf
 
@@ -118,7 +118,6 @@ def about_us_view(request, *args, **kwargs):
 
 def send_feedback_to_admin(request, *args, **kwargs):
     if request.method == 'POST':
-        admin = get_user_model().objects.all().get(pk=1)
         form = FeedbackToEmailForm(request.POST)
         if form.is_valid():
             subject = "Сообщение из формы отбратной связи с сайта kgf.kg"
@@ -140,3 +139,29 @@ def send_feedback_to_admin(request, *args, **kwargs):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect("webapp:about")
+
+
+def email_to_change_reg_info(request, *args, **kwargs):
+    if request.method == 'POST':
+        form = EmailToChangeRegInfoFrom(request.POST)
+        if form.is_valid():
+            subject = f"Допустил ошибку при регистрации на ивент/турнир c ID '{kwargs.get('pk')}'"
+            body = {
+                'tournament/event': f"Ивент/Турнир: [{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk')).event_name}",
+                'first_name': f"Имя: {form.cleaned_data.get('first_name', None)}",
+                'last_name': f"Фамилия: {form.cleaned_data.get('last_name', None)}",
+                'email': f"почта: {form.cleaned_data.get('email', None)}",
+                'phone_number': f"номер телефона: {form.cleaned_data.get('phone_number', None)}",
+                'message': f"Запрос: ''{form.cleaned_data.get('message')}''",
+            }
+            message = "\n".join(body.values())
+
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[settings.EMAIL_HOST_USER])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect("webapp:CalendarPlayerList", pk=kwargs.get('pk'))

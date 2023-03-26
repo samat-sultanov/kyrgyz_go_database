@@ -192,3 +192,11 @@ class FeedbackToEmailForm(forms.Form):
     message = forms.CharField(required=True, widget=widgets.Textarea(
         attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание", 'name': "message"}),
                               max_length=3000)
+
+
+class EmailToChangeRegInfoFrom(FeedbackToEmailForm):
+    phone_number = forms.CharField(required=True, max_length=50, widget=widgets.TextInput(
+        attrs={'class': "form-control", 'placeholder': "Ваш номер телефона", 'name': "phone_number"}))
+    message = forms.CharField(required=True, widget=widgets.Textarea(
+        attrs={'class': "form-control", 'placeholder': "В чем была ошибка? И как надо исправить?", 'name': "message"}),
+                              max_length=3000)

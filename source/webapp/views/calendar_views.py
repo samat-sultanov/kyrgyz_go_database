@@ -4,7 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from webapp.models import Calendar, Participant, Player
-from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player
+from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player, \
+    EmailToChangeRegInfoFrom
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, DetailView, View
 
@@ -120,6 +121,11 @@ class CalendarPlayerList(DetailView):
     context_object_name = 'event'
     model = Calendar
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = EmailToChangeRegInfoFrom()
+        return context
+
 
 class Status_change(View):
     def get(self, request, *args, **kwargs):
@@ -135,4 +141,3 @@ class Status_change(View):
             status_res = False
         response = JsonResponse({'status_res': status_res})
         return response
-
