@@ -145,14 +145,14 @@ def email_to_change_reg_info(request, *args, **kwargs):
     if request.method == 'POST':
         form = EmailToChangeRegInfoFrom(request.POST)
         if form.is_valid():
-            subject = "Допустил ошибку при регистрации на ивент/турнир"
+            subject = f"Допустил ошибку при регистрации на ивент/турнир c ID '{kwargs.get('pk')}'"
             body = {
-                'tournament/event': f"[{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk')).event_name}",
-                'first_name': form.cleaned_data.get('first_name', None),
-                'last_name': form.cleaned_data.get('last_name', None),
-                'email': form.cleaned_data.get('email', None),
-                'phone_number': form.cleaned_data.get('phone_number', None),
-                'message': form.cleaned_data.get('message'),
+                'tournament/event': f"Ивент/Турнир: [{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk')).event_name}",
+                'first_name': f"Имя: {form.cleaned_data.get('first_name', None)}",
+                'last_name': f"Фамилия: {form.cleaned_data.get('last_name', None)}",
+                'email': f"почта: {form.cleaned_data.get('email', None)}",
+                'phone_number': f"номер телефона: {form.cleaned_data.get('phone_number', None)}",
+                'message': f"Запрос: ''{form.cleaned_data.get('message')}''",
             }
             message = "\n".join(body.values())
 
