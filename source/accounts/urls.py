@@ -12,16 +12,16 @@ urlpatterns = [
     path('<int:pk>/', UserDetailView.as_view(), name='detail'),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(
-        template_name='registration/password_reset.html',
+        template_name='email_registration/password_reset.html',
         success_url='/accounts/reset_password_sent/'),
         name='reset_password'),
 
     path('reset_password_sent/',
-         auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_sent.html'),
+         auth_views.PasswordResetDoneView.as_view(template_name='email_registration/password_reset_sent.html',),
          name="password_reset_done"),
 
     path('reset/<uidb64>/<token>/',
-         auth_views.PasswordResetConfirmView.as_view(),
+         auth_views.PasswordResetConfirmView.as_view(template_name='email_registration/password_reset_form.html'),
          name="password_reset_confirm"),
 
     path('reset_password_complete/',
