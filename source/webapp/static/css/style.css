@@ -252,3 +252,13 @@ h1 {
     border-bottom: 0;
   }
 }
+
+.forgot-password-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgot-password-link:hover {
+    color: #0056b3;
+    text-decoration: none;
+}

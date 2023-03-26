@@ -71,6 +71,43 @@
       </tbody>
     </table>
 </div>
+    <div class="container">
+        <br><div class="contact_form">
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                    aria-controls="offcanvasRight" style="background-color: #9400D3; color: white">
+                Редактировать данные для регистрации
+            </button>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                 aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Если при регистрации на данный ивент/турнир вы допустили ошибку, то свяжитесь с нами заполнив данную форму. В описании детально опишите где была допущена ошибка и как надо ее исправить.</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+
+                    <form action="{% url 'webapp:change_event_reg_info' event.pk %}" method="post">
+                        {% csrf_token %}
+
+                        {% for error in form.non_field_errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+
+                        {% for field in form %}
+                            <p>{{ field }}</p>
+                            {% for error in field.errors %}
+                                <p class="form-error text-danger">{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                        <input type="submit" class="btn" style="background-color: #9400D3; color: white"
+                               value="Отправить">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
     <br/>
     <br/>
 {% endblock %}
