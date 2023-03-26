@@ -67,10 +67,10 @@
                         {% endfor %}
 
                         {% for field in form %}
-                            {% for error in field.errors %}
-                                <p class="form-error">{{ error }}</p>
-                            {% endfor %}
                             <p>{{ field }}</p>
+                            {% for error in field.errors %}
+                                <p class="form-error text-danger">{{ error }}</p>
+                            {% endfor %}
                         {% endfor %}
                         <input type="submit" class="btn" style="background-color: #9400D3; color: white"
                                value="Отправить">
