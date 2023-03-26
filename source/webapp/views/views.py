@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
-from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
+from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm, EmailToChangeRegInfoFrom
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses, get_position_in_kgf
 
@@ -118,7 +118,6 @@ def about_us_view(request, *args, **kwargs):
 
 def send_feedback_to_admin(request, *args, **kwargs):
     if request.method == 'POST':
-        admin = get_user_model().objects.all().get(pk=1)
         form = FeedbackToEmailForm(request.POST)
         if form.is_valid():
             subject = "Сообщение из формы отбратной связи с сайта kgf.kg"
@@ -144,7 +143,6 @@ def send_feedback_to_admin(request, *args, **kwargs):
 
 def email_to_change_reg_info(request, *args, **kwargs):
     if request.method == 'POST':
-        admin = get_user_model().objects.all().get(pk=1)
         form = EmailToChangeRegInfoFrom(request.POST)
         if form.is_valid():
             subject = "Допустил ошибку при регистрации на ивент/турнир"
