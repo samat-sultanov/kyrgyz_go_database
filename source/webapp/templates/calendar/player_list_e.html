@@ -16,9 +16,11 @@
           <th scope="col">#</th>
           <th scope="col">Фамилия</th>
           <th scope="col">Имя</th>
-          <th scope="col">Отчество</th>
           <th scope="col">Город</th>
           <th scope="col">Рейтинг</th>
+            {% if request.user.is_authenticated %}
+          <th scope="col">Номер</th>
+            {% endif %}
           <th scope="col">Статус</th>
         </tr>
       </thead>
@@ -28,13 +30,42 @@
           <th scope="row">{{ forloop.counter }}</th>
           <td>{{ players.surname }}</td>
           <td>{{ players.name }}</td>
-          <td>{{ players.patronymic }}</td>
           <td>{{ players.city }}</td>
           <td>{{ players.rank }}</td>
+          {% if request.user.is_authenticated %}
+          <td>{{ players.phonenumber }}</td>
+          {% endif %}
           <td id="status-{{ players.pk }}">{{ players.status }}</td>
+          {% if request.user.is_authenticated %}
           <td>
-          <button class="btn btn-primary" id="butt-{{ players.pk }}" data-id="{{ players.pk }}" onclick="ChangeConf(event)" data-index-link="{% url "webapp:status_change" players.pk %}">{% if players.status == "Confirmed" %}Not confirmed{% else %}Confirmed{% endif %}</button>
+          <button class="btn btn-outline-secondary" id="butt-{{ players.pk }}" data-id="{{ players.pk }}" onclick="ChangeConf(event)" data-index-link="{% url "webapp:status_change" players.pk %}">{% if players.status == "Confirmed" %}Not confirmed{% else %}Confirmed{% endif %}</button>
           </td>
+          <td>
+              <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal">
+                    Удалить
+                </button>
+                <!-- Модалка подтверждения -->
+                <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-5" id="myModalLabel">Вы точно хотите удалить этого игрока?</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
+                                <form method="POST" id="modal_form_link" action="{% url 'webapp:delete_player_from_event' players.pk %}">
+                                    {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-outline-secondary"
+                                                           value="Да">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          </td>
+          {% endif %}
                       </tr>
           {% endfor %}
       </tbody>

@@ -121,7 +121,7 @@ class CalendarPlayerList(DetailView):
     model = Calendar
 
 
-class Status_change(View):
+class Status_change(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         part = get_object_or_404(Participant, pk=self.kwargs.get('pk'))
         status_res = None
@@ -136,3 +136,9 @@ class Status_change(View):
         response = JsonResponse({'status_res': status_res})
         return response
 
+class Delete_player_from_event(LoginRequiredMixin, DeleteView):
+    model = Participant
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    def get_success_url(self):
+        return reverse('webapp:CalendarPlayerList', kwargs={'pk': self.object.event.pk})
