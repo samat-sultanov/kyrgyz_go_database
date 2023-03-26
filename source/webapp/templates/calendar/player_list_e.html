@@ -7,39 +7,80 @@
 {% block content %}
     <br/>
     <br/>
-<div class="container">
-<h3 class="title" style="font-size: 30px">Список зарегистрированных игроков на турнир {{ event.event_name }}</h3>
-    <br/>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Фамилия</th>
-          <th scope="col">Имя</th>
-          <th scope="col">Отчество</th>
-          <th scope="col">Город</th>
-          <th scope="col">Рейтинг</th>
-          <th scope="col">Статус</th>
-        </tr>
-      </thead>
-      <tbody>
-          {% for players in  event.participant_set.all %}
-                      <tr>
-          <th scope="row">{{ forloop.counter }}</th>
-          <td>{{ players.surname }}</td>
-          <td>{{ players.name }}</td>
-          <td>{{ players.patronymic }}</td>
-          <td>{{ players.city }}</td>
-          <td>{{ players.rank }}</td>
-          <td id="status-{{ players.pk }}">{{ players.status }}</td>
-          <td>
-          <button class="btn btn-primary" id="butt-{{ players.pk }}" data-id="{{ players.pk }}" onclick="ChangeConf(event)" data-index-link="{% url "webapp:status_change" players.pk %}">{% if players.status == "Confirmed" %}Not confirmed{% else %}Confirmed{% endif %}</button>
-          </td>
-                      </tr>
-          {% endfor %}
-      </tbody>
-    </table>
-</div>
+    <div class="container">
+        <h3 class="title" style="font-size: 30px">Список зарегистрированных игроков на
+            турнир {{ event.event_name }}</h3>
+        <br/>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Отчество</th>
+                <th scope="col">Город</th>
+                <th scope="col">Рейтинг</th>
+                <th scope="col">Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for players in  event.participant_set.all %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ players.surname }}</td>
+                    <td>{{ players.name }}</td>
+                    <td>{{ players.patronymic }}</td>
+                    <td>{{ players.city }}</td>
+                    <td>{{ players.rank }}</td>
+                    <td id="status-{{ players.pk }}">{{ players.status }}</td>
+                    <td>
+                        <button class="btn btn-primary" id="butt-{{ players.pk }}" data-id="{{ players.pk }}"
+                                onclick="ChangeConf(event)"
+                                data-index-link="{% url "webapp:status_change" players.pk %}">
+                            {% if players.status == "Confirmed" %}Not confirmed{% else %}
+                                Confirmed{% endif %}</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <br><div class="contact_form">
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                    aria-controls="offcanvasRight" style="background-color: #9400D3; color: white">
+                Редактировать данные для регистрации
+            </button>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                 aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Если при регистрации на данный ивент/турнир вы допустили ошибку, то свяжитесь с нами заполнив данную форму. В описании детально опишите где была допущена ошибка и как надо ее исправить.</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+
+                    <form action="#" method="post">
+                        {% csrf_token %}
+
+                        {% for error in form.non_field_errors %}
+                            <p class="form-error">{{ error }}</p>
+                        {% endfor %}
+
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                            <p>{{ field }}</p>
+                        {% endfor %}
+                        <input type="submit" class="btn" style="background-color: #9400D3; color: white"
+                               value="Отправить">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
     <br/>
     <br/>
 {% endblock %}
