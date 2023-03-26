@@ -147,7 +147,7 @@ def email_to_change_reg_info(request, *args, **kwargs):
         if form.is_valid():
             subject = "Допустил ошибку при регистрации на ивент/турнир"
             body = {
-                'tournament/event': f"[{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk'))}",
+                'tournament/event': f"[{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk')).event_name}",
                 'first_name': form.cleaned_data.get('first_name', None),
                 'last_name': form.cleaned_data.get('last_name', None),
                 'email': form.cleaned_data.get('email', None),
@@ -164,4 +164,4 @@ def email_to_change_reg_info(request, *args, **kwargs):
                     recipient_list=[settings.EMAIL_HOST_USER])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-            return redirect("webapp:CalendarPlayerList")
+            return redirect("webapp:CalendarPlayerList", pk=kwargs.get('pk'))
