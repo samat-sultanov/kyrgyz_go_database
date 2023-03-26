@@ -51,7 +51,7 @@
                 Редактировать данные для регистрации
             </button>
 
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+            <div class="offcanvas offcanvas-end {% if offcanvas %}show{% endif %}" tabindex="-1" id="offcanvasRight"
                  aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="offcanvasRightLabel">Если при регистрации на данный ивент/турнир вы допустили ошибку, то свяжитесь с нами заполнив данную форму. В описании детально опишите где была допущена ошибка и как надо ее исправить.</h5>
@@ -59,7 +59,7 @@
                 </div>
                 <div class="offcanvas-body">
 
-                    <form action="{% url 'webapp:change_event_reg_info' event.pk %}" method="post">
+                    <form action="" method="post">
                         {% csrf_token %}
 
                         {% for error in form.non_field_errors %}
@@ -78,6 +78,10 @@
 
                 </div>
             </div>
+            {% if offcanvas %}
+                <div class="offcanvas-backdrop fade show"></div>
+            {% endif %}
+
         </div>
 
     </div>
