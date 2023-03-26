@@ -1,3 +1,5 @@
+from captcha.fields import CaptchaField
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import FileInput, widgets
@@ -192,6 +194,7 @@ class FeedbackToEmailForm(forms.Form):
     message = forms.CharField(required=True, widget=widgets.Textarea(
         attrs={'class': "form-control", 'placeholder': "ваше предложение или замечание", 'name': "message"}),
                               max_length=3000)
+    captcha = CaptchaField()
 
 
 class EmailToChangeRegInfoFrom(FeedbackToEmailForm):
