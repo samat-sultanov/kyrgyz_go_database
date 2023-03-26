@@ -140,3 +140,30 @@ def send_feedback_to_admin(request, *args, **kwargs):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect("webapp:about")
+
+
+def email_to_change_reg_info(request, *args, **kwargs):
+    if request.method == 'POST':
+        admin = get_user_model().objects.all().get(pk=1)
+        form = EmailToChangeRegInfoFrom(request.POST)
+        if form.is_valid():
+            subject = "Допустил ошибку при регистрации на ивент/турнир"
+            body = {
+                'tournament/event': f"[{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk'))}",
+                'first_name': form.cleaned_data.get('first_name', None),
+                'last_name': form.cleaned_data.get('last_name', None),
+                'email': form.cleaned_data.get('email', None),
+                'phone_number': form.cleaned_data.get('phone_number', None),
+                'message': form.cleaned_data.get('message'),
+            }
+            message = "\n".join(body.values())
+
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[settings.EMAIL_HOST_USER])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect("webapp:CalendarPlayerList")
