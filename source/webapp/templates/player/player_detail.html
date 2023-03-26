@@ -17,11 +17,11 @@
         <div class=" mt-4">
             <h2 class="title">Страница профиля игрокa:</h2>
         </div>
-        <div class="row mb-4">
-            <div class="col-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                 {% if player.avatar %}
                      {% thumbnail player.avatar "500x500" crop="center" as im %}
-                        <img style="width: 75%; border: solid; border-color: grey; border-width: 1px"
+                        <img style="width: 100%; border: solid; border-color: grey; border-width: 1px"
                              src="{{ im.url }}" alt="avatar">
                     {% endthumbnail %}
                 {% else %}
@@ -29,7 +29,7 @@
                          src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
                 {% endif %}
                 {% if perms.webapp.change_player %}
-                    <a class="btn btn-light mt-2" href="{% url "webapp:update_player" player.pk %}">Редактировать
+                    <a class="btn btn-light mt-3 mb-3" href="{% url "webapp:update_player" player.pk %}">Редактировать
                         профиль</a>
                 {% endif %}
                 {% if perms.webapp.delete_player %}
@@ -62,7 +62,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-8 mt-3">
                 <div>
                     <p style="font-size: 24px"><span style="font-weight: bold">Фамилия:</span> {{ player.last_name }}
                     </p>
@@ -70,7 +70,7 @@
                             style="font-weight: bold">Имя:</span> {{ player.first_name }}</p>
                     <p style="font-size: 20px">Страна: </p>
                 </div>
-                <div id="flag">
+                <div id="flag" style="width: 300px;">
                     <p id="country_code">{{ player.country.country_code }}</p>
                 </div>
 
@@ -91,7 +91,7 @@
         {% endfor %}
             <p>Ранг: {{ player.current_rank }}</p>
         <div class="btn-group">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            <button class="btn btn-secondary dropdown-toggle mt-2 ms-1" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false" style="background-color: #9400D3; color: white"
                     id="slide_start_button">
                 {% if player.get_total_clubs >= 1 %}Клубы: состоит в {{ player.get_total_clubs }}
@@ -107,10 +107,10 @@
                 {% endfor %}
             </ul>
         </div>
-        <a href="{% url "webapp:competitor_search" %}" class="btn ms-1"
+        <a href="{% url "webapp:competitor_search" %}" class="btn ms-1 mt-2"
            style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск соперников</a>
         {% if request.user.is_authenticated %}
-            <a href="{% url "webapp:recommendation_add" player.pk %}" class="btn ms-1"
+            <a href="{% url "webapp:recommendation_add" player.pk %}" class="btn ms-1 mt-2"
                style="background-color: #9400D3; color: white" id="slide_stop_button">Добавить рекомендацию</a>
         {% endif %}
         <div>
@@ -128,18 +128,22 @@
                              <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
                   </span>
             </button>
-            <a style="padding-left: 12px" onclick="copyfunc()"><img
+            <div class="col-sm-12 col-md-6 col-lg-4">
+            <a style="padding-left: 12px" onclick="copyfunc()">
+                <img
                     style="width: 37px;"
                     src="{% static 'images/copy.png' %}"></a>
-            <input readonly="readonly" style="width: 20rem; border-radius: 5px; border-color: #9400D3"
+
+            <input readonly="readonly" style="width: 75%; border-radius: 5px; border-color: #9400D3"
                    type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
+            </div>
         </div>
 
     </div>
 
     <div class="container mt-5 mb-5">
-        <h3 class="title">Турниры:</h3>
-        <table class="table">
+        <h3 class="title"6>Турниры:</h3>
+        <table class="table adaptive">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -155,17 +159,17 @@
             <tbody>
             {% for tournament in player.tournaments.all %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td><a style="color: black"
+                    <td data-label="#">{{ forloop.counter }}</td>
+                    <td data-label="Турнир"><a style="color: black"
                            href='{% url "webapp:tournament_detail" tournament.pk %}'>{{ tournament.name }}</a></td>
-                    <td>{{ tournament.city }}</td>
-                    <td>{{ tournament.board_size }}</td>
-                    <td>{{ tournament.rounds }}</td>
-                    <td>{{ tournament.date|date:"d-m-Y" }}</td>
-                    <td>{{ tournament.tournament_class }}</td>
+                    <td data-label="Город">{{ tournament.city }}</td>
+                    <td data-label="Размер доски">{{ tournament.board_size }}</td>
+                    <td data-label="Кол-во раундов">{{ tournament.rounds }}</td>
+                    <td data-label="Дата">{{ tournament.date|date:"d-m-Y" }}</td>
+                    <td data-label="Класс">{{ tournament.tournament_class }}</td>
                     {% for person in tournament.playerintournament_set.all %}
                         {% if player.pk == person.player_id %}
-                            <td>{{ person.GoLevel }}</td>
+                            <td data-label="Ранг">{{ person.GoLevel }}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
