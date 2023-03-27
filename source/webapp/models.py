@@ -1,5 +1,6 @@
 import os
-from datetime import datetime
+from datetime import datetime as dt
+import datetime
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
@@ -235,7 +236,7 @@ class Calendar(models.Model):
         verbose_name_plural = "События"
 
     def is_end_date(self):
-        return datetime.now() > self.deadline
+        return dt.now() > self.deadline
 
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)
