@@ -65,6 +65,7 @@ class Club(models.Model):
                 img.thumbnail(output_size)
                 img.save(self.logo.path)
 
+
 class Game(models.Model):
     black = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="black_player", null=True,
                               blank=True)
