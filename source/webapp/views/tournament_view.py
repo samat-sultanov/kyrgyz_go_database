@@ -5,7 +5,7 @@ from django.db.models import Q
 from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament
 
-from webapp.views.functions import get_list_of_filtered_players, get_wins_losses
+from webapp.views.functions import get_wins_losses
 
 
 class TournamentSearch(ListView):
@@ -78,9 +78,8 @@ class TournamentDetail(TemplateView):
     def get_context_data(self, **kwargs):
         pk = kwargs.get("pk")
         tournament = get_object_or_404(Tournament, pk=pk)
-        data = tournament.playerintournament_set.all()
-        sorted_players = get_list_of_filtered_players(data)
+        data = tournament.playerintournament_set.all().order_by('-rating_after')
         kwargs["tournament"] = tournament
-        kwargs['sorted_players'] = sorted_players
+        kwargs['sorted_players'] = data
         kwargs['wins'] = get_wins_losses(pk=pk)
         return super().get_context_data(**kwargs)
