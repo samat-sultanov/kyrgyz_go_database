@@ -47,8 +47,7 @@ urlpatterns = [
     path('player_detail/<int:pk>/recommendation_add/', RecommendationCreateView.as_view(), name='recommendation_add'),
     path('recommendation/<int:pk>/update', RecommendationUpdateView.as_view(), name='recommendation_update'),
     path('recommendation_delete/<int:pk>/', RecommendationDeleteView.as_view(), name='recommendation_delete'),
-    path('event_player/<int:pk>/', CalendarPlayerList.as_view(), name='CalendarPlayerList'),
-    path('change_event_reg_info/<int:pk>/', email_to_change_reg_info, name='change_event_reg_info'),
+    path('event_player/<int:pk>/', calendar_player_list, name='CalendarPlayerList'),
     path('status/<int:pk>/', Status_change.as_view(), name='status_change'),
     path('deleteplayerfromevent/<int:pk>/', Delete_player_from_event.as_view(), name='delete_player_from_event'),
 ]

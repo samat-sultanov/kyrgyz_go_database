@@ -14,3 +14,4 @@ sorl-thumbnail==12.9.0
 sqlparse==0.4.3
 tzdata==2022.7
 xmltodict==0.13.0
+django-simple-captcha==0.5.17
