@@ -148,11 +148,11 @@ class CompetitorSearch(ListView):
         if self.search_rank:
             queryset = queryset.filter(Q(current_rating__range=(rating-300, rating+300)))
         if self.search_clubs:
-            queryset = queryset.filter(Q(clubs__name__sta=self.search_clubs))
+            queryset = queryset.filter(Q(clubs__name__startswith=self.search_clubs))
         if self.search_city:
-            queryset = queryset.filter(Q(city__city__icontains=self.search_city))
+            queryset = queryset.filter(Q(city__city__startswith=self.search_city))
         if self.search_country:
-            queryset = queryset.filter(Q(country__country_code__icontains=self.search_country))  # check
+            queryset = queryset.filter(Q(country__country_code__startswith=self.search_country))  # check
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
