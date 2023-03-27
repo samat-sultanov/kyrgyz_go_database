@@ -76,15 +76,11 @@ def file_upload_check(request, pk):
 
         form = CheckPlayerForm(request.POST)
         if form.is_valid():
-            for player, patron, bd in zip(players, birth_date):
-                print(player, patron, bd)
-                if patron == '' and bd == '':
+            for player, bd in zip(players, birth_date):
+                print(player, bd)
+                if bd == '':
                     form = CheckPlayerForm({'birth_date': player.birth_date},
                                            instance=player)
-                elif patron == '' and bd != '':
-                    form = CheckPlayerForm({'birth_date': bd}, instance=player)
-                elif patron != '' and bd == '':
-                    form = CheckPlayerForm({'birth_date': player.birth_date}, instance=player)
                 else:
                     form = CheckPlayerForm({'birth_date': bd}, instance=player)
                 form.save()
