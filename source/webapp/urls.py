@@ -6,8 +6,7 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, \
     ClubUpdate, ParticipantCreate, CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
-    RecommendationDeleteView, CalendarPlayerList, Status_change, email_to_change_reg_info, \
-    Delete_player_from_event
+    RecommendationDeleteView, Status_change, Delete_player_from_event, calendar_player_list
 
 app_name = 'webapp'
 
