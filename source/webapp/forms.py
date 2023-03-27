@@ -15,9 +15,6 @@ class FileForm(forms.ModelForm):
 
 
 class PlayerSearchForm(forms.Form):
-    search_patronymic = forms.CharField(max_length=50, required=False, label='Найти',
-                                        widget=widgets.TextInput(
-                                            attrs={'class': "form-control w-30", 'placeholder': 'Отчество'}))
     search_first_name = forms.CharField(max_length=50, required=False, label='Найти',
                                         widget=widgets.TextInput(
                                             attrs={'class': "form-control w-30", 'placeholder': 'Имя'}))
@@ -94,7 +91,7 @@ class NewsBulkDeleteForm(forms.Form):
 class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        fields = ['first_name', "last_name", 'patronymic', 'birth_date', 'avatar']
+        fields = ['first_name', "last_name", 'birth_date', 'avatar']
         widgets = {
             'birth_date': widgets.DateInput(attrs={'type': 'date'})}
 
@@ -111,7 +108,7 @@ class ClubSearch(forms.Form):
 class CheckPlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        fields = ['patronymic', 'birth_date']
+        fields = ['birth_date']
         widgets = {'birth_date': DateInput(attrs={'type': 'date'})}
 
 
@@ -170,7 +167,7 @@ class ParticipantForm(forms.ModelForm):
         fields = ['surname', 'name', 'rank', 'phonenumber']
 
 
-class Search_Par_Player(forms.Form):
+class SearchParPlayer(forms.Form):
     search_player = forms.CharField(required=False,
                                     widget=widgets.TextInput(
                                         attrs={'class': "form-control", 'placeholder': "Enter only last name",

@@ -1,5 +1,3 @@
-import re
-
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 from django.http import HttpResponse
@@ -7,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 from webapp.handle_upload import handle_uploaded_file
-from webapp.models import File, Calendar, Country, Player, Tournament, News, Game
+from webapp.models import File, Calendar, Tournament, News
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses, get_position_in_kgf
@@ -56,7 +54,6 @@ def file_upload_check(request, pk):
     if request.method == 'POST' and request.user.is_authenticated:
         tournament = Tournament.objects.get(pk=pk)
         players = tournament.player_set.all()
-        patronymic = request.POST.getlist('patronymic')
         birth_date = request.POST.getlist('birth_date')
         tournament_form = CheckTournamentForm(request.POST)
         city = request.POST.get('city')
@@ -79,17 +76,13 @@ def file_upload_check(request, pk):
 
         form = CheckPlayerForm(request.POST)
         if form.is_valid():
-            for player, patron, bd in zip(players, patronymic, birth_date):
-                print(player, patron, bd)
-                if patron == '' and bd == '':
-                    form = CheckPlayerForm({'patronymic': player.patronymic, 'birth_date': player.birth_date},
+            for player, bd in zip(players, birth_date):
+                print(player, bd)
+                if bd == '':
+                    form = CheckPlayerForm({'birth_date': player.birth_date},
                                            instance=player)
-                elif patron == '' and bd != '':
-                    form = CheckPlayerForm({'patronymic': player.patronymic, 'birth_date': bd}, instance=player)
-                elif patron != '' and bd == '':
-                    form = CheckPlayerForm({'patronymic': patron, 'birth_date': player.birth_date}, instance=player)
                 else:
-                    form = CheckPlayerForm({'patronymic': patron, 'birth_date': bd}, instance=player)
+                    form = CheckPlayerForm({'birth_date': bd}, instance=player)
                 form.save()
             return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
         else:
