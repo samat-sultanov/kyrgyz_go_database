@@ -167,7 +167,7 @@ class ParticipantForm(forms.ModelForm):
         fields = ['surname', 'name', 'rank', 'phonenumber']
 
 
-class Search_Par_Player(forms.Form):
+class SearchParPlayer(forms.Form):
     search_player = forms.CharField(required=False,
                                     widget=widgets.TextInput(
                                         attrs={'class': "form-control", 'placeholder': "Enter only last name",

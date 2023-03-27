@@ -6,7 +6,7 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, \
     ClubUpdate, ParticipantCreate, CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
-    RecommendationDeleteView, Status_change, Delete_player_from_event, calendar_player_list
+    RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list
 
 app_name = 'webapp'
 
@@ -47,8 +47,8 @@ urlpatterns = [
     path('recommendation/<int:pk>/update', RecommendationUpdateView.as_view(), name='recommendation_update'),
     path('recommendation_delete/<int:pk>/', RecommendationDeleteView.as_view(), name='recommendation_delete'),
     path('event_player/<int:pk>/', calendar_player_list, name='CalendarPlayerList'),
-    path('status/<int:pk>/', Status_change.as_view(), name='status_change'),
-    path('deleteplayerfromevent/<int:pk>/', Delete_player_from_event.as_view(), name='delete_player_from_event'),
+    path('status/<int:pk>/', StatusChange.as_view(), name='status_change'),
+    path('deleteplayerfromevent/<int:pk>/', DeletePlayerFromEvent.as_view(), name='delete_player_from_event'),
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
