@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from webapp.models import Player
 from api_v1.serializers import PlayerSerializer
 
+
 class PlayerSerView(ModelViewSet):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
