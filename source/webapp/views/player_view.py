@@ -37,7 +37,6 @@ class PlayerSearch(ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_name = self.get_search_name()
-        self.search_patronymic = self.get_search_patronymic()
         self.search_last_name = self.get_search_last_name()
         self.search_clubs = self.get_search_clubs()
         self.search_city = self.get_search_city()
@@ -49,10 +48,6 @@ class PlayerSearch(ListView):
     def get_search_name(self):
         if self.form.is_valid():
             return self.form.cleaned_data['search_first_name']
-
-    def get_search_patronymic(self):
-        if self.form.is_valid():
-            return self.form.cleaned_data['search_patronymic']
 
     def get_search_last_name(self):
         if self.form.is_valid():
@@ -70,8 +65,6 @@ class PlayerSearch(ListView):
         queryset = super().get_queryset()
         if self.search_name:
             queryset = queryset.filter(Q(first_name__icontains=self.search_name))
-        if self.search_patronymic:
-            queryset = queryset.filter(Q(patronymic__icontains=self.search_patronymic))
         if self.search_last_name:
             queryset = queryset.filter(Q(last_name__icontains=self.search_last_name))
         if self.search_clubs:
@@ -86,9 +79,6 @@ class PlayerSearch(ListView):
         if self.search_name:
             context['query'] = urlencode({'search_first_name': self.search_name})
             context['search_first_name'] = self.search_name
-        elif self.search_patronymic:
-            context['query'] = urlencode({'search_patronymic': self.search_patronymic})
-            context['search_patronymic'] = self.search_patronymic
         elif self.search_last_name:
             context['query'] = urlencode({'search_last_name': self.search_last_name})
             context['search_last_name'] = self.search_last_name
