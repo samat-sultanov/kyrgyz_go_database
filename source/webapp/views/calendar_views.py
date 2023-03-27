@@ -1,8 +1,11 @@
 import json
 from datetime import datetime
+
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player, \
     EmailToChangeRegInfoFrom
@@ -116,18 +119,45 @@ class ParticipantCreate(CreateView):
         return reverse('webapp:event_view', kwargs={'pk': self.object.event.pk})
 
 
-class CalendarPlayerList(DetailView):
-    template_name = 'calendar/player_list_e.html'
-    context_object_name = 'event'
-    model = Calendar
+def calendar_player_list(request, *args, **kwargs):
+    event = get_object_or_404(Calendar, pk=kwargs.get('pk'))
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = EmailToChangeRegInfoFrom()
-        return context
+    if request.method == 'GET':
+        form = EmailToChangeRegInfoFrom()
+        context = {'event': event, 'form': form}
+        return render(request, 'calendar/player_list_e.html', context)
+
+    elif request.method == "POST":
+        form = EmailToChangeRegInfoFrom(request.POST)
+        if form.is_valid():
+            human = True
+            subject = f"Допустил ошибку при регистрации на ивент/турнир c ID '{kwargs.get('pk')}'"
+            body = {
+                'tournament/event': f"Ивент/Турнир: [{kwargs.get('pk')}] {Calendar.objects.all().get(pk=kwargs.get('pk')).event_name}",
+                'first_name': f"Имя: {form.cleaned_data.get('first_name', None)}",
+                'last_name': f"Фамилия: {form.cleaned_data.get('last_name', None)}",
+                'email': f"почта: {form.cleaned_data.get('email', None)}",
+                'phone_number': f"номер телефона: {form.cleaned_data.get('phone_number', None)}",
+                'message': f"Запрос: ''{form.cleaned_data.get('message')}''",
+            }
+            message = "\n".join(body.values())
+
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[settings.EMAIL_HOST_USER])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect("webapp:CalendarPlayerList", pk=kwargs.get('pk'))
+        else:
+            form = EmailToChangeRegInfoFrom(request.POST)
+            context = {'event': event, 'form': form, 'offcanvas': 'off'}
+            return render(request, 'calendar/player_list_e.html', context)
 
 
-class Status_change(View):
+class Status_change(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         part = get_object_or_404(Participant, pk=self.kwargs.get('pk'))
         status_res = None
@@ -141,3 +171,11 @@ class Status_change(View):
             status_res = False
         response = JsonResponse({'status_res': status_res})
         return response
+
+
+class Delete_player_from_event(LoginRequiredMixin, DeleteView):
+    model = Participant
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
+    def get_success_url(self):
+        return reverse('webapp:CalendarPlayerList', kwargs={'pk': self.object.event.pk})
