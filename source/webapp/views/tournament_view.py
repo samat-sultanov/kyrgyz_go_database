@@ -45,9 +45,9 @@ class TournamentSearch(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.search_name:
-            queryset = queryset.filter(Q(name__icontains=self.search_name))
+            queryset = queryset.filter(Q(name__startswith=self.search_name))
         if self.search_city:
-            queryset = queryset.filter(Q(city__city__icontains=self.search_city))
+            queryset = queryset.filter(Q(city__city__startswith=self.search_city))
         if self.search_date:
             queryset = queryset.filter(Q(date=self.search_date))
         if self.search_tournament_class and self.search_tournament_class != 'all':
