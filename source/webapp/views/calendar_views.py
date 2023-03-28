@@ -87,7 +87,7 @@ def hard_delete_one_event(request, *args, **kwargs):
     if request.method == 'POST':
         event = get_object_or_404(Calendar, pk=kwargs.get('pk'))
         event.delete()
-        return redirect('webapp:deleted_calendar_list')
+    return redirect('webapp:deleted_calendar_list')
 
 
 class ParticipantCreate(CreateView):

@@ -70,5 +70,17 @@ class EventDeleteTest(TestCase):
     def test_model_hard_delete(self):
         adm = User.objects.create()
         event_to_delete = self.create_event(adm)
+        self.assertIn(event_to_delete, Calendar.objects.all())
         event_to_delete.delete()
         self.assertNotIn(event_to_delete, Calendar.objects.all())
+
+    def test_view_hard_delete(self):
+        adm = User.objects.create()
+        adm.is_superuser = True
+        event_to_delete = self.create_event(adm)
+        self.assertIn(event_to_delete, Calendar.objects.all())
+        event_to_delete.is_deleted = True
+        self.assertTrue(event_to_delete.is_deleted)
+        url = reverse('webapp:event_hard_delete_one', kwargs={'pk': event_to_delete.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
