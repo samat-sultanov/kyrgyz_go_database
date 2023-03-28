@@ -1,32 +1,30 @@
-from django.test import TestCase
+from django.utils import timezone
+from django.test import TestCase, Client
+from django.urls import reverse
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from accounts.models import User
+from webapp.models import Calendar
+
 
 class EventCreateTest(TestCase):
     def setUp(self):
-        self.driver = Chrome()
-        self.driver.get('http://localhost:8000/accounts/login/')
-        self.driver.find_element(By.ID, 'username').send_keys('admin')
-        self.driver.find_element(By.ID, 'password').send_keys('admin')
-        self.driver.find_element(By.ID, 'login_button').click()
-        self.driver.get('http://localhost:8000/')
+        self.client = Client()
+        #self.admin = User.objects.create()  #без этой строки терминал ругается, что во временной базе нет пользователей
 
-    def tearDown(self):
-        self.driver.close()
+    def test_links_create_event_success(self):
+        url = reverse('webapp:event_create')
+        data = {
+            'event_name': 'test_event_name',
+            'event_city': 'Tals',
+            'event_date': '10/10/2024',
+            'text': 'Test text for event create test',
+            'deadline': '10/10/2024, 10:10 10',
+        }
+        self.client.get(url)
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
 
-    def test_create_event_displays_all_fields(self):
-        self.driver.get('http://localhost:8000/event_create/')
-        self.driver.find_element(By.NAME, 'event_name').send_keys('Test event #1')
-        self.driver.find_element(By.NAME, 'event_city').send_keys('New York')
-        self.driver.find_element(By.NAME, 'event_date').send_keys('03/30/2024')
-        self.driver.find_element(By.NAME, 'text').send_keys('Test text from tester')
-        self.driver.find_element(By.NAME, 'deadline').send_keys('04/30/2023, 10:10 10')
-        self.driver.implicitly_wait(5)
-        self.driver.find_element(By.CLASS_NAME, 'kgf_modal').click()
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, "confirm_button"))).click()
-        self.driver.maximize_window()
-        print(f"CURRENT_URL: {self.driver.current_url}")
-        assert self.driver.current_url == 'http://localhost:8000/'
