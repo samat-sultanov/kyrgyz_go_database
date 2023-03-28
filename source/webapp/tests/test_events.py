@@ -61,3 +61,7 @@ class EventDeleteTest(TestCase):
         url = reverse('webapp:event_delete', kwargs={'pk': self.event_to_delete.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
+
+    def test_model_hard_delete(self):
+        self.event_to_delete.delete()
+        self.assertFalse(isinstance(self.event_to_delete, Calendar))
