@@ -61,5 +61,13 @@ class NewsUpdateByUnregisterUserTest(TestCase):
     def test_update_news(self):
         url = reverse('webapp:news_update', args=[self.test_news.pk])
         response = self.client.get(url)
-        self.assertRedirects(response, reverse('accounts:login') + '?next' + url)
         self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
+        data = {'title': 'Updated title',
+                'text': 'Updated text'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
+        self.test_news.refresh_from_db()
+        self.assertEqual(self.test_news.title, 'Some title')
+        self.assertEqual(self.test_news.text, 'Some text')
