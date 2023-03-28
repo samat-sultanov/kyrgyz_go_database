@@ -35,7 +35,7 @@ class NewsDetailView(DetailView):
     context_object_name = 'single_news'
 
 
-class NewsUpdateView(UpdateView):
+class NewsUpdateView(LoginRequiredMixin, UpdateView):
     model = News
     template_name = 'news/news_update.html'
     form_class = NewsForm
