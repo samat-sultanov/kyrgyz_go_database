@@ -1,4 +1,5 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.shortcuts import render
 from django.test import TestCase, Client
 from django.urls import reverse
 from selenium.webdriver import Chrome
@@ -47,3 +48,18 @@ class NewsAddByRegisterUserTest(TestCase):
         self.assertEqual(News.objects.count(), 2)
 
 
+class NewsUpdateByUnregisterUserTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        test_user = User.objects.create_user(username='test_user', password='test_password')
+        cls.test_news = News.objects.create(author=test_user, title='Some title', text='Some text')
+
+    def setUp(self) -> None:
+        self.client = Client()
+
+    def test_update_news(self):
+        url = reverse('webapp:news_update', args=[self.test_news.pk])
+        response = self.client.get(url)
+        self.assertRedirects(response, reverse('accounts:login') + '?next' + url)
+        self.assertEqual(response.status_code, 302)
