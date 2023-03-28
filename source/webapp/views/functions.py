@@ -54,11 +54,9 @@ def get_total_wins(data):
     return new_list
 
 
-# На доработке
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
     players = Player.objects.filter(country=country)
-    # tournaments = Tournament.objects.order_by("date")
     new_list = []
     for player in players:
         new_dict = dict()
@@ -73,62 +71,6 @@ def get_position_in_kgf():
         element['position'] = position
         position += 1
     return new_list
-
-
-# Функция принимает список игроков, возвращает список из словарей с ключами Player и Golevel из последнего турнира,
-# в котором участвовал игрок
-def get_rank(data):
-    tournaments = Tournament.objects.order_by("-date")
-    new_list = []
-    for player in data:
-        new_dict = dict()
-        for tournament in tournaments:
-            for el in tournament.playerintournament_set.all():
-                if player.pk == el.player_id:
-                    if player not in new_dict:
-                        new_dict['player'] = player
-                        new_dict['GoLevel'] = el.GoLevel
-        new_list.append(new_dict)
-    return new_list
-
-
-def get_element_to_sort(x):
-    return x['position']
-
-
-# Функция принимает список игроков формата tournament.playerintournament_set.all или после функции get_rank(), key_word
-# (буква от Golevel - k  или d), и reverse (прямую или обратную сортировку), возвращает отсортированный список из
-# словарей с ключами player, Golevel и position (позиция здесь - это цифра Golevel без учёта буквы).
-# Список сортируется в прямом или обратном порядке, зависит от значения reverse.
-def sort_players(data, key_word, reverse):
-    new_list = []
-    for el in data:
-        new_dict = dict()
-        if isinstance(el, dict):
-            for key, value in el.items():
-                if key == "GoLevel" and value.endswith(key_word):
-                    new_dict['player'] = el['player']
-                    new_dict['GoLevel'] = el['GoLevel']
-                    new_dict['position'] = int(el['GoLevel'][:-1])
-                    new_list.append(new_dict)
-        else:
-            if el.GoLevel.endswith(key_word):
-                new_dict['player'] = el.player
-                new_dict['GoLevel'] = el.GoLevel
-                new_dict['position'] = int(el.GoLevel[:-1])
-                new_list.append(new_dict)
-    result = sorted(new_list, key=get_element_to_sort, reverse=reverse)
-    return result
-
-
-# Функция принимает список игроков формата tournament.playerintournament_set.all или после функции get_rank(),
-# вызывает у себя функцию sort_players, делает сортировку игроков по рангу d от большего к меньшему и сортировку по
-# рангу k от меньшего к большему, соединяет два списка словарей и возвращает одним списком
-def get_list_of_filtered_players(data):
-    players_with_rate_k = sort_players(data, 'k', reverse=False)
-    players_with_rate_d = sort_players(data, 'd', reverse=True)
-    filtered_players_list = players_with_rate_d + players_with_rate_k
-    return filtered_players_list
 
 
 # Функция принимает pk турнира и возвращает список из словарей с ключами - player, wins (победы в этом турнире), losses
@@ -157,7 +99,6 @@ def get_wins_losses(pk):
             new_dict['losses'] = losses
         new_list.append(new_dict)
     return new_list
-
 
 
 def get_rank_for_json(data):

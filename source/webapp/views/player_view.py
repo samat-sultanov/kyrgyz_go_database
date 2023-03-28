@@ -37,7 +37,6 @@ class PlayerSearch(ListView):
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
         self.search_name = self.get_search_name()
-        self.search_patronymic = self.get_search_patronymic()
         self.search_last_name = self.get_search_last_name()
         self.search_clubs = self.get_search_clubs()
         self.search_city = self.get_search_city()
@@ -49,10 +48,6 @@ class PlayerSearch(ListView):
     def get_search_name(self):
         if self.form.is_valid():
             return self.form.cleaned_data['search_first_name']
-
-    def get_search_patronymic(self):
-        if self.form.is_valid():
-            return self.form.cleaned_data['search_patronymic']
 
     def get_search_last_name(self):
         if self.form.is_valid():
@@ -69,15 +64,13 @@ class PlayerSearch(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.search_name:
-            queryset = queryset.filter(Q(first_name__icontains=self.search_name))
-        if self.search_patronymic:
-            queryset = queryset.filter(Q(patronymic__icontains=self.search_patronymic))
+            queryset = queryset.filter(Q(first_name__startswith=self.search_name))
         if self.search_last_name:
-            queryset = queryset.filter(Q(last_name__icontains=self.search_last_name))
+            queryset = queryset.filter(Q(last_name__startswith=self.search_last_name))
         if self.search_clubs:
-            queryset = queryset.filter(Q(clubs__name__icontains=self.search_clubs))
+            queryset = queryset.filter(Q(clubs__name__startswith=self.search_clubs))
         if self.search_city:
-            queryset = queryset.filter(Q(city__city__icontains=self.search_city))
+            queryset = queryset.filter(Q(city__city__startswith=self.search_city))
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -86,9 +79,6 @@ class PlayerSearch(ListView):
         if self.search_name:
             context['query'] = urlencode({'search_first_name': self.search_name})
             context['search_first_name'] = self.search_name
-        elif self.search_patronymic:
-            context['query'] = urlencode({'search_patronymic': self.search_patronymic})
-            context['search_patronymic'] = self.search_patronymic
         elif self.search_last_name:
             context['query'] = urlencode({'search_last_name': self.search_last_name})
             context['search_last_name'] = self.search_last_name
@@ -158,11 +148,11 @@ class CompetitorSearch(ListView):
         if self.search_rank:
             queryset = queryset.filter(Q(current_rating__range=(rating-300, rating+300)))
         if self.search_clubs:
-            queryset = queryset.filter(Q(clubs__name__icontains=self.search_clubs))
+            queryset = queryset.filter(Q(clubs__name__startswith=self.search_clubs))
         if self.search_city:
-            queryset = queryset.filter(Q(city__city__icontains=self.search_city))
+            queryset = queryset.filter(Q(city__city__startswith=self.search_city))
         if self.search_country:
-            queryset = queryset.filter(Q(country__country_code__icontains=self.search_country))  # check
+            queryset = queryset.filter(Q(country__country_code__startswith=self.search_country))  # check
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):

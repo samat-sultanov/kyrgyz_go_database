@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from webapp.models import Calendar, Participant, Player
-from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, Search_Par_Player, \
+from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, SearchParPlayer, \
     EmailToChangeRegInfoFrom
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, DetailView, View
@@ -100,7 +100,7 @@ class ParticipantCreate(CreateView):
         return super().form_valid(form)
 
     def get_search_form(self):
-        return Search_Par_Player(self.request.GET)
+        return SearchParPlayer(self.request.GET)
 
     def get(self, request, *args, **kwargs):
         event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
@@ -157,7 +157,7 @@ def calendar_player_list(request, *args, **kwargs):
             return render(request, 'calendar/player_list_e.html', context)
 
 
-class Status_change(LoginRequiredMixin, View):
+class StatusChange(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         part = get_object_or_404(Participant, pk=self.kwargs.get('pk'))
         status_res = None
@@ -173,9 +173,11 @@ class Status_change(LoginRequiredMixin, View):
         return response
 
 
-class Delete_player_from_event(LoginRequiredMixin, DeleteView):
+class DeletePlayerFromEvent(LoginRequiredMixin, DeleteView):
     model = Participant
+
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
     def get_success_url(self):
         return reverse('webapp:CalendarPlayerList', kwargs={'pk': self.object.event.pk})

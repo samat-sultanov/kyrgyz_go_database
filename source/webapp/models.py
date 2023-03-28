@@ -65,6 +65,7 @@ class Club(models.Model):
                 img.thumbnail(output_size)
                 img.save(self.logo.path)
 
+
 class Game(models.Model):
     black = models.ForeignKey('webapp.Player', on_delete=models.CASCADE, related_name="black_player", null=True,
                               blank=True)
@@ -108,7 +109,6 @@ class Tournament(models.Model):
 
 class Player(models.Model):
     avatar = models.ImageField(null=True, blank=True, upload_to='user_avatar', verbose_name='Аватар')
-    patronymic = models.CharField(verbose_name="Отчество", max_length=50, blank=True, null=True)
     first_name = models.CharField(verbose_name="Имя", max_length=50, blank=True, null=True)
     last_name = models.CharField(verbose_name="Фамилия", max_length=50, blank=True, null=True)
     clubs = models.ManyToManyField('webapp.Club', related_name='players', blank=True)
