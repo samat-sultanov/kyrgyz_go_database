@@ -1,5 +1,4 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.shortcuts import render
 from django.test import TestCase, Client
 from django.urls import reverse
 from selenium.webdriver import Chrome
@@ -9,14 +8,14 @@ from accounts.models import User
 from webapp.models import News
 
 
-class NewsTestsForUnregisterUser(TestCase):
+class NewsTestsForUnregisterUser(TestCase):  # Для анонимных пользователей
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls):  # Создаём тестировочные данные  - юзера и одну статью
         test_user = User.objects.create_user(username='test_user', password='test_password')
         cls.test_news = News.objects.create(author=test_user, title='Some title', text='Some text')
 
     def setUp(self):
-        self.client = Client()  # Анонимный пользователь пытается создать статью
+        self.client = Client()
 
     def test_add_news(self):
         url = reverse('webapp:news_create')
@@ -40,18 +39,19 @@ class NewsTestsForUnregisterUser(TestCase):
                 'text': 'Updated text'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
+        # Проверяем правильность перенаправления
         self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
         self.test_news.refresh_from_db()
         self.assertEqual(self.test_news.title, 'Some title')
         self.assertEqual(self.test_news.text, 'Some text')
 
 
-class NewsTestsForRegisterUser(TestCase):
+class NewsTestsForRegisterUser(TestCase):  # Для зарегистрированных пользователей
 
-    def setUp(self):
+    def setUp(self):  # Создаём тестировочные данные  - юзера и одну статью
         self.client = Client()
         self.user = User.objects.create_user(username='test_user', password='test_password')
-        self.client.login(username='test_user', password='test_password')
+        self.client.login(username='test_user', password='test_password')  # Логинимся
         self.news = News.objects.create(author=self.user, title='Some title', text='Some text')
 
     def test_add_news(self):
@@ -78,5 +78,7 @@ class NewsTestsForRegisterUser(TestCase):
         self.assertRedirects(response, reverse('webapp:news_detail', args=[self.news.pk]))
         news = News.objects.get(title='Updated title')
         self.assertEqual(news.author, self.user)
+        self.assertEqual(news.title, 'Updated title')
+        self.assertEqual(news.text, 'Updated text')
         self.assertEqual(News.objects.count(), 1)
 
