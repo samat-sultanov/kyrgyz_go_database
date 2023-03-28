@@ -1,5 +1,4 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.shortcuts import render
 from django.test import TestCase, Client
 from django.urls import reverse
 from selenium.webdriver import Chrome
@@ -9,9 +8,14 @@ from accounts.models import User
 from webapp.models import News
 
 
-class NewsAddByUnregisterUserTest(TestCase):
+class NewsTestsForUnregisterUser(TestCase):  # Для анонимных пользователей
+    @classmethod
+    def setUpTestData(cls):  # Создаём тестировочные данные  - юзера и одну статью
+        test_user = User.objects.create_user(username='test_user', password='test_password')
+        cls.test_news = News.objects.create(author=test_user, title='Some title', text='Some text')
+
     def setUp(self):
-        self.client = Client()  # Анонимный пользователь пытается создать статью
+        self.client = Client()
 
     def test_add_news(self):
         url = reverse('webapp:news_create')
@@ -24,17 +28,33 @@ class NewsAddByUnregisterUserTest(TestCase):
                 'news_image': image_file}
         response = self.client.post(url, data)  # Отправляю запрос на создание статьи
         self.assertEqual(response.status_code, 302)  # Все ещё нет доступа на страницу
-        self.assertEqual(News.objects.count(), 0)  # Проверяю, что статья не была создана
+        self.assertEqual(News.objects.count(), 1)  # Проверяю, что статья не была создана
+
+    def test_update_news(self):
+        url = reverse('webapp:news_update', args=[self.test_news.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
+        data = {'title': 'Updated title',
+                'text': 'Updated text'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        # Проверяем правильность перенаправления
+        self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
+        self.test_news.refresh_from_db()
+        self.assertEqual(self.test_news.title, 'Some title')
+        self.assertEqual(self.test_news.text, 'Some text')
 
 
-class NewsAddByRegisterUserTest(TestCase):
-    def setUp(self):
+class NewsTestsForRegisterUser(TestCase):  # Для зарегистрированных пользователей
+
+    def setUp(self):  # Создаём тестировочные данные  - юзера и одну статью
         self.client = Client()
         self.user = User.objects.create_user(username='test_user', password='test_password')
-        News.objects.create(author=self.user, title='Some title', text='Some text')
+        self.client.login(username='test_user', password='test_password')  # Логинимся
+        self.news = News.objects.create(author=self.user, title='Some title', text='Some text')
 
-    def test_add_news_by_registered_user(self):
-        self.client.login(username='test_user', password='test_password')
+    def test_add_news(self):
         url = reverse('webapp:news_create')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -47,27 +67,18 @@ class NewsAddByRegisterUserTest(TestCase):
         self.assertEqual(news.author, self.user)
         self.assertEqual(News.objects.count(), 2)
 
-
-class NewsUpdateByUnregisterUserTest(TestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        test_user = User.objects.create_user(username='test_user', password='test_password')
-        cls.test_news = News.objects.create(author=test_user, title='Some title', text='Some text')
-
-    def setUp(self) -> None:
-        self.client = Client()
-
     def test_update_news(self):
-        url = reverse('webapp:news_update', args=[self.test_news.pk])
+        url = reverse('webapp:news_update', args=[self.news.pk])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
+        self.assertEqual(response.status_code, 200)
         data = {'title': 'Updated title',
                 'text': 'Updated text'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('accounts:login') + '?next=' + url)
-        self.test_news.refresh_from_db()
-        self.assertEqual(self.test_news.title, 'Some title')
-        self.assertEqual(self.test_news.text, 'Some text')
+        self.assertRedirects(response, reverse('webapp:news_detail', args=[self.news.pk]))
+        news = News.objects.get(title='Updated title')
+        self.assertEqual(news.author, self.user)
+        self.assertEqual(news.title, 'Updated title')
+        self.assertEqual(news.text, 'Updated text')
+        self.assertEqual(News.objects.count(), 1)
+
