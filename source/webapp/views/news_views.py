@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
@@ -58,9 +58,10 @@ class NewsDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class DeletedNewsListView(FormView):
+class DeletedNewsListView(PermissionRequiredMixin, FormView):
     form_class = NewsBulkDeleteForm
     template_name = 'news/news_deleted_list.html'
+    permission_required = ('webapp.view_deleted_news',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

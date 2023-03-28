@@ -9,6 +9,7 @@ from webapp.models import File, Calendar, Tournament, News
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses, get_position_in_kgf
+from django.core.exceptions import PermissionDenied
 
 
 class IndexView(TemplateView):
@@ -98,7 +99,7 @@ def file_upload_check(request, pk):
                       {'tournament': tournament, 'players': players, 'wins': wins, 'player_form': player_form,
                        'tournament_form': tournament_form})
     else:
-        return render(request, '403.html')
+        raise PermissionDenied()
 
 
 def about_us_view(request, *args, **kwargs):

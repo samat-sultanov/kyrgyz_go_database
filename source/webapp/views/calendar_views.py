@@ -54,9 +54,10 @@ class CalendarDeleteView(PermissionRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class DeletedCalendarListView(FormView):
+class DeletedCalendarListView(PermissionRequiredMixin, FormView):
     form_class = CalendarBulkDeleteForm
     template_name = 'calendar/calendar_deleted_list.html'
+    permission_required = ('webapp.view_deleted_events',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
