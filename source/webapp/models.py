@@ -203,6 +203,7 @@ class News(models.Model):
     class Meta:
         verbose_name = "Новость"
         verbose_name_plural = "Новости"
+        permissions = (("view_deleted_news", "can view list of deleted news"),)
 
     def __str__(self):
         return f'{self.title} - {self.created_at.strftime("%d-%m-%Y %H:%M:%S")}'
@@ -234,6 +235,7 @@ class Calendar(models.Model):
     class Meta:
         verbose_name = "Событие"
         verbose_name_plural = "События"
+        permissions = (("view_deleted_events", "can view list of deleted events"),)
 
     def is_end_date(self):
         return dt.now() > self.deadline
