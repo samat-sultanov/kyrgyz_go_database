@@ -46,22 +46,29 @@ class EventCreateTest(TestCase):
 class EventDeleteTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.admin = User.objects.create()
+
+    def create_event(self, adm):
         event_name = 'Event #1'
         event_city = 'Kara-Kol'
         event_date = '2024-10-10'
         text = 'Test text ofr event #1'
         deadline = timezone.now()
-        author = 1
-        self.event_to_delete = Calendar.objects.create(event_name=event_name, event_city=event_city,
-                                                       event_date=event_date, text=text, deadline=deadline,
-                                                       author_id=author)
+        author = adm.pk
+        return Calendar.objects.create(event_name=event_name, event_city=event_city, event_date=event_date, text=text,
+                                       deadline=deadline, author_id=author)
+
+    def tearDown(self):
+        Calendar.objects.all().delete()
 
     def test_view_event_soft_delete(self):
-        url = reverse('webapp:event_delete', kwargs={'pk': self.event_to_delete.pk})
+        adm = User.objects.create()
+        event_to_delete = self.create_event(adm)
+        url = reverse('webapp:event_delete', kwargs={'pk': event_to_delete.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
 
     def test_model_hard_delete(self):
-        self.event_to_delete.delete()
-        self.assertFalse(isinstance(self.event_to_delete, Calendar))
+        adm = User.objects.create()
+        event_to_delete = self.create_event(adm)
+        event_to_delete.delete()
+        self.assertNotIn(event_to_delete, Calendar.objects.all())
