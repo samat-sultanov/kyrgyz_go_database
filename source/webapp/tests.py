@@ -27,26 +27,23 @@ class NewsAddByUnregisterUserTest(TestCase):
 
 
 class NewsAddByRegisterUserTest(TestCase):
-    def setUp(self) -> None:
+    def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='test_user', password='test_password')
+        News.objects.create(author=self.user, title='Some title', text='Some text')
 
-    def test_add_news(self):
+    def test_add_news_by_registered_user(self):
         self.client.login(username='test_user', password='test_password')
-
-        response = self.client.post( {'username': 'admin', 'password': 'admin'})
-        self.assertEqual(response.status_code, 200)
         url = reverse('webapp:news_create')
-        image_file = SimpleUploadedFile('image.jpg', b'image_content', content_type='image/jpg')
-        data = {'title': 'Some text',
-                'text': 'This is a long interesting text with at least 3 sentences.',
-                'news_image': image_file}
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = {'title': 'New title',
+                'text': 'This is a long interesting text with at least 3 sentences.'}
         response = self.client.post(url, data)
-        print(response)
-        print(response.status_code)
-        print(response.url)
-        self.assertRedirects(response, url, status_code=200)
-        # self.assertEqual(response.status_code, 200)
-        self.assertEqual(News.objects.count(), 1)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(News.objects.filter(title='New title').exists())
+        news = News.objects.get(title='New title')
+        self.assertEqual(news.author, self.user)
+        self.assertEqual(News.objects.count(), 2)
 
 
