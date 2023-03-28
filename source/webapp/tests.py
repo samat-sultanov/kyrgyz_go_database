@@ -3,10 +3,12 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
+
+from accounts.models import User
 from webapp.models import News
 
 
-class NewsAddTest(TestCase):
+class NewsAddByUnregisterUserTest(TestCase):
     def setUp(self):
         self.client = Client()  # Анонимный пользователь пытается создать статью
 
@@ -22,3 +24,29 @@ class NewsAddTest(TestCase):
         response = self.client.post(url, data)  # Отправляю запрос на создание статьи
         self.assertEqual(response.status_code, 302)  # Все ещё нет доступа на страницу
         self.assertEqual(News.objects.count(), 0)  # Проверяю, что статья не была создана
+
+
+class NewsAddByRegisterUserTest(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        self.user = User.objects.create_user(username='test_user', password='test_password')
+
+    def test_add_news(self):
+        self.client.login(username='test_user', password='test_password')
+
+        response = self.client.post( {'username': 'admin', 'password': 'admin'})
+        self.assertEqual(response.status_code, 200)
+        url = reverse('webapp:news_create')
+        image_file = SimpleUploadedFile('image.jpg', b'image_content', content_type='image/jpg')
+        data = {'title': 'Some text',
+                'text': 'This is a long interesting text with at least 3 sentences.',
+                'news_image': image_file}
+        response = self.client.post(url, data)
+        print(response)
+        print(response.status_code)
+        print(response.url)
+        self.assertRedirects(response, url, status_code=200)
+        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(News.objects.count(), 1)
+
+
