@@ -97,6 +97,17 @@ class ParticipantCreate(CreateView):
 
     def form_valid(self, form):
         event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
+        surname = self.request.POST.get('surname')
+        name = self.request.POST.get('name')
+        phonenumber = self.request.POST.get('phonenumber')
+        participants = event.participant.all()
+        for participant in participants:
+            if name == participant.name and surname == participant.surname:
+                form.add_error('name', 'Данный игрок уже зарегистрирован.')
+                return super().form_invalid(form)
+            elif phonenumber == participant.phonenumber:
+                form.add_error('phonenumber', 'Номер телефона уже зарегистрирован.')
+                return super().form_invalid(form)
         form.instance.event = event
         return super().form_valid(form)
 
