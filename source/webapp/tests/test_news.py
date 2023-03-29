@@ -4,7 +4,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
-
 from accounts.models import User
 from webapp.models import News
 
@@ -68,11 +67,7 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
 
     def setUp(self):  # Создаём тестировочные данные  - юзера и одну статью
         self.client = Client()
-        # self.user = User.objects.create_user(username='test_user', password='test_password')
         self.client.login(username='test_user', password='test_password')  # Логинимся
-        # self.news = News.objects.create(author=self.user, title='Some title', text='Some text')
-        # self.delete_news_permission = Permission.objects.get(codename='view_deleted_news')
-        # self.user.user_permissions.add(self.delete_news_permission)
 
     def test_add_news(self):
         url = reverse('webapp:news_create')
@@ -99,7 +94,6 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         self.news.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('webapp:news_detail', args=[self.news.pk]))
-        # news = News.objects.get(title='Updated title')
         self.assertEqual(self.news.author, self.user)
         self.assertEqual(self.news.title, 'Updated title')
         self.assertEqual(self.news.text, 'Updated text')
