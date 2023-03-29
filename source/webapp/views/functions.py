@@ -4,7 +4,7 @@ from operator import itemgetter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
-from webapp.views.GoR_calculator import get_new_rank_from_rating, RANK_FROM_RATING
+from webapp.views.GoR_calculator import get_new_rank_from_rating
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
@@ -117,10 +117,4 @@ def get_rank_for_json(data):
         new_list.append(new_dict)
     return new_list
 
-
-def get_rating_from_rank(x):
-    for element in RANK_FROM_RATING:
-        for k, v in element.items():
-            if x == v:
-                return k
 
