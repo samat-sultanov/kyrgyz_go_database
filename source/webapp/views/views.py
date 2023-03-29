@@ -78,7 +78,6 @@ def file_upload_check(request, pk):
         form = CheckPlayerForm(request.POST)
         if form.is_valid():
             for player, bd in zip(players, birth_date):
-                print(player, bd)
                 if bd == '':
                     form = CheckPlayerForm({'birth_date': player.birth_date},
                                            instance=player)
