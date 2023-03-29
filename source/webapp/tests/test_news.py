@@ -45,6 +45,16 @@ class NewsTestsForUnregisterUser(TestCase):  # Для анонимных пол�
         self.assertEqual(self.test_news.title, 'Some title')
         self.assertEqual(self.test_news.text, 'Some text')
 
+    def test_delete_news(self):
+        url = reverse('webapp:news_detail', args=[self.test_news.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'data-bs-target="#delete_news_Modal"')
+        response = self.client.post(reverse('webapp:news_delete', args=[self.test_news.pk]))
+        self.assertEqual(self.test_news.is_deleted, False)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(News.objects.count(), 1)
+
 
 class NewsTestsForRegisterUser(TestCase):  # Для зарегистрированных пользователей
 
