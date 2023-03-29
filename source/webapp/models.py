@@ -230,7 +230,7 @@ class Calendar(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
-    deadline = models.DateTimeField(verbose_name='Дата окончания регистрации', null=True, blank=True)
+    deadline = models.DateField(verbose_name='Дата окончания регистрации', null=True, blank=True)
 
     class Meta:
         verbose_name = "Событие"
