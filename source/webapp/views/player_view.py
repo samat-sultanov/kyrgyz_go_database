@@ -6,7 +6,8 @@ from webapp.models import Player
 from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
-from webapp.views.functions import get_position_in_kgf, get_rating_from_rank
+from webapp.views.functions import get_position_in_kgf
+from webapp.views.GoR_calculator import get_rating_from_rank
 
 
 class PlayerDetail(TemplateView):

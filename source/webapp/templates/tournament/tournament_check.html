@@ -37,7 +37,6 @@
                 <th scope="col"></th>
                 <th scope="col">Surname</th>
                 <th scope="col">Name</th>
-                <th scope="col">Patronymic</th>
                 <th scope="col">Date of birth</th>
                 <th scope="col">Club</th>
                 <th scope="col">GoLevel</th>
@@ -52,13 +51,6 @@
                     <td><a style="color: black;"
                            href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
                     <td>{{ player.first_name }}</td>
-                    {% if not player.patronymic %}
-                        <td>
-                        {{ player_form.patronymic }}
-                        </td>
-                    {% else %}
-                        <td>{{ player.patronymic }}{{ player_form.patronymic.as_hidden }}</td>
-                    {% endif %}
                     {% if player.birth_date is not None %}
                         <td>{{ player.birth_date }}{{ player_form.birth_date.as_hidden }}</td>
                     {% else %}
