@@ -25,7 +25,6 @@
                 <th scope="col">#</th>
                 <th scope="col">Фамилия</th>
                 <th scope="col">Имя</th>
-                <th scope="col">Отчество</th>
                 <th scope="col">Клуб</th>
                 <th scope="col">Ранг</th>
                 <th scope="col">Победы</th>
@@ -40,11 +39,6 @@
                     <td data-label="Last Name"><a style="color: black"
                            href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
                     <td data-label="First Name">{{ el.player.first_name }}</td>
-                    {% if el.player.patronymic is not None %}
-                        <td data-label="Patronymic">{{ el.player.patronymic }}</td>
-                    {% else %}
-                        <td data-label="Patronymic"></td>
-                    {% endif %}
                     {% if el.player.clubs.all %}
                         {% for club in el.player.clubs.all %}
                             <td data-label="Club">{{ club.name }}</td>
