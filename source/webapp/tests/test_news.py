@@ -65,7 +65,7 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         cls.delete_news_permission = Permission.objects.get(codename='view_deleted_news')
         cls.user.user_permissions.add(cls.delete_news_permission)
 
-    def setUp(self):  # Создаём тестировочные данные  - юзера и одну статью
+    def setUp(self):
         self.client = Client()
         self.client.login(username='test_user', password='test_password')  # Логинимся
 
