@@ -124,6 +124,13 @@ def get_total_score_for_player(pk):
     return new_list
 
 
+def get_rating_from_rank(x):
+    for element in RANK_FROM_RATING:
+        for k, v in element.items():
+            if x == v:
+                return k
+
+
 def get_new_rating(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.playerintournament_set.all()
@@ -131,6 +138,10 @@ def get_new_rating(pk):
     for element in data:
         for item in players:
             if element['player'].pk == item.player.pk:
+                if item.rating == 0:
+                    item.player.current_rank = item.GoLevel
+                    item.player.current_rating = get_rating_from_rank(item.GoLevel)
+                    item.player.save()
                 if item.rating >= 100:
                     new_rating = item.rating + element['total']
                     new_rank = get_new_rank_from_rating(new_rating)
@@ -155,6 +166,8 @@ def get_new_rating(pk):
                     item.player.current_rating = new_rating
                     item.player.current_rank = new_rank
                     item.player.save()
+
+
 
 
 
