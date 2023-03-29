@@ -1,9 +1,9 @@
+from django.contrib.auth.models import Permission
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client
 from django.urls import reverse
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
-
 from accounts.models import User
 from webapp.models import News
 
@@ -58,11 +58,16 @@ class NewsTestsForUnregisterUser(TestCase):  # Для анонимных пол�
 
 class NewsTestsForRegisterUser(TestCase):  # Для зарегистрированных пользователей
 
+    @classmethod
+    def setUpTestData(cls):  # Создаём тестировочные данные  - юзера и одну статью
+        cls.user = User.objects.create_user(username='test_user', password='test_password')
+        cls.news = News.objects.create(author=cls.user, title='Some title', text='Some text')
+        cls.delete_news_permission = Permission.objects.get(codename='view_deleted_news')
+        cls.user.user_permissions.add(cls.delete_news_permission)
+
     def setUp(self):  # Создаём тестировочные данные  - юзера и одну статью
         self.client = Client()
-        self.user = User.objects.create_user(username='test_user', password='test_password')
         self.client.login(username='test_user', password='test_password')  # Логинимся
-        self.news = News.objects.create(author=self.user, title='Some title', text='Some text')
 
     def test_add_news(self):
         url = reverse('webapp:news_create')
@@ -71,10 +76,12 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         data = {'title': 'New title',
                 'text': 'This is a long interesting text with at least 3 sentences.'}
         response = self.client.post(url, data)
+        self.news.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertTrue(News.objects.filter(title='New title').exists())
         news = News.objects.get(title='New title')
         self.assertEqual(news.author, self.user)
+        self.assertEqual(news.title, 'New title')
         self.assertEqual(News.objects.count(), 2)
 
     def test_update_news(self):
@@ -84,11 +91,24 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         data = {'title': 'Updated title',
                 'text': 'Updated text'}
         response = self.client.post(url, data)
+        self.news.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('webapp:news_detail', args=[self.news.pk]))
-        news = News.objects.get(title='Updated title')
-        self.assertEqual(news.author, self.user)
-        self.assertEqual(news.title, 'Updated title')
-        self.assertEqual(news.text, 'Updated text')
+        self.assertEqual(self.news.author, self.user)
+        self.assertEqual(self.news.title, 'Updated title')
+        self.assertEqual(self.news.text, 'Updated text')
         self.assertEqual(News.objects.count(), 1)
+
+    def test_delete_news(self):
+        url = reverse('webapp:news_detail', args=[self.news.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'data-bs-target="#delete_news_Modal"')
+        response = self.client.post(reverse('webapp:news_delete', args=[self.news.pk]))
+        self.news.refresh_from_db()
+        self.assertTrue(News.objects.filter(pk=self.news.pk).exists())
+        self.assertEqual(self.news.is_deleted, True)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(News.objects.count(), 1)
+        self.assertRedirects(response, reverse('webapp:news_list'))
 
