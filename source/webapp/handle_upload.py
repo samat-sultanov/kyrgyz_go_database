@@ -73,8 +73,10 @@ def handle_uploaded_file(thisFile):
                         club_name = person.get('Club')
 
                         try:
-                            player = get_object_or_404(Player, last_name=last_name, first_name=first_name, EgdPin=EgdPin)
-
+                            player = get_object_or_404(Player, last_name=last_name, first_name=first_name)
+                            if EgdPin != 0 and player.EgdPin == 0:
+                                player.EgdPin = EgdPin
+                                player.save()
                             try:
                                 player_in_tour = get_object_or_404(PlayerInTournament, game_id=id_in_game,
                                                                    player=player, tournament=tournament)
