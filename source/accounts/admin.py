@@ -36,8 +36,9 @@ class CustomUserAdmin(UserAdmin):
             url = reverse('password_reset_confirm', args=[uid, token])
             reset_url = request.build_absolute_uri(url)
 
-            subject = 'Activate your account'
-            message = f'Please follow this link to activate your account: {reset_url}'
+            subject = 'Активация аккаунта'
+            message = f'Уважаемый {User.username}!' \
+                      f'Для активации аккаунта пройдите по следующей ссылке: {reset_url}'
             from_email = 'kyrgyzgodatabase@gmail.com'
             recipient_list = [obj.email]
             send_mail(subject, message, from_email, recipient_list)
