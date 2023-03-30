@@ -93,7 +93,7 @@ class Tournament(models.Model):
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
     date = models.DateField(verbose_name="Date", null=True, blank=True)
-    tournament_class = models.CharField(max_length=20,default=DEFAULT_CLASS, choices=CLASS_CHOICES,
+    tournament_class = models.CharField(max_length=20, default=DEFAULT_CLASS, choices=CLASS_CHOICES,
                                         verbose_name='Class', blank=True, null=True)
     regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
@@ -240,6 +240,7 @@ class Calendar(models.Model):
     def is_end_date(self):
         return dt.now() > self.deadline
 
+
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)
     surname = models.CharField(max_length=20, verbose_name='Фамилия', null=False, blank=False)
@@ -258,6 +259,29 @@ class Participant(models.Model):
 
     def __str__(self):
         return f'{self.id} - {self.surname}: {self.name}'
+
+
+class Partner(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Наименование партнера", null=False, blank=False)
+    logo = models.ImageField(verbose_name='Лого', null=False, blank=False, upload_to='partner_logo')
+    web_link = models.URLField(verbose_name='Интернет-ссылка', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}. {self.name[:30]}'
+
+    class Meta:
+        db_table = "partner"
+        verbose_name = "Партнер"
+        verbose_name_plural = "Партнеры"
+
+    def save(self, *args, **kwargs):
+        super(Partner, self).save(*args, **kwargs)
+        if self.logo:
+            img = Image.open(self.logo.path)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.logo.path)
 
 
 @receiver(models.signals.post_delete, sender=News)
