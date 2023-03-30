@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.forms import BooleanField, EmailField
+
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth import get_user_model
 
@@ -10,7 +12,8 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     add_fieldsets = (
         (None, {
-            'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'phone', 'avatar'),
+            'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'phone', 'avatar',
+                       'send_email'),
         }),
     )
     form = CustomUserChangeForm
