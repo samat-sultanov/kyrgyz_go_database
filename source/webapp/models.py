@@ -170,7 +170,8 @@ class PlayerInTournament(models.Model):
     game_id = models.PositiveIntegerField(verbose_name="Game id")
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE)
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
-    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
+    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3)
+    GoLevel_after = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
     rating = models.IntegerField(verbose_name='Rating', blank=True, null=True)
     rating_after = models.IntegerField(verbose_name='Rating after', blank=True, null=True)
 
