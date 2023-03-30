@@ -260,6 +260,29 @@ class Participant(models.Model):
         return f'{self.id} - {self.surname}: {self.name}'
 
 
+class Partner(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Наименование партнера", null=False, blank=False)
+    logo = models.ImageField(verbose_name='Лого', null=False, blank=False, upload_to='partner_logo')
+    web_link = models.URLField(verbose_name='Интернет-ссылка', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}. {self.name[:30]}'
+
+    class Meta:
+        db_table = "partner"
+        verbose_name = "Партнер"
+        verbose_name_plural = "Партнеры"
+
+    def save(self, *args, **kwargs):
+        super(Partner, self).save(*args, **kwargs)
+        if self.logo:
+            img = Image.open(self.logo.path)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.logo.path)
+
+
 @receiver(models.signals.post_delete, sender=News)
 def auto_delete_img_on_delete(sender, instance, **kwargs):
     if instance.news_image:
