@@ -139,8 +139,6 @@ def get_new_rating(pk):
         for item in players:
             if element['player'].pk == item.player.pk:
                 if item.rating == 0:
-                    item.rating = get_rating_from_rank(item.GoLevel)
-                    item.save()
                     item.player.current_rank = item.GoLevel
                     item.player.current_rating = get_rating_from_rank(item.GoLevel)
                     item.player.save()
