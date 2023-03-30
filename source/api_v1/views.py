@@ -12,7 +12,16 @@ class PlayerSerView(ModelViewSet):
     serializer_class = PlayerSerializer
     filter_backends = [DjangoFilterBackend]
     permission_classes = [IsAdminUser]
-    filterset_fields = ['first_name']
+    filterset_fields = ['last_name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        filter_params = self.request.query_params.get('last_name', None)
+
+        if not filter_params:
+            return Player.objects.none()
+
+        return queryset
 
     def get_permissions(self):
         if self.request.method == "GET":
