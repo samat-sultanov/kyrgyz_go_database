@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webapp', '0044_alter_participant_event_and_more'),
+        ('webapp', '0044_partner'),
     ]
 
     operations = [
