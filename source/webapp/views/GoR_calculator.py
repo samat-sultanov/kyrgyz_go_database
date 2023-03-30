@@ -139,7 +139,7 @@ def get_new_rating(pk):
         for item in players:
             if element['player'].pk == item.player.pk:
                 if item.rating == 0:
-                    item.rating = get_rating_from_rank(item.GoLevel)
+                    item.GoLevel_after = item.GoLevel
                     item.save()
                     item.player.current_rank = item.GoLevel
                     item.player.current_rating = get_rating_from_rank(item.GoLevel)
@@ -148,6 +148,7 @@ def get_new_rating(pk):
                     new_rating = item.rating + element['total']
                     new_rank = get_new_rank_from_rating(new_rating)
                     item.rating_after = new_rating
+                    item.GoLevel_after = new_rank
                     item.save()
                     item.player.current_rating = new_rating
                     item.player.current_rank = new_rank
@@ -155,6 +156,7 @@ def get_new_rating(pk):
                 elif 100 > item.rating > item.rating + element['total']:
                     new_rating = item.rating
                     item.rating_after = new_rating
+                    item.GoLevel_after = item.GoLevel
                     item.save()
                     new_rank = get_new_rank_from_rating(new_rating)
                     item.player.current_rating = new_rating
@@ -162,9 +164,10 @@ def get_new_rating(pk):
                     item.player.save()
                 elif 100 > item.rating < item.rating + element['total']:
                     new_rating = item.rating + element['total']
-                    item.rating_after = new_rating
-                    item.save()
                     new_rank = get_new_rank_from_rating(new_rating)
+                    item.rating_after = new_rating
+                    item.GoLevel_after = new_rank
+                    item.save()
                     item.player.current_rating = new_rating
                     item.player.current_rank = new_rank
                     item.player.save()

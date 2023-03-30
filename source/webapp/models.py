@@ -170,7 +170,8 @@ class PlayerInTournament(models.Model):
     game_id = models.PositiveIntegerField(verbose_name="Game id")
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE)
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
-    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
+    GoLevel = models.CharField(verbose_name='GoLevel', max_length=3)
+    GoLevel_after = models.CharField(verbose_name='GoLevel', max_length=3, blank=True, null=True)
     rating = models.IntegerField(verbose_name='Rating', blank=True, null=True)
     rating_after = models.IntegerField(verbose_name='Rating after', blank=True, null=True)
 
@@ -230,7 +231,7 @@ class Calendar(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
-    deadline = models.DateField(verbose_name='Дата окончания регистрации', null=True, blank=True)
+    deadline = models.DateField(verbose_name='Дата окончания регистрации', null=False, blank=False)
 
     class Meta:
         verbose_name = "Событие"
@@ -238,7 +239,7 @@ class Calendar(models.Model):
         permissions = (("view_deleted_events", "can view list of deleted events"),)
 
     def is_end_date(self):
-        return dt.now() > self.deadline
+        return dt.now().date() > self.deadline
 
 
 class Participant(models.Model):
@@ -249,7 +250,7 @@ class Participant(models.Model):
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE, related_name='participant')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
     phonenumber = PhoneNumberField(verbose_name='Номер телефона'
-                                   ,null=True, blank=False, max_length=16, default=None)
+                                   , null=True, blank=False, max_length=16, default=None)
     status = models.CharField(max_length=50, default=STATUS[1][1], choices=STATUS, verbose_name='Статус')
 
     class Meta:

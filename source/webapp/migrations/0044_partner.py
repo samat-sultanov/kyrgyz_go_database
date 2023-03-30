@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webapp', '0043_alter_player_egdpin'),
+        ('webapp', '0044_alter_participant_event_and_more'),
     ]
 
     operations = [
