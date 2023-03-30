@@ -113,6 +113,25 @@ def handle_uploaded_file(thisFile):
                                 except:
                                     pass
 
+                            elif EgdPin == 0 and player.EgdPin == EgdPin:
+                                try:
+                                    PlayerInTournament.objects.get(game_id=id_in_game,
+                                                                   player=player,
+                                                                   tournament=tournament)
+                                except:
+                                    PlayerInTournament.objects.create(game_id=id_in_game,
+                                                                      player=player,
+                                                                      tournament=tournament,
+                                                                      GoLevel=GoLevel,
+                                                                      rating=rating)
+                                try:
+                                    club = get_object_or_404(Club, name=club_name)
+                                    club_id = club.pk
+                                    clubs_list = [club_id]
+                                    player.clubs.set(clubs_list)
+                                except:
+                                    pass
+
                             elif EgdPin != 0 and player.EgdPin != EgdPin:
                                 new_player = Player.objects.create(first_name=first_name,
                                                                    last_name=last_name,
