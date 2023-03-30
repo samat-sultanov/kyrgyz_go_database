@@ -3,8 +3,8 @@ from django.urls import path
 from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
-    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, QuestionsListView, \
-    ClubUpdate, ParticipantCreate, CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
+    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, ClubUpdate, ParticipantCreate, \
+    CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list
 

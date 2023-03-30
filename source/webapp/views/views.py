@@ -3,7 +3,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Tournament, News
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
@@ -24,13 +24,6 @@ class IndexView(TemplateView):
         latest_news = News.objects.filter(is_deleted=False).order_by('-created_at')[:3]
         context['latest_news'] = latest_news
         return context
-
-
-class QuestionsListView(View):
-
-    def get(self, request):
-        if request.method == 'GET':
-            return render(request, 'faq/questions_list.html')
 
 
 def file_upload(request):
@@ -131,4 +124,3 @@ def send_feedback_to_admin(request, *args, **kwargs):
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect("webapp:about")
-
