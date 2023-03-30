@@ -20,7 +20,9 @@ def handle_uploaded_file(thisFile):
             try:
                 tournament = get_object_or_404(Tournament, name=tournament_name)
             except:
-                tournament = Tournament.objects.create(name=tournament_name, rounds=round_num, board_size=board_size)
+                tournament = Tournament.objects.create(name=tournament_name,
+                                                       rounds=round_num,
+                                                       board_size=board_size)
 
         # for country and clubs
         if key == 'Country':
@@ -126,7 +128,7 @@ def handle_uploaded_file(thisFile):
                                     club = get_object_or_404(Club, name=club_name)
                                     club_id = club.pk
                                     clubs_list = [club_id]
-                                    player.clubs.set(clubs_list)
+                                    new_player.clubs.set(clubs_list)
                                 except:
                                     pass
 
@@ -145,7 +147,7 @@ def handle_uploaded_file(thisFile):
                                 club = get_object_or_404(Club, name=club_name)
                                 club_id = club.pk
                                 clubs_list = [club_id]
-                                player.clubs.set(clubs_list)
+                                new_player.clubs.set(clubs_list)
                             except:
                                 pass
 
