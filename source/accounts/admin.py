@@ -37,8 +37,10 @@ class CustomUserAdmin(UserAdmin):
             reset_url = request.build_absolute_uri(url)
 
             subject = 'Активация аккаунта'
-            message = f'Уважаемый {User.username}!' \
-                      f'Для активации аккаунта пройдите по следующей ссылке: {reset_url}'
+            message = f'Уважаемый(ая) {obj.username}!\n\n' \
+                      f'Для активации аккаунта пройдите по следующей ссылке: {reset_url}\n\n' \
+                      f'С уважением,\n\n' \
+                      f'Федерация Го в Кыргызской Республике'
             from_email = 'kyrgyzgodatabase@gmail.com'
             recipient_list = [obj.email]
             send_mail(subject, message, from_email, recipient_list)
