@@ -230,7 +230,7 @@ class Calendar(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
-    deadline = models.DateTimeField(verbose_name='Дата окончания регистрации', null=True, blank=True)
+    deadline = models.DateField(verbose_name='Дата окончания регистрации', null=True, blank=True)
 
     class Meta:
         verbose_name = "Событие"
@@ -246,10 +246,10 @@ class Participant(models.Model):
     surname = models.CharField(max_length=20, verbose_name='Фамилия', null=False, blank=False)
     patronymic = models.CharField(max_length=20, verbose_name="Отчество", null=False, blank=False)
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
-    event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
+    event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE, related_name='participant')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
-    phonenumber = PhoneNumberField(unique=True, verbose_name='Номер телефона'
-                                   , null=True, blank=False, max_length=16, default=None)
+    phonenumber = PhoneNumberField(verbose_name='Номер телефона'
+                                   ,null=True, blank=False, max_length=16, default=None)
     status = models.CharField(max_length=50, default=STATUS[1][1], choices=STATUS, verbose_name='Статус')
 
     class Meta:
