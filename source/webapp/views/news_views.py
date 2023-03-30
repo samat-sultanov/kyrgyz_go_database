@@ -75,7 +75,6 @@ class DeletedNewsListView(PermissionRequiredMixin, FormView):
 
     def form_valid(self, form):
         selected_to_delete = News.objects.filter(pk__in=list(map(int, self.request.POST.getlist('checkboxes'))))
-        print(selected_to_delete)
         selected_to_delete.delete()
         return HttpResponseRedirect(reverse_lazy('webapp:deleted_news_list'))
 
