@@ -93,7 +93,7 @@ class Tournament(models.Model):
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
     date = models.DateField(verbose_name="Date", null=True, blank=True)
-    tournament_class = models.CharField(max_length=20,default=DEFAULT_CLASS, choices=CLASS_CHOICES,
+    tournament_class = models.CharField(max_length=20, default=DEFAULT_CLASS, choices=CLASS_CHOICES,
                                         verbose_name='Class', blank=True, null=True)
     regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
@@ -240,6 +240,7 @@ class Calendar(models.Model):
     def is_end_date(self):
         return dt.now() > self.deadline
 
+
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)
     surname = models.CharField(max_length=20, verbose_name='Фамилия', null=False, blank=False)
@@ -248,7 +249,7 @@ class Participant(models.Model):
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
     phonenumber = PhoneNumberField(unique=True, verbose_name='Номер телефона'
-                                   ,null=True, blank=False, max_length=16, default=None)
+                                   , null=True, blank=False, max_length=16, default=None)
     status = models.CharField(max_length=50, default=STATUS[1][1], choices=STATUS, verbose_name='Статус')
 
     class Meta:
