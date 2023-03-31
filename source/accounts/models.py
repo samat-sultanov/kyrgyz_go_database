@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from PIL import Image
 
 
 class User(AbstractUser):
@@ -10,3 +11,12 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.username}'
+
+    def save(self, *args, **kwargs):
+        super(User, self).save(*args, **kwargs)
+        if self.avatar:
+            img = Image.open(self.avatar.path)
+            if img.height > 500 or img.width > 500:
+                output_size = (500, 500)
+                img.thumbnail(output_size)
+                img.save(self.avatar.path)

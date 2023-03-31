@@ -12,7 +12,7 @@
         <div class="row mb-4">
             <div class="col-5">
                 {% if user_obj.avatar %}
-                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px"
+                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px"
                          src="{{ user_obj.avatar.url }}" alt="avatar">
                 {% else %}
                     <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;"
@@ -35,7 +35,7 @@
 
                         {% if user_obj.pk == request.user.pk %}
                             <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
-                               href="#">Редактировать профиль</a>
+                               href="{% url 'accounts:change' %}">Редактировать профиль</a>
                         {% endif %}
 
                         {% if request.user.is_superuser %}
