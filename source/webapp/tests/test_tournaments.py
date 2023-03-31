@@ -72,3 +72,31 @@ class TournamentTestsForUnregisterUser(TestCase):  # Для анонимных �
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.test_tournament_1.name)
         self.assertContains(response, self.test_tournament_2.name)
+
+    def test_search_wrong_data_name(self):
+        url = reverse('webapp:tournament_search') + '?search_name=3'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.test_tournament_1.name)
+        self.assertNotContains(response, self.test_tournament_2.name)
+
+    def test_search_wrong_data_city(self):
+        url = reverse('webapp:tournament_search') + '?search_city=5'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.test_tournament_1.name)
+        self.assertNotContains(response, self.test_tournament_2.name)
+
+    def test_search_wrong_data_class(self):
+        url = reverse('webapp:tournament_search') + '?search_tournament_class=T'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.test_tournament_1.name)
+        self.assertNotContains(response, self.test_tournament_2.name)
+
+    # def test_search_wrong_data_date(self):
+    #     url = reverse('webapp:tournament_search') + '?search_date=h'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertNotContains(response, self.test_tournament_1.name)
+    #     self.assertNotContains(response, self.test_tournament_2.name)
