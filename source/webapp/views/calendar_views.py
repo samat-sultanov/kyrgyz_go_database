@@ -71,7 +71,6 @@ class DeletedCalendarListView(PermissionRequiredMixin, FormView):
 
     def form_valid(self, form):
         selected_to_delete = Calendar.objects.filter(pk__in=list(map(int, self.request.POST.getlist('checkboxes'))))
-        print(selected_to_delete)
         selected_to_delete.delete()
         return HttpResponseRedirect(reverse_lazy('webapp:deleted_calendar_list'))
 
@@ -116,8 +115,7 @@ class ParticipantCreate(CreateView):
 
     def get(self, request, *args, **kwargs):
         event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
-        print(event.deadline)
-        if datetime.now() > event.deadline:
+        if datetime.now().date() > event.deadline:
             return redirect(reverse('webapp:index'))
         self.forms = self.get_search_form()
         return super().get(request, *args, **kwargs)

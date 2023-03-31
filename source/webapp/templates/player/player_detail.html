@@ -169,7 +169,7 @@
                     <td data-label="Класс">{{ tournament.tournament_class }}</td>
                     {% for person in tournament.playerintournament_set.all %}
                         {% if player.pk == person.player_id %}
-                            <td data-label="Ранг">{{ person.GoLevel }}</td>
+                            <td data-label="Ранг">{{ person.GoLevel_after }}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
