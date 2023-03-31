@@ -39,7 +39,7 @@ class CalendarForm(forms.ModelForm):
         fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline']
         widgets = {
             'event_date': forms.DateInput(attrs={'type': 'date'}),
-            'deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+            'deadline': forms.DateTimeInput(attrs={'type': 'date'})
         }
 
 

@@ -71,7 +71,6 @@ class DeletedCalendarListView(PermissionRequiredMixin, FormView):
 
     def form_valid(self, form):
         selected_to_delete = Calendar.objects.filter(pk__in=list(map(int, self.request.POST.getlist('checkboxes'))))
-        print(selected_to_delete)
         selected_to_delete.delete()
         return HttpResponseRedirect(reverse_lazy('webapp:deleted_calendar_list'))
 
@@ -97,6 +96,17 @@ class ParticipantCreate(CreateView):
 
     def form_valid(self, form):
         event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
+        surname = self.request.POST.get('surname')
+        name = self.request.POST.get('name')
+        phonenumber = self.request.POST.get('phonenumber')
+        participants = event.participant.all()
+        for participant in participants:
+            if name == participant.name and surname == participant.surname:
+                form.add_error('name', 'Данный игрок уже зарегистрирован.')
+                return super().form_invalid(form)
+            elif phonenumber == participant.phonenumber:
+                form.add_error('phonenumber', 'Номер телефона уже зарегистрирован.')
+                return super().form_invalid(form)
         form.instance.event = event
         return super().form_valid(form)
 
@@ -105,8 +115,7 @@ class ParticipantCreate(CreateView):
 
     def get(self, request, *args, **kwargs):
         event = get_object_or_404(Calendar, pk=self.kwargs.get('pk'))
-        print(event.deadline)
-        if datetime.now() > event.deadline:
+        if datetime.now().date() > event.deadline:
             return redirect(reverse('webapp:index'))
         self.forms = self.get_search_form()
         return super().get(request, *args, **kwargs)

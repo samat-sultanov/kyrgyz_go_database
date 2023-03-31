@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-          {% for players in  event.participant_set.all %}
+          {% for players in  event.participant.all %}
                       <tr>
           <th scope="row">{{ forloop.counter }}</th>
           <td>{{ players.surname }}</td>
