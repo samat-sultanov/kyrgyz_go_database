@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.forms import EmailField, BooleanField
+from django import forms
 
 User = get_user_model()
 
@@ -40,3 +41,15 @@ class CustomUserChangeForm(UserChangeForm):
         return email
 
 
+class UserChangeForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'avatar')
+        labels = {'username': 'Логин', 'first_name': 'Имя', 'last_name': 'Фамилия', 'email': 'Email',
+                  'phone': 'Номер телефона', 'avatar': 'Фотография'}
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise ValidationError("Email field is required.")
+        return email
