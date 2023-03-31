@@ -43,7 +43,9 @@
     const input = document.getElementById('search_last_name')
     let filteredArr = []
     let customtimeout
-         input.addEventListener('keyup', async ()=>{
+         input.addEventListener('keyup', ()=>{
+            clearTimeout(customtimeout)
+            customtimeout = setTimeout(async function() {
             let in_v = input.value
             let result = in_v.charAt(0).toUpperCase() + in_v.slice(1)
             curva = await makeRequest(`/api/v1/player/?last_name=${result}`);
@@ -74,7 +76,7 @@
                 })
             } else {
                 box.innerHTML = "<b>No results found...</b>"
-            }
+            }}, 1000);
         })
 
         function change_tamp() {
