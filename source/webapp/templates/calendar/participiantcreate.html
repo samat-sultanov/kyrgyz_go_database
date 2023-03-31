@@ -28,7 +28,6 @@
 {% endblock %}
 {% block src %}
     <script>
-       const base_url = '/api/v1/player/'
        async function makeRequest(url, method) {
         let response = await fetch(url, method);
         if (response.ok) {
@@ -41,20 +40,18 @@
             throw error;
         }
     }
-
     const input = document.getElementById('search_last_name')
     let filteredArr = []
     let customtimeout
-    let curva
-    async function req(){
-        curva = await makeRequest(base_url);
-    }
-    req()
-         customtimeout = setTimeout(function() { input.addEventListener('keyup', (e)=>{
+         input.addEventListener('keyup', ()=>{
             clearTimeout(customtimeout)
+            customtimeout = setTimeout(async function() {
+            let in_v = input.value
+            let result = in_v.charAt(0).toUpperCase() + in_v.slice(1)
+            curva = await makeRequest(`/api/v1/player/?last_name=${result}`);
             box.innerHTML = ''
-            filteredArr = curva.filter(info=> info['last_name'].includes(e.target.value))
-            {#console.log(filteredArr)#}
+            filteredArr = curva.filter(info=> info['last_name'].includes(result))
+            console.log(filteredArr)
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
                     function show_data(obj) {
