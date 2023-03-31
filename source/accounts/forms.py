@@ -22,6 +22,10 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'avatar', 'send_email')
+        labels = {
+            'phone': 'Phone number',
+            'avatar': 'Avatar'
+        }
 
 
 class CustomUserChangeForm(UserChangeForm):
