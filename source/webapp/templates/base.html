@@ -25,6 +25,7 @@
         </p>
         <a class="btn btn-light btn-sm ms-2"
            href="{% url 'accounts:logout' %}?next={{ request.get_full_path }}">Выйти</a>
+        <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
     {% else %}
         {% block login %}
             <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:login' %}">Войти</a>
