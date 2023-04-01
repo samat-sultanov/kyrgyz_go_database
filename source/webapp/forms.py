@@ -1,11 +1,17 @@
 from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
-
 from django import forms
-from django.core.exceptions import ValidationError
 from django.forms import FileInput, widgets
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
+def validate_latin_chars(value):
+    if not value.isascii() or not value.isalpha():
+        raise ValidationError(
+            _('Введите только латинские буквы.'),
+            params={'value': value},
+        )
 
 class FileForm(forms.ModelForm):
     class Meta:
@@ -153,9 +159,9 @@ class ClubForm(forms.ModelForm):
 
 
 class ParticipantForm(forms.ModelForm):
-    name = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+    name = forms.CharField(validators=[validate_latin_chars], label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "First name", "id": "id_name", 'style': "width:200px"}))
-    surname = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+    surname = forms.CharField(validators=[validate_latin_chars], label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Last name", "id": "id_surname", 'style': "width:200px"}))
     rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Rank", "id": "id_rank", 'style': "width:200px"}))
