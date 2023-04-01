@@ -76,13 +76,16 @@
                                 </div>
                             </div>
                         </td>
+                        <td>
+                            <a class="btn btn-outline-secondary" href={% url "webapp:update_participant" players.pk %}>Edit</a>
+                        </td>
                     {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
-    <div class="container">
+    <div class=" container">
         <br>
         <div class="contact_form">
             <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
@@ -93,7 +96,8 @@
             <div class="offcanvas offcanvas-end {% if offcanvas %}show{% endif %}" tabindex="-1" id="offcanvasRight"
                  aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Если при регистрации на данный ивент/турнир вы
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Если при регистрации на данный ивент/турнир
+                        вы
                         допустили ошибку, то свяжитесь с нами заполнив данную форму. В описании детально опишите где
                         была допущена ошибка и как надо ее исправить.</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>

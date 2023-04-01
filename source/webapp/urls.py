@@ -48,7 +48,7 @@ urlpatterns = [
     path('event_player/<int:pk>/', calendar_player_list, name='CalendarPlayerList'),
     path('status/<int:pk>/', StatusChange.as_view(), name='status_change'),
     path('deleteplayerfromevent/<int:pk>/', DeletePlayerFromEvent.as_view(), name='delete_player_from_event'),
-    path('update_participant/<int:pk>', UpdateParticipant.as_view(), name='update_participant'),
+    path('update_participant/<int:pk>/', UpdateParticipant.as_view(), name='update_participant'),
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
