@@ -245,7 +245,6 @@ class Calendar(models.Model):
 class Participant(models.Model):
     name = models.CharField(max_length=20, verbose_name='Имя', null=False, blank=False)
     surname = models.CharField(max_length=20, verbose_name='Фамилия', null=False, blank=False)
-    patronymic = models.CharField(max_length=20, verbose_name="Отчество", null=False, blank=False)
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE, related_name='participant')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
