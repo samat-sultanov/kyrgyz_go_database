@@ -58,7 +58,7 @@
              const errorElement = document.getElementById("error");
              if (inputValue.trim() && !isLatinChars && !errorElement) {
                  const newErrorElement = document.createElement("div");
-                 newErrorElement.textContent = "Введите только латинские буквы";
+                 newErrorElement.textContent = "Поиск только по латинским буквам";
                  newErrorElement.style.color = "red";
                  newErrorElement.id = "error";
                  input.parentNode.insertBefore(newErrorElement, input.nextSibling);
@@ -78,7 +78,7 @@
             curva = await makeRequest(`/api/v1/player/?last_name=${result}`);
             box.innerHTML = ''
             filteredArr = curva.filter(info=> info['last_name'].includes(result))
-            console.log(filteredArr)
+            {#console.log(filteredArr)#}
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
                     function show_data(obj) {
