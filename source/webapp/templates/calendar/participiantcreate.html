@@ -40,10 +40,30 @@
             throw error;
         }
     }
-    const input = document.getElementById('search_last_name')
+    const input = document.getElementById('search_last_name');
     let filteredArr = []
     let customtimeout
-         input.addEventListener('keyup', ()=>{
+    let errortimeout
+         input.addEventListener('keyup', (e)=>{
+             const inputValue = e.target.value;
+             const latinCharsRegex = /^[a-zA-Z]+$/;
+             const isLatinChars = latinCharsRegex.test(inputValue);
+             const errorElement = document.getElementById("error");
+             if (inputValue.trim() && !isLatinChars && !errorElement) {
+                 const newErrorElement = document.createElement("div");
+                 newErrorElement.textContent = "Введите только латинские буквы";
+                 newErrorElement.style.color = "red";
+                 newErrorElement.id = "error";
+                 input.parentNode.insertBefore(newErrorElement, input.nextSibling);
+                 clearTimeout(errortimeout)
+                errortimeout = setTimeout(function() {
+                  newErrorElement.remove();
+                }, 5000);
+              }else if ((inputValue.trim() && isLatinChars || !inputValue.trim())) {
+                 if (errorElement){
+                     errorElement.remove();
+                 }
+            }
             clearTimeout(customtimeout)
             customtimeout = setTimeout(async function() {
             let in_v = input.value
