@@ -41,6 +41,13 @@
         }
     }
     const input = document.getElementById('search_last_name');
+    let name_id = document.getElementById('id_name')
+    let surname_id = document.getElementById('id_surname')
+    let id_rank = document.getElementById('id_rank')
+    let search = document.getElementById('search_last_name')
+    name_id.value = ''
+    surname_id.value = ''
+    id_rank.value = ''
     let filteredArr = []
     let customtimeout
     let errortimeout
@@ -75,10 +82,6 @@
             if (filteredArr.length > 0){
                 filteredArr.map(item=>{
                     function show_data(obj) {
-                        let name_id = document.getElementById('id_name')
-                        let surname_id = document.getElementById('id_surname')
-                        let id_rank = document.getElementById('id_rank')
-                        let search = document.getElementById('search_last_name')
                         search.type = 'hidden'
                         box.innerHTML = ''
                         name_id.value = obj['first_name']
