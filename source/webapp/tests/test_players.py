@@ -51,3 +51,43 @@ class PlayerTestsSearchCompetitors(TestCase):  # Для анонимных по�
         self.assertContains(response, self.player_1.last_name)
         self.assertContains(response, self.player_2.last_name)
         self.assertNotContains(response, self.player_3.last_name)
+
+    def test_search_by_rank_no_data(self):
+        url = reverse('webapp:competitor_search') + '?search_rank=30k'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.player_1.last_name)
+        self.assertNotContains(response, self.player_2.last_name)
+        self.assertNotContains(response, self.player_3.last_name)
+
+    def test_search_by_club_name(self):
+        url = reverse('webapp:competitor_search') + '?search_rank=20k&search_clubs=Seng'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.player_1.last_name)
+        self.assertContains(response, self.player_2.last_name)
+        self.assertNotContains(response, self.player_3.last_name)
+
+    def test_search_by_city_name(self):
+        url = reverse('webapp:competitor_search') + '?search_rank=20k&search_city=Bi'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.player_1.last_name)
+        self.assertContains(response, self.player_2.last_name)
+        self.assertNotContains(response, self.player_3.last_name)
+
+    def test_search_by_country_name(self):
+        url = reverse('webapp:competitor_search') + '?search_rank=20k&search_country=kg'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.player_1.last_name)
+        self.assertContains(response, self.player_2.last_name)
+        self.assertNotContains(response, self.player_3.last_name)
+
+    def test_search_by_all_fields(self):
+        url = reverse('webapp:competitor_search') + '?search_rank=20k&search_clubs=S&search_city=Bi&search_country=kg'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.player_1.last_name)
+        self.assertContains(response, self.player_2.last_name)
+        self.assertNotContains(response, self.player_3.last_name)
