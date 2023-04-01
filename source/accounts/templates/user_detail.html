@@ -26,6 +26,7 @@
                     <p style="font-size: 20px">Фамилия: {{ user_obj.last_name }}</p>
                     <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
                     <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
+                    <p style="font-size: 20px">Клуб: {{ club_names|join:", "|default_if_none:"" }}</p>
                     <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
                         {% if request.user.is_authenticated %}
                             <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
