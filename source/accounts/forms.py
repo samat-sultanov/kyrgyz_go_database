@@ -2,9 +2,6 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.forms import EmailField, BooleanField
-from django import forms
-
-from webapp.models import Country
 
 User = get_user_model()
 
@@ -43,26 +40,3 @@ class CustomUserChangeForm(UserChangeForm):
         return email
 
 
-class UserChangeForm(forms.ModelForm):
-    kg = Country.objects.get(country_code='kg')
-    clubs = []
-    for i in kg.city_set.all():
-        for c in i.clubs.all():
-            club = c.pk, c.name
-            clubs.append(club)
-    s_clubs = sorted(clubs, key=lambda tup: tup[1])
-
-    coach_club = forms.MultipleChoiceField(choices=s_clubs, label='Клуб', widget=forms.SelectMultiple(),
-                                           required=False)
-
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'avatar')
-        labels = {'username': 'Логин', 'first_name': 'Имя', 'last_name': 'Фамилия', 'email': 'Email',
-                  'phone': 'Номер телефона', 'avatar': 'Фотография'}
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if not email:
-            raise ValidationError("Email field is required.")
-        return email
