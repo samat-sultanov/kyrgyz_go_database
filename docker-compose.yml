@@ -1,0 +1,22 @@
+services:
+  web:
+    build: ./source
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - ./source:/home/dastan/kyrgyz_go_database
+    ports:
+      - 8000:8000
+    env_file:
+      - ./source/.env.dev
+
+  db:
+    image: postgres:14.7-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=kgf
+
+volumes:
+  postgres_data:
