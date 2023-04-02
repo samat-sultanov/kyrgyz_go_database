@@ -2,9 +2,10 @@ from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, Partner
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+
 
 def validate_latin_chars(value):
     if not value.isascii() or not value.isalpha():
@@ -207,3 +208,8 @@ class EmailToChangeRegInfoFrom(FeedbackToEmailForm):
     message = forms.CharField(required=True, widget=widgets.Textarea(
         attrs={'class': "form-control", 'placeholder': "В чем была ошибка? И как надо исправить?", 'name': "message"}),
                               max_length=3000)
+
+class PartnerForm(forms.ModelForm):
+    class Meta:
+        model = Partner
+        fields = ['name', 'logo', 'web_link']
