@@ -1,9 +1,9 @@
 services:
   web:
     build: ./source
-    command: python manage.py runserver 0.0.0.0:8001
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./source:/home/dastan/kyrgyz_go_database
+      - ./source:/kyrgyz_go_database
     ports:
       - 8000:8000
     env_file:
