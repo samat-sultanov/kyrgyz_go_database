@@ -9,7 +9,7 @@
         <div class="container">
             {% include 'club/club_search.html' %}
         </div>
-        <table class="table">
+        <table class="table adaptive">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -25,23 +25,23 @@
             <tbody>
             {% for club in clubs %}
                 <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td><a style="color: black"
+                    <td data-label="#{{ page_obj.start_index|add:forloop.counter0 }}">{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                    <td data-label="Клуб"><a style="color: black"
                            href="{% url 'webapp:club_view' club.pk %}">{{ club.name }}</a></td>
-                    <td>{{ club.EGDName }}</td>
+                    <td data-label="EGDName">{{ club.EGDName }}</td>
                     {% if club.city.country %}
-                        <td>{{ club.city.country.country_code }}</td>
-                        <td>{{ club.city }}</td>
+                        <td data-label="Страна">{{ club.city.country.country_code }}</td>
+                        <td data-label="Город">{{ club.city }}</td>
                     {% else %}
-                        <td></td>
-                        <td></td>
+                        <td data-label="Страна"></td>
+                        <td data-label="Город"></td>
                     {% endif %}
                     {% if club.num_players %}
-                        <td>{{ club.num_players }}</td>
+                        <td data-label="Игроки">{{ club.num_players }}</td>
                     {% else %}
-                        <td>{{ club.players.count }}</td>
+                        <td data-label="Игроки">{{ club.players.count }}</td>
                     {% endif %}
-                    <td>{% for item in data %}
+                    <td data-label="Средний Ранг">{% for item in data %}
                         {% if club.id == item.club %}
                             {{ item.average }}
                         {% endif %}
@@ -49,7 +49,7 @@
                     </td>
                     {% for element in wins %}
                         {% if club.id == element.club %}
-                    <td>{{ element.total }}</td>
+                    <td data-label="Победы">{{ element.total }}</td>
                         {% endif %}
                     {% endfor %}
 

@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block nav %}
 {% endblock %}
 
-
 {% block content %}
     <div class="container">
-    <h2 class="text-center title">Новости</h2>
-    <div>
-        {% for news in news_list %}
-            <h3 class="title"><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h3>
-            <p>{% if request.user.is_authenticated %}{{ news.author.username }}
-                / {% endif %}{{ news.created_at|date:"d F Y H:i" }}</p>
-            <hr>
-        {% endfor %}
-    </div>
+        <div class=" mt-4" style="text-align: center">
+            <h2 class="title">Новости</h2>
+        </div>
+        <div class="container">
+            {% for news in news_list %}
+                <h3 class="title"><a class="text-secondary" href="{{ news.get_absolute_url }}">{{ news.title }}</a></h3>
+                <p>{% if request.user.is_authenticated %}{{ news.author.username }}
+                    / {% endif %}{{ news.created_at|date:"d F Y H:i" }}</p>
+                <hr>
+            {% endfor %}
+        </div>
+        <br/>
     </div>
 
 {% endblock %}
