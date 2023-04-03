@@ -89,6 +89,25 @@ class EventCreateTestByRegisteredUser(TestCase):
         self.assertEqual(Calendar.objects.count(), 1)
         self.assertEqual(new_event.event_name, "New event")
 
+    def test_hard_delete_event(self):
+        self.client.login(username='admin', password='admin')
+        new_event = Calendar.objects.create(event_name='New event',
+                                            text='New text',
+                                            event_city=self.city_1,
+                                            event_date=datetime.date(2030, 11, 11),
+                                            deadline=datetime.date(2030, 11, 11))
+        new_event.is_deleted = True
+        url = reverse('webapp:deleted_calendar_list')
+        response = self.client.get(url)
+        self.assertContains(response, 'data-bs-target="#delete_event_Modal"')
+        response = self.client.post(reverse('webapp:event_delete', args=[new_event.pk]))
+        new_event.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Calendar.objects.filter(pk=new_event.pk).exists())
+        self.assertEqual(new_event.is_deleted, True)
+        self.assertEqual(Calendar.objects.count(), 1)
+        self.assertEqual(new_event.event_name, "New event")
+
     def tearDown(self) -> None:
         self.client.logout()
 
