@@ -97,60 +97,12 @@ class EventCreateTestByRegisteredUser(TestCase):
                                             event_date=datetime.date(2030, 11, 11),
                                             deadline=datetime.date(2030, 11, 11))
         new_event.is_deleted = True
-        url = reverse('webapp:deleted_calendar_list')
-        response = self.client.get(url)
-        self.assertContains(response, 'data-bs-target="#delete_event_Modal"')
-        response = self.client.post(reverse('webapp:event_delete', args=[new_event.pk]))
-        new_event.refresh_from_db()
+        url = reverse('webapp:event_hard_delete_one', args=[new_event.pk])
+        response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Calendar.objects.filter(pk=new_event.pk).exists())
-        self.assertEqual(new_event.is_deleted, True)
-        self.assertEqual(Calendar.objects.count(), 1)
-        self.assertEqual(new_event.event_name, "New event")
+        redirect_url = reverse('webapp:deleted_calendar_list')
+        self.assertRedirects(response, redirect_url)
+        self.assertEqual(Calendar.objects.count(), 0)
 
     def tearDown(self) -> None:
         self.client.logout()
-
-
-#
-# class EventDeleteTest(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#
-#     def create_event(self, adm):
-#         event_name = 'Event #1'
-#         event_city = 'Kara-Kol'
-#         event_date = '2024-10-10'
-#         text = 'Test text ofr event #1'
-#         deadline = timezone.now()
-#         author = adm.pk
-#         return Calendar.objects.create(event_name=event_name, event_city=event_city, event_date=event_date, text=text,
-#                                        deadline=deadline, author_id=author)
-#
-#     def tearDown(self):
-#         Calendar.objects.all().delete()
-#
-#     def test_view_event_soft_delete(self):
-#         adm = User.objects.create()
-#         event_to_delete = self.create_event(adm)
-#         url = reverse('webapp:event_delete', kwargs={'pk': event_to_delete.pk})
-#         response = self.client.get(url)
-#         self.assertEqual(response.status_code, 302)
-#
-#     def test_model_hard_delete(self):
-#         adm = User.objects.create()
-#         event_to_delete = self.create_event(adm)
-#         self.assertIn(event_to_delete, Calendar.objects.all())
-#         event_to_delete.delete()
-#         self.assertNotIn(event_to_delete, Calendar.objects.all())
-#
-#     def test_view_hard_delete(self):
-#         adm = User.objects.create()
-#         adm.is_superuser = True
-#         event_to_delete = self.create_event(adm)
-#         self.assertIn(event_to_delete, Calendar.objects.all())
-#         event_to_delete.is_deleted = True
-#         self.assertTrue(event_to_delete.is_deleted)
-#         url = reverse('webapp:event_hard_delete_one', kwargs={'pk': event_to_delete.pk})
-#         response = self.client.get(url)
-#         self.assertEqual(response.status_code, 302)
