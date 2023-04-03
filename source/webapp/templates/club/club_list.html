@@ -25,7 +25,7 @@
             <tbody>
             {% for club in clubs %}
                 <tr>
-                    <td data-label="#{{ forloop.counter }}">{{ forloop.counter }}</td>
+                    <td data-label="#{{ page_obj.start_index|add:forloop.counter0 }}">{{ page_obj.start_index|add:forloop.counter0 }}</td>
                     <td data-label="Клуб"><a style="color: black"
                            href="{% url 'webapp:club_view' club.pk %}">{{ club.name }}</a></td>
                     <td data-label="EGDName">{{ club.EGDName }}</td>

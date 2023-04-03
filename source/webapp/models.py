@@ -303,3 +303,4 @@ def auto_delete_img_on_change(sender, instance, **kwargs):
         if not old_img == new_img:
             if os.path.isfile(old_img.path):
                 os.remove(old_img.path)
+
