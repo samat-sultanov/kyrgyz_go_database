@@ -20,12 +20,11 @@
 
 <div class="container d-grid gap-2 d-md-flex justify-content-md-end">
     {% if request.user.is_authenticated %}
-        <p class="ms-auto d-inline-block my-0 py-auto mt-1">Привет, <a href="{% url 'accounts:detail' request.user.pk %}"
+        <p class="ms-auto d-inline-block my-0 py-auto">Привет, <a href="{% url 'accounts:detail' request.user.pk %}"
                                                                   class="text-decoration-none link-dark">{{ request.user.username }}</a>
         </p>
         <a class="btn btn-light btn-sm ms-2"
            href="{% url 'accounts:logout' %}?next={{ request.get_full_path }}">Выйти</a>
-        <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
     {% else %}
         {% block login %}
             <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:login' %}">Войти</a>

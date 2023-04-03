@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 from webapp.handle_upload import handle_uploaded_file
-from webapp.models import File, Calendar, Tournament, News
+from webapp.models import File, Calendar, Tournament, News, Partner
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses, get_position_in_kgf
@@ -23,6 +23,8 @@ class IndexView(TemplateView):
         context['position'] = players
         latest_news = News.objects.filter(is_deleted=False).order_by('-created_at')[:3]
         context['latest_news'] = latest_news
+        partners = Partner.objects.all()
+        context['partners'] = partners
         return context
 
 

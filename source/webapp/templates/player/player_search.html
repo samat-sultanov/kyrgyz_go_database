@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
-    {% block title %}Player{% endblock %}
+{% block title %}Player{% endblock %}
 
 {% block nav %}
 {% endblock %}
+
 {% block content %}
- <div class="container">
+    <div class="container">
         <div class=" mt-4" style="text-align: center">
             <h2 class="title">Поиск игрокa:</h2>
         </div>
@@ -14,35 +15,34 @@
                     <div style="display: flex;justify-content: center;">
                         {{ form.search_last_name }}
                     </div>
-                <br/>
+                    <br/>
                     <div style="display: flex; justify-content: center;">
                         {{ form.search_first_name }}
                     </div>
-                <br/>
+                    <br/>
                     <div style="display: flex; justify-content: center;">
                         {{ form.search_clubs }}
                     </div>
-                <br/>
+                    <br/>
                     <div style="display: flex; justify-content: center;">
                         {{ form.search_city }}
                     </div>
-                <br/>
-                <div class="d-flex justify-content-center">
-                    <input type="submit" class="btn ms-1" style="background-color: #9400D3; color: white" value="Поиск">
+                    <br/>
+                    <div class="d-flex justify-content-center">
+                        <input type="submit" class="btn ms-1" style="background-color: #9400D3; color: white"
+                               value="Поиск">
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <br/>
+        <div class="container">
+            {% include 'partial/player_list.html' %}
+            <br/>
+            {% if is_paginated %}
+                {% include 'partial/pagination.html' %}
+            {% endif %}
+        </div>
+        <br/>
     </div>
-    <br/>
-    <div class="container">
-        {% include 'partial/player_list.html' %}
-    <br/>
-    {% if is_paginated %}
-        {% include 'partial/pagination.html' %}
-    {% endif %}
-    </div>
-    <br/>
-    </div>
-
-
 {% endblock %}

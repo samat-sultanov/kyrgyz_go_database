@@ -17,54 +17,64 @@
 {% block content %}
     <br/>
     <div class="container">
-    <div class="card mt-3">
-        {% if single_news.news_image %}
-            <img style="border-radius: 19px" src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
-        {% else %}
-            <img src='{% static "images/no_image.jpg" %}' alt="..." width="250" height="250">
-        {% endif %}
-        <div class="card-body">
-            <h5 class="card-title">{{ single_news.title }}</h5>
-            <br>
-            <p class="card-text">{{ single_news.text }}</p>
-            {% if request.user.is_authenticated %}
-                <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
-                <p>Дата создания: {{ single_news.created_at|date:"d F Y H:i"  }}</p><br>
+        <div class="card mt-3">
+            {% if single_news.news_image %}
+                <img style="border-radius: 19px" src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
+            {% else %}
+                <img src='{% static "images/no_image.jpg" %}' alt="..." width="250" height="250">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ single_news.title }}</h5>
+                <br>
+                <p class="card-text">{{ single_news.text }}</p>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_superuser %}
+                        <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
+                    {% endif %}
+                    <p>Дата создания: {{ single_news.created_at|date:"d F Y H:i" }}</p><br>
 
-                <a href="{% url 'webapp:news_update' single_news.pk %}" class="btn btn-outline-secondary">Редактировать</a>
-                <a class="btn btn-outline-secondary" href="{% url 'webapp:news_list' %}">Все новости >></a>
+                    <a href="{% url 'webapp:news_update' single_news.pk %}"
+                       class="btn btn-outline-secondary">Редактировать</a>
+                    <a class="btn btn-outline-secondary" href="{% url 'webapp:news_list' %}">Все новости >></a>
 
-                <!-- Открывает модалку подтверждения -->
-                <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal" data-bs-target="#delete_news_Modal">
-                    Удалить
-                </button>
-                <!-- Модалка подтверждения -->
-                <div class="modal fade" id="delete_news_Modal" tabindex="-1" aria-labelledby="delete_news_ModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title fs-5" id="delete_news_ModalLabel">Вы точно хотите удалить эту статью?</h3>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
-                                <form method="POST" id="modal_form_link" action="{% url 'webapp:news_delete' single_news.pk %}">
-                                    {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-outline-secondary"
-                                                           value="Да">
-                                </form>
+                    <!-- Открывает модалку подтверждения -->
+                    <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal"
+                            data-bs-target="#delete_news_Modal">
+                        Удалить
+                    </button>
+                    <!-- Модалка подтверждения -->
+                    <div class="modal fade" id="delete_news_Modal" tabindex="-1"
+                         aria-labelledby="delete_news_ModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title fs-5" id="delete_news_ModalLabel">Вы точно хотите удалить эту
+                                        статью?</h3>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Нет
+                                    </button>
+                                    <form method="POST" id="modal_form_link"
+                                          action="{% url 'webapp:news_delete' single_news.pk %}">
+                                        {% csrf_token %}<input type="submit" id="confirm_button"
+                                                               class="btn btn-outline-secondary"
+                                                               value="Да">
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-            {% endif %}
-        <!-- Поделиться новостью в соц-сетях, Share news -->
+                {% endif %}
+                <!-- Поделиться новостью в соц-сетях, Share news -->
                 <div>
                     <button class="share-btn" id="shareBtn">
-                    <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
-                    <span class="social-icons">
+                        <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
+                        <span class="social-icons">
                             <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
                                 <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
                             </a>
@@ -76,15 +86,17 @@
                                  <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
                       </span>
                     </button>
-                     <a style="padding-left: 12px" onclick="copyfunc()"><img
-                    style="width: 37px;"
-                    src="{% static 'images/copy.png' %}"></a>
-                    <input readonly="readonly" style="width: 20rem; border-radius: 5px; border-color: #9400D3"
-                    type="text" value="http://127.0.0.1:8000/news_detail/{{ single_news.pk }}" id="myInput">
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <a style="padding-left: 12px" onclick="copyfunc()"><img
+                                style="width: 37px;"
+                                src="{% static 'images/copy.png' %}"></a>
+                        <input readonly="readonly" style="width: 75%; border-radius: 5px; border-color: #9400D3"
+                               type="text" value="http://127.0.0.1:8000/news_detail/{{ single_news.pk }}" id="myInput">
+                    </div>
                 </div>
-            <br><br>
+                <br><br>
+            </div>
         </div>
-    </div>
     </div>
 
     <br/>

@@ -16,7 +16,7 @@
     <tbody>
     {% for player in players %}
         <tr>
-            <td data-label="#">{{ forloop.counter }}</td>
+            <td data-label="#{{ page_obj.start_index|add:forloop.counter0 }}">{{ page_obj.start_index|add:forloop.counter0 }}</td>
             <td data-label="Фамилия"><a style="text-decoration: underline dotted ghostwhite; color: black;"
                    href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
             <td data-label="Имя">{{ player.first_name }}</td>
