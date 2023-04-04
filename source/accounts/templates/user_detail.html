@@ -12,7 +12,7 @@
         <div class="row mb-4">
             <div class="col-5">
                 {% if user_obj.avatar %}
-                    <img style="width: 25%; border: solid; border-color: grey; border-width: 1px"
+                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px"
                          src="{{ user_obj.avatar.url }}" alt="avatar">
                 {% else %}
                     <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;"
@@ -26,8 +26,9 @@
                     <p style="font-size: 20px">Фамилия: {{ user_obj.last_name }}</p>
                     <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
                     <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
+                    <p style="font-size: 20px">Клуб: {{ club_names|join:", "|default_if_none:"" }}</p>
                     <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
-                        {% if request.user.is_authenticated %}
+                        {% if request.user.is_authenticated and user_obj.pk == request.user.pk %}
                             <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
                                href="{% url 'webapp:news_create' %}">Создать
                                 новость</a>
@@ -51,10 +52,16 @@
     </div>
 
     <br/>
-    <div class="container mt-5 mb-5">
-        <h3 class="title">Список студентов:</h3>
-        {% include 'partial/player_list.html' %}
-    </div>
+    {% if players %}
+        <div class="container mt-5 mb-5">
+            <h3 class="title">Список студентов:</h3>
+            {% include 'partial/player_list.html' %}
+        </div>
+    {% else %}
+        <div class="container mt-5 mb-5">
+            <h3 class="title">У Вас пока нету студентов!</h3>
+        </div>
+    {% endif %}
     <br/>
 
 {% endblock %}
