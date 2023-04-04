@@ -1,5 +1,4 @@
 import datetime
-
 from django.contrib.auth.models import Permission
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -10,10 +9,10 @@ from webapp.models import Calendar, Country, City
 class EventCreateTestByRegisteredUser(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_admin = User.objects.create_superuser(username='admin', email='admin@admin.com', password='admin')
-        cls.test_user = User.objects.create_user(username='test_user', email='test@user.com', password='test_user')
-        cls.delete_event_permission = Permission.objects.get(codename='delete_calendar')
-        cls.test_user.user_permissions.add(cls.delete_event_permission)
+        User.objects.create_superuser(username='admin', email='admin@admin.com', password='admin')
+        test_user = User.objects.create_user(username='test_user', email='test@user.com', password='test_user')
+        delete_event_permission = Permission.objects.get(codename='delete_calendar')
+        test_user.user_permissions.add(delete_event_permission)
         country = Country.objects.create(country_code='kg')
         cls.city_1 = City.objects.create(city='Bishkek', country=country)
         cls.city_2 = City.objects.create(city='Talas', country=country)
@@ -30,6 +29,7 @@ class EventCreateTestByRegisteredUser(TestCase):
             'event_date': datetime.date(2024, 10, 10),
             'text': 'Test text for event create test',
             'deadline': datetime.date(2024, 10, 10),
+            'author': User.objects.first()
         }
         self.client.get(url)
         response = self.client.post(url, data)
@@ -49,7 +49,8 @@ class EventCreateTestByRegisteredUser(TestCase):
                                             text='New text',
                                             event_city=self.city_1,
                                             event_date=datetime.date(2030, 11, 11),
-                                            deadline=datetime.date(2030, 11, 11))
+                                            deadline=datetime.date(2030, 11, 11),
+                                            author=User.objects.first())
         url = reverse('webapp:event_update', args=[new_event.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -77,7 +78,8 @@ class EventCreateTestByRegisteredUser(TestCase):
                                             text='New text',
                                             event_city=self.city_1,
                                             event_date=datetime.date(2030, 11, 11),
-                                            deadline=datetime.date(2030, 11, 11))
+                                            deadline=datetime.date(2030, 11, 11),
+                                            author=User.objects.first())
         url = reverse('webapp:index')
         response = self.client.get(url)
         self.assertContains(response, 'data-bs-target="#delete_event_Modal"')
@@ -95,7 +97,8 @@ class EventCreateTestByRegisteredUser(TestCase):
                                             text='New text',
                                             event_city=self.city_1,
                                             event_date=datetime.date(2030, 11, 11),
-                                            deadline=datetime.date(2030, 11, 11))
+                                            deadline=datetime.date(2030, 11, 11),
+                                            author=User.objects.first())
         new_event.is_deleted = True
         url = reverse('webapp:event_hard_delete_one', args=[new_event.pk])
         response = self.client.post(url)
