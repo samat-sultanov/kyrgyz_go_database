@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4 mb-5">
+        <div class=" mt-4" style="text-align: left">
+            <h2 class="title">Редактировать данные участника: {{ participant.name }} {{ participant.surname }}</h2>
+        </div>
+        <div class="container">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% include 'partial/form.html' with button_text="Сохранить" %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
