@@ -14,10 +14,10 @@ urlpatterns = [
     path('reset_password/', auth_views.PasswordResetView.as_view(
         template_name='email_registration/password_reset.html',
         success_url='/accounts/reset_password_sent/'),
-        name='reset_password'),
+         name='reset_password'),
 
     path('reset_password_sent/',
-         auth_views.PasswordResetDoneView.as_view(template_name='email_registration/password_reset_sent.html',),
+         auth_views.PasswordResetDoneView.as_view(template_name='email_registration/password_reset_sent.html', ),
          name="password_reset_done"),
 
     path('reset/<uidb64>/<token>/',
@@ -28,4 +28,13 @@ urlpatterns = [
     path('reset_password_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name='email_registration/password_reset_done.html'),
          name="password_reset_complete"),
+
+    path('change_password/',
+         auth_views.PasswordChangeView.as_view(template_name='email_registration/change_password.html',
+                                               success_url='/accounts/change_password_done/'),
+         name='change_password'),
+
+    path('change_password_done/',
+         auth_views.PasswordChangeDoneView.as_view(template_name='email_registration/change_password_done.html'),
+         name='change_password_done'),
 ]
