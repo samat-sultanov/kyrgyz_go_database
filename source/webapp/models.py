@@ -9,6 +9,8 @@ from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image
 
+from accounts.models import User
+
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
 STATUS = [('Confirmed', 'Confirmed'), ('Not confirmed', 'Not confirmed')]
@@ -222,12 +224,17 @@ class News(models.Model):
                 img.save(self.news_image.path)
 
 
+def get_author():
+    return User.objects.first()
+
+
 class Calendar(models.Model):
     event_name = models.CharField(max_length=100, verbose_name='Название события', null=False, blank=False)
     event_city = models.CharField(max_length=50, verbose_name='Город проведения', null=False, blank=False)
     event_date = models.DateField(verbose_name='Дата проведения', null=False, blank=False)
     text = models.TextField(max_length=5000, verbose_name='Описание события')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1, verbose_name='Автор')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_author), verbose_name='Автор',
+                               default=get_author)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
@@ -303,4 +310,3 @@ def auto_delete_img_on_change(sender, instance, **kwargs):
         if not old_img == new_img:
             if os.path.isfile(old_img.path):
                 os.remove(old_img.path)
-
