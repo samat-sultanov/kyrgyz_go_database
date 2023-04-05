@@ -1,0 +1,50 @@
+<div class="tabs">
+  <div class="tabs__nav">
+    <button class="tabs__btn tabs__btn_active">Турниры</button>
+    <button class="tabs__btn">Игры</button>
+    <button class="tabs__btn">Вкладка 3</button>
+  </div>
+  <div class="tabs__content">
+    <div class="tabs__pane tabs__pane_show">
+<h3 class="title"6>Турниры:</h3>
+        <table class="table adaptive">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Турнир</th>
+                <th scope="col">Город</th>
+                <th scope="col">Доска</th>
+                <th scope="col">Раунды</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Класс</th>
+                <th scope="col">Ранг</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tournament in player.tournaments.all %}
+                <tr>
+                    <td data-label="#">{{ forloop.counter }}</td>
+                    <td data-label="Турнир"><a style="color: black"
+                           href='{% url "webapp:tournament_detail" tournament.pk %}'>{{ tournament.name }}</a></td>
+                    <td data-label="Город">{{ tournament.city }}</td>
+                    <td data-label="Размер доски">{{ tournament.board_size }}</td>
+                    <td data-label="Кол-во раундов">{{ tournament.rounds }}</td>
+                    <td data-label="Дата">{{ tournament.date|date:"d-m-Y" }}</td>
+                    <td data-label="Класс">{{ tournament.tournament_class }}</td>
+                    {% for person in tournament.playerintournament_set.all %}
+                        {% if player.pk == person.player_id %}
+                            <td data-label="Ранг">{{ person.GoLevel_after }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>    </div>
+    <div class="tabs__pane">
+      Содержимое 2...
+    </div>
+    <div class="tabs__pane" id="content-3">
+      Содержимое 3...
+    </div>
+  </div>
+</div>
