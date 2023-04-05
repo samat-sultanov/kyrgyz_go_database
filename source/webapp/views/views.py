@@ -51,6 +51,7 @@ def file_upload_check(request, pk):
         tournament = Tournament.objects.get(pk=pk)
         players = tournament.player_set.all()
         birth_date = request.POST.getlist('birth_date')
+        EgdPin = request.POST.getlist('EgdPin')
         tournament_form = CheckTournamentForm(request.POST)
         city = request.POST.get('city')
         date = request.POST.get('date')
@@ -72,12 +73,18 @@ def file_upload_check(request, pk):
 
         form = CheckPlayerForm(request.POST)
         if form.is_valid():
-            for player, bd in zip(players, birth_date):
-                if bd == '':
-                    form = CheckPlayerForm({'birth_date': player.birth_date},
+            for player,pin, bd in zip(players,EgdPin,birth_date):
+                if bd == '' and pin == '':
+                    form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin':player.EgdPin},
+                                           instance=player)
+                elif bd == '' and pin != '':
+                    form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': pin},
+                                           instance=player)
+                elif bd != '' and pin == '':
+                    form = CheckPlayerForm({'birth_date': bd, 'EgdPin': player.EgdPin},
                                            instance=player)
                 else:
-                    form = CheckPlayerForm({'birth_date': bd}, instance=player)
+                    form = CheckPlayerForm({'birth_date': bd,'EgdPin': pin}, instance=player)
                 form.save()
             return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
         else:
