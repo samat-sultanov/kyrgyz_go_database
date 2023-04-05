@@ -24,7 +24,7 @@
                                                                   class="text-decoration-none link-dark">{{ request.user.username }}</a>
         </p>
         <a class="btn btn-light btn-sm ms-2"
-           href="{% url 'accounts:logout' %}?next={{ request.get_full_path }}">Выйти</a>
+           href="{% url 'accounts:logout' %}?next={% url 'webapp:index' %}">Выйти</a>
         <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
     {% else %}
         {% block login %}
