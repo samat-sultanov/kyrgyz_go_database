@@ -1,0 +1,39 @@
+{% load static %}
+<table class="table adaptive">
+    <thead>
+    <tr>
+        <th scope="col">Турнир</th>
+        <th scope="col">Дата</th>
+        <th scope="col">Раунд</th>
+        <th scope="col">Фамилия</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Страна</th>
+        <th scope="col">Клуб</th>
+        <th scope="col">Ранг</th>
+        <th scope="col">Цвет</th>
+        <th scope="col">Результат</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for element in games %}
+        <tr>
+            <td>{{ element.tournament.name }}</td>
+            <td>{{ element.tournament.date }}</td>
+            <td>{{ element.tournament.game.round }}</td>
+            <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+                   href="{% url "webapp:player_detail" element.player.pk %}">{{ element.player.last_name }}</a></td>
+            <td>{{ element.player.first_name }}</td>
+            <td>{{ element.player.country }}</td>
+            {% if player.clubs.all %}
+                {% for club in player.clubs.all %}
+                    <td data-label="Клуб">{{ club.name }}</td>
+                {% endfor %}
+            {% else %}
+                <td data-label="Клуб"></td>
+            {% endif %}
+            <td data-label="Ранг">{{ player.current_rank}}</td>
+            <td data-label="Кол-во Турниров">{{ player.get_total_tournaments }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
