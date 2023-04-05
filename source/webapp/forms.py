@@ -115,7 +115,7 @@ class ClubSearch(forms.Form):
 class CheckPlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        fields = ['birth_date']
+        fields = ['EgdPin','birth_date']
         widgets = {'birth_date': DateInput(attrs={'type': 'date'})}
 
 
