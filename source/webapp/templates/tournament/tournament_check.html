@@ -62,15 +62,13 @@
                     {% else %}
                         <td>{{ player_form.birth_date }}</td>
                     {% endif %}
-                    {% if player.clubs.all %}
-                        {% for club in player.clubs.all %}
-                            <td>{{ club.name }}</td>
-                        {% endfor %}
-                    {% else %}
-                        <td>Not a member of clubs</td>
-                    {% endif %}
-                    {% for rate in player.playerintournament_set.all %}
-                        {% if rate.tournament_id == tournament.pk %}
+                    {% for data in player.playerintournament_set.all %}
+                        {% if data.tournament_id == tournament.pk %}
+                            {% if data.club is not None %}
+                                 <td>{{ data.club.name }}</td>
+                                {% else %}
+                                <td>Not a member of club</td>
+                            {% endif %}
                             <td>{{ rate.GoLevel }}</td>
                         {% endif %}
                     {% endfor %}
