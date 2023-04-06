@@ -24,15 +24,10 @@
                    href="{% url "webapp:player_detail" element.player.pk %}">{{ element.player.last_name }}</a></td>
             <td>{{ element.player.first_name }}</td>
             <td>{{ element.player.country }}</td>
-            {% if player.clubs.all %}
-                {% for club in player.clubs.all %}
-                    <td data-label="Клуб">{{ club.name }}</td>
-                {% endfor %}
-            {% else %}
-                <td data-label="Клуб"></td>
-            {% endif %}
-            <td data-label="Ранг">{{ player.current_rank}}</td>
-            <td data-label="Кол-во Турниров">{{ player.get_total_tournaments }}</td>
+            <td>{{ element.player.club }}</td>
+            <td>{{ element.player.rank}}</td>
+            <td>{{ element.player.color}}</td>
+            <td>{{ element.tournament.game.result}}</td>
         </tr>
     {% endfor %}
     </tbody>
