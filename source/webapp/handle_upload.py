@@ -1,7 +1,5 @@
 import xmltodict
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
-
+from django.shortcuts import get_object_or_404
 from .models import Game, Player, Country, Club, Tournament, PlayerInTournament
 
 
