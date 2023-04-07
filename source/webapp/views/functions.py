@@ -169,7 +169,18 @@ def get_data_for_table_games(pk):
     return new_list
 
 
-def automatic_rank_sync_with_egd():
+def rank_sync_with_egd():
     all_players = Player.objects.all()
     for player in all_players:
-        pass
+        if player.EgdPin:
+            payload = {'pin': player.EgdPin}
+            request_to_egd = requests.get('https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php', params=payload)
+            player_egd_rank = request_to_egd.json().get('Grade')
+            if player.current_rank != player_egd_rank:
+                player.current_rank = player_egd_rank
+                player.save()
+            else:
+                continue
+        else:
+            continue
+
