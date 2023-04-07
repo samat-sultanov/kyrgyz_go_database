@@ -18,6 +18,8 @@
             <p>Partner name: <span style="margin-left: 30px;">{{ partner.name }}</span></p>
             <p>Partner link: <span style="margin-left: 50px;"><a
                     href="{{ partner.web_link }}">{{ partner.web_link }}</a></span></p>
+            <a href="{% url 'webapp:partner_update' partner.pk %}"
+                       class="btn btn-outline-secondary">Редактировать</a>
         </div>
     </div>
 {% endblock %}
