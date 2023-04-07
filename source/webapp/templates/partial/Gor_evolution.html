@@ -1,0 +1,43 @@
+{% load static %}
+
+<div class="card">
+  <div class="card-header">
+    Турнир: {{ tournament.name }} Дата проведения: {{ tournament.date }}
+  </div>
+  <div class="card-body">
+      <p>Класс: {{ tournament.class }} Место проведения: {{ tournament.city }}</p>
+      <p>Заявленный ранг: {{ tournament.class }} </p>
+      <p>GoR до турнира: {{ tournament.city }}</p>
+      <p>GoR после турнира: {{ tournament.city }}</p>
+          <table class="table adaptive-t">
+              <thead>
+                <tr>
+                    <th scope="col">Раунд</th>
+                    <th scope="col">GoR изменение</th>
+                    <th scope="col">Цвет</th>
+                    <th scope="col">Результат</th>
+                    <th scope="col">Имя оппонента</th>
+                    <th scope="col">Ранг</th>
+                    <th scope="col">GoR</th>
+                    <th scope="col">GoR изменение</th>
+                </tr>
+              </thead>
+            <tbody>
+                {% for element in evolution %}
+                    <tr>
+                        <td>{{ element.round }}</td>
+                        <td>{{ element.gor_change }}</td>
+                        <td>{{ element.color }}</td>
+                        <td>{{ element.result }}</td>
+                        <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+                               href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
+                        <td>{{ element.opponent.rank }}</td>
+                        <td>{{ element.opponent.Gor_before }}</td>
+                        <td>{{ element.opponent.Gor_after }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+
+  </div>
+</div>
