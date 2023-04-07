@@ -1,5 +1,5 @@
 from django.urls import reverse
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from webapp.models import Partner
 from webapp.forms import PartnerForm
 
@@ -23,3 +23,13 @@ class PartnerDetailView(DetailView):
     model = Partner
     template_name = 'partner/partner_detail.html'
     context_object_name = 'partner'
+
+
+class PartnerUpdateView(UpdateView):
+    model = Partner
+    template_name = 'partner/partner_update.html'
+    form_class = PartnerForm
+    context_object_name = 'partner'
+
+    def get_success_url(self):
+        return reverse('webapp:partner_detail', kwargs={'pk': self.object.pk})
