@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class=" mt-4" style="text-align: center">
+            <h2 class="title">{{ partner.name }}</h2>
+        </div>
+
+        <div class='m-3 border p-3' style="margin-left: 30px;">
+            <p style="margin-bottom: 5px;"> Partner logo: {% thumbnail partner.logo "140x140" crop="center" as im %}
+                <img class="rounded-circle z-depth-0 mb-3" src="{{ im.url }}" style="margin-left: 30px;">
+            {% endthumbnail %}</p>
+            <p>Partner name: <span style="margin-left: 30px;">{{ partner.name }}</span></p>
+            <p>Partner link: <span style="margin-left: 50px;"><a
+                    href="{{ partner.web_link }}">{{ partner.web_link }}</a></span></p>
+        </div>
+    </div>
+{% endblock %}
