@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Удалить партнера{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container text-center">
+        <h2>Вы уверены что хотите удалить партнера "{{ partner.name }}"?</h2>
+        <form method="POST" action="{% url "webapp:partner_delete" partner.pk %}" class="text-center">
+            {% include 'partial/form.html' with button_text="Delete" %}
+        </form>
+    </div>
+{% endblock %}
