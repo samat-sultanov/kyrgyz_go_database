@@ -168,3 +168,58 @@ def get_data_for_table_games(pk):
     return new_list
 
 
+def get_data_for_gor_evolution(pk):
+    player = Player.objects.get(pk=pk)
+    tournaments = player.playerintournament_set.all()
+    new_list = []
+    for element in tournaments:
+        tournament = Tournament.objects.get(pk=element.tournament_id)
+        games = Game.objects.filter(tournament=tournament)
+        for game in games:
+            new_dict = dict()
+            new_dict['tournament'] = tournament
+            if game.black == player:
+                new_dict['round'] = game.round_num
+                new_dict['rating_before'] = element.rating
+                new_dict['gor_change'] = game.black_gor_change
+                new_dict['rating_after'] = element.rating_after
+                new_dict['rank_after'] = element.GoLevel_after
+                opponent = game.white
+                if opponent:
+                    data = opponent.playerintournament_set.filter(tournament=tournament)
+                    for el in data:
+                        new_dict['opponent_rank'] = el.GoLevel
+                new_dict['opponent'] = game.white
+                new_dict['opponent_gor_change'] = game.white_gor_change
+                if game.result is not None:
+                    if game.black_score == 0:
+                        new_dict['result'] = 'Loss'
+                    elif game.black_score == 1:
+                        new_dict['result'] = 'Win'
+                new_dict['color'] = 'b'
+                new_list.append(new_dict)
+            elif game.white == player:
+                new_dict['round'] = game.round_num
+                new_dict['rating_before'] = element.rating
+                new_dict['gor_change'] = game.white_gor_change
+                new_dict['rating_after'] = element.rating_after
+                new_dict['rank_after'] = element.GoLevel_after
+                opponent = game.black
+                if opponent:
+                    data = opponent.playerintournament_set.filter(tournament=tournament)
+                    for el in data:
+                        new_dict['opponent_rank'] = el.GoLevel
+                new_dict['opponent'] = game.black
+                new_dict['opponent_gor_change'] = game.black_gor_change
+                if game.result is not None:
+                    if game.white_score == 0:
+                        new_dict['result'] = 'Loss'
+                    elif game.white_score == 1:
+                        new_dict['result'] = 'Won'
+                new_dict['color'] = 'w'
+                new_list.append(new_dict)
+    for item in new_list:
+        if item['opponent'] is None:
+            new_list.remove(item)
+    print(new_list)
+    return new_list
