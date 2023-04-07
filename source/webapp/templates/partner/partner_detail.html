@@ -21,6 +21,8 @@
                     href="{{ partner.web_link }}">{{ partner.web_link }}</a></span></p>
             <a href="{% url 'webapp:partner_update' partner.pk %}"
                        class="btn btn-outline-secondary">Редактировать</a>
+            <a href="{% url 'webapp:partner_delete' partner.pk %}"
+                       class="btn btn-outline-secondary">Удалить</a>
         </div>
     </div>
 {% endblock %}
