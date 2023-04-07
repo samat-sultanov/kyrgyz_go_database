@@ -1,5 +1,5 @@
-from django.urls import reverse
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from webapp.models import Partner
 from webapp.forms import PartnerForm
 
@@ -33,3 +33,9 @@ class PartnerUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:partner_detail', kwargs={'pk': self.object.pk})
+
+
+class PartnerDeleteView(DeleteView):
+    model = Partner
+    success_url = reverse_lazy('webapp:partners_list')
+    template_name = 'partner/partner_delete.html'
