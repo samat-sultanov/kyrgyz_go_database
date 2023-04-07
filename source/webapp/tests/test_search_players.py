@@ -63,3 +63,18 @@ class PlayerTestsForSearch(TestCase):
         self.assertNotContains(response, self.test_player_2.first_name)
 
 
+    def test_search_all_fields(self):
+        url = reverse('webapp:player_search') + \
+              '?search_last_name=B&search_first_name=Ak&search_clubs=s&search_city=B'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.test_player_1.first_name)
+        self.assertNotContains(response, self.test_player_2.first_name)
+
+    def test_search_null_fields(self):
+        url = reverse('webapp:player_search') + \
+              '?search_last_name=&search_first_name=&search_clubs=&search_city='
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.test_player_1.first_name)
+        self.assertContains(response, self.test_player_2.first_name)
