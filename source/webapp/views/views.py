@@ -36,6 +36,9 @@ def file_upload(request):
             tournament = handle_uploaded_file(request.FILES['file'])
             file = get_object_or_404(File, pk=a.id)
             file.delete()
+            if not tournament:
+                error = "Действие недоступно! Турнир с таким именем уже есть в базе данных."
+                return render(request, 'file_upload.html', {'form': form, 'error': error})
         else:
             return render(request, 'file_upload.html', {'form': form})
         return redirect('webapp:file_check', pk=tournament.pk)
