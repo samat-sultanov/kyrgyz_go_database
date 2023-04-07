@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class=" mt-4" style="text-align: center">
+            <h2 class="title">Партнеры</h2>
+        </div>
+
+        {% for partner in partners_list %}
+    <div>
+        {{ forloop.counter }}.
+            {% thumbnail partner.logo "140x140" crop="center" as im %}
+                <img class="rounded-circle z-depth-0" src="{{ im.url }}" style="display: inline-block; margin-left: 10px">
+            {% endthumbnail %}
+        <a href="{{ partner.web_link }}"><p style="display: inline-block; margin-left: 10px">{{ partner.name }}</p></a>
+    </div>
+    <hr>
+{% endfor %}
+
+        <br/>
+    </div>
+
+{% endblock %}
