@@ -16,7 +16,7 @@ class PartnerCreateView(CreateView):
     template_name = 'partner/partner_create.html'
 
     def get_success_url(self):
-        return reverse('accounts:detail', kwargs={'pk': self.request.user.pk})
+        return reverse('webapp:partner_detail', kwargs={'pk': self.object.pk})
 
 
 class PartnerDetailView(DetailView):
