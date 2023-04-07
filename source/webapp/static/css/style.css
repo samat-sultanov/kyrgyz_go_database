@@ -247,3 +247,46 @@ h1 {
     color: #0056b3;
     text-decoration: none;
 }
+
+
+@media screen and (max-width: 910px) {
+    .adaptive-t {
+        border: 0;
+    }
+
+    .adaptive-t thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    .adaptive-t tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+        margin-bottom: .625em;
+    }
+
+    .adaptive-t td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        font-size: 1em;
+        text-align: right;
+        min-height: 40px;
+    }
+
+    .adaptive-t td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        /*text-transform: uppercase;*/
+    }
+
+    .adaptive-t td:last-child {
+        border-bottom: 0;
+    }
+}
