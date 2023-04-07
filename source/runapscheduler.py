@@ -1,4 +1,5 @@
 import logging
+import requests
 
 from django.conf import settings
 
@@ -9,12 +10,26 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
+from webapp.models import Player
+
 logger = logging.getLogger(__name__)
 
 
 def rank_sync_with_egd_job():
-    # Your job processing logic here...
-    pass
+    all_players = Player.objects.all()
+    for player in all_players:
+        if player.EgdPin:
+            payload = {'pin': player.EgdPin}
+            request_to_egd = requests.get('https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php',
+                                          params=payload)
+            player_egd_rank = request_to_egd.json().get('Grade')
+            if player.current_rank != player_egd_rank:
+                player.current_rank = player_egd_rank
+                player.save()
+            else:
+                continue
+        else:
+            continue
 
 
 @util.close_old_connections

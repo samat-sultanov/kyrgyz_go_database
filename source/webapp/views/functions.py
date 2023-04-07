@@ -1,6 +1,5 @@
 import re
 from operator import itemgetter
-import requests
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -167,19 +166,3 @@ def get_data_for_table_games(pk):
         if item['opponent'] is None:
             new_list.remove(item)
     return new_list
-
-
-def rank_sync_with_egd():
-    all_players = Player.objects.all()
-    for player in all_players:
-        if player.EgdPin:
-            payload = {'pin': player.EgdPin}
-            request_to_egd = requests.get('https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php', params=payload)
-            player_egd_rank = request_to_egd.json().get('Grade')
-            if player.current_rank != player_egd_rank:
-                player.current_rank = player_egd_rank
-                player.save()
-            else:
-                continue
-        else:
-            continue
