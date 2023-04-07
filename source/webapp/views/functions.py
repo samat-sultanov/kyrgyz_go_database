@@ -1,5 +1,6 @@
 import re
 from operator import itemgetter
+import requests
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -168,3 +169,7 @@ def get_data_for_table_games(pk):
     return new_list
 
 
+def automatic_rank_sync_with_egd():
+    all_players = Player.objects.all()
+    for player in all_players:
+        pass
