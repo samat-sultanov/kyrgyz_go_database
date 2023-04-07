@@ -12,11 +12,12 @@
         </div>
 
         <div class='m-3 border p-3' style="margin-left: 30px;">
-            <p style="margin-bottom: 5px;"> Partner logo: {% thumbnail partner.logo "140x140" crop="center" as im %}
-                <img class="rounded-circle z-depth-0 mb-3" src="{{ im.url }}" style="margin-left: 30px;">
+            <p style="margin-bottom: 5px;"> <strong>Логотип
+                партнера: </strong> {% thumbnail partner.logo "140x140" crop="center" as im %}
+                <img class="rounded-circle z-depth-0 mb-3" src="{{ im.url }}" style="margin-left: 60px;">
             {% endthumbnail %}</p>
-            <p>Partner name: <span style="margin-left: 30px;">{{ partner.name }}</span></p>
-            <p>Partner link: <span style="margin-left: 50px;"><a
+            <p> <strong>Наименование партнера: </strong> <span style="margin-left: 13px;">{{ partner.name }}</span></p>
+            <p> <strong>Интернет-ссылка: </strong> <span style="margin-left: 80px;"><a
                     href="{{ partner.web_link }}">{{ partner.web_link }}</a></span></p>
             <a href="{% url 'webapp:partner_update' partner.pk %}"
                        class="btn btn-outline-secondary">Редактировать</a>
