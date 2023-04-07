@@ -85,18 +85,18 @@
                                 {% if request.user.is_authenticated %}
                                     <td><a style="color: black" class="ms-2"
                                            href="{% url 'webapp:event_update' event.pk %}"><i class="bi bi-pencil-fill"></i></a>
-                                        {% if request.user.is_superuser %}
+                                        {% if request.user.has_permission %}
                                             <!-- Открывает модалку подтверждения -->
                                             <a style="color: black" class="ms-2 kgf_modal" href="" data-bs-toggle="modal"
-                                               data-bs-target="#myModal_{{ event.pk }}" type="button"><i class="bi bi-trash3-fill"></i></a>
+                                               data-bs-target="#delete_event_Modal" type="button"><i class="bi bi-trash3-fill"></i></a>
 
                                             <!-- Модалка подтверждения -->
-                                            <div class="modal fade" id="myModal_{{ event.pk }}" tabindex="-1" aria-labelledby="myModalLabel"
+                                            <div class="modal fade" id="delete_event_Modal" tabindex="-1" aria-labelledby="delete_event_ModalLabel"
                                                  aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h3 class="modal-title fs-5" id="myModalLabel">Вы уверены, что хотите
+                                                            <h3 class="modal-title fs-5" id="delete_event_ModalLabel">Вы уверены, что хотите
                                                                 удалить это событие?</h3>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
@@ -116,7 +116,6 @@
                                                 </div>
                                             </div>
                                         {% endif %}
-
                                     </td>
                                 {% endif %}
                             </tr>

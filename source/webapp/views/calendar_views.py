@@ -191,3 +191,12 @@ class DeletePlayerFromEvent(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('webapp:CalendarPlayerList', kwargs={'pk': self.object.event.pk})
+
+
+class UpdateParticipant(LoginRequiredMixin, UpdateView):
+    template_name = 'calendar/participant_update.html'
+    model = Participant
+    form_class = ParticipantForm
+
+    def get_success_url(self):
+        return reverse('webapp:CalendarPlayerList', kwargs={'pk': self.object.event.pk})

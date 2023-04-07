@@ -27,19 +27,18 @@
                                class="btn btn-secondary">Восстановить</a>
 
                             <!-- Открывает модалку подтверждения -->
-                            <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal"
-                                    data-bs-target="#myModal_{{ deleted_calendar.pk }}">
+                            <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal" data-bs-target="#delete_one_event_Modal">
                                 Удалить
                             </button>
 
                             <!-- Модалка подтверждения -->
-                            <div class="modal fade" id="myModal_{{ deleted_calendar.pk }}" tabindex="-1"
-                                 aria-labelledby="myModalLabel"
+                            <div class="modal fade" id="delete_one_event_Modal" tabindex="-1"
+                                 aria-labelledby="delete_one_event_ModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите безвозвратно
+                                            <h1 class="modal-title fs-5" id="delete_one_event_ModalLabel">Вы точно хотите безвозвратно
                                                 удалить этот ивент? Его потом невозможно будет восстановить.</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>

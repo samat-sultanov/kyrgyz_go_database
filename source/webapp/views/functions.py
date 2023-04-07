@@ -118,3 +118,53 @@ def get_rank_for_json(data):
     return new_list
 
 
+def get_data_for_table_games(pk):
+    player = Player.objects.get(pk=pk)
+    tournaments = player.playerintournament_set.all()
+    new_list = []
+    for element in tournaments:
+        tournament = Tournament.objects.get(pk=element.tournament_id)
+        games = Game.objects.filter(tournament=tournament)
+        for game in games:
+            new_dict = dict()
+            new_dict['tournament'] = tournament
+            if game.black == player:
+                new_dict['round'] = game.round_num
+                opponent = game.white
+                if opponent:
+                    data = opponent.playerintournament_set.filter(tournament=tournament)
+                    for el in data:
+                        new_dict['rank'] = el.GoLevel
+                        if el.club is not None:
+                            new_dict['club'] = el.club.name
+                new_dict['opponent'] = game.white
+                if game.result is not None:
+                    if game.black_score == 0:
+                        new_dict['result'] = '-'
+                    elif game.black_score == 1:
+                        new_dict['result'] = '+'
+                new_dict['color'] = 'b'
+                new_list.append(new_dict)
+            elif game.white == player:
+                new_dict['round'] = game.round_num
+                opponent = game.black
+                if opponent:
+                    data = opponent.playerintournament_set.filter(tournament=tournament)
+                    for el in data:
+                        new_dict['rank'] = el.GoLevel
+                        if el.club is not None:
+                            new_dict['club'] = el.club.name
+                new_dict['opponent'] = game.black
+                if game.result is not None:
+                    if game.white_score == 0:
+                        new_dict['result'] = '-'
+                    elif game.white_score == 1:
+                        new_dict['result'] = '+'
+                new_dict['color'] = 'w'
+                new_list.append(new_dict)
+    for item in new_list:
+        if item['opponent'] is None:
+            new_list.remove(item)
+    return new_list
+
+
