@@ -12,14 +12,11 @@ from django_apscheduler import util
 logger = logging.getLogger(__name__)
 
 
-def my_job():
+def rank_sync_with_egd_job():
     # Your job processing logic here...
     pass
 
 
-# The `close_old_connections` decorator ensures that database connections, that have become
-# unusable or are obsolete, are closed before and after your job has run. You should use it
-# to wrap any jobs that you schedule that access the Django database in any way.
 @util.close_old_connections
 def delete_old_job_executions(max_age=604_800):
     """
@@ -41,25 +38,23 @@ class Command(BaseCommand):
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
         scheduler.add_job(
-            my_job,
-            trigger=CronTrigger(second="*/10"),  # Every 10 seconds
-            id="my_job",  # The `id` assigned to each job MUST be unique
+            rank_sync_with_egd_job,
+            trigger=CronTrigger(day="last", hour=3, minute=0),
+            id="rank_sync_with_egd_job",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Added job 'rank_sync_with_egd_job'.")
 
         scheduler.add_job(
             delete_old_job_executions,
-            trigger=CronTrigger(
-                day_of_week="mon", hour="00", minute="00"
-            ),  # Midnight on Monday, before start of the next work week.
+            trigger=CronTrigger(month=1, day=1, hour="02", minute="00"),
             id="delete_old_job_executions",
             max_instances=1,
             replace_existing=True,
         )
         logger.info(
-            "Added weekly job: 'delete_old_job_executions'."
+            "Added yearly job: 'delete_old_job_executions'."
         )
 
         try:
