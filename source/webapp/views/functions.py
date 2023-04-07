@@ -183,4 +183,3 @@ def rank_sync_with_egd():
                 continue
         else:
             continue
-
