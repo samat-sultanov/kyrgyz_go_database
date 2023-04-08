@@ -30,6 +30,7 @@ class Country(models.Model):
 class City(models.Model):
     city = models.CharField(verbose_name="Город", max_length=50)
     country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
+    region = models.ForeignKey('webapp.Region', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.city}'
@@ -37,6 +38,18 @@ class City(models.Model):
     class Meta:
         verbose_name = "Город"
         verbose_name_plural = "Города"
+
+
+class Region(models.Model):
+    name = models.CharField(verbose_name="Регион", max_length=50, null=False, blank=False)
+    country = models.ForeignKey('webapp.Country', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name = "Регион"
+        verbose_name_plural = "Регионы"
 
 
 class Club(models.Model):
@@ -94,6 +107,8 @@ class Game(models.Model):
 class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament name", max_length=50, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
+    region = models.ForeignKey('webapp.Region', on_delete=models.CASCADE, null=True, blank=True)
+    place = models.CharField(verbose_name="Tournament place", max_length=100, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
     date = models.DateField(verbose_name="Date", null=True, blank=True)
