@@ -1,15 +1,17 @@
 {% load static %}
 
+{% for item in tournaments %}
 <div class="card">
   <div class="card-header">
-    Турнир: {{ tournament.name }} Дата проведения: {{ tournament.date }}
+    Турнир: {{ item.tournament.name }} Дата проведения: {{ item.tournament.date }}
   </div>
   <div class="card-body">
-      <p>Класс: {{ tournament.class }} Место проведения: {{ tournament.city }}</p>
-      <p>Заявленный ранг: {{ tournament.class }} </p>
-      <p>GoR до турнира: {{ tournament.city }}</p>
-      <p>GoR после турнира: {{ tournament.city }}</p>
-          <table class="table adaptive-t">
+      <p>Класс: {{ item.tournament.class }} </p>
+        <p>Место проведения: {{ item.tournament.city }}</p>
+      <p>Заявленный ранг: {{ item.rank_after }} </p>
+      <p>GoR до турнира: {{ item.rating_before }}</p>
+      <p>GoR после турнира: {{ item.rating_after }}</p>
+    <table class="table adaptive-t">
               <thead>
                 <tr>
                     <th scope="col">Раунд</th>
@@ -22,22 +24,16 @@
                     <th scope="col">GoR изменение</th>
                 </tr>
               </thead>
-            <tbody>
-                {% for element in evolution %}
-                    <tr>
-                        <td>{{ element.round }}</td>
-                        <td>{{ element.gor_change }}</td>
-                        <td>{{ element.color }}</td>
-                        <td>{{ element.result }}</td>
-                        <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
-                               href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
-                        <td>{{ element.opponent.rank }}</td>
-                        <td>{{ element.opponent.Gor_before }}</td>
-                        <td>{{ element.opponent.Gor_after }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-          </table>
+    {% for element in evolution %}
+        {% if item.tournament.pk == element.tournament.pk %}
+             <tbody>
+        <div class="container mt-5 mb-5">
+            {% include "partial/partial_for_Gor_partial.html" %}
+        </div>
 
-  </div>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+          </table>
+  {% endfor %}
 </div>
