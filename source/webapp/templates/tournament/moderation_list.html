@@ -1,5 +1,17 @@
-{% load static %}
+{% extends 'base.html' %}
 
+{% block title %}Модерация турниров{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+    <br/>
+    <h1 class="title">Турниры на модерации</h1>
+        {% load static %}
 <table class="table adaptive">
     <thead>
     <tr>
@@ -7,9 +19,6 @@
         <th scope="col">Название</th>
         <th scope="col">Дата</th>
         <th scope="col">Город</th>
-        <th scope="col">Страна</th>
-        <th scope="col">Доска</th>
-        <th scope="col">Раунды</th>
         <th scope="col">Класс</th>
         <th scope="col">Загружено</th>
     </tr>
@@ -26,9 +35,6 @@
                 <td data-label="Дата"></td>
             {% endif %}
             <td data-label="Город">{{ tournament.city.city }}</td>
-            <td data-label="Страна">{{ tournament.city.country.country_code.upper }}</td>
-            <td data-label="Размер доски">{{ tournament.board_size }}</td>
-            <td data-label="Раунды">{{ tournament.rounds }}</td>
             {% if tournament.tournament_class == "all" %}
                 <td data-label="Класс"></td>
             {% else %}
@@ -39,5 +45,11 @@
     {% endfor %}
     </tbody>
 </table>
-
 {##}
+    </div>
+
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <br/>
+{% endblock %}

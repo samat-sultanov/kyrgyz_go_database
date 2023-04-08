@@ -83,3 +83,9 @@ class TournamentDetail(TemplateView):
         kwargs['sorted_players'] = data
         kwargs['wins'] = get_wins_losses(pk=pk)
         return super().get_context_data(**kwargs)
+
+class TournamentModerationList(ListView):
+    model = Tournament
+    context_object_name = "tournaments"
+    template_name = 'tournament/moderation_list.html'
+    paginate_by = 10
