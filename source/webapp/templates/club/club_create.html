@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4 mb-5">
+        <h3 class="title">Создать клуб:</h3>
+
+        <form action="" method="post" enctype="multipart/form-data">
+            {% include 'partial/form.html' with button_text="Создать" %}
+        </form>
+    </div>
+
+{% endblock %}

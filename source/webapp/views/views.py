@@ -3,6 +3,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.html import strip_tags
 from django.views.generic import TemplateView
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Tournament, News, Partner
@@ -10,6 +11,8 @@ from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, Feedbac
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.views.functions import get_wins_losses, get_position_in_kgf
 from django.core.exceptions import PermissionDenied
+from django import forms
+from django.contrib import messages
 
 
 class IndexView(TemplateView):
@@ -76,22 +79,34 @@ def file_upload_check(request, pk):
 
         form = CheckPlayerForm(request.POST)
         if form.is_valid():
-            for player,pin, bd in zip(players,EgdPin,birth_date):
-                if bd == '' and pin == '':
-                    form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin':player.EgdPin},
-                                           instance=player)
-                elif bd == '' and pin != '':
-                    form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': pin},
-                                           instance=player)
-                elif bd != '' and pin == '':
-                    form = CheckPlayerForm({'birth_date': bd, 'EgdPin': player.EgdPin},
-                                           instance=player)
-                else:
-                    form = CheckPlayerForm({'birth_date': bd,'EgdPin': pin}, instance=player)
-                form.save()
-            return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
+            try:
+                for player, pin, bd in zip(players, EgdPin, birth_date):
+                    if bd == '' and pin == '':
+                        form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': player.EgdPin},
+                                               instance=player)
+                    elif bd == '' and pin != '':
+                        form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': pin},
+                                               instance=player)
+                    elif bd != '' and pin == '':
+                        form = CheckPlayerForm({'birth_date': bd, 'EgdPin': player.EgdPin},
+                                               instance=player)
+                    else:
+                        form = CheckPlayerForm({'birth_date': bd, 'EgdPin': pin}, instance=player)
+                    if form.is_valid():
+                        form.save()
+                    else:
+                        messages.add_message(request, messages.ERROR,
+                                             'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+                        return redirect(request.META.get('HTTP_REFERER'))
+                return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
+            except forms.ValidationError:
+                messages.add_message(request, messages.ERROR,
+                                     'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+                return redirect(request.META.get('HTTP_REFERER'))
         else:
-            return render(request, 'file_upload.html', {'form': form})
+            messages.add_message(request, messages.ERROR,
+                                 'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+            return redirect(request.META.get('HTTP_REFERER'))
 
     if request.method == 'GET' and request.user.is_authenticated:
         tournament = Tournament.objects.get(pk=pk)

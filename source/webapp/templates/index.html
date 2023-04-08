@@ -32,7 +32,7 @@
                 <img src="{% static "images/1.jpg" %}" class="d-block w-100" alt="slide3">
                 <div class="carousel-caption d-none d-md-block mb-4">
                     <h1>О федерации Кыргызстана</h1>
-                    <a style="color: white; text-decoration: none;" href="">Читать далее >></a>
+                    <a style="color: white; text-decoration: none;" href="{% url 'webapp:about' %}">Читать далее >></a>
                 </div>
             </div>
         </div>
@@ -164,17 +164,19 @@
             </div>
         </div>
     </div>
+{#    d-none d-sm-block #}
     <div class="container text-center mt-5 mb-5 ">
-    <h3 class="title">Партнеры Федерации Кыргызстана:</h3>
+    <h3 class="title">Наши Партнеры:</h3>
     <div class="row">
         {% for partner in partners %}
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mt-4 mb-4 mx-auto">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1 mt-4 mb-4 mx-auto">
                 <a href="{{ partner.web_link }}">
-                    {% thumbnail partner.logo "140x140" crop="center" as im %}
-                        <img class="rounded-circle z-depth-0" src="{{ im.url }}">
+                    {% thumbnail partner.logo "80x80" crop="center" as im %}
+                        <img class="rounded-circle z-depth-0" style="opacity: 0.9;" src="{{ im.url }}"
+                             onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.9';">
                     {% endthumbnail %}
                 </a>
-                <p>{{ partner.name }}</p>
+{#                <p>{{ partner.name }}</p>#}
             </div>
         {% endfor %}
     </div>
