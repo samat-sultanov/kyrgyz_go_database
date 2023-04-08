@@ -8,11 +8,20 @@ RANK_FROM_RATING = [{-800: "30k"}, {-700: "28k"}, {-600: '27k'}, {-500: '26k'}, 
                     {1200: "9k"}, {1300: "8k"}, {1400: "7k"}, {1500: "6k"}, {1600: "5k"}, {1700: "4k"}, {1800: "3k"},
                     {1900: "2k"}, {2000: "1k"}, {2100: "1d"}, {2200: '2d'}, {2300: "3d"}, {2400: "4d"}, {2500: "5d"},
                     {2600: "6d"}, {2700: "7d"}, {2800: "8d"}, {2900: "9d"}, {3000: "10d"},
-                ]
+                    ]
+
+CLASS_VALUE = {'A': 1, 'B': 0.75, 'C': 0.5, 'D': 0.25}
+
+
+def get_class(x):
+    for key, value in CLASS_VALUE.items():
+        if x == key:
+            return value
 
 
 def get_data(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
+    class_value = get_class(tournament.tournament_class)
     players = tournament.playerintournament_set.all()
     games = Game.objects.all().filter(tournament_id=tournament.pk)
     new_list = []
@@ -26,6 +35,8 @@ def get_data(pk):
                 bonus = get_bonus(element.rating)
                 se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num, pk))
                 score = get_score(con, game.black_score, se, bonus)
+                game.black_gor_change = score
+                game.save()
                 new_dict['score'] = score
                 new_dict['result'] = game.black_score
                 new_dict['opponent'] = game.white
@@ -37,6 +48,8 @@ def get_data(pk):
                     opponent_se = get_se(opponent_rating, element.rating)
                     opponent_score = get_score(opponent_con, game.white_score, opponent_se, opponent_bonus)
                     new_dict['opponent_score'] = opponent_score
+                    game.white_gor_change = opponent_score
+                    game.save()
                 else:
                     pass
                 new_dict['round'] = game.round_num
@@ -171,8 +184,3 @@ def get_new_rating(pk):
                     item.player.current_rating = new_rating
                     item.player.current_rank = new_rank
                     item.player.save()
-
-
-
-
-
