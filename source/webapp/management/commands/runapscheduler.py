@@ -5,6 +5,7 @@ from django.conf import settings
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 from django.core.management.base import BaseCommand
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
@@ -23,9 +24,9 @@ def rank_sync_with_egd_job():
             request_to_egd = requests.get('https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php',
                                           params=payload)
             player_egd_data = request_to_egd.json()
-            if player.current_rating != player_egd_data.get('Gor'):
+            if player.current_rating != int(player_egd_data.get('Gor')):
                 player.current_rank = player_egd_data.get('Grade')
-                player.current_rating = player_egd_data.get('Gor')
+                player.current_rating = int(player_egd_data.get('Gor'))
                 player.save()
             else:
                 continue
@@ -64,7 +65,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             delete_old_job_executions,
-            trigger=CronTrigger(month=1, day=1, hour="02", minute="00"),
+            trigger=IntervalTrigger(days=1461, start_date='2023-01-01 00:00:00'),
             id="delete_old_job_executions",
             max_instances=1,
             replace_existing=True,
