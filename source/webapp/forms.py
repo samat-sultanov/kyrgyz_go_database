@@ -158,6 +158,27 @@ class ClubForm(forms.ModelForm):
         else:
             return num_players
 
+class ClubCreateForm(forms.ModelForm):
+    class Meta:
+        model = Club
+        fields = ['logo', 'name', 'EGDName', 'num_players', 'city', 'coaches', 'address', 'phonenumber', 'web_link',
+                  'schedule']
+        widgets = {
+            'coaches': forms.CheckboxSelectMultiple(),
+        }
+        labels = {
+            'logo': 'Логотип:',
+            'name': 'Название:',
+            'EGDName': 'EGD name:',
+            'city': 'Город:',
+            'coaches': 'Тренеры:',
+            'num_players': 'Количество участников:',
+            'address': "Адрес",
+            'phonenumber': "Номер телефона",
+            'web_link': "Ссылка на соц. сети или сайт",
+            'schedule': 'Рабочие часы',
+        }
+
 
 class ParticipantForm(forms.ModelForm):
     name = forms.CharField(validators=[validate_latin_chars], label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
