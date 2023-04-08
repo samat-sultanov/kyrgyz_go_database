@@ -1,10 +1,14 @@
 from urllib.parse import urlencode
+
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, TemplateView
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import ListView, TemplateView, DeleteView
 from django.db.models import Q
 from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses
 
 
@@ -84,8 +88,31 @@ class TournamentDetail(TemplateView):
         kwargs['wins'] = get_wins_losses(pk=pk)
         return super().get_context_data(**kwargs)
 
-class TournamentModerationList(ListView):
+class TournamentModerationList(ListView, LoginRequiredMixin):
     model = Tournament
     context_object_name = "tournaments"
     template_name = 'tournament/moderation_list.html'
     paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(Q(is_moderated=False))
+        return queryset
+
+class CheckModer(View, LoginRequiredMixin):
+    def get(self, request, *args, **kwargs):
+        tournament = get_object_or_404(Tournament, pk=self.kwargs.get('pk'))
+        tournament.is_moderated = True
+        tournament.save()
+        response = JsonResponse({'status': tournament.is_moderated})
+        return response
+
+class CheckCancelModer(DeleteView, LoginRequiredMixin):
+    queryset = Tournament.objects.all()
+    context_object_name = 'Tournament'
+    success_url = reverse_lazy('webapp:moderation_tournaments')
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)

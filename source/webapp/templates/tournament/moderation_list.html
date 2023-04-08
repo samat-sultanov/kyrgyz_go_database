@@ -23,12 +23,12 @@
         <th scope="col">Загружено</th>
     </tr>
     </thead>
+
     <tbody>
     {% for tournament in tournaments %}
-        <tr>
+        <tr id="tr-{{ tournament.pk }}">
             <td data-label="#{{ page_obj.start_index|add:forloop.counter0 }}">{{ page_obj.start_index|add:forloop.counter0 }}</td>
-            <td data-label="Название"><a style="color: black"
-                   href="{% url "webapp:tournament_detail" tournament.pk %}">{{ tournament.name }}</a></td>
+            <td data-label="Название">{{ tournament.name }}</td>
             {% if tournament.date %}
                 <td data-label="Дата">{{ tournament.date|date:"d-m-Y" }}</td>
             {% else %}
@@ -41,6 +41,18 @@
                 <td data-label="Класс">{{ tournament.tournament_class }}</td>
             {% endif %}
             <td data-label="Загружено">{{ tournament.uploaded_by }}</td>
+            <td><button class="btn btn-outline-secondary" id="butt-{{ tournament.pk }}"
+                                    data-id="{{ tournament.pk }}" onclick="buttonClick(event)"
+                                    data-index-link="{% url "webapp:CheckModer" tournament.pk %}">Подтвердить</button></td>
+            <td>
+                <form action="{% url 'webapp:CheckCancelModer' tournament.pk %}" method="post">{% csrf_token %}
+                    <input type="submit" id="confirm_button"
+                                                                       class="btn btn-outline-secondary"
+                                                                       value="Удалить">
+            </form></td>
+            <td>
+                <button class="btn btn-outline-secondary">Подробнее</button>
+            </td>
         </tr>
     {% endfor %}
     </tbody>
@@ -52,4 +64,7 @@
         {% include 'partial/pagination.html' %}
     {% endif %}
     <br/>
+{% endblock %}
+{% block src %}
+    <script src="{% static "js/moderation_tour.js" %}"></script>
 {% endblock %}
