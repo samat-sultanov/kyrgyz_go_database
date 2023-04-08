@@ -121,6 +121,12 @@ class CheckPlayerForm(forms.ModelForm):
         fields = ['EgdPin', 'birth_date']
         widgets = {'birth_date': DateInput(attrs={'type': 'date'})}
 
+    def clean_birth_date(self):
+        birth_date = self.cleaned_data.get('birth_date')
+        if birth_date and birth_date > timezone.now().date():
+            raise forms.ValidationError('Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+        return birth_date
+
 
 class CheckTournamentForm(forms.ModelForm):
     class Meta:
