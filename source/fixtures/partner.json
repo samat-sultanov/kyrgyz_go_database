@@ -1,0 +1,92 @@
+[
+{
+  "model": "webapp.partner",
+  "pk": 21,
+  "fields": {
+    "name": "ACI",
+    "logo": "partner_logo/aci.jpg",
+    "web_link": "https://creative.kg/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 22,
+  "fields": {
+    "name": "It-Academy",
+    "logo": "partner_logo/itacademy.png",
+    "web_link": "https://it-academy.kg/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 23,
+  "fields": {
+    "name": "Codify",
+    "logo": "partner_logo/codify2.jpg",
+    "web_link": "https://www.codifylab.com/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 24,
+  "fields": {
+    "name": "DINO",
+    "logo": "partner_logo/dino2.jpg",
+    "web_link": "https://www.instagram.com/dino_bishkek/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 25,
+  "fields": {
+    "name": "Finca",
+    "logo": "partner_logo/finca2.png",
+    "web_link": "https://fincabank.kg/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 26,
+  "fields": {
+    "name": "IBC",
+    "logo": "partner_logo/intbusinesscooincil.jpg",
+    "web_link": "https://www.ibc.kg/en/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 27,
+  "fields": {
+    "name": "Isoc",
+    "logo": "partner_logo/isoc.jpg",
+    "web_link": "https://isoc.kg/ru/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 28,
+  "fields": {
+    "name": "Mancho",
+    "logo": "partner_logo/mancho.jpg",
+    "web_link": "https://www.mancho.dev/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 29,
+  "fields": {
+    "name": "Namba One",
+    "logo": "partner_logo/namba.png",
+    "web_link": "https://nambaone.app/"
+  }
+},
+{
+  "model": "webapp.partner",
+  "pk": 30,
+  "fields": {
+    "name": "Ololo",
+    "logo": "partner_logo/ololo.png",
+    "web_link": "https://ololo.city/"
+  }
+}
+]
