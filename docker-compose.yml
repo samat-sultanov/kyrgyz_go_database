@@ -1,22 +1,54 @@
+version: '3.8'
+
 services:
   web:
-    build: ./source
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: web
+    build:
+      context: ./source
+    command: gunicorn kyrgyz_go_db.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./source:/kyrgyz_go_database
+      - static_volume:/home/kgf_admin/kyrgyz_go_database/static
+      - media_volume:/home/kgf_admin/kyrgyz_go_database/uploads
     ports:
       - 8000:8000
+    expose:
+      - 8000
     env_file:
-      - ./source/.env.dev
+      - ./source/.env.prod
+    depends_on:
+      - db
+    links:
+      - nginx
+    networks:
+      - my_network
 
   db:
+    container_name: db
     image: postgres:14.7-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=kgf
+    env_file:
+      - ./source/.env.prod.db
+    networks:
+      - my_network
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    volumes:
+      - static_volume:/home/kgf_admin/kyrgyz_go_database/static
+      - media_volume:/home/kgf_admin/kyrgyz_go_database/uploads
+    ports:
+      - 80:80
+    depends_on:
+      - web
+    networks:
+      - my_network
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  my_network:
