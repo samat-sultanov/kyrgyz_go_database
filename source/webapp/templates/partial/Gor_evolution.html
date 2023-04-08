@@ -1,18 +1,18 @@
 {% load static %}
 
 {% for item in tournaments %}
-<div class="card">
-  <div class="card-header">
-    Турнир: {{ item.tournament.name }} Дата проведения: {{ item.tournament.date }}
-  </div>
-  <div class="card-body">
-      <p>Класс: {{ item.tournament.class }} </p>
-        <p>Место проведения: {{ item.tournament.city }}</p>
-      <p>Заявленный ранг: {{ item.rank_after }} </p>
-      <p>GoR до турнира: {{ item.rating_before }}</p>
-      <p>GoR после турнира: {{ item.rating_after }}</p>
-    <table class="table adaptive-t">
-              <thead>
+    <div class="card">
+      <div class="card-header">
+        Турнир: {{ item.tournament.name }}  Дата проведения: {{ item.tournament.date }}
+      </div>
+      <div class="card-body">
+          <p>Класс: {{ item.tournament.class }} </p>
+            <p>Место проведения: {{ item.tournament.city }}</p>
+          <p>Заявленный ранг: {{ item.rank_after }} </p>
+          <p>GoR до турнира: {{ item.rating_before }}</p>
+          <p>GoR после турнира: {{ item.rating_after }}</p>
+        <table class="table adaptive-t">
+            <thead>
                 <tr>
                     <th scope="col">Раунд</th>
                     <th scope="col">GoR изменение</th>
@@ -23,17 +23,16 @@
                     <th scope="col">GoR</th>
                     <th scope="col">GoR изменение</th>
                 </tr>
-              </thead>
-    {% for element in evolution %}
-        {% if item.tournament.pk == element.tournament.pk %}
-             <tbody>
-        <div class="container mt-5 mb-5">
-            {% include "partial/partial_for_Gor_partial.html" %}
-        </div>
+            </thead>
+            <tbody>
+                {% for element in evolution %}
+                    {% if item.tournament.pk == element.tournament.pk %}
+                        {% include "partial/partial_for_Gor_partial.html" %}
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+{% endfor %}
 
-        {% endif %}
-        {% endfor %}
-    </tbody>
-          </table>
-  {% endfor %}
-</div>
