@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from webapp.forms import ClubSearch, ClubForm
 from webapp.models import Club
-from django.views.generic import ListView, TemplateView, UpdateView
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView
 from webapp.views.functions import average_go_level, get_total_wins
 
 
@@ -81,3 +81,11 @@ class ClubUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
+
+class ClubCreate(LoginRequiredMixin, CreateView):
+    template_name = 'club/club_create.html'
+    model = Club
+    form_class = ClubForm
+
+    def get_success_url(self):
+        return reverse('webapp:index')
