@@ -46,10 +46,11 @@ class NewsUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('webapp:news_detail', kwargs={'pk': self.object.pk})
 
 
-class NewsDeleteView(DeleteView):
+class NewsDeleteView(PermissionRequiredMixin, DeleteView):
     queryset = News.objects.all().filter(is_deleted=False)
     context_object_name = 'single_news'
     success_url = reverse_lazy('webapp:news_list')
+    permission_required = ('webapp.delete_news',)
 
     def form_valid(self, form):
         success_url = self.get_success_url()
