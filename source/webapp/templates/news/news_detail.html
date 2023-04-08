@@ -38,10 +38,12 @@
                     <a class="btn btn-outline-secondary" href="{% url 'webapp:news_list' %}">Все новости >></a>
 
                     <!-- Открывает модалку подтверждения -->
-                    <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal"
-                            data-bs-target="#delete_news_Modal">
-                        Удалить
-                    </button>
+                    {% if request.user.is_superuser %}
+                        <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal"
+                                data-bs-target="#delete_news_Modal">
+                            Удалить
+                        </button>
+                    {% endif %}
                     <!-- Модалка подтверждения -->
                     <div class="modal fade" id="delete_news_Modal" tabindex="-1"
                          aria-labelledby="delete_news_ModalLabel"
