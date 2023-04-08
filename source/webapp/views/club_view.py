@@ -4,9 +4,9 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from webapp.forms import ClubSearch, ClubForm
+from webapp.forms import ClubSearch, ClubForm, ClubCreateForm
 from webapp.models import Club
-from django.views.generic import ListView, TemplateView, UpdateView
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView
 from webapp.views.functions import average_go_level, get_total_wins
 
 
@@ -73,7 +73,6 @@ class ClubView(TemplateView):
                 kwargs['average'] = element['average']
         return super().get_context_data(**kwargs)
 
-
 class ClubUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'club/club_update.html'
     model = Club
@@ -81,3 +80,11 @@ class ClubUpdate(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
+
+class ClubCreate(LoginRequiredMixin, CreateView):
+    template_name = 'club/club_create.html'
+    model = Club
+    form_class = ClubCreateForm
+
+    def get_success_url(self):
+        return reverse('webapp:index')
