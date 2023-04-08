@@ -23,9 +23,9 @@ def rank_sync_with_egd_job():
             request_to_egd = requests.get('https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php',
                                           params=payload)
             player_egd_data = request_to_egd.json()
-            if player.current_rating != player_egd_data.get('Gor'):
+            if player.current_rating != int(player_egd_data.get('Gor')):
                 player.current_rank = player_egd_data.get('Grade')
-                player.current_rating = player_egd_data.get('Gor')
+                player.current_rating = int(player_egd_data.get('Gor'))
                 player.save()
             else:
                 continue
