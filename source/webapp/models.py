@@ -80,6 +80,8 @@ class Game(models.Model):
     date = models.DateTimeField(verbose_name='Date')
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
     round_num = models.PositiveIntegerField(verbose_name="Round")
+    black_gor_change = models.FloatField(verbose_name='Black GoR change', null=True, blank=True)
+    white_gor_change = models.FloatField(verbose_name='White GoR change', null=True, blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.black} : {self.white} = {self.result}'

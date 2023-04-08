@@ -1,0 +1,49 @@
+{% load static %}
+
+{% for item in tournaments %}
+    <div class="card">
+      <div class="card-header">
+        Турнир: {{ item.tournament.name }}  Дата проведения: {{ item.tournament.date }}
+      </div>
+      <div class="card-body">
+          <p>Класс: {{ item.tournament.class }} </p>
+            <p>Место проведения: {{ item.tournament.city }}</p>
+          <p>Заявленный ранг: {{ item.rank_after }} </p>
+          <p>GoR до турнира: {{ item.rating_before }}</p>
+          <p>GoR после турнира: {{ item.rating_after }}</p>
+        <table class="table adaptive-t">
+            <thead>
+                <tr>
+                    <th scope="col">Раунд</th>
+                    <th scope="col">GoR изменение</th>
+                    <th scope="col">Цвет</th>
+                    <th scope="col">Результат</th>
+                    <th scope="col">Имя оппонента</th>
+                    <th scope="col">Ранг</th>
+                    <th scope="col">GoR</th>
+                    <th scope="col">GoR изменение</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in evolution %}
+                    {% if item.tournament.pk == element.tournament.pk %}
+                        <tr>
+                            <td>{{ element.round }}</td>
+                            <td>{{ element.gor_change }}</td>
+                            <td>{{ element.color }}</td>
+                            <td>{{ element.result }}</td>
+                            <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+                                   href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
+                            <td>{{ element.opponent_rank }}</td>
+                            <td>{{ element.opponent_rating }}</td>
+                            <td>{{ element.opponent_gor_change }}</td>
+
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+{% endfor %}
+
