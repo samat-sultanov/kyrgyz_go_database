@@ -6,8 +6,8 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, ClubUpdate, ParticipantCreate, \
     CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
-    RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView,\
-    PartnersListView, PartnerDetailView, PartnerUpdateView, PartnerDeleteView, UpdateParticipant, \
+    RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView, \
+    PartnersListView, PartnerDetailView, PartnerUpdateView, PartnerDeleteView, UpdateParticipant, ClubCreate, \
     TournamentModerationList, CheckCancelModer, CheckModer
 
 app_name = 'webapp'
@@ -29,6 +29,7 @@ urlpatterns = [
     path('news_delete/<int:pk>/', NewsDeleteView.as_view(), name='news_delete'),
     path('clubs/', ClubsListView.as_view(), name='clubs_list'),
     path('clubs/<int:pk>/', ClubView.as_view(), name='club_view'),
+    path('club_create/', ClubCreate.as_view(), name='club_create'),
     path('club_update/<int:pk>/', ClubUpdate.as_view(), name='club_update'),
     path('event_create/', CalendarCreateView.as_view(), name='event_create'),
     path('event_update/<int:pk>/', CalendarUpdateView.as_view(), name='event_update'),
