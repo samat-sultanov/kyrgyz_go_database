@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger" style="text-align: center">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
     <form method="post" action="">
         {% csrf_token %}
 
