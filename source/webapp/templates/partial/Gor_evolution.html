@@ -27,7 +27,18 @@
             <tbody>
                 {% for element in evolution %}
                     {% if item.tournament.pk == element.tournament.pk %}
-                        {% include "partial/partial_for_Gor_partial.html" %}
+                        <tr>
+                            <td>{{ element.round }}</td>
+                            <td>{{ element.gor_change }}</td>
+                            <td>{{ element.color }}</td>
+                            <td>{{ element.result }}</td>
+                            <td><a style="text-decoration: underline dotted ghostwhite; color: black;"
+                                   href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
+                            <td>{{ element.opponent_rank }}</td>
+                            <td>{{ element.opponent_rating }}</td>
+                            <td>{{ element.opponent_gor_change }}</td>
+
+                        </tr>
                     {% endif %}
                 {% endfor %}
             </tbody>
