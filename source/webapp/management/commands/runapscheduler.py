@@ -27,7 +27,7 @@ def rank_sync_with_egd_job():
             request_to_egd = requests.get('https://www.europeangodatabase.eu/EGD/GetPlayerDataByPIN.php',
                                           params=payload)
             if request_to_egd.status_code >= 500:
-                with open('rating_job_logs.txt', 'a') as f:
+                with open('rating_job_errors_log.txt', 'a') as f:
                     f.write(f"\n{timezone.now()}: Ошибка со стороны egd. Код ошибки: {request_to_egd.status_code}. "
                             f"Ошибка произошла при итерации: '{player.first_name} "
                             f"{player.last_name} ПИН: {player.EgdPin}'\n_______________________________________")
@@ -43,14 +43,14 @@ def rank_sync_with_egd_job():
                         player.current_rating = int(player_egd_data.get('Gor'))
                         player.save()
                 else:
-                    with open('rating_job_logs.txt', 'a') as f:
+                    with open('rating_job_errors_log.txt', 'a') as f:
                         f.write(f"\n{timezone.now()}: Очень странно. По ПИНу '{player.EgdPin}' игрока "
                                 f"'{player.last_name} {player.first_name}' еропейская база не возвратила данные. "
                                 f"Т.е. не нашла игрока в базе egd. Возможно в нашей базе ПИН введен "
                                 f"неправильно\n_______________________________________")
                     continue
             else:
-                with open('rating_job_logs.txt', 'a') as f:
+                with open('rating_job_errors_log.txt', 'a') as f:
                     f.write(f"\n{timezone.now()}: Невыясненная ошибка. Код ошибки: {request_to_egd.status_code}. "
                             f"Следует взглянуть в логи nginx`а. "
                             f"Ошибка произошла при итерации: '{player.first_name} {player.last_name} "
@@ -71,18 +71,18 @@ def sync_pin_job():
                     player.EgdPin = egd_player_pin
                     player.save()
                 else:
-                    with open('pin_job_logs.txt', 'a') as f:
+                    with open('pin_job_errors_log.txt', 'a') as f:
                         f.write(f"\n{timezone.now()}: В egd найдено больше одного игрока с фамилией и именем: "
                                 f"'{player.last_name} {player.first_name}'"
                                 f"\n_______________________________________")
                     continue
             else:
-                with open('pin_job_logs.txt', 'a') as f:
+                with open('pin_job_errors_log.txt', 'a') as f:
                     f.write(f"\n{timezone.now()}: Игрок '{player.last_name} {player.first_name}' не найден в egd."
                             f"\n_______________________________________")
                 continue
         else:
-            with open('pin_job_logs.txt', 'a') as f:
+            with open('pin_job_errors_log.txt', 'a') as f:
                 f.write(f"\n{timezone.now()}: Или egd не доступен или у вас проблемы с сетью. "
                         f"Status code: {request_to_egd.status_code}. "
                         f"Ошибка произошла при итерации: {player.first_name} "
