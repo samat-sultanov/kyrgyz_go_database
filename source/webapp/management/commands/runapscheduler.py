@@ -55,7 +55,7 @@ def sync_pin_job():
                     continue
             else:
                 with open('pin_job_logs.txt', 'a') as f:
-                    f.write(f"\n{timezone.now()}: Игрок {player.last_name} {player.first_name} не найден в egd."
+                    f.write(f"\n{timezone.now()}: Игрок '{player.last_name} {player.first_name}' не найден в egd."
                             f"\n__________________________________")
                 continue
         else:
@@ -64,7 +64,6 @@ def sync_pin_job():
                         f"Ошибка произошла при итерации: {player.first_name} "
                         f"{player.last_name}\n_______________________________________")
             continue
-
 
 
 @util.close_old_connections
