@@ -21,6 +21,7 @@
         - теперь надо прогнать миграции командой: docker-compose exec web python3 manage.py migrate  ## почему-то у меня manage.py работает через python3
         - а теперь собрать статики: docker-compose exec web python3 manage.py collectstatic
         - создать супер юзера: docker-compose exec web python3 manage.py createsuperuser
+        - зарегать job`ы: docker-compose exec web python3 manage.py runapscheduler
                 Да в принципе все и готово.
 
 
@@ -32,6 +33,7 @@
             так вы очистите volumes
         - а теперь обратно поднимите проект: docker-compose up -d --build
         - проганите миграции: docker-compose exec web python3 manage.py migrate
+        - зарегать job`ы: docker-compose exec web python3 manage.py runapscheduler
         - если удаляли volumes, то соберите обратно статики. А записи в бд потеряны если только у вас нет фикстур.
             Загрузите фикстуры и ваш сайт готов.
 
