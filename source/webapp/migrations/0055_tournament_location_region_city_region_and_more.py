@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('webapp', '0054_game_black_gor_change_game_white_gor_change'),
+        ('webapp', '0055_tournament_is_moderated'),
     ]
 
     operations = [
