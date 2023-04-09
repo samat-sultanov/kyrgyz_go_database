@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
-
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, TemplateView, DeleteView
@@ -21,6 +21,10 @@ class TournamentSearch(ListView):
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
+        if not self.form.is_valid():
+            error = "Дата турнира была некорректно введена! Введите дату турнира в корректном формате."
+            return render(request, 'tournament/tournament_search.html',
+                          {'form': self.get_search_form(), 'error': error})
         self.search_name = self.get_search_name()
         self.search_city = self.get_search_city()
         self.search_date = self.get_search_date()
@@ -88,6 +92,7 @@ class TournamentDetail(TemplateView):
         kwargs['wins'] = get_wins_losses(pk=pk)
         return super().get_context_data(**kwargs)
 
+
 class TournamentModerationList(ListView, LoginRequiredMixin):
     model = Tournament
     context_object_name = "tournaments"
@@ -99,6 +104,7 @@ class TournamentModerationList(ListView, LoginRequiredMixin):
         queryset = queryset.filter(Q(is_moderated=False))
         return queryset
 
+
 class CheckModer(View, LoginRequiredMixin):
     def get(self, request, *args, **kwargs):
         tournament = get_object_or_404(Tournament, pk=self.kwargs.get('pk'))
@@ -106,6 +112,7 @@ class CheckModer(View, LoginRequiredMixin):
         tournament.save()
         response = JsonResponse({'status': tournament.is_moderated})
         return response
+
 
 class CheckCancelModer(DeleteView, LoginRequiredMixin):
     queryset = Tournament.objects.all()

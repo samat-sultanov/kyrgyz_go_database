@@ -7,6 +7,8 @@ from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tou
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from datetime import datetime
+import re
 
 
 def validate_latin_chars(value):
@@ -68,6 +70,14 @@ class TournamentSearchForm(forms.Form):
                                   widget=DateInput(attrs={'class': "form-control w-30"}))
     search_tournament_class = forms.CharField(required=False, widget=forms.Select(choices=CLASS_CHOICES,
                                                                                   attrs={'class': "form-control w-30"}))
+
+    def clean_search_date(self):
+        search_date = self.cleaned_data['search_date']
+        if search_date is not None:
+            date_str = str(search_date)
+            if not re.match(r'^\d{4}-\d{2}-\d{2}$', date_str):
+                raise ValidationError("Дата турнира была некорректно введена! Введите дату турнира в корректном формате.")
+        return search_date
 
 
 class CompetitorSearchForm(forms.Form):
@@ -166,6 +176,7 @@ class ClubForm(forms.ModelForm):
             return num_players
         else:
             return num_players
+
 
 class ClubCreateForm(forms.ModelForm):
     class Meta:

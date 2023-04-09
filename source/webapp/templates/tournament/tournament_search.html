@@ -7,6 +7,9 @@
 
 
 {% block content %}
+    {% if error %}
+        <div class="form-error text-center mt-3" style="color: red">{{ error }}</div>
+    {% endif %}
 
     <div class=" mt-4" style="text-align: center;">
         <h2 class="title">Поиск турнирa:</h2>
