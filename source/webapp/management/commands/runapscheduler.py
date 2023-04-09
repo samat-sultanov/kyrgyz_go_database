@@ -96,6 +96,15 @@ class Command(BaseCommand):
         logger.info("Added job 'rank_sync_with_egd_job'.")
 
         scheduler.add_job(
+            sync_pin_job,
+            trigger=CronTrigger(day_of_week="mon", hour=5, minute=0),
+            id="sync_pin_job",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'sync_pin_job'.")
+
+        scheduler.add_job(
             delete_old_job_executions,
             trigger=IntervalTrigger(days=1461, start_date='2023-01-01 00:00:00'),
             id="delete_old_job_executions",
