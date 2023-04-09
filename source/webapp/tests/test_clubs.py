@@ -23,6 +23,7 @@ class TestClubCreate(TestCase):
                 }
         response = self.client.post(reverse('webapp:club_create'), data=data)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertEqual(Club.objects.count(), 0)
 
     def test_club_create_login_redirect(self):
         data = {
