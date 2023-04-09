@@ -54,7 +54,7 @@
          input.addEventListener('keyup', (e)=>{
              const inputValue = e.target.value;
              const latinCharsRegex = /^[a-zA-Z]+$/;
-             const isLatinChars = latinCharsRegex.test(inputValue);
+             const isLatinChars = latinCharsRegex.test(inputValue.replace(/[^a-zA-Z]/g, ''));
              const errorElement = document.getElementById("error");
              if (inputValue.trim() && !isLatinChars && !errorElement) {
                  const newErrorElement = document.createElement("div");
@@ -66,7 +66,7 @@
                 errortimeout = setTimeout(function() {
                   newErrorElement.remove();
                 }, 5000);
-              }else if ((inputValue.trim() && isLatinChars || !inputValue.trim())) {
+              }else if (!inputValue.trim() || isLatinChars) {
                  if (errorElement){
                      errorElement.remove();
                  }
