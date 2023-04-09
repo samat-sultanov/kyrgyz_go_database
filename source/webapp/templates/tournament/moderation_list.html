@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Модерация турниров{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+    <br/>
+    <h1 class="title">Турниры на модерации</h1>
+        {% load static %}
+<table class="table adaptive">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Название</th>
+        <th scope="col">Дата</th>
+        <th scope="col">Город</th>
+        <th scope="col">Класс</th>
+        <th scope="col">Загружено</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for tournament in tournaments %}
+        <tr id="tr-{{ tournament.pk }}">
+            <td data-label="#{{ page_obj.start_index|add:forloop.counter0 }}">{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td data-label="Название">{{ tournament.name }}</td>
+            {% if tournament.date %}
+                <td data-label="Дата">{{ tournament.date|date:"d-m-Y" }}</td>
+            {% else %}
+                <td data-label="Дата"></td>
+            {% endif %}
+            <td data-label="Город">{{ tournament.city.city }}</td>
+            {% if tournament.tournament_class == "all" %}
+                <td data-label="Класс"></td>
+            {% else %}
+                <td data-label="Класс">{{ tournament.tournament_class }}</td>
+            {% endif %}
+            <td data-label="Загружено">{{ tournament.uploaded_by }}</td>
+            <td><button class="btn btn-outline-secondary" id="butt-{{ tournament.pk }}"
+                                    data-id="{{ tournament.pk }}" onclick="buttonClick(event)"
+                                    data-index-link="{% url "webapp:CheckModer" tournament.pk %}">Подтвердить</button></td>
+            <td>
+                <form action="{% url 'webapp:CheckCancelModer' tournament.pk %}" method="post">{% csrf_token %}
+                    <input type="submit" id="confirm_button"
+                                                                       class="btn btn-outline-secondary"
+                                                                       value="Удалить">
+            </form></td>
+            <td>
+                <button class="btn btn-outline-secondary">Подробнее</button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{##}
+    </div>
+
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <br/>
+{% endblock %}
+{% block src %}
+    <script src="{% static "js/moderation_tour.js" %}"></script>
+{% endblock %}
