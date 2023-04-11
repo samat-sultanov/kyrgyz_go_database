@@ -1,9 +1,9 @@
 import re
 from operator import itemgetter
-
+from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game
+from webapp.models import Country, Player, Tournament, Club, Game , PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating
 
 
@@ -193,6 +193,7 @@ def get_data_for_gor_evolution(pk):
                     if game.black_score == 0:
                         new_dict['result'] = 'Loss'
                     elif game.black_score == 1:
+
                         new_dict['result'] = 'Win'
                 new_dict['color'] = 'b'
                 new_list.append(new_dict)
@@ -204,6 +205,7 @@ def get_data_for_gor_evolution(pk):
                 if opponent:
                     data = opponent.playerintournament_set.filter(tournament=tournament)
                     for el in data:
+
                         new_dict['opponent_rank'] = el.GoLevel
                         new_dict['opponent_rating'] = el.rating
                 new_dict['opponent'] = game.black
@@ -234,3 +236,31 @@ def get_tournaments_list_for_gor_evolution(pk):
         new_dict['rank_after'] = element.GoLevel_after
         new_list.append(new_dict)
     return new_list
+1
+def player_wins_loses(pk):
+    player = Player.objects.get(pk=pk)
+    games =  Game.objects.filter(Q(black=player) | Q(white=player))
+    wl = []
+    for game in games:
+        new_dict = dict()
+        wins = 0
+        losses = 0
+        if game.result:
+            if game.black == player and game.black_score > 0:
+                wins += game.black_score
+            elif game.white == player and game.white_score > 0:
+                wins += game.white_score
+            elif game.black == player and game.white_score > 0:
+                losses += 1
+            elif game.white == player and game.black_score > 0:
+                losses += 1
+        new_dict['player'] = player.pk
+        new_dict['wins'] = wins
+        new_dict['losses'] = losses
+        wl.append(new_dict)
+        print(game)
+    c = Counter()
+    for d in wl:
+        c.update(d)
+    statistics = dict(c)
+    return statistics
