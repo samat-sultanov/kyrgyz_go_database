@@ -2,14 +2,23 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from http import HTTPStatus
-from webapp.models import Club
+from webapp.models import Club, City, Country, Region
 from accounts.models import User
 
 
-class ClubTestsForUnregisterUser(TestCase):
+class ClubTestsForUnregisteredUser(TestCase):
     @classmethod
     def setUpTestData(cls):
-        pass
+        test_country = Country.objects.create(country_code='KG')
+        test_region = Region.objects.create(name='Test region', country=test_country)
+        test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
+        test_user = User.objects.create_user(username='test_user', password='test_password')
+        image_file = SimpleUploadedFile('image.jpg', b'image_content', content_type='image/jpg')
+        cls.test_club = Club.objects.create(
+            logo=image_file,
+            city=test_city
+        )
+        cls.test_club.coaches.set([test_user])
 
     def setUp(self) -> None:
         self.client = Client()
