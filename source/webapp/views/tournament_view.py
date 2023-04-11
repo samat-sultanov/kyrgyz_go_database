@@ -123,3 +123,14 @@ class CheckCancelModer(DeleteView, LoginRequiredMixin):
         success_url = self.get_success_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
+
+
+class DeleteTournamentBeforeModeration(DeleteView, LoginRequiredMixin):
+    queryset = Tournament.objects.all()
+    context_object_name = 'Tournament'
+    success_url = reverse_lazy('webapp:file_upload')
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
