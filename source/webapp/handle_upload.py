@@ -88,6 +88,8 @@ def handle_uploaded_file(thisFile):
                             player = get_object_or_404(Player, last_name=last_name, first_name=first_name)
                             if club is not None:
                                 club_id = club.pk
+                                club.country = country
+                                club.save()
                                 clubs_list = [club_id]
                                 if club_id not in player.clubs.all():
                                     player.clubs.set(clubs_list)
@@ -120,6 +122,8 @@ def handle_uploaded_file(thisFile):
                                                                    EgdPin=EgdPin)
                                 if club is not None:
                                     club_id = club.pk
+                                    club.country = country
+                                    club.save()
                                     clubs_list = [club_id]
                                     if club_id not in player.clubs.all():
                                         player.clubs.set(clubs_list)
@@ -137,6 +141,8 @@ def handle_uploaded_file(thisFile):
                                                                EgdPin=EgdPin)
                             if club is not None:
                                 club_id = club.pk
+                                club.country = country
+                                club.save()
                                 clubs_list = [club_id]
                                 if club_id not in new_player.clubs.all():
                                     new_player.clubs.set(clubs_list)
