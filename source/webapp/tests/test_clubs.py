@@ -62,3 +62,5 @@ class ClubTestsForUnregisteredUser(TestCase):
         response = self.client.post(url, data=data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, redirect_url)
+        self.test_club.refresh_from_db()
+        self.assertEqual(self.test_club.name, 'Test name')
