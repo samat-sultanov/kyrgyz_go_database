@@ -11,8 +11,10 @@ from datetime import datetime
 import re
 
 
+latin_regex = re.compile(r'^[a-zA-Z\- ]+$')
+
 def validate_latin_chars(value):
-    if not value.isascii() or not value.isalpha():
+    if not latin_regex.match(value):
         raise ValidationError(
             _('Введите только латинские буквы.'),
             params={'value': value},
