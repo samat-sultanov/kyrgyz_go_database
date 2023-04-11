@@ -15,6 +15,7 @@ class ClubTestsForUnregisteredUser(TestCase):
         test_country = Country.objects.create(country_code='KG')
         test_region = Region.objects.create(name='Test region', country=test_country)
         cls.test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
+        cls.new_city = City.objects.create(city='New city', country=test_country, region=test_region)
         # Создание юзера
         test_user = User.objects.create_user(username='test_user', password='test_password')
         # Создание лого для теста
@@ -24,7 +25,7 @@ class ClubTestsForUnregisteredUser(TestCase):
         logo_file.name = 'test_logo.jpg'  # имя создаваемой картинки
         logo_file.seek(0)  # устанавливаем указатель позиции картинки в буфере памяти
         logo = SimpleUploadedFile(logo_file.name, logo_file.read(), content_type='image/jpeg')  # создание
-        # объекта SimpleUploadedFile
+        # объекта SimpleUploadedFile)
 
         cls.test_club = Club.objects.create(
             name='Test name',
@@ -58,9 +59,11 @@ class ClubTestsForUnregisteredUser(TestCase):
         redirect_url = reverse('accounts:login') + f'?next={url}'
         data = {
             'name': 'New name',
+            'city': self.new_city.pk,
         }
         response = self.client.post(url, data=data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, redirect_url)
         self.test_club.refresh_from_db()
         self.assertEqual(self.test_club.name, 'Test name')
+        self.assertEqual(self.test_club.city, self.test_city)
