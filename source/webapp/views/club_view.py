@@ -1,11 +1,11 @@
 from urllib.parse import urlencode
 
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from webapp.forms import ClubSearch, ClubForm, ClubCreateForm
-from webapp.models import Club
+from webapp.models import Club, Country
 from django.views.generic import ListView, TemplateView, UpdateView, CreateView
 from webapp.views.functions import average_go_level, get_total_wins
 
@@ -16,7 +16,14 @@ class ClubsListView(ListView):
     context_object_name = 'clubs'
     paginate_by = 15
     paginate_orphans = 4
-    queryset = Club.objects.order_by('-num_players')
+    country = Country.objects.get(country_code='kg')
+    queryset = Club.objects.filter(country=country)
+
+    def get_ordering(self):
+        ordering = '-num_players'
+        if self.request.GET.get('ordering'):
+            ordering = self.request.GET.get('ordering')
+        return ordering
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -47,7 +54,8 @@ class ClubsListView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         context['data'] = average_go_level()
-        clubs = Club.objects.all()
+        country = Country.objects.get(country_code='kg')
+        clubs = Club.objects.filter(country=country)
         context['wins'] = get_total_wins(clubs)
         if self.search_name:
             context['query'] = urlencode({'search_name': self.search_name})
@@ -72,6 +80,7 @@ class ClubView(TemplateView):
             if club.pk == element['club']:
                 kwargs['average'] = element['average']
         return super().get_context_data(**kwargs)
+
 
 class ClubUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'club/club_update.html'
