@@ -43,9 +43,9 @@
             <td data-label="Загружено">{{ tournament.uploaded_by }}</td>
             <td><button class="btn btn-outline-secondary" id="butt-{{ tournament.pk }}"
                                     data-id="{{ tournament.pk }}" onclick="buttonClick(event)"
-                                    data-index-link="{% url "webapp:CheckModer" tournament.pk %}">Подтвердить</button></td>
+                                    data-index-link="{% url "webapp:confirm_tournament" tournament.pk %}">Подтвердить</button></td>
             <td>
-                <form action="{% url 'webapp:CheckCancelModer' tournament.pk %}" method="post">{% csrf_token %}
+                <form action="{% url 'webapp:cancel_tournament' tournament.pk %}" method="post">{% csrf_token %}
                     <input type="submit" id="confirm_button"
                                                                        class="btn btn-outline-secondary"
                                                                        value="Удалить">

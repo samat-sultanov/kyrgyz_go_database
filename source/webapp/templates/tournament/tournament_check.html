@@ -88,9 +88,41 @@
                 </tbody>
             </table>
 
-            <p class="mt-4"><input class="btn" style="background: #9400D3;color: white;" type="submit" value="Confirm">
+            <p class="mt-4"><input class="btn" style="background: #9400D3;color: white;" type="submit" value="Подтвердить">
             </p>
-            <a class="btn btn-danger mb-5" href="{% url 'webapp:file_upload' %}">Cancel</a>
-        </div>
-    </form>
+        </form>
+            <!-- Открывает модалку подтверждения -->
+                    {% if request.user.is_authenticated %}
+                        <button type="button" class="btn btn-outline-secondary kgf_modal mb-5" data-bs-toggle="modal"
+                                data-bs-target="#delete_tournament_Modal">
+                            Удалить
+                        </button>
+                    {% endif %}
+                    <!-- Модалка подтверждения -->
+                    <div class="modal fade" id="delete_tournament_Modal" tabindex="-1"
+                         aria-labelledby="delete_tournament_ModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title fs-5" id="delete_tournament_ModalLabel">Подтвердите удаление</h3>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Нет
+                                    </button>
+                                    <form method="POST" id="modal_form_link"
+                                          action="{% url 'webapp:delete_tournament' tournament.pk %}">
+                                        {% csrf_token %}<input type="submit" id="confirm_button"
+                                                               class="btn btn-outline-secondary"
+                                                               value="Да">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    </div>
+
 {% endblock %}

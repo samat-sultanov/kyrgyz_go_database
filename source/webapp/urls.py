@@ -8,7 +8,7 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView, \
     PartnersListView, PartnerDetailView, PartnerUpdateView, PartnerDeleteView, UpdateParticipant, ClubCreate, \
-    TournamentModerationList, CheckCancelModer, CheckModer
+    TournamentModerationList, CheckCancelModer, CheckModer, DeleteTournamentBeforeModeration
 
 app_name = 'webapp'
 
@@ -44,6 +44,7 @@ urlpatterns = [
     path('about/', about_us_view, name='about'),
     path('feedback_to_mail/', send_feedback_to_admin, name='feedback_to_admin'),
     path('file_check/<int:pk>/', file_upload_check, name='file_check'),
+    path('file_check/<int:pk>/delete/', DeleteTournamentBeforeModeration.as_view(), name='delete_tournament'),
     path('participiant_create/<int:pk>/', ParticipantCreate.as_view(), name='ParticipantCreate'),
     path('player_detail/<int:pk>/recommendation_add/', RecommendationCreateView.as_view(), name='recommendation_add'),
     path('recommendation/<int:pk>/update', RecommendationUpdateView.as_view(), name='recommendation_update'),
@@ -58,8 +59,8 @@ urlpatterns = [
     path('partner_update/<int:pk>/', PartnerUpdateView.as_view(), name='partner_update'),
     path('partner_delete/<int:pk>/', PartnerDeleteView.as_view(), name='partner_delete'),
     path('moderation_tournaments/', TournamentModerationList.as_view(), name='moderation_tournaments'),
-    path('CheckModer/<int:pk>/', CheckModer.as_view(), name='CheckModer'),
-    path('CheckCancelModer/<int:pk>/', CheckCancelModer.as_view(), name='CheckCancelModer')
+    path('confirm_tournament/<int:pk>/', CheckModer.as_view(), name='confirm_tournament'),
+    path('cancel_tournament/<int:pk>/', CheckCancelModer.as_view(), name='cancel_tournament')
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
