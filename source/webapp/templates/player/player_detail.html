@@ -18,7 +18,7 @@
         <div class=" mt-4">
             <h2 class="title">Страница профиля игрокa:</h2>
         </div>
-        <div class="row justify-content-center mb-4">
+        <div class="row mb-4">
             <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                 {% if player.avatar %}
                      {% thumbnail player.avatar "500x500" crop="center" as im %}
@@ -63,22 +63,23 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-8 mt-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 mt-3">
                 <div>
-                    <p style="font-size: 24px"><span style="font-weight: bold">Фамилия:</span> {{ player.last_name }}
-                    </p>
-                    <p style="font-size: 24px"><span
-                            style="font-weight: bold">Имя:</span> {{ player.first_name }}</p>
-                    <p style="font-size: 20px">Страна: </p>
+                    <p style="font-size: 24px;display: inline-block;"><span style="font-weight: bold">Фамилия:</span> {{ player.last_name }}
+                    </p></br>
+                    <p style="font-size: 24px;display: inline-block;"><span
+                            style="font-weight: bold">Имя:</span> {{ player.first_name }}</p></br>
+                    <p style="font-size: 20px;display: inline-block;">Страна: </p>
                 </div>
                 <div id="flag" style="width: 300px;">
                     <p id="country_code">{{ player.country.country_code }}</p>
                 </div>
-
             </div>
-
+        <div class="col-12 col-sm-6 col-md-5 col-lg-4 mt-4">
+            {% include "partial/charts.html" %}
         </div>
-        {% if request.user.is_authenticated %}
+        <div class="col-12 col-sm-6 col-md-3 col-lg-12 mt-4">
+            {% if request.user.is_authenticated %}
             {% if player.birth_date %}
                 <p>Возраст: {{ player.get_age_date }} лет</p>
             {% else %}
@@ -91,6 +92,10 @@
             {% endif %}
         {% endfor %}
             <p>Ранг: {{ player.current_rank }}</p>
+        </div>
+        </div>
+
+
         <div class="btn-group">
             <button class="btn btn-secondary dropdown-toggle mt-2 ms-1" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false" style="background-color: #9400D3; color: white"
