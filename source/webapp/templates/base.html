@@ -46,21 +46,26 @@
 
                 <ul class="navbar-nav fw-bold pt-2 text-uppercase">
                     <li class="nav-item ms-4">
-                        <a class="nav-link active" aria-current="page" href="{% url "webapp:index" %}">Home</a>
+                        <a class="nav-link active" aria-current="page" href="{% url "webapp:index" %}"
+                        {% if request.path == '/' %}id="light-back"{% endif %}>Home</a>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="nav-link" style="color: white;" href="{% url "webapp:player_search" %}">Игроки</a>
+                        <a class="nav-link" style="color: white;" href="{% url "webapp:player_search" %}"
+                        {% if request.path == '/player_search/' %}id="light-back"{% endif %}>Игроки</a>
                     </li>
                     <li class="nav-item ms-3">
                         <a class="nav-link" style="color: white;"
-                           href="{% url "webapp:tournament_search" %}">Турниры</a>
+                           href="{% url "webapp:tournament_search" %}"
+                        {% if request.path == '/tournament_search/' %}id="light-back"{% endif %}>Турниры</a>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="nav-link" style="color: white;" href="{% url "webapp:clubs_list" %}">Статистика
+                        <a class="nav-link" style="color: white;" href="{% url "webapp:clubs_list" %}"
+                        {% if request.path == '/clubs/' %}id="light-back"{% endif %}>Статистика
                             клубов</a>
                     </li>
                     <li class="nav-item ms-3">
-                        <a class="nav-link" style="color: white;" href="{% url 'webapp:about' %}">О KGF</a>
+                        <a class="nav-link" style="color: white;" href="{% url 'webapp:about' %}"
+                        {% if request.path == '/about/' %}id="light-back"{% endif %}>О KGF</a>
                     </li>
                     {% block nav %}{% endblock %}
                 </ul>
