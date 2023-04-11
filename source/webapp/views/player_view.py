@@ -7,7 +7,7 @@ from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from webapp.views.functions import get_position_in_kgf, get_data_for_table_games, get_data_for_gor_evolution, \
-    get_tournaments_list_for_gor_evolution
+    get_tournaments_list_for_gor_evolution , player_wins_loses
 from webapp.views.GoR_calculator import get_rating_from_rank
 
 
@@ -23,6 +23,9 @@ class PlayerDetail(TemplateView):
         context[self.context_key] = self.get_object()
         context['position'] = get_position_in_kgf()
         context['games'] = get_data_for_table_games(pk)
+        context['player_wins'] = player_wins_loses(pk)['wins']
+        print(player_wins_loses(pk)['wins'])
+        context['player_losses'] = player_wins_loses(pk)['losses']
         context['evolution'] = get_data_for_gor_evolution(pk)
         context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
         return context
