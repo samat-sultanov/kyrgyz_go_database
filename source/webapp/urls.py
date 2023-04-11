@@ -1,5 +1,6 @@
 from django.urls import path
 
+from views import DeleteTournamentBeforeModeration
 from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
@@ -44,6 +45,7 @@ urlpatterns = [
     path('about/', about_us_view, name='about'),
     path('feedback_to_mail/', send_feedback_to_admin, name='feedback_to_admin'),
     path('file_check/<int:pk>/', file_upload_check, name='file_check'),
+    path('file_check/<int:pk>/delete/', DeleteTournamentBeforeModeration.as_view(), name='delete_tournament'),
     path('participiant_create/<int:pk>/', ParticipantCreate.as_view(), name='ParticipantCreate'),
     path('player_detail/<int:pk>/recommendation_add/', RecommendationCreateView.as_view(), name='recommendation_add'),
     path('recommendation/<int:pk>/update', RecommendationUpdateView.as_view(), name='recommendation_update'),
