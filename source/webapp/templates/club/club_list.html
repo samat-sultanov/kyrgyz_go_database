@@ -33,7 +33,7 @@
                         <td data-label="Страна">{{ club.city.country.country_code }}</td>
                         <td data-label="Город">{{ club.city }}</td>
                     {% else %}
-                        <td data-label="Страна"></td>
+                        <td data-label="Страна">{{ club.country.country_code }}</td>
                         <td data-label="Город"></td>
                     {% endif %}
                     {% if club.num_players %}
