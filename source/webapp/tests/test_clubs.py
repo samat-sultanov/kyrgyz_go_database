@@ -14,7 +14,7 @@ class ClubTestsForUnregisteredUser(TestCase):
         # Создание страны, региона и города
         test_country = Country.objects.create(country_code='KG')
         test_region = Region.objects.create(name='Test region', country=test_country)
-        test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
+        cls.test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
         # Создание юзера
         test_user = User.objects.create_user(username='test_user', password='test_password')
         # Создание лого для теста
@@ -27,8 +27,9 @@ class ClubTestsForUnregisteredUser(TestCase):
         # объекта SimpleUploadedFile
 
         cls.test_club = Club.objects.create(
+            name='Test name',
             logo=logo,
-            city=test_city
+            city=cls.test_city
         )
         cls.test_club.coaches.set([test_user])
 
@@ -51,3 +52,12 @@ class ClubTestsForUnregisteredUser(TestCase):
         self.assertEqual(response.status_code, 200)  # Статус, что редирект произошел. 200 потому что передаем
         # follow=True в запросе
         self.assertRedirects(response, redirect_url)  # Проверка редиректа
+
+    def test_club_update(self):
+        url = reverse('webapp:club_update', args=[self.test_club.pk])
+        redirect_url = reverse('accounts:login') + f'?next={url}'
+        data = {
+            'name': 'New name',
+        }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
