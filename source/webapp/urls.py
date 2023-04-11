@@ -58,8 +58,8 @@ urlpatterns = [
     path('partner_update/<int:pk>/', PartnerUpdateView.as_view(), name='partner_update'),
     path('partner_delete/<int:pk>/', PartnerDeleteView.as_view(), name='partner_delete'),
     path('moderation_tournaments/', TournamentModerationList.as_view(), name='moderation_tournaments'),
-    path('CheckModer/<int:pk>/', CheckModer.as_view(), name='CheckModer'),
-    path('CheckCancelModer/<int:pk>/', CheckCancelModer.as_view(), name='CheckCancelModer')
+    path('confirm_tournament/<int:pk>/', CheckModer.as_view(), name='confirm_tournament'),
+    path('cancel_tournament/<int:pk>/', CheckCancelModer.as_view(), name='cancel_tournament')
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
