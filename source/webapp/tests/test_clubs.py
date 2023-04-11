@@ -4,18 +4,30 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from http import HTTPStatus
 from webapp.models import Club, City, Country, Region
 from accounts.models import User
+from io import BytesIO
+from PIL import Image
 
 
 class ClubTestsForUnregisteredUser(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # Создание страны, региона и города
         test_country = Country.objects.create(country_code='KG')
         test_region = Region.objects.create(name='Test region', country=test_country)
         test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
+        # Создание юзера
         test_user = User.objects.create_user(username='test_user', password='test_password')
-        image_file = SimpleUploadedFile('image.jpg', b'image_content', content_type='image/jpg')
+        # Создание лого для теста
+        logo_file = BytesIO()  # создание объекта BytesIO, который будет использоваться для хранения данных изображения
+        logo_image = Image.new('RGB', (100, 100), 'red')  # создание изображения
+        logo_image.save(logo_file, 'jpeg')  # сохранение
+        logo_file.name = 'test_logo.jpg'  # имя создаваемой картинки
+        logo_file.seek(0)  # устанавливаем указатель позиции картинки в буфере памяти
+        logo = SimpleUploadedFile(logo_file.name, logo_file.read(), content_type='image/jpeg')  # создание
+        # объекта SimpleUploadedFile
+
         cls.test_club = Club.objects.create(
-            logo=image_file,
+            logo=logo,
             city=test_city
         )
         cls.test_club.coaches.set([test_user])
@@ -33,7 +45,7 @@ class ClubTestsForUnregisteredUser(TestCase):
                 }
         response = self.client.post(url, data=data)  # Запрос на создание статьи
         self.assertEqual(response.status_code, 302)  # Все ещё нет доступа на страницу
-        self.assertEqual(Club.objects.count(), 0)  # Проверка на то, что клуб не был создан
+        self.assertEqual(Club.objects.count(), 1)  # Проверка на то, что клуб не был создан
         redirect_url = reverse('accounts:login') + f'?next={url}'  # url для сравнения с response
         response = self.client.post(url, data=data, follow=True)  # Запрос на создание и redirect_url
         self.assertEqual(response.status_code, 200)  # Статус, что редирект произошел. 200 потому что передаем
