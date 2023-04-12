@@ -3,7 +3,7 @@ from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game , PlayerInTournament
+from webapp.models import Country, Player, Tournament, Club, Game
 from webapp.views.GoR_calculator import get_new_rank_from_rating
 
 
@@ -236,10 +236,11 @@ def get_tournaments_list_for_gor_evolution(pk):
         new_dict['rank_after'] = element.GoLevel_after
         new_list.append(new_dict)
     return new_list
-1
+
+
 def player_wins_loses(pk):
     player = Player.objects.get(pk=pk)
-    games =  Game.objects.filter(Q(black=player) | Q(white=player))
+    games = Game.objects.filter(Q(black=player) | Q(white=player))
     wl = []
     for game in games:
         new_dict = dict()
@@ -258,7 +259,6 @@ def player_wins_loses(pk):
         new_dict['wins'] = wins
         new_dict['losses'] = losses
         wl.append(new_dict)
-        print(game)
     c = Counter()
     for d in wl:
         c.update(d)

@@ -83,15 +83,20 @@
             {% if player.birth_date %}
                 <p>Возраст: {{ player.get_age_date }} лет</p>
             {% else %}
-                <p>Возраст: N/A</p>
+                <p><span style="font-weight: bold">Возраст:</span> N/A</p>
             {% endif %}
         {% endif %}
         {% for element in position %}
             {% if player.pk == element.player.pk %}
-                <p>Позиция в KGF: {{ element.position }}</p>
+                <p><span style="font-weight: bold">Позиция в KGF:</span> {{ element.position }}</p>
             {% endif %}
         {% endfor %}
-            <p>Ранг: {{ player.current_rank }}</p>
+            <p><span style="font-weight: bold">Ранг: </span>{{ player.current_rank }}</p>
+        {% if player.EgdPin %}
+            <p><span style="font-weight: bold">EgdPin: </span> {{ player.EgdPin }}</p>
+        {% else %}
+            <p><span style="font-weight: bold">EgdPin: </span> Не присвоен</p>
+        {% endif %}
         </div>
         </div>
 
