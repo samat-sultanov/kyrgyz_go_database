@@ -2,26 +2,40 @@
 
 {% for item in tournaments %}
     <div class="card">
-      <div class="card-header">
-        Турнир: {{ item.tournament.name }}  Дата проведения: {{ item.tournament.date }}
+      <div class="card-header h4">
+          <span style="font-weight: bold">Турнир: </span> {{ item.tournament.name }}
       </div>
       <div class="card-body">
-          <p>Класс: {{ item.tournament.class }} </p>
-            <p>Место проведения: {{ item.tournament.city }}</p>
-          <p>Заявленный ранг: {{ item.rank_after }} </p>
-          <p>GoR до турнира: {{ item.rating_before }}</p>
-          <p>GoR после турнира: {{ item.rating_after }}</p>
+      {% if item.tournament.class %}
+          <p><span style="font-weight: bold">Класс: </span>{{ item.tournament.class }} </p>
+      {% else %}
+          <p><span style="font-weight: bold">Класс: </span> Не присвоен </p>
+      {% endif %}
+      {% if item.tournament.date %}
+          <p><span style="font-weight: bold">Дата: </span>{{ item.tournament.date }}</p>
+      {% else %}
+          <p><span style="font-weight: bold">Дата: </span>Неизвестна</p>
+      {% endif %}
+      {% if item.tournament.location %}
+          <p><span style="font-weight: bold">Место проведения: </span>{{ item.tournament.location }}</p>
+      {% else %}
+          <p><span style="font-weight: bold">Место проведения: </span>Не указано</p>
+      {% endif %}
+          <p><span style="font-weight: bold">Полученный ранг: </span>{{ item.rank_after }} </p>
+          <p><span style="font-weight: bold">GoR до турнира: </span>{{ item.rating_before }}</p>
+          <p><span style="font-weight: bold">GoR после турнира: </span>{{ item.rating_after }}</p>
         <table class="table adaptive-t">
             <thead>
                 <tr>
                     <th scope="col">Раунд</th>
-                    <th scope="col">GoR изменение</th>
+                    <th scope="col">Очки</th>
                     <th scope="col">Цвет</th>
                     <th scope="col">Результат</th>
-                    <th scope="col">Имя оппонента</th>
+                    <th scope="col">Оппонент</th>
+                    <th scope="col">EGDPin</th>
                     <th scope="col">Ранг</th>
                     <th scope="col">GoR</th>
-                    <th scope="col">GoR изменение</th>
+                    <th scope="col">Очки</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +48,7 @@
                             <td data-label="Результат">{{ element.result }}</td>
                             <td data-label="Имя оппонента"><a style="text-decoration: underline dotted ghostwhite; color: black;"
                                    href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
+                            <td data-label="EGDPin">{{ element.opponent.EgdPin }}</td>
                             <td data-label="Ранг">{{ element.opponent_rank }}</td>
                             <td data-label="GoR">{{ element.opponent_rating }}</td>
                             <td data-label="GoR изменение">{{ element.opponent_gor_change|floatformat:3 }}</td>
