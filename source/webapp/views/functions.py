@@ -193,7 +193,6 @@ def get_data_for_gor_evolution(pk):
                     if game.black_score == 0:
                         new_dict['result'] = 'Loss'
                     elif game.black_score == 1:
-
                         new_dict['result'] = 'Win'
                 new_dict['color'] = 'b'
                 new_list.append(new_dict)
@@ -205,7 +204,6 @@ def get_data_for_gor_evolution(pk):
                 if opponent:
                     data = opponent.playerintournament_set.filter(tournament=tournament)
                     for el in data:
-
                         new_dict['opponent_rank'] = el.GoLevel
                         new_dict['opponent_rating'] = el.rating
                 new_dict['opponent'] = game.black
