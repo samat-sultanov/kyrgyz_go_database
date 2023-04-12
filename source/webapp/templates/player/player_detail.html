@@ -92,7 +92,11 @@
             {% endif %}
         {% endfor %}
             <p><span style="font-weight: bold">Ранг: </span>{{ player.current_rank }}</p>
+        {% if player.EgdPin %}
             <p><span style="font-weight: bold">EgdPin: </span> {{ player.EgdPin }}</p>
+        {% else %}
+            <p><span style="font-weight: bold">EgdPin: </span> Не присвоен</p>
+        {% endif %}
         </div>
         </div>
 
