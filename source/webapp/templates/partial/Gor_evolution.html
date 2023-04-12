@@ -29,14 +29,14 @@
                     {% if item.tournament.pk == element.tournament.pk %}
                         <tr>
                             <td data-label="Раунд">{{ element.round }}</td>
-                            <td data-label="GoR изменение">{{ element.gor_change }}</td>
+                            <td data-label="GoR изменение">{{ element.gor_change|floatformat:3 }}</td>
                             <td data-label="Цвет">{{ element.color }}</td>
                             <td data-label="Результат">{{ element.result }}</td>
                             <td data-label="Имя оппонента"><a style="text-decoration: underline dotted ghostwhite; color: black;"
                                    href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
                             <td data-label="Ранг">{{ element.opponent_rank }}</td>
                             <td data-label="GoR">{{ element.opponent_rating }}</td>
-                            <td data-label="GoR изменение">{{ element.opponent_gor_change }}</td>
+                            <td data-label="GoR изменение">{{ element.opponent_gor_change|floatformat:3 }}</td>
 
                         </tr>
                     {% endif %}
