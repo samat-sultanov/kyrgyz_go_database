@@ -24,7 +24,6 @@ class PlayerDetail(TemplateView):
         context['position'] = get_position_in_kgf()
         context['games'] = get_data_for_table_games(pk)
         context['player_wins'] = player_wins_loses(pk)['wins']
-        print(player_wins_loses(pk)['wins'])
         context['player_losses'] = player_wins_loses(pk)['losses']
         context['evolution'] = get_data_for_gor_evolution(pk)
         context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
