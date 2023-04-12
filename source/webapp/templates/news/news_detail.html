@@ -26,7 +26,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{ single_news.title }}</h5>
                 <br>
-                <p class="card-text">{{ single_news.text }}</p>
+                <p class="card-text">{{ single_news.text|linebreaks }}</p>
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_superuser %}
                         <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
