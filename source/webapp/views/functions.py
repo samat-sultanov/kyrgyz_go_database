@@ -4,7 +4,7 @@ from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
-from webapp.views.GoR_calculator import get_new_rank_from_rating
+from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
@@ -177,7 +177,7 @@ def get_data_for_gor_evolution(pk):
         games = Game.objects.filter(tournament=tournament)
         for game in games:
             new_dict = dict()
-            if game.black == player:
+            if game.black == player and game.black_gor_change:
                 new_dict['tournament'] = tournament
                 new_dict['round'] = game.round_num
                 new_dict['gor_change'] = game.black_gor_change
@@ -196,7 +196,7 @@ def get_data_for_gor_evolution(pk):
                         new_dict['result'] = 'Win'
                 new_dict['color'] = 'b'
                 new_list.append(new_dict)
-            elif game.white == player:
+            elif game.white == player and game.white_gor_change:
                 new_dict['tournament'] = tournament
                 new_dict['round'] = game.round_num
                 new_dict['gor_change'] = game.white_gor_change
@@ -215,6 +215,8 @@ def get_data_for_gor_evolution(pk):
                         new_dict['result'] = 'Win'
                 new_dict['color'] = 'w'
                 new_list.append(new_dict)
+            else:
+                pass
     for item in new_list:
         if item['opponent'] is None:
             new_list.remove(item)
@@ -228,11 +230,16 @@ def get_tournaments_list_for_gor_evolution(pk):
     for element in tournaments:
         new_dict = dict()
         tournament = Tournament.objects.get(pk=element.tournament_id)
-        new_dict['tournament'] = tournament
-        new_dict['rating_before'] = element.rating
-        new_dict['rating_after'] = element.rating_after
-        new_dict['rank_after'] = element.GoLevel_after
-        new_list.append(new_dict)
+        total_score = get_total_score_for_player(tournament.pk)
+        for el in total_score:
+            if el['player'] == player:
+                new_dict['total'] = el['total']
+        if element.rating != 0:
+            new_dict['tournament'] = tournament
+            new_dict['rating_before'] = element.rating
+            new_dict['rating_after'] = element.rating_after
+            new_dict['rank_after'] = element.GoLevel_after
+            new_list.append(new_dict)
     return new_list
 
 

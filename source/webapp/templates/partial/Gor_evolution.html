@@ -23,7 +23,12 @@
       {% endif %}
           <p><span style="font-weight: bold">Полученный ранг: </span>{{ item.rank_after }} </p>
           <p><span style="font-weight: bold">GoR до турнира: </span>{{ item.rating_before }}</p>
-          <p><span style="font-weight: bold">GoR после турнира: </span>{{ item.rating_after }}</p>
+          <p><span style="font-weight: bold">GoR после турнира: </span>{{ item.rating_after }}
+              {% if item.total >= 0 %}
+              <span style="color: green">(+{{ item.total|floatformat:3 }})</span></p>
+      {% else %}
+              <span style="color: red">(-{{ item.total|floatformat:3 }})</span></p>
+      {% endif %}
         <table class="table adaptive-t">
             <thead>
                 <tr>
