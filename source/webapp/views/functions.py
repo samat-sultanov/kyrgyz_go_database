@@ -177,7 +177,7 @@ def get_data_for_gor_evolution(pk):
         games = Game.objects.filter(tournament=tournament)
         for game in games:
             new_dict = dict()
-            if game.black == player:
+            if game.black == player and game.black_gor_change:
                 new_dict['tournament'] = tournament
                 new_dict['round'] = game.round_num
                 new_dict['gor_change'] = game.black_gor_change
@@ -196,7 +196,7 @@ def get_data_for_gor_evolution(pk):
                         new_dict['result'] = 'Win'
                 new_dict['color'] = 'b'
                 new_list.append(new_dict)
-            elif game.white == player:
+            elif game.white == player and game.white_gor_change:
                 new_dict['tournament'] = tournament
                 new_dict['round'] = game.round_num
                 new_dict['gor_change'] = game.white_gor_change
@@ -215,9 +215,12 @@ def get_data_for_gor_evolution(pk):
                         new_dict['result'] = 'Win'
                 new_dict['color'] = 'w'
                 new_list.append(new_dict)
+            else:
+                pass
     for item in new_list:
         if item['opponent'] is None:
             new_list.remove(item)
+    print(new_list)
     return new_list
 
 
