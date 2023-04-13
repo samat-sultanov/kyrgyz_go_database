@@ -6,6 +6,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, TemplateView, DeleteView
 from django.db.models import Q
+
+from webapp.views.GoR_calculator import get_new_rating
 from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -110,6 +112,7 @@ class CheckModer(View, LoginRequiredMixin):
         tournament = get_object_or_404(Tournament, pk=self.kwargs.get('pk'))
         tournament.is_moderated = True
         tournament.save()
+        get_new_rating(tournament.pk)
         response = JsonResponse({'status': tournament.is_moderated})
         return response
 

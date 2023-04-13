@@ -69,12 +69,10 @@ def file_upload_check(request, pk):
                 tournament_form = CheckTournamentForm(
                     {'city': tournament.city, 'date': tournament.date, 'tournament_class': tournament.tournament_class,
                      'regulations': tournament.regulations, 'uploaded_by': uploaded_by}, instance=tournament)
-                get_new_rating(tournament.pk)
             else:
                 tournament_form = CheckTournamentForm(
                     {'city': city, 'date': date, 'tournament_class': tournament_class, 'regulations': regulations,
                      'uploaded_by': uploaded_by}, instance=tournament)
-                get_new_rating(tournament.pk)
             tournament_form.save()
 
         form = CheckPlayerForm(request.POST)
