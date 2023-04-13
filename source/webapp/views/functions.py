@@ -4,7 +4,7 @@ from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game
-from webapp.views.GoR_calculator import get_new_rank_from_rating
+from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
@@ -230,11 +230,13 @@ def get_tournaments_list_for_gor_evolution(pk):
     for element in tournaments:
         new_dict = dict()
         tournament = Tournament.objects.get(pk=element.tournament_id)
+        total = get_total_score_for_player(tournament.pk)
         if element.rating != 0:
             new_dict['tournament'] = tournament
             new_dict['rating_before'] = element.rating
             new_dict['rating_after'] = element.rating_after
             new_dict['rank_after'] = element.GoLevel_after
+            new_dict['total'] = total
             new_list.append(new_dict)
     return new_list
 
