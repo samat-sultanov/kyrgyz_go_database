@@ -220,7 +220,6 @@ def get_data_for_gor_evolution(pk):
     for item in new_list:
         if item['opponent'] is None:
             new_list.remove(item)
-    print(new_list)
     return new_list
 
 
@@ -231,11 +230,12 @@ def get_tournaments_list_for_gor_evolution(pk):
     for element in tournaments:
         new_dict = dict()
         tournament = Tournament.objects.get(pk=element.tournament_id)
-        new_dict['tournament'] = tournament
-        new_dict['rating_before'] = element.rating
-        new_dict['rating_after'] = element.rating_after
-        new_dict['rank_after'] = element.GoLevel_after
-        new_list.append(new_dict)
+        if element.rating != 0:
+            new_dict['tournament'] = tournament
+            new_dict['rating_before'] = element.rating
+            new_dict['rating_after'] = element.rating_after
+            new_dict['rank_after'] = element.GoLevel_after
+            new_list.append(new_dict)
     return new_list
 
 
