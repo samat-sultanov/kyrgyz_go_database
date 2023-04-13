@@ -11,7 +11,7 @@
         <h3 class="title" style="font-size: 30px">Список зарегистрированных игроков на
             турнир {{ event.event_name }}</h3>
         <br/>
-        <table class="table">
+        <table class="table adaptive-t">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -29,14 +29,14 @@
             {% for players in  event.participant.all %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ players.surname }}</td>
-                    <td>{{ players.name }}</td>
-                    <td>{{ players.city }}</td>
-                    <td>{{ players.rank }}</td>
+                    <td data-label="Фамилия">{{ players.surname }}</td>
+                    <td data-label="Имя">{{ players.name }}</td>
+                    <td data-label="Город">{{ players.city }}</td>
+                    <td data-label="Ранг">{{ players.rank }}</td>
                     {% if request.user.is_authenticated %}
-                        <td>{{ players.phonenumber }}</td>
+                        <td data-label="Номер Телефона">{{ players.phonenumber }}</td>
                     {% endif %}
-                    <td id="status-{{ players.pk }}">{{ players.status }}</td>
+                    <td id="status-{{ players.pk }}" data-label="Статус">{{ players.status }}</td>
                     {% if request.user.is_authenticated %}
                         <td>
                             <button class="btn btn-outline-secondary" id="butt-{{ players.pk }}"
