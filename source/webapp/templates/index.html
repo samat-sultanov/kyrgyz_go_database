@@ -169,14 +169,13 @@
     <h3 class="title">Наши Партнеры:</h3>
     <div class="row">
         {% for partner in partners %}
-            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1 mt-4 mb-4 mx-auto">
+            <div class="col-6 col-sm-2 col-md-2 col-lg-1 mt-4 mb-4 mx-auto">
                 <a href="{{ partner.web_link }}">
-                    {% thumbnail partner.logo "80x80" crop="center" as im %}
+                    {% thumbnail partner.logo "78x78" crop="center" as im %}
                         <img class="rounded-circle z-depth-0" style="opacity: 0.9;" src="{{ im.url }}"
                              onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.9';">
                     {% endthumbnail %}
                 </a>
-{#                <p>{{ partner.name }}</p>#}
             </div>
         {% endfor %}
     </div>
