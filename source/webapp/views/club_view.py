@@ -45,9 +45,9 @@ class ClubsListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.search_name:
-            queryset = queryset.filter(Q(name__startswith=self.search_name))
+            queryset = queryset.filter(Q(name__istartswith=self.search_name))
         if self.search_city:
-            queryset = queryset.filter(Q(city__city__startswith=self.search_city))
+            queryset = queryset.filter(Q(city__city__istartswith=self.search_city))
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
