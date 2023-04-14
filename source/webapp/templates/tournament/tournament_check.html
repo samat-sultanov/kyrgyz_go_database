@@ -13,24 +13,24 @@
     <form method="post" action="">
         {% csrf_token %}
 
-        <div class="container">
+        <div class="container mt-4 mb-4">
             <div>
-                <h2>Tournament: {{ tournament.name }}</h2>
+                <h2 class="title">Турнир: {{ tournament.name }}</h2>
                 {% if tournament.date and tournament.city and tournament.tournament_class and tournament.regulations %}
-                    <p>Date: {{ tournament.date }}</p>
-                    <p>City: {{ tournament.city }}</p>
-                    <p>Class: {{ tournament.tournament_class }}</p>
-                    <p>Regulations: {{ tournament.regulations|linebreaks }}</p>
+                    <p>Дата: {{ tournament.date }}</p>
+                    <p>Город: {{ tournament.city }}</p>
+                    <p>Класс: {{ tournament.tournament_class }}</p>
+                    <p>Регламент: {{ tournament.regulations|linebreaks }}</p>
                 {% else %}
-                    <p>Date: {{ tournament_form.date }}</p>
-                    <p>City: {{ tournament_form.city }}</p>
-                    <p>Class: {{ tournament_form.tournament_class }}</p>
-                    <p>Regulations: {{ tournament_form.regulations }}</p>
+                    <p>Дата: {{ tournament_form.date }}</p>
+                    <p>Город: {{ tournament_form.city }}</p>
+                    <p>Класс: {{ tournament_form.tournament_class }}</p>
+                    <p>Регламент: {{ tournament_form.regulations }}</p>
                     <p>{{ tournament_form.uploaded_by.as_hidden }}</p>
                 {% endif %}
-                <p>Number of players: {{ tournament.player_set.count }}</p>
-                <p>Rounds: {{ tournament.rounds }}</p>
-                <p>Board size: {{ tournament.board_size }}</p>
+                <p>Количество участников: {{ tournament.player_set.count }}</p>
+                <p>Количество раундов: {{ tournament.rounds }}</p>
+                <p>Размер доски: {{ tournament.board_size }}</p>
             </div>
 
         </div>
@@ -40,13 +40,12 @@
                 <tr>
                     <th scope="col"></th>
                     <th scope="col">EgdPin</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Date of birth</th>
-                    <th scope="col">Club</th>
-                    <th scope="col">GoLevel</th>
-                    <th scope="col">Wins</th>
-                    <th scope="col">Loses</th>
+                    <th scope="col">Участник</th>
+                    <th scope="col">Дата рождения</th>
+                    <th scope="col">Клуб</th>
+                    <th scope="col">Ранг</th>
+                    <th scope="col">Победы</th>
+                    <th scope="col">Поражения</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -58,9 +57,7 @@
                         {% else %}
                             <td>{{ player_form.EgdPin }}</td>
                         {% endif %}
-                        <td><a style="color: black;"
-                               href="{% url "webapp:player_detail" player.pk %}">{{ player.last_name }}</a></td>
-                        <td>{{ player.first_name }}</td>
+                        <td>{{ player.last_name }} {{ player.first_name }}</td>
                         {% if player.birth_date is not None %}
                             <td>{{ player.birth_date }}{{ player_form.birth_date.as_hidden }}</td>
                         {% else %}
@@ -71,9 +68,9 @@
                                 {% if data.club is not None %}
                                     <td>{{ data.club.name }}</td>
                                 {% else %}
-                                    <td>Not a member of club</td>
+                                    <td></td>
                                 {% endif %}
-                                <td>{{ rate.GoLevel }}</td>
+                                <td>{{ data.GoLevel }}</td>
                             {% endif %}
                         {% endfor %}
                         {% for winner in wins %}
