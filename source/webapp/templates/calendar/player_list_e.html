@@ -48,7 +48,7 @@
                         <td>
                             <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal"
                                     data-bs-target="#myModal">
-                                Удалить
+                                <i class="bi bi-trash3-fill"></i>
                             </button>
                             <!-- Модалка подтверждения -->
                             <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
@@ -77,7 +77,7 @@
                             </div>
                         </td>
                         <td>
-                            <a class="btn btn-outline-secondary" href={% url "webapp:update_participant" players.pk %}>Edit</a>
+                            <a class="btn btn-outline-secondary" href={% url "webapp:update_participant" players.pk %}><i class="bi bi-pencil-fill"></i></a>
                         </td>
                     {% endif %}
                 </tr>
