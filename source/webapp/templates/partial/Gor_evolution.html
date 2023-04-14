@@ -27,7 +27,7 @@
               {% if item.total >= 0 %}
               <span style="color: green">(+{{ item.total|floatformat:3 }})</span></p>
       {% else %}
-              <span style="color: red">(-{{ item.total|floatformat:3 }})</span></p>
+              <span style="color: red">({{ item.total|floatformat:3 }})</span></p>
       {% endif %}
         <table class="table adaptive-t">
             <thead>
@@ -48,7 +48,11 @@
                     {% if item.tournament.pk == element.tournament.pk %}
                         <tr>
                             <td data-label="Раунд">{{ element.round }}</td>
-                            <td data-label="GoR изменение">{{ element.gor_change|floatformat:3 }}</td>
+                            {% if element.gor_change >= 0 %}
+                                <td data-label="GoR изменение" style="color: green">+{{ element.gor_change|floatformat:3 }}</td>
+                            {% else %}
+                                <td data-label="GoR изменение" style="color: red">{{ element.gor_change|floatformat:3 }}</td>
+                            {% endif %}
                             <td data-label="Цвет">{{ element.color }}</td>
                             <td data-label="Результат">{{ element.result }}</td>
                             <td data-label="Имя оппонента"><a style="text-decoration: underline dotted ghostwhite; color: black;"
@@ -56,7 +60,11 @@
                             <td data-label="EGDPin">{{ element.opponent.EgdPin }}</td>
                             <td data-label="Ранг">{{ element.opponent_rank }}</td>
                             <td data-label="GoR">{{ element.opponent_rating }}</td>
-                            <td data-label="GoR изменение">{{ element.opponent_gor_change|floatformat:3 }}</td>
+                            {% if element.opponent_gor_change >= 0 %}
+                                <td data-label="GoR изменение" style="color: green">+{{ element.opponent_gor_change|floatformat:3 }}</td>
+                            {% else %}
+                                <td data-label="GoR изменение" style="color: red">{{ element.opponent_gor_change|floatformat:3 }}</td>
+                            {% endif %}
 
                         </tr>
                     {% endif %}
