@@ -29,7 +29,11 @@
             <td data-label="Клуб">{{ element.club }}</td>
             <td data-label="Ранг">{{ element.rank }}</td>
             <td data-label="Цвет">{{ element.color}}</td>
-            <td data-label="Результат">{{ element.result}}</td>
+            {% if element.result == '+' %}
+                <td data-label="Результат"><i class="bi bi-plus-circle-fill" style="color: green"></i></td>
+            {% else %}
+                <td data-label="Результат"><i class="bi bi-dash-circle-fill" style="color: red"></i></td>
+            {% endif %}
         </tr>
         {% endif %}
     {% endfor %}
