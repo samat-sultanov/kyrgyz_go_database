@@ -162,12 +162,54 @@ def handle_uploaded_file(thisFile):
                         round_number = v
                     elif k == "Pairing":
                         list_of_pairing = v
-                        for pair in list_of_pairing:
-                            black_id = pair.get("Black")
-                            white_id = pair.get('White')
-                            result = pair.get('Result')
-                            board_num = pair.get('BoardNumber')
-                            date = pair.get("CreationTime")
+                        try:
+                            for pair in list_of_pairing:
+                                black_id = pair.get("Black")
+                                white_id = pair.get('White')
+                                result = pair.get('Result')
+                                board_num = pair.get('BoardNumber')
+                                date = pair.get("CreationTime")
+
+                                if white_id:
+                                    white_player = get_object_or_404(PlayerInTournament, game_id=white_id,
+                                                                     tournament=tournament)
+                                    white = white_player.player
+                                else:
+                                    white = None
+                                if black_id:
+                                    black_player = get_object_or_404(PlayerInTournament, game_id=black_id,
+                                                                     tournament=tournament)
+                                    black = black_player.player
+                                else:
+                                    black = None
+                                if result == '1-0':
+                                    black_score = 1
+                                    white_score = 0
+                                elif result == '0-1':
+                                    black_score = 0
+                                    white_score = 1
+                                elif result == '0-0':
+                                    black_score = 0.5
+                                    white_score = 0.5
+                                else:
+                                    black_score = None
+                                    white_score = None
+                                try:
+                                    game = get_object_or_404(Game, black=black, white=white, result=result,
+                                                             board_number=board_num, date=date, round_num=round_number,
+                                                             tournament=tournament, black_score=black_score,
+                                                             white_score=white_score)
+                                except:
+                                    Game.objects.create(black=black, white=white, result=result,
+                                                        board_number=board_num, date=date, round_num=round_number,
+                                                        tournament=tournament, black_score=black_score,
+                                                        white_score=white_score)
+                        except:
+                            black_id = v.get("Black")
+                            white_id = v.get('White')
+                            result = v.get('Result')
+                            board_num = v.get('BoardNumber')
+                            date = v.get("CreationTime")
 
                             if white_id:
                                 white_player = get_object_or_404(PlayerInTournament, game_id=white_id,
