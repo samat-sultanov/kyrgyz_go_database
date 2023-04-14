@@ -77,14 +77,14 @@
                     <button class="share-btn" id="shareBtn">
                         <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
                         <span class="social-icons">
-                            <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
+                            <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://{{ request.get_host }}/news_detail/{{ single_news.pk }}">
                                 <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
                             </a>
-                            <a href="https://api.whatsapp.com/send/?text=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
+                            <a href="https://api.whatsapp.com/send/?text=http://{{ request.get_host }}/news_detail/{{ single_news.pk }}">
                                 <i style="color: #40C351" class="fa-brands fa-whatsapp"></i></a>
-                             <a href="http://vkontakte.ru/share.php?url=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}">
+                             <a href="http://vkontakte.ru/share.php?url=http://{{ request.get_host }}/news_detail/{{ single_news.pk }}">
                                  <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
-                             <a href="https://telegram.me/share/url?url=http://127.0.0.1:8000/news_detail/{{ single_news.pk }}&text={{ single_news.title }}">
+                             <a href="https://telegram.me/share/url?url=http://{{ request.get_host }}/news_detail/{{ single_news.pk }}&text={{ single_news.title }}">
                                  <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
                       </span>
                     </button>
