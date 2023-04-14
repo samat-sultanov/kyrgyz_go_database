@@ -35,7 +35,11 @@ def get_data(pk):
                 bonus = get_bonus(element.rating)
                 se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num, pk))
                 score = get_score(con, game.black_score, se, bonus)
-                game.black_gor_change = score
+                if score:
+                    score_with_class = score * class_value
+                    game.black_gor_change = score_with_class
+                else:
+                    game.black_gor_change = score
                 game.save()
                 new_dict['score'] = score
                 new_dict['result'] = game.black_score
@@ -48,7 +52,11 @@ def get_data(pk):
                     opponent_se = get_se(opponent_rating, element.rating)
                     opponent_score = get_score(opponent_con, game.white_score, opponent_se, opponent_bonus)
                     new_dict['opponent_score'] = opponent_score
-                    game.white_gor_change = opponent_score
+                    if opponent_score:
+                        score_with_class = opponent_score * class_value
+                        game.white_gor_change = score_with_class
+                    else:
+                        game.white_gor_change = opponent_score
                     game.save()
                 else:
                     pass
