@@ -9,55 +9,44 @@
         <div class=" mt-4">
             <h2 class="title">Страница {% if request.user.is_superuser %}Админа:{% else %}Тренера:{% endif %}</h2>
         </div>
-        <div class="row mb-4">
-            <div class="col-5">
+        <div class="row mb-4 ms-2 me-2">
+            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
                 {% if user_obj.avatar %}
-                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px"
-                         src="{{ user_obj.avatar.url }}" alt="avatar">
+                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px" src="{{ user_obj.avatar.url }}" alt="avatar">
                 {% else %}
-                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;"
-                         src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
+                    <img style="width: 75%; border: solid; border-color: grey; border-width: 1px;" src="{% static "images/no_image.jpg" %}" alt="no_pic_avatar">
                 {% endif %}
             </div>
-            <div class="col-6">
-                <div>
+            <div class="col-12 col-sm-8 col-md-8 col-lg-5">
                     <p style="font-size: 20px">Имя пользователя: {{ user_obj.username }}</p>
                     <p style="font-size: 20px">Имя: {{ user_obj.first_name }}</p>
                     <p style="font-size: 20px">Фамилия: {{ user_obj.last_name }}</p>
                     <p style="font-size: 20px">Почта: {{ user_obj.email }}</p>
                     <p style="font-size: 20px">Номер телефона: {{ user_obj.phone|default_if_none:"" }}</p>
                     <p style="font-size: 20px">Клуб: {{ club_names|join:", "|default_if_none:"" }}</p>
-                    <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
-                        {% if request.user.is_authenticated and user_obj.pk == request.user.pk %}
-                            <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
-                               href="{% url 'webapp:news_create' %}">Создать
-                                новость</a>
-                            <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
-                               href="{% url 'webapp:partners_list' %}">Список партнеров</a>
-                        {% endif %}
-                        {% if request.user.is_authenticated %}
-                            <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
-                               href="{% url 'webapp:club_create' %}">Создать
-                                Клуб</a>
-                        {% endif %}
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-3">
+                <div class="btn-group-vertical" role="group" aria-label="Vertical radio toggle button group">
+                    {% if request.user.is_authenticated and user_obj.pk == request.user.pk %}
+                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:news_create' %}">Добавить новость</a>
+                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:partners_list' %}">Добавить партнера</a>
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:club_create' %}">Добавить клуб</a>
+                    {% endif %}
 
-                        {% if user_obj.pk == request.user.pk %}
-                            <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
-                               href="{% url 'accounts:change' %}">Редактировать профиль</a>
-                            <a class="btn btn-md rounded mb-1" style="background-color: #9400D3; color: white"
-                               href="{% url 'accounts:change_password' %}">Изменить пароль</a>
-                        {% endif %}
-
-                        {% if request.user.is_superuser %}
-                            {% include 'partial/admin_features_offcanvas.html' %}
-                        {% endif %}
-                    </div>
+                    {% if user_obj.pk == request.user.pk %}
+                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'accounts:change' %}">Редактировать профиль</a>
+                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
+                    {% endif %}
+                    {% if request.user.is_superuser %}
+                        {% include 'partial/admin_features_offcanvas.html' %}
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <br/>
     {% if players %}
         <div class="container mt-5 mb-5">
             <h3 class="title">Список студентов:</h3>
@@ -65,7 +54,7 @@
         </div>
     {% else %}
         <div class="container mt-5 mb-5">
-            <h3 class="title">У Вас пока нету студентов!</h3>
+            <h4 class="title">У Вас пока нету студентов</h4>
         </div>
     {% endif %}
     <br/>
