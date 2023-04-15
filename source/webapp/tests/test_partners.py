@@ -144,3 +144,8 @@ class PartnerTestsForRegisteredUser(TestCase):
 
         partner_detail_url = reverse('webapp:partner_detail', args=[updated_partner.pk])
         self.assertRedirects(response, partner_detail_url)
+
+    def test_partner_delete(self):
+        url = reverse('webapp:partner_delete', args=[self.test_partner.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
