@@ -72,13 +72,13 @@ class PlayerSearch(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.search_name:
-            queryset = queryset.filter(Q(first_name__startswith=self.search_name))
+            queryset = queryset.filter(Q(first_name__istartswith=self.search_name))
         if self.search_last_name:
-            queryset = queryset.filter(Q(last_name__startswith=self.search_last_name))
+            queryset = queryset.filter(Q(last_name__istartswith=self.search_last_name))
         if self.search_clubs:
-            queryset = queryset.filter(Q(clubs__name__startswith=self.search_clubs))
+            queryset = queryset.filter(Q(clubs__name__istartswith=self.search_clubs))
         if self.search_city:
-            queryset = queryset.filter(Q(city__city__startswith=self.search_city))
+            queryset = queryset.filter(Q(city__city__istartswith=self.search_city))
         return queryset
 
     def get_context_data(self, *, object_list=None, **kwargs):
