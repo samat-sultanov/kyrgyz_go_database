@@ -142,4 +142,7 @@ class PartnerTestsForRegisteredUser(TestCase):
         updated_partner = Partner.objects.get(pk=self.test_partner.pk)
         self.assertIn('updated_logo', updated_partner.logo.name)
 
+        partner_detail_url = reverse('webapp:partner_detail', args=[updated_partner.pk])
+        self.assertRedirects(response, partner_detail_url)
+
 
