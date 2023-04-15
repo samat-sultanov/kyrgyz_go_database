@@ -1,7 +1,10 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client
 from django.urls import reverse
 from webapp.models import Partner
 from accounts.models import User
+from io import BytesIO
+from PIL import Image
 
 
 class PartnerTestsForUnregisteredUser(TestCase):
@@ -59,3 +62,31 @@ class PartnerTestsForUnregisteredUser(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
 
+
+class PartnerTestsForRegisteredUser(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        logo_file = BytesIO()
+        logo_image = Image.new('RGB', (100, 100), 'red')
+        logo_image.save(logo_file, 'jpeg')
+        logo_file.name = 'test_logo.jpg'
+        logo_file.seek(0)
+        logo = SimpleUploadedFile(logo_file.name, logo_file.read(), content_type='image/jpeg')
+        cls.test_partner = Partner.objects.create(
+            name='Test name',
+            logo=logo,
+            web_link='https://test.com',
+        )
+        cls.test_user = User.objects.create_superuser(
+            username='testuser',
+            password='testpass'
+        )
+
+    def setUp(self):
+        self.client = Client()
+        self.client.login(username='testuser', password='testpass')
+
+    def test_partner_create(self):
+        url = reverse('webapp:partner_create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
