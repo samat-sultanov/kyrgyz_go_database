@@ -17,7 +17,6 @@
                 <th scope="col">#</th>
                 <th scope="col">Фамилия</th>
                 <th scope="col">Имя</th>
-                <th scope="col">Город</th>
                 <th scope="col">Рейтинг</th>
                 {% if request.user.is_authenticated %}
                     <th scope="col">Номер</th>
@@ -31,7 +30,6 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td data-label="Фамилия">{{ players.surname }}</td>
                     <td data-label="Имя">{{ players.name }}</td>
-                    <td data-label="Город">{{ players.city }}</td>
                     <td data-label="Ранг">{{ players.rank }}</td>
                     {% if request.user.is_authenticated %}
                         <td data-label="Номер Телефона">{{ players.phonenumber }}</td>
