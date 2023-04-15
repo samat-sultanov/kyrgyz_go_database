@@ -26,5 +26,8 @@ class PartnerTestsForUnregisteredUser(TestCase):
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Partner.objects.count(), 1)
-
+        redirect_url = reverse('accounts:login') + f'?next={url}'
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, redirect_url)
 
