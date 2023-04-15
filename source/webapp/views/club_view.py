@@ -16,8 +16,8 @@ class ClubsListView(ListView):
     context_object_name = 'clubs'
     paginate_by = 15
     paginate_orphans = 4
-    # country = Country.objects.get(country_code='kg')
-    # queryset = Club.objects.filter(country=country)
+    country = Country.objects.get(country_code='kg')
+    queryset = Club.objects.filter(country=country)
 
     def get_ordering(self):
         ordering = '-num_players'
@@ -54,8 +54,8 @@ class ClubsListView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         context['data'] = average_go_level()
-        # country = Country.objects.get(country_code='kg')
-        # clubs = Club.objects.filter(country=country)
+        country = Country.objects.get(country_code='kg')
+        clubs = Club.objects.filter(country=country)
         context['wins'] = get_total_wins(clubs)
         if self.search_name:
             context['query'] = urlencode({'search_name': self.search_name})
