@@ -31,3 +31,14 @@ class PartnerTestsForUnregisteredUser(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, redirect_url)
 
+    def test_partner_update(self):
+        url = reverse('webapp:partner_update', args=[self.test_partner.pk])
+        redirect_url = reverse('accounts:login') + f'?next={url}'
+        data = {
+            'name': 'New name',
+            'web_link': 'https://example.com'
+        }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, redirect_url)
+
