@@ -95,7 +95,7 @@ class TournamentDetail(TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class TournamentModerationList(ListView, LoginRequiredMixin):
+class TournamentModerationList(LoginRequiredMixin, ListView):
     model = Tournament
     context_object_name = "tournaments"
     template_name = 'tournament/moderation_list.html'
@@ -107,7 +107,7 @@ class TournamentModerationList(ListView, LoginRequiredMixin):
         return queryset
 
 
-class CheckModer(View, LoginRequiredMixin):
+class CheckModer(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         tournament = get_object_or_404(Tournament, pk=self.kwargs.get('pk'))
         tournament.is_moderated = True
@@ -117,7 +117,7 @@ class CheckModer(View, LoginRequiredMixin):
         return response
 
 
-class CheckCancelModer(DeleteView, LoginRequiredMixin):
+class CheckCancelModer(LoginRequiredMixin, DeleteView):
     queryset = Tournament.objects.all()
     context_object_name = 'Tournament'
     success_url = reverse_lazy('webapp:moderation_tournaments')
@@ -128,7 +128,7 @@ class CheckCancelModer(DeleteView, LoginRequiredMixin):
         return HttpResponseRedirect(success_url)
 
 
-class DeleteTournamentBeforeModeration(DeleteView, LoginRequiredMixin):
+class DeleteTournamentBeforeModeration(LoginRequiredMixin, DeleteView):
     queryset = Tournament.objects.all()
     context_object_name = 'Tournament'
     success_url = reverse_lazy('webapp:file_upload')
@@ -137,3 +137,15 @@ class DeleteTournamentBeforeModeration(DeleteView, LoginRequiredMixin):
         success_url = self.get_success_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
+
+class ModerationTournamentView(LoginRequiredMixin, TemplateView):
+    template_name = 'tournament/tournament_moderation_detail.html'
+
+    def get_context_data(self, **kwargs):
+        pk = kwargs.get("pk")
+        tournament = get_object_or_404(Tournament, pk=pk)
+        data = tournament.playerintournament_set.all().order_by('-rating_after')
+        kwargs["tournament"] = tournament
+        kwargs['sorted_players'] = data
+        kwargs['wins'] = get_wins_losses(pk=pk)
+        return super().get_context_data(**kwargs)

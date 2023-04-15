@@ -8,7 +8,7 @@ from .views import file_upload, IndexView, NewsListView, PlayerSearch, Tournamen
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView, \
     PartnersListView, PartnerDetailView, PartnerUpdateView, PartnerDeleteView, UpdateParticipant, ClubCreate, \
-    TournamentModerationList, CheckCancelModer, CheckModer, DeleteTournamentBeforeModeration
+    TournamentModerationList, CheckCancelModer, CheckModer, DeleteTournamentBeforeModeration, ModerationTournamentView
 
 app_name = 'webapp'
 
@@ -60,7 +60,8 @@ urlpatterns = [
     path('partner_delete/<int:pk>/', PartnerDeleteView.as_view(), name='partner_delete'),
     path('moderation_tournaments/', TournamentModerationList.as_view(), name='moderation_tournaments'),
     path('confirm_tournament/<int:pk>/', CheckModer.as_view(), name='confirm_tournament'),
-    path('cancel_tournament/<int:pk>/', CheckCancelModer.as_view(), name='cancel_tournament')
+    path('cancel_tournament/<int:pk>/', CheckCancelModer.as_view(), name='cancel_tournament'),
+    path('moderation_tournaments/<int:pk>/', ModerationTournamentView.as_view(), name='tournament_moderation_detail'),
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
