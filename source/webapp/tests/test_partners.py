@@ -112,3 +112,5 @@ class PartnerTestsForRegisteredUser(TestCase):
         self.assertEqual(new_partner.web_link, 'https://example.com')
         self.assertTrue(new_partner.logo)
 
+        partner_detail_url = reverse('webapp:partner_detail', args=[new_partner.pk])
+        self.assertRedirects(response, partner_detail_url)
