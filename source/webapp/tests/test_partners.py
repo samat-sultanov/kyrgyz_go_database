@@ -25,7 +25,7 @@ class PartnerTestsForUnregisteredUser(TestCase):
         data = {
             'name': 'New name',
             'web_link': 'https://example.com'
-                }
+        }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Partner.objects.count(), 1)
@@ -114,3 +114,8 @@ class PartnerTestsForRegisteredUser(TestCase):
 
         partner_detail_url = reverse('webapp:partner_detail', args=[new_partner.pk])
         self.assertRedirects(response, partner_detail_url)
+
+    def test_partner_update(self):
+        url = reverse('webapp:partner_update', args=[self.test_partner.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
