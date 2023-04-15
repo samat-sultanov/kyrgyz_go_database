@@ -38,8 +38,7 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td data-label="EgdPin">{{ el.player.EgdPin }}</td>
-                    <td data-label="Last Name"><a style="color: black"
-                           href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
+                    <td data-label="Last Name">{{ el.player.last_name }}</td>
                     <td data-label="First Name">{{ el.player.first_name }}</td>
                     {% if el.player.clubs.all %}
                         {% for club in el.player.clubs.all %}
