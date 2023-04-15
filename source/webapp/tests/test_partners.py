@@ -149,3 +149,6 @@ class PartnerTestsForRegisteredUser(TestCase):
         url = reverse('webapp:partner_delete', args=[self.test_partner.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Partner.objects.count(), 0)
