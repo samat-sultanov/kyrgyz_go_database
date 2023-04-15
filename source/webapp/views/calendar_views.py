@@ -136,7 +136,20 @@ def calendar_player_list(request, *args, **kwargs):
 
     if request.method == 'GET':
         form = EmailToChangeRegInfoFrom()
-        context = {'event': event, 'form': form, 'players_all': players_all, 'participants': participants}
+        out_players = []
+        for participant in participants:
+            found_match = False
+            for player in players_all:
+                if participant.name.strip().lower() == player.first_name.strip().lower() and participant.surname.strip().lower() == player.last_name.strip().lower():
+                    participant.pk_bd = player.pk
+                    out_players.append(participant)
+                    found_match = True
+                    break
+            if not found_match:
+                participant.pk_bd = 0
+                out_players.append(participant)
+
+        context = {'event': event, 'form': form, 'out_players': out_players}
         return render(request, 'calendar/player_list_e.html', context)
 
     elif request.method == "POST":
