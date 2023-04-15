@@ -90,3 +90,20 @@ class PartnerTestsForRegisteredUser(TestCase):
         url = reverse('webapp:partner_create')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+        logo_file = BytesIO()
+        logo_image = Image.new('RGB', (100, 100), 'blue')
+        logo_image.save(logo_file, 'jpeg')
+        logo_file.name = 'new_logo.jpg'
+        logo_file.seek(0)
+        new_logo = SimpleUploadedFile(logo_file.name, logo_file.read(), content_type='image/jpeg')
+        data = {
+            'name': 'New name',
+            'logo': new_logo,
+            'web_link': 'https://example.com'
+        }
+
+        response = self.client.post(url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Partner.objects.count(), 2)
+
