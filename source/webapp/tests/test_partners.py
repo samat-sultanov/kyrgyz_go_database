@@ -152,3 +152,6 @@ class PartnerTestsForRegisteredUser(TestCase):
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Partner.objects.count(), 0)
+
+        partner_list_url = reverse('webapp:partners_list')
+        self.assertRedirects(response, partner_list_url)
