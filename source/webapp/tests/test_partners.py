@@ -1,0 +1,23 @@
+from django.test import TestCase, Client
+from django.urls import reverse
+from webapp.models import Partner
+from accounts.models import User
+
+
+class PartnerTestsForUnregisteredUser(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_partner = Partner.objects.create(
+            name='Test name',
+            web_link='https://test.com',
+        )
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_partner_create(self):
+        url = reverse('webapp:partner_create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
+
