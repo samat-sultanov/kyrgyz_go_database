@@ -131,10 +131,12 @@ class ParticipantCreate(CreateView):
 
 def calendar_player_list(request, *args, **kwargs):
     event = get_object_or_404(Calendar, pk=kwargs.get('pk'))
+    players_all = Player.objects.all()
+    participants = Participant.objects.all()
 
     if request.method == 'GET':
         form = EmailToChangeRegInfoFrom()
-        context = {'event': event, 'form': form}
+        context = {'event': event, 'form': form, 'players_all': players_all, 'participants': participants}
         return render(request, 'calendar/player_list_e.html', context)
 
     elif request.method == "POST":
