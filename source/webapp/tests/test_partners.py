@@ -123,7 +123,7 @@ class PartnerTestsForRegisteredUser(TestCase):
         logo_file = BytesIO()
         logo_image = Image.new('RGB', (100, 100), 'black')
         logo_image.save(logo_file, 'jpeg')
-        logo_file.name = 'new_logo.jpg'
+        logo_file.name = 'updated_logo.jpg'
         logo_file.seek(0)
         logo_update = SimpleUploadedFile(logo_file.name, logo_file.read(), content_type='image/jpeg')
         data = {
@@ -135,4 +135,11 @@ class PartnerTestsForRegisteredUser(TestCase):
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Partner.objects.count(), 1)
+
+        self.test_partner.refresh_from_db()
+        self.assertEqual(self.test_partner.name, 'Updated name')
+        self.assertEqual(self.test_partner.web_link, 'https://example111.com')
+        updated_partner = Partner.objects.get(pk=self.test_partner.pk)
+        self.assertIn('updated_logo', updated_partner.logo.name)
+
 
