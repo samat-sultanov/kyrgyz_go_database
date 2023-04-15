@@ -107,3 +107,8 @@ class PartnerTestsForRegisteredUser(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Partner.objects.count(), 2)
 
+        new_partner = Partner.objects.exclude(pk=self.test_partner.pk).get()
+        self.assertEqual(new_partner.name, 'New name')
+        self.assertEqual(new_partner.web_link, 'https://example.com')
+        self.assertTrue(new_partner.logo)
+
