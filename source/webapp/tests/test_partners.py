@@ -54,3 +54,8 @@ class PartnerTestsForUnregisteredUser(TestCase):
         self.test_partner.refresh_from_db()
         self.assertEqual(Partner.objects.count(), 1)
 
+    def test_partner_detail(self):
+        url = reverse('webapp:partner_detail', args=[self.test_partner.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
