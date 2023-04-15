@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import re
 
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
@@ -101,7 +102,7 @@ class ParticipantCreate(CreateView):
         phonenumber = self.request.POST.get('phonenumber')
         participants = event.participant.all()
         for participant in participants:
-            if name == participant.name and surname == participant.surname:
+            if re.sub(' +', ' ', name.strip().title()) == participant.name and re.sub(' +', ' ', surname.strip().title()) == participant.surname:
                 form.add_error('name', 'Данный игрок уже зарегистрирован.')
                 return super().form_invalid(form)
             elif phonenumber == participant.phonenumber:
