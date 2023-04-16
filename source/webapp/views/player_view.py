@@ -27,6 +27,12 @@ class PlayerDetail(TemplateView):
         context['player_losses'] = player_wins_loses(pk)['losses']
         context['evolution'] = get_data_for_gor_evolution(pk)
         context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
+
+        if not self.request.user.is_anonymous:
+            player_clubs = get_object_or_404(Player, pk=self.kwargs.get('pk')).clubs.all()
+            coach_clubs = self.request.user.clubs.all()
+            if list(set(player_clubs) & set(coach_clubs)):
+                context['same_club'] = 1
         return context
 
     def get_object(self):
