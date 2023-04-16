@@ -45,7 +45,7 @@ class ClubTestsForUnregisteredUser(TestCase):
                 'name': 'Test_club_create',
                 'coaches': 'admin'
                 }
-        response = self.client.post(url, data=data)  # Запрос на создание статьи
+        response = self.client.post(url, data=data)  # Запрос на создание клуба
         self.assertEqual(response.status_code, 302)  # Все ещё нет доступа на страницу
         self.assertEqual(Club.objects.count(), 1)  # Проверка на то, что клуб не был создан
         redirect_url = reverse('accounts:login') + f'?next={url}'  # url для сравнения с response
