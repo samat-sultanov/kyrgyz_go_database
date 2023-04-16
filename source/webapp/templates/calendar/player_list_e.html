@@ -52,11 +52,11 @@
                         </td>
                         <td>
                             <button type="button" class="btn btn-outline-secondary kgf_modal" data-bs-toggle="modal"
-                                    data-bs-target="#myModal">
+                                    data-bs-target="#myModal_{{ players.pk }}">
                                 <i class="bi bi-trash3-fill"></i>
                             </button>
                             <!-- Модалка подтверждения -->
-                            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+                            <div class="modal fade" id="myModal_{{ players.pk }}" tabindex="-1" aria-labelledby="myModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
