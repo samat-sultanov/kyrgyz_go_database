@@ -21,10 +21,11 @@ class PartnerCreateView(PermissionRequiredMixin, CreateView):
         return reverse('webapp:partner_detail', kwargs={'pk': self.object.pk})
 
 
-class PartnerDetailView(DetailView):
+class PartnerDetailView(PermissionRequiredMixin, DetailView):
     model = Partner
     template_name = 'partner/partner_detail.html'
     context_object_name = 'partner'
+    permission_required = ('webapp.partner_detail',)
 
 
 class PartnerUpdateView(PermissionRequiredMixin, UpdateView):

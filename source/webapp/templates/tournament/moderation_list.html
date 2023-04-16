@@ -51,7 +51,7 @@
                                                                        value="Удалить">
             </form></td>
             <td>
-                <button class="btn btn-outline-secondary">Подробнее</button>
+                <button class="btn btn-outline-secondary"><a style="text-decoration: none; color: gray" href="{% url "webapp:tournament_moderation_detail" tournament.pk %}">Подробнее</a></button>
             </td>
         </tr>
     {% endfor %}

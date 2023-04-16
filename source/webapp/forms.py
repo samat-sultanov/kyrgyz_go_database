@@ -10,8 +10,8 @@ from django.utils import timezone
 from datetime import datetime
 import re
 
-
 latin_regex = re.compile(r'^[a-zA-Z\- ]+$')
+
 
 def validate_latin_chars(value):
     if not latin_regex.match(value):
@@ -78,7 +78,8 @@ class TournamentSearchForm(forms.Form):
         if search_date is not None:
             date_str = str(search_date)
             if not re.match(r'^\d{4}-\d{2}-\d{2}$', date_str):
-                raise ValidationError("Дата турнира была некорректно введена! Введите дату турнира в корректном формате.")
+                raise ValidationError(
+                    "Дата турнира была некорректно введена! Введите дату турнира в корректном формате.")
         return search_date
 
 
@@ -217,6 +218,24 @@ class ParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
         fields = ['surname', 'name', 'rank', 'phonenumber']
+
+    def clean_name(self):
+        return re.sub(' +', ' ', self.cleaned_data['name'].strip().capitalize())
+
+    def clean_surname(self):
+        return re.sub(' +', ' ', self.cleaned_data['surname'].strip().capitalize())
+
+    def clean_rank(self):
+        return self.cleaned_data['rank'].strip().lower()
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.name = re.sub(' +', ' ', self.cleaned_data['name'].strip().capitalize())
+        instance.surname = re.sub(' +', ' ', self.cleaned_data['surname'].strip().capitalize())
+        instance.rank = self.cleaned_data['rank'].strip().lower()
+        if commit:
+            instance.save()
+        return instance
 
 
 class SearchParPlayer(forms.Form):

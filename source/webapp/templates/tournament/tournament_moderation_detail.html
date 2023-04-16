@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mb-4 mt-4">
+        <div class="mb-4">
+            <h2 class="title">Турнир на модерации: {{ tournament.name }}</h2>
+            <p>Дата: {{ tournament.date|date:"d-m-Y" }}</p>
+            <p>Город: {{ tournament.city }}</p>
+            <p>Число участников: {{ tournament.player_set.count }}</p>
+            <p>Раунды: {{ tournament.rounds }}</p>
+            <p>Размер доски: {{ tournament.board_size }}</p>
+            <p>Класс: {{ tournament.tournament_class }}</p>
+            <p>Регламент: {{ tournament.regulations|linebreaks }}</p>
+        </div>
+    </div>
+    <div class="container mt-4 mb-4">
+        <h3 class="title">Список участников:</h3>
+        <table class="table rwd-table adaptive">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">EgdPin</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Клуб</th>
+                <th scope="col">Ранг</th>
+                <th scope="col">Победы</th>
+                <th scope="col">Поражения</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if sorted_players %}
+                {% for el in sorted_players %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td data-label="EgdPin">{{ el.player.EgdPin }}</td>
+                    <td data-label="Last Name">{{ el.player.last_name }}</td>
+                    <td data-label="First Name">{{ el.player.first_name }}</td>
+                    {% if el.player.clubs.all %}
+                        {% for club in el.player.clubs.all %}
+                            <td data-label="Club">{{ club.name }}</td>
+                        {% endfor %}
+                    {% else %}
+                        <td data-label="Club"></td>
+                    {% endif %}
+                    <td data-label="Rank">{{ el.GoLevel }}</td>
+                    {% for winner in wins %}
+                        {% if el.player.pk == winner.player %}
+                            <td data-label="Wins">{{ winner.wins }}</td>
+                            <td data-label="Losses">{{ winner.losses }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            {% endif %}
+            {% if players_with_rate_k %}
+
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{##}
