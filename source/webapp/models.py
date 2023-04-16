@@ -275,7 +275,7 @@ class Participant(models.Model):
     surname = models.CharField(max_length=20, verbose_name='Фамилия', null=False, blank=False)
     rank = models.CharField(max_length=3, verbose_name='GoLevel', null=False, blank=False)
     event = models.ForeignKey('webapp.Calendar', on_delete=models.CASCADE, related_name='participant')
-    city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True, verbose_name='Город')
     phonenumber = PhoneNumberField(verbose_name='Номер телефона'
                                    , null=True, blank=False, max_length=16, default=None)
     status = models.CharField(max_length=50, default=STATUS[1][1], choices=STATUS, verbose_name='Статус')

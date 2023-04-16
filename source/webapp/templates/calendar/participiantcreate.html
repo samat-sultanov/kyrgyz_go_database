@@ -87,6 +87,11 @@
                         name_id.value = obj['first_name']
                         surname_id.value = obj['last_name']
                         id_rank.value = obj['current_rank']
+                        let city_obj = obj['city']
+                        if(city_obj != null){
+                          let city = city_obj['city']
+                          console.log(city)
+                        }
                         sho_data.innerHTML =  `
                         <label><span style="font-size: 20px">Player</span>: ${obj['first_name']} ${obj['last_name']}</label><br/>
                         <label><span style="font-size: 20px">Rank</span>: ${obj['current_rank']}</label>`
