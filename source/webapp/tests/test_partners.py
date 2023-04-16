@@ -44,3 +44,18 @@ class PartnerTestsForUnregisteredUser(TestCase):
         self.test_partner.refresh_from_db()
         self.assertEqual(self.test_partner.name, 'Test name')
         self.assertEqual(self.test_partner.web_link, 'https://test.com')
+
+    def test_partner_delete(self):
+        url = reverse('webapp:partner_delete', args=[self.test_partner.pk])
+        redirect_url = reverse('accounts:login') + f'?next={url}'
+        response = self.client.post(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, redirect_url)
+        self.test_partner.refresh_from_db()
+        self.assertEqual(Partner.objects.count(), 1)
+
+    def test_partner_detail(self):
+        url = reverse('webapp:partner_detail', args=[self.test_partner.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
