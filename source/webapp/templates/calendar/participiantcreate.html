@@ -44,10 +44,12 @@
     let name_id = document.getElementById('id_name')
     let surname_id = document.getElementById('id_surname')
     let id_rank = document.getElementById('id_rank')
+    let id_city = document.getElementById('id_city')
     let search = document.getElementById('search_last_name')
     name_id.value = ''
     surname_id.value = ''
     id_rank.value = ''
+    id_city.value = ''
     let filteredArr = []
     let customtimeout
     let errortimeout
@@ -90,6 +92,7 @@
                         let city_obj = obj['city']
                         if(city_obj != null){
                           let city = city_obj['city']
+                           id_city.value = city
                           console.log(city)
                         }
                         sho_data.innerHTML =  `
@@ -114,10 +117,12 @@
               let surname_id = document.getElementById('id_surname')
               let id_rank = document.getElementById('id_rank')
               let input_search = document.getElementById('search_last_name')
+              let id_city = document.getElementById('id_city')
               input_search.type = 'text'
               name_id.type = 'hidden'
               surname_id.type = 'hidden'
               id_rank.type = 'hidden'
+              id_city.type = 'hidden'
           }
           else {
                 sho_data.innerHTML = ''
@@ -126,19 +131,22 @@
                 let name_id = document.getElementById('id_name')
                 let surname_id = document.getElementById('id_surname')
                 let id_rank = document.getElementById('id_rank')
+                let id_city = document.getElementById('id_city')
                 name_id.type = 'text'
                 surname_id.type = 'text'
                 id_rank.type = 'text'
+                id_city.type = 'text'
                 box.innerHTML = ''
                 input_search.type = 'hidden'
                 name_id.value = ''
                 surname_id.value = ''
                 id_rank.value = ''
+                id_city.value = ''
           }
         }
 
         let formss = document.getElementById('actionpost');
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 5; i++) {
             let child = formss.getElementsByTagName("p")[i];
             formss.removeChild(child);
         }
