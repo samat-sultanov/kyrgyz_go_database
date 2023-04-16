@@ -220,18 +220,18 @@ class ParticipantForm(forms.ModelForm):
         fields = ['surname', 'name', 'rank', 'phonenumber']
 
     def clean_name(self):
-        return re.sub(' +', ' ', self.cleaned_data['name'].strip().title())
+        return re.sub(' +', ' ', self.cleaned_data['name'].strip().capitalize())
 
     def clean_surname(self):
-        return re.sub(' +', ' ', self.cleaned_data['surname'].strip().title())
+        return re.sub(' +', ' ', self.cleaned_data['surname'].strip().capitalize())
 
     def clean_rank(self):
         return self.cleaned_data['rank'].strip().lower()
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.name = re.sub(' +', ' ', self.cleaned_data['name'].strip().title())
-        instance.surname = re.sub(' +', ' ', self.cleaned_data['surname'].strip().title())
+        instance.name = re.sub(' +', ' ', self.cleaned_data['name'].strip().capitalize())
+        instance.surname = re.sub(' +', ' ', self.cleaned_data['surname'].strip().capitalize())
         instance.rank = self.cleaned_data['rank'].strip().lower()
         if commit:
             instance.save()

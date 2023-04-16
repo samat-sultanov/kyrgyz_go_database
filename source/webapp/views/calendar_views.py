@@ -102,7 +102,8 @@ class ParticipantCreate(CreateView):
         phonenumber = self.request.POST.get('phonenumber')
         participants = event.participant.all()
         for participant in participants:
-            if re.sub(' +', ' ', name.strip().title()) == participant.name and re.sub(' +', ' ', surname.strip().title()) == participant.surname:
+            if re.sub(' +', ' ', name.strip().capitalize()) == participant.name and re.sub(' +', ' ',
+                                                                                           surname.strip().capitalize()) == participant.surname:
                 form.add_error('name', 'Данный игрок уже зарегистрирован.')
                 return super().form_invalid(form)
             elif phonenumber == participant.phonenumber:
