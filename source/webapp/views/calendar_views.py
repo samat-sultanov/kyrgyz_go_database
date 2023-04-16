@@ -1,6 +1,7 @@
 import json
+import itertools
+import re
 from datetime import datetime
-
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -100,6 +101,18 @@ class ParticipantCreate(CreateView):
         name = self.request.POST.get('name')
         phonenumber = self.request.POST.get('phonenumber')
         participants = event.participant.all()
+
+        events = Calendar.objects.filter(event_date__gte=datetime.today())
+        players_in_events = []
+        for each_event in events:
+            players_in_events.append(each_event.participant.all())
+        event_players = list(itertools.chain.from_iterable(players_in_events))
+        for each_player in event_players:
+            if re.sub(' +', ' ', name.strip().capitalize()) == each_player.name and re.sub(' +', ' ',
+                                                                                           surname.strip().capitalize()) == each_player.surname:
+                form.add_error('name', f'Данный игрок уже участвует в турнире - "{each_player.event.event_name}"')
+                return super().form_invalid(form)
+
         for participant in participants:
             if name == participant.name and surname == participant.surname:
                 form.add_error('name', 'Данный игрок уже зарегистрирован.')
@@ -107,6 +120,7 @@ class ParticipantCreate(CreateView):
             elif phonenumber == participant.phonenumber:
                 form.add_error('phonenumber', 'Номер телефона уже зарегистрирован.')
                 return super().form_invalid(form)
+
         form.instance.event = event
         return super().form_valid(form)
 
