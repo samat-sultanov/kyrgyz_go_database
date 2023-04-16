@@ -23,8 +23,12 @@ class PlayerDetail(TemplateView):
         context[self.context_key] = self.get_object()
         context['position'] = get_position_in_kgf()
         context['games'] = get_data_for_table_games(pk)
-        context['player_wins'] = player_wins_loses(pk)['wins']
-        context['player_losses'] = player_wins_loses(pk)['losses']
+        context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
+        context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
+        context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
+        context['player_losses_stronger'] = player_wins_loses(pk)['losses_stronger']
+        context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
+        context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
         context['evolution'] = get_data_for_gor_evolution(pk)
         context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
 
