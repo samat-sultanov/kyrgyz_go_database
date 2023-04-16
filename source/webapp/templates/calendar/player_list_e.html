@@ -26,10 +26,15 @@
             </tr>
             </thead>
             <tbody>
-            {% for players in  event.participant.all %}
+            {% for players in out_players %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
+                    {% if players.pk_bd != 0 %}
+                        <td data-label="Фамилия"><a style="color: black;"
+                                                                href="{% url "webapp:player_detail" players.pk_bd %}">{{ players.surname }}</a>
+                    {% else %}
                     <td data-label="Фамилия">{{ players.surname }}</td>
+                    {% endif %}
                     <td data-label="Имя">{{ players.name }}</td>
                     <td data-label="Город">{{ players.city }}</td>
                     <td data-label="Ранг">{{ players.rank }}</td>
