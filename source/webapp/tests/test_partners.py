@@ -25,7 +25,7 @@ class PartnerTestsForUnregisteredUser(TestCase):
         data = {
             'name': 'New name',
             'web_link': 'https://example.com'
-                }
+        }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Partner.objects.count(), 1)
@@ -113,4 +113,34 @@ class PartnerTestsForRegisteredUser(TestCase):
         self.assertTrue(new_partner.logo)
 
         partner_detail_url = reverse('webapp:partner_detail', args=[new_partner.pk])
+        self.assertRedirects(response, partner_detail_url)
+
+    def test_partner_update(self):
+        url = reverse('webapp:partner_update', args=[self.test_partner.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        logo_file = BytesIO()
+        logo_image = Image.new('RGB', (100, 100), 'black')
+        logo_image.save(logo_file, 'jpeg')
+        logo_file.name = 'updated_logo.jpg'
+        logo_file.seek(0)
+        logo_update = SimpleUploadedFile(logo_file.name, logo_file.read(), content_type='image/jpeg')
+        data = {
+            'name': 'Updated name',
+            'logo': logo_update,
+            'web_link': 'https://example111.com'
+        }
+
+        response = self.client.post(url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Partner.objects.count(), 1)
+
+        self.test_partner.refresh_from_db()
+        self.assertEqual(self.test_partner.name, 'Updated name')
+        self.assertEqual(self.test_partner.web_link, 'https://example111.com')
+        updated_partner = Partner.objects.get(pk=self.test_partner.pk)
+        self.assertIn('updated_logo', updated_partner.logo.name)
+
+        partner_detail_url = reverse('webapp:partner_detail', args=[updated_partner.pk])
         self.assertRedirects(response, partner_detail_url)
