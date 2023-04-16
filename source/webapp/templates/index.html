@@ -85,9 +85,8 @@
                             <tr class="table-light">
                                 <td style="text-align: center;">{{ event.event_date|date:"d.m.y" }}</td>
                                 <td style="text-align: center;">{{ event.event_city }}</td>
-                                <td class="text-break" style="text-align: center;"><a
-                                        href="{% url 'webapp:event_view' event.pk %}"
-                                        class="text-decoration-none link-dark">{{ event.event_name }}</a></td>
+                                <td class="text-break" style="text-align: center;"><a style="color: black;"
+                                        href="{% url 'webapp:event_view' event.pk %}">{{ event.event_name }}</a></td>
                                 {% if request.user.is_authenticated %}
                                     <td><a style="color: black" class="ms-2"
                                            href="{% url 'webapp:event_update' event.pk %}"><i class="bi bi-pencil-fill"></i></a>
