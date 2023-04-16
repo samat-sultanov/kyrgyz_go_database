@@ -50,18 +50,29 @@
                 <h3 class="title">Последние новости:</h3>
                 {% for news in latest_news %}
                     <div class="border-bottom mb-4"></div>
+
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4" style="margin-bottom: 5px">
+                        {% if news.news_image %}
+                            {% thumbnail news.news_image "400x400" as im %}
+                                <img style="width: 100%; border: solid; border-color: grey; border-width: 1px"
+                                     src="{{ im.url }}" alt="news_image">
+                            {% endthumbnail %}
+                        {% endif %}
+                    </div>
+
                     <h5 class="news-title">{{ news.title|truncatechars:60 }}</h5>
                     <p>{{ news.text|truncatechars:400 }}</p>
                     <i>{{ news.created_at|date:"d F Y" }}</i>
                     <a class="btn btn-light ms-4" href="{{ news.get_absolute_url }}">Читать далее >></a>
                     <div class="mb-4 mt-4"></div>
                 {% endfor %}
-            <div class="container border-top mt-4 mb-5">
-                <a class="btn btn-outline-secondary mt-4" href="{% url 'webapp:news_list' %}">Все новости >></a>
-                {% if request.user.is_authenticated %}
-                    <a class="btn btn-outline-secondary mt-4" href="{% url 'webapp:news_create' %}">Создать новость</a>
-                {% endif %}
-            </div>
+                <div class="container border-top mt-4 mb-5">
+                    <a class="btn btn-outline-secondary mt-4" href="{% url 'webapp:news_list' %}">Все новости >></a>
+                    {% if request.user.is_authenticated %}
+                        <a class="btn btn-outline-secondary mt-4" href="{% url 'webapp:news_create' %}">Создать
+                            новость</a>
+                    {% endif %}
+                </div>
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-4">
                 <h3 class="title">Календарь Мероприятий:</h3>
@@ -86,24 +97,31 @@
                                 <td style="text-align: center;">{{ event.event_date|date:"d.m.y" }}</td>
                                 <td style="text-align: center;">{{ event.event_city }}</td>
                                 <td class="text-break" style="text-align: center;"><a style="color: black;"
-                                        href="{% url 'webapp:event_view' event.pk %}">{{ event.event_name }}</a></td>
+                                                                                      href="{% url 'webapp:event_view' event.pk %}">{{ event.event_name }}</a>
+                                </td>
                                 {% if request.user.is_authenticated %}
                                     <td><a style="color: black" class="ms-2"
-                                           href="{% url 'webapp:event_update' event.pk %}"><i class="bi bi-pencil-fill"></i></a>
+                                           href="{% url 'webapp:event_update' event.pk %}"><i
+                                            class="bi bi-pencil-fill"></i></a>
                                         {% if request.user.is_authenticated %}
                                             <!-- Открывает модалку подтверждения -->
-                                            <a style="color: black" class="ms-2 kgf_modal" href="" data-bs-toggle="modal"
-                                               data-bs-target="#delete_event_Modal" type="button"><i class="bi bi-trash3-fill"></i></a>
+                                            <a style="color: black" class="ms-2 kgf_modal" href=""
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#delete_event_Modal" type="button"><i
+                                                    class="bi bi-trash3-fill"></i></a>
 
                                             <!-- Модалка подтверждения -->
-                                            <div class="modal fade" id="delete_event_Modal" tabindex="-1" aria-labelledby="delete_event_ModalLabel"
+                                            <div class="modal fade" id="delete_event_Modal" tabindex="-1"
+                                                 aria-labelledby="delete_event_ModalLabel"
                                                  aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h3 class="modal-title fs-5" id="delete_event_ModalLabel">Вы уверены, что хотите
+                                                            <h3 class="modal-title fs-5" id="delete_event_ModalLabel">Вы
+                                                                уверены, что хотите
                                                                 удалить это событие?</h3>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-footer">
@@ -165,19 +183,19 @@
         </div>
     </div>
     <div class="container text-center mt-5 mb-5 ">
-    <h3 class="title">Наши Партнеры:</h3>
-    <div class="row">
-        {% for partner in partners %}
-            <div class="col-6 col-sm-2 col-md-2 col-lg-1 mt-4 mb-4 mx-auto">
-                <a href="{{ partner.web_link }}">
-                    {% thumbnail partner.logo "78x78" crop="center" as im %}
-                        <img class="rounded-circle z-depth-0" style="opacity: 0.9;" src="{{ im.url }}"
-                             onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.9';">
-                    {% endthumbnail %}
-                </a>
-            </div>
-        {% endfor %}
-    </div>
+        <h3 class="title">Наши Партнеры:</h3>
+        <div class="row">
+            {% for partner in partners %}
+                <div class="col-6 col-sm-2 col-md-2 col-lg-1 mt-4 mb-4 mx-auto">
+                    <a href="{{ partner.web_link }}">
+                        {% thumbnail partner.logo "78x78" crop="center" as im %}
+                            <img class="rounded-circle z-depth-0" style="opacity: 0.9;" src="{{ im.url }}"
+                                 onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.9';">
+                        {% endthumbnail %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}
