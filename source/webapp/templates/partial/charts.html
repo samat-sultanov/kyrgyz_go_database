@@ -1,4 +1,4 @@
-<div style="height: 300px;width: 300px;">
+<div style="height: 340px;width: 340px;">
   <canvas id="myChart"></canvas>
 </div>
 
@@ -10,11 +10,32 @@
   new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['Победы', 'Поражения'],
-      datasets: [{
-        data: [{{ player_wins }}, {{ player_losses}}],
-        borderWidth: 1
-      }]
+      labels: ['{{ player_wins_stronger}} Побед над более сильными противниками',
+          '{{ player_wins_weaker }} Побед над более слабыми противниками',
+          '{{ player_losses_stronger }} Поражений от более сильных противников',
+          '{{ player_losses_weaker }} Поражений от более слабых противников',
+          '{{ player_wins_equal }} Побед над равными противниками',
+          '{{ player_losses_equal }} Поражений от равных противников'
+      ],
+        datasets: [{
+            data: [
+                {{ player_wins_stronger}},
+                {{ player_wins_weaker }},
+                {{ player_losses_stronger }},
+                {{ player_losses_weaker }},
+                {{ player_wins_equal }},
+                {{ player_losses_equal }}
+            ],
+            backgroundColor: [
+                'rgb(51,163,236)',
+                'rgb(149, 228, 255)',
+                'rgb(255,67,164)',
+                'rgb(255,119,255)',
+                'rgb(10,10,10)',
+                'rgb(76,81,74)'
+            ],
+            hoverOffset: 4
+          }]
     }
   });
 </script>

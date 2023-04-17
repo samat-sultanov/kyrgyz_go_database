@@ -249,20 +249,44 @@ def player_wins_loses(pk):
     wl = []
     for game in games:
         new_dict = dict()
-        wins = 0
-        losses = 0
+        wins_stronger = 0
+        wins_weaker = 0
+        losses_stronger = 0
+        losses_weaker = 0
+        wins_equal = 0
+        losses_equal = 0
         if game.result:
-            if game.black == player and game.black_score > 0:
-                wins += game.black_score
-            elif game.white == player and game.white_score > 0:
-                wins += game.white_score
-            elif game.black == player and game.white_score > 0:
-                losses += 1
-            elif game.white == player and game.black_score > 0:
-                losses += 1
+            if game.black == player and game.black_score > 0 and game.black.current_rating > game.white.current_rating:
+                wins_weaker += game.black_score
+            elif game.black == player and game.black_score > 0 and game.black.current_rating < game.white.current_rating:
+                wins_stronger += game.black_score
+            elif game.white == player and game.white_score > 0 and game.white.current_rating > game.black.current_rating:
+                wins_weaker += game.white_score
+            elif game.white == player and game.white_score > 0 and game.white.current_rating < game.black.current_rating:
+                wins_stronger += game.white_score
+            elif game.black == player and game.white_score > 0 and game.black.current_rating > game.white.current_rating:
+                losses_weaker += 1
+            elif game.black == player and game.white_score > 0 and game.black.current_rating < game.white.current_rating:
+                losses_stronger += 1
+            elif game.white == player and game.black_score > 0 and game.white.current_rating > game.black.current_rating:
+                losses_weaker += 1
+            elif game.white == player and game.black_score > 0 and game.white.current_rating < game.black.current_rating:
+                losses_stronger += 1
+            elif game.black == player and game.white_score > 0 and game.black.current_rating == game.white.current_rating:
+                losses_equal += 1
+            elif game.black == player and game.black_score > 0 and game.black.current_rating == game.white.current_rating:
+                wins_equal += 1
+            elif game.white == player and game.black_score > 0 and game.white.current_rating == game.black.current_rating:
+                losses_equal += 1
+            elif game.white == player and game.white_score > 0 and game.white.current_rating == game.black.current_rating:
+                wins_equal += 1
         new_dict['player'] = player.pk
-        new_dict['wins'] = wins
-        new_dict['losses'] = losses
+        new_dict['wins_weaker'] = wins_weaker
+        new_dict['wins_stronger'] = wins_stronger
+        new_dict['losses_weaker'] = losses_weaker
+        new_dict['losses_stronger'] = losses_stronger
+        new_dict['losses_equal'] = losses_equal
+        new_dict['wins_equal'] = wins_equal
         wl.append(new_dict)
     c = Counter()
     for d in wl:
