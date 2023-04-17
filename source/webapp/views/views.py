@@ -1,10 +1,22 @@
+import os
+from xml.etree.ElementTree import fromstring
+
+import lxml
+import xmltodict
+import json
+
+from bs4 import BeautifulSoup
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.html import strip_tags
-from django.views.generic import TemplateView
+from django.views import View
+from django.views.generic import TemplateView, FormView
 from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Tournament, News, Partner
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
@@ -31,92 +43,148 @@ class IndexView(TemplateView):
         return context
 
 
-def file_upload(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        form = FileForm(request.POST, request.FILES)
-        if form.is_valid():
-            a = form.save()
-            tournament = handle_uploaded_file(request.FILES['file'])
-            file = get_object_or_404(File, pk=a.id)
-            file.delete()
-            if not tournament:
-                error = "Действие недоступно! Турнир с таким именем уже есть в базе данных."
-                return render(request, 'file_upload.html', {'form': form, 'error': error})
+class FileUpload(FormView):
+    template_name = 'file_upload.html'
+    form_class = FileForm
+
+    def form_valid(self, form):
+        xml_file = self.request.FILES['file']
+        file_name = xml_file.name.strip().split('.')[0].lower().replace(' ', '_')
+        file_ext = xml_file.name.split('.')[-1].lower()
+        if file_ext != 'xml':
+            form.add_error('file', 'Only XML files are allowed.')
+            return self.form_invalid(form)
+        json_file_path = f'json/{file_name}.json'
+        if default_storage.exists(json_file_path):
+            form.add_error('file', 'A file with this name already exists.')
+            return self.form_invalid(form)
+        doc = xmltodict.parse(xml_file)
+        json_data = json.dumps(doc, indent=4)
+        with default_storage.open(json_file_path, 'w') as f:
+            f.write(ContentFile(json_data).read())
+        xml_file.file.close()
+        return HttpResponseRedirect(reverse('webapp:file_check', args=[file_name]))
+
+
+class TournamentCheckView(FormView):
+    template_name = 'tournament/tournament_check.html'
+    form_class = CheckTournamentForm
+
+    def get_initial(self):
+        initial = super().get_initial()
+        file_name = self.kwargs.get('file_name')
+        json_file_path = f"json/{file_name.split('.')[0]}.json"
+        with default_storage.open(json_file_path, 'r') as f:
+            data = json.load(f)
+        if initial is not None:
+            initial.update(data)
         else:
-            return render(request, 'file_upload.html', {'form': form})
-        return redirect('webapp:file_check', pk=tournament.pk)
-    elif request.method == 'GET' and request.user.is_authenticated:
-        form = FileForm
-        return render(request, 'file_upload.html', {'form': form})
-    else:
-        return render(request, '403.html')
+            initial = data
+        initial.update({'age': ''})
+        initial.update({'file_name': file_name})
+        return initial
+
+    def form_valid(self, form):
+        json_file_path = self.kwargs.get('json_file_path')
+        with default_storage.open(json_file_path, 'r') as f:
+            data = json.load(f)
+        for key in form.cleaned_data:
+            if key in data:
+                data[key] = form.cleaned_data[key]
+        if form.cleaned_data['age']:
+            data['age'] = form.cleaned_data['age']
+        json_data = json.dumps(data)
+        with default_storage.open(json_file_path, 'w') as f:
+            f.write(ContentFile(json_data).read())
+        return super().form_valid(form)
 
 
-def file_upload_check(request, pk):
-    if request.method == 'POST' and request.user.is_authenticated:
-        tournament = Tournament.objects.get(pk=pk)
-        players = tournament.player_set.all()
-        birth_date = request.POST.getlist('birth_date')
-        EgdPin = request.POST.getlist('EgdPin')
-        tournament_form = CheckTournamentForm(request.POST)
-        city = request.POST.get('city')
-        date = request.POST.get('date')
-        regulations = request.POST.get('regulations')
-        tournament_class = request.POST.get('tournament_class')
-        uploaded_by = request.user
-        if tournament_form.is_valid():
-            if city == '' and date == '' and tournament_class == '' and regulations == '':
-                tournament_form = CheckTournamentForm(
-                    {'city': tournament.city, 'date': tournament.date, 'tournament_class': tournament.tournament_class,
-                     'regulations': tournament.regulations, 'uploaded_by': uploaded_by}, instance=tournament)
-            else:
-                tournament_form = CheckTournamentForm(
-                    {'city': city, 'date': date, 'tournament_class': tournament_class, 'regulations': regulations,
-                     'uploaded_by': uploaded_by}, instance=tournament)
-            tournament_form.save()
-
-        form = CheckPlayerForm(request.POST)
-        if form.is_valid():
-            try:
-                for player, pin, bd in zip(players, EgdPin, birth_date):
-                    if bd == '' and pin == '':
-                        form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': player.EgdPin},
-                                               instance=player)
-                    elif bd == '' and pin != '':
-                        form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': pin},
-                                               instance=player)
-                    elif bd != '' and pin == '':
-                        form = CheckPlayerForm({'birth_date': bd, 'EgdPin': player.EgdPin},
-                                               instance=player)
-                    else:
-                        form = CheckPlayerForm({'birth_date': bd, 'EgdPin': pin}, instance=player)
-                    if form.is_valid():
-                        form.save()
-                    else:
-                        messages.add_message(request, messages.ERROR,
-                                             'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
-                        return redirect(request.META.get('HTTP_REFERER'))
-                return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
-            except forms.ValidationError:
-                messages.add_message(request, messages.ERROR,
-                                     'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
-                return redirect(request.META.get('HTTP_REFERER'))
-        else:
-            messages.add_message(request, messages.ERROR,
-                                 'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
-            return redirect(request.META.get('HTTP_REFERER'))
-
-    if request.method == 'GET' and request.user.is_authenticated:
-        tournament = Tournament.objects.get(pk=pk)
-        players = tournament.player_set.all()
-        player_form = CheckPlayerForm()
-        tournament_form = CheckTournamentForm()
-        wins = get_wins_losses(pk)
-        return render(request, 'tournament/tournament_check.html',
-                      {'tournament': tournament, 'players': players, 'wins': wins, 'player_form': player_form,
-                       'tournament_form': tournament_form})
-    else:
-        raise PermissionDenied()
+# def file_upload(request):
+#     if request.method == 'POST' and request.user.is_authenticated:
+#         form = FileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             a = form.save()
+#             tournament = handle_uploaded_file(request.FILES['file'])
+#             file = get_object_or_404(File, pk=a.id)
+#             file.delete()
+#             if not tournament:
+#                 error = "Действие недоступно! Турнир с таким именем уже есть в базе данных."
+#                 return render(request, 'file_upload.html', {'form': form, 'error': error})
+#         else:
+#             return render(request, 'file_upload.html', {'form': form})
+#         return redirect('webapp:file_check', pk=tournament.pk)
+#     elif request.method == 'GET' and request.user.is_authenticated:
+#         form = FileForm
+#         return render(request, 'file_upload.html', {'form': form})
+#     else:
+#         return render(request, '403.html')
+#
+#
+# def file_upload_check(request, pk):
+#     if request.method == 'POST' and request.user.is_authenticated:
+#         tournament = Tournament.objects.get(pk=pk)
+#         players = tournament.player_set.all()
+#         birth_date = request.POST.getlist('birth_date')
+#         EgdPin = request.POST.getlist('EgdPin')
+#         tournament_form = CheckTournamentForm(request.POST)
+#         city = request.POST.get('city')
+#         date = request.POST.get('date')
+#         regulations = request.POST.get('regulations')
+#         tournament_class = request.POST.get('tournament_class')
+#         uploaded_by = request.user
+#         if tournament_form.is_valid():
+#             if city == '' and date == '' and tournament_class == '' and regulations == '':
+#                 tournament_form = CheckTournamentForm(
+#                     {'city': tournament.city, 'date': tournament.date, 'tournament_class': tournament.tournament_class,
+#                      'regulations': tournament.regulations, 'uploaded_by': uploaded_by}, instance=tournament)
+#             else:
+#                 tournament_form = CheckTournamentForm(
+#                     {'city': city, 'date': date, 'tournament_class': tournament_class, 'regulations': regulations,
+#                      'uploaded_by': uploaded_by}, instance=tournament)
+#             tournament_form.save()
+#
+#         form = CheckPlayerForm(request.POST)
+#         if form.is_valid():
+#             try:
+#                 for player, pin, bd in zip(players, EgdPin, birth_date):
+#                     if bd == '' and pin == '':
+#                         form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': player.EgdPin},
+#                                                instance=player)
+#                     elif bd == '' and pin != '':
+#                         form = CheckPlayerForm({'birth_date': player.birth_date, 'EgdPin': pin},
+#                                                instance=player)
+#                     elif bd != '' and pin == '':
+#                         form = CheckPlayerForm({'birth_date': bd, 'EgdPin': player.EgdPin},
+#                                                instance=player)
+#                     else:
+#                         form = CheckPlayerForm({'birth_date': bd, 'EgdPin': pin}, instance=player)
+#                     if form.is_valid():
+#                         form.save()
+#                     else:
+#                         messages.add_message(request, messages.ERROR,
+#                                              'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+#                         return redirect(request.META.get('HTTP_REFERER'))
+#                 return redirect(reverse('webapp:tournament_detail', kwargs={'pk': tournament.pk}))
+#             except forms.ValidationError:
+#                 messages.add_message(request, messages.ERROR,
+#                                      'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+#                 return redirect(request.META.get('HTTP_REFERER'))
+#         else:
+#             messages.add_message(request, messages.ERROR,
+#                                  'Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
+#             return redirect(request.META.get('HTTP_REFERER'))
+#
+#     if request.method == 'GET' and request.user.is_authenticated:
+#         tournament = Tournament.objects.get(pk=pk)
+#         players = tournament.player_set.all()
+#         player_form = CheckPlayerForm()
+#         tournament_form = CheckTournamentForm()
+#         wins = get_wins_losses(pk)
+#         return render(request, 'tournament/tournament_check.html',
+#                       {'tournament': tournament, 'players': players, 'wins': wins, 'player_form': player_form,
+#                        'tournament_form': tournament_form})
+#     else:
+#         raise PermissionDenied()
 
 
 def about_us_view(request, *args, **kwargs):
