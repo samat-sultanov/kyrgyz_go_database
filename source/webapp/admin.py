@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Country, City, Club, Game, Tournament, Player, PlayerInTournament, News, Calendar, Participant, \
-    Recommendation, Partner
+    Recommendation, Partner, Region
 
 admin.site.register(Country)
 admin.site.register(City)
@@ -13,3 +13,4 @@ admin.site.register(Calendar)
 admin.site.register(Participant)
 admin.site.register(Recommendation)
 admin.site.register(Partner)
+admin.site.register(Region)

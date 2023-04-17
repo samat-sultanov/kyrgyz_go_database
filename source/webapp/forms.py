@@ -212,12 +212,15 @@ class ParticipantForm(forms.ModelForm):
                                   "Last name", "id": "id_surname", 'style': "width:200px"}))
     rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Rank", "id": "id_rank", 'style': "width:200px"}))
+    city = forms.CharField(required=False, validators=[validate_latin_chars], label='',
+                              widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                                  "City", "id": "id_city", 'style': "width:200px"}))
     phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
 
     class Meta:
         model = Participant
-        fields = ['surname', 'name', 'rank', 'phonenumber']
+        fields = ['surname', 'name', 'rank', 'city', 'phonenumber']
 
     def clean_name(self):
         return re.sub(' +', ' ', self.cleaned_data['name'].strip().capitalize())
