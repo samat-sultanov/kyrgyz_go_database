@@ -69,8 +69,9 @@ def sync_pin_job():
                 counter = 0
                 temp_matching_player = None
                 for player_in_list in egd_response_players_list:
-                    if player_in_list.get('lastname') == player.last_name and player_in_list.get(
-                            'name') == player.first_name:
+                    print(f"{player_in_list.get('Last_Name')} == {player.last_name} and {player_in_list.get('Name')} == {player.first_name}")
+                    if player_in_list.get('Last_Name') == player.last_name and player_in_list.get(
+                            'Name') == player.first_name:
                         temp_matching_player = player_in_list
                         counter += 1
                 if counter == 1:
