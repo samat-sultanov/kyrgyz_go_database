@@ -11,7 +11,8 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-from django.http import HttpResponse, FileResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.forms import formset_factory
+from django.http import HttpResponse, FileResponse, HttpResponseRedirect, HttpResponseBadRequest, request
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.html import strip_tags
@@ -21,7 +22,8 @@ from webapp.handle_upload import handle_uploaded_file
 from webapp.models import File, Calendar, Tournament, News, Partner
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.GoR_calculator import get_new_rating
-from webapp.views.functions import get_wins_losses, get_position_in_kgf
+from webapp.views.functions import get_wins_losses, get_position_in_kgf, \
+    unpack_data_json_tournament, unpack_data_json_players, update_json_tournament
 from django.core.exceptions import PermissionDenied
 from django import forms
 from django.contrib import messages
@@ -69,34 +71,65 @@ class FileUpload(FormView):
 class TournamentCheckView(FormView):
     template_name = 'tournament/tournament_check.html'
     form_class = CheckTournamentForm
+    CheckPlayerFormSet = formset_factory(CheckPlayerForm, extra=0)
+    success_url = '/file_upload/'
 
-    def get_initial(self):
-        initial = super().get_initial()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         file_name = self.kwargs.get('file_name')
         json_file_path = f"json/{file_name.split('.')[0]}.json"
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
-        if initial is not None:
-            initial.update(data)
-        else:
-            initial = data
-        initial.update({'age': ''})
-        initial.update({'file_name': file_name})
-        return initial
+        tournament_data = unpack_data_json_tournament(data)
+        players_data = unpack_data_json_players(data)
+        context['tournament'] = tournament_data
+        context['players'] = players_data
+        context['file_name'] = file_name
+        context['form1'] = self.form_class(initial=tournament_data)
+        context['form2'] = self.CheckPlayerFormSet(initial=players_data)
+        return context
 
     def form_valid(self, form):
-        json_file_path = self.kwargs.get('json_file_path')
+        tournament_data = {
+            'Name': form.cleaned_data['Name'],
+            'NumberOfRounds': form.cleaned_data['NumberOfRounds'],
+            'Boardsize': form.cleaned_data['Boardsize'],
+            'date': form.cleaned_data['date'].isoformat(),
+            'city': form.cleaned_data['city'],
+            'tournament_class': form.cleaned_data['tournament_class'],
+            'regulations': form.cleaned_data['regulations'],
+            'uploaded_by': self.request.user.username
+        }
+        players_data = []
+        for i in range(int(form.data['form-TOTAL_FORMS'])):
+            player_data = {
+                'EgdPin': form.data[f'form-{i}-EgdPin'],
+                'Surname': form.data[f'form-{i}-Surname'],
+                'FirstName': form.data[f'form-{i}-FirstName'],
+                'birth_date': form.data[f'form-{i}-birth_date'],
+                'GoLevel': form.data[f'form-{i}-GoLevel'],
+                'Rating': form.data[f'form-{i}-Rating'],
+                'id_in_game': form.data[f'form-{i}-id_in_game']
+            }
+            players_data.append(player_data)
+        file_name = self.kwargs.get('file_name')
+        json_file_path = f"json/{file_name.split('.')[0]}.json"
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
-        for key in form.cleaned_data:
-            if key in data:
-                data[key] = form.cleaned_data[key]
-        if form.cleaned_data['age']:
-            data['age'] = form.cleaned_data['age']
-        json_data = json.dumps(data)
+            update_json_tournament(data, tournament_data, players_data)
+        json_data = json.dumps(data, indent=4)
         with default_storage.open(json_file_path, 'w') as f:
             f.write(ContentFile(json_data).read())
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        context = self.get_context_data()
+        form1 = context['form1']
+        form2 = context['form2']
+        if not form1.is_valid():
+            return self.render_to_response(self.get_context_data(form1=form1, form2=form2))
+        if not form2.is_valid():
+            return self.render_to_response(self.get_context_data(form1=form1, form2=form2))
 
 
 # def file_upload(request):
