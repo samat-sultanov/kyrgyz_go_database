@@ -293,3 +293,21 @@ def player_wins_loses(pk):
         c.update(d)
     statistics = dict(c)
     return statistics
+
+
+def unpack_data_json_tournament(data):
+    new_dict = dict()
+    for key, value in data.items():
+        if key == "Tournament":
+            items = value
+            for k, v in items.items():
+                if k == 'Name':
+                    tournament_name = v
+                    new_dict['name'] = tournament_name
+                elif k == "NumberOfRounds":
+                    round_num = v
+                    new_dict['rounds'] = round_num
+                elif k == "Boardsize":
+                    board_size = v
+                    new_dict['board_size'] = board_size
+    return new_dict
