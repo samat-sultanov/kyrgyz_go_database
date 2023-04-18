@@ -128,11 +128,34 @@ class ClubSearch(forms.Form):
                                       attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
 
 
-class CheckPlayerForm(forms.ModelForm):
-    class Meta:
-        model = Player
-        fields = ['EgdPin', 'birth_date']
-        widgets = {'birth_date': DateInput(attrs={'type': 'date'})}
+class CheckPlayerForm(forms.Form):
+    Surname = forms.CharField(max_length=255)
+    FirstName = forms.CharField(max_length=255)
+    EgdPin = forms.IntegerField()
+    Rating = forms.FloatField()
+    GoLevel = forms.CharField(max_length=255)
+    birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    id_in_game = forms.IntegerField()
+
+    def clean_Surname(self):
+        Surname = self.cleaned_data.get('Surname')
+        return Surname
+
+    def clean_FirstName(self):
+        FirstName = self.cleaned_data.get('FirstName')
+        return FirstName
+
+    def clean_EgdPin(self):
+        EgdPin = self.cleaned_data.get('EgdPin')
+        return EgdPin
+
+    def clean_Rating(self):
+        Rating = self.cleaned_data.get('Rating')
+        return Rating
+
+    def clean_GoLevel(self):
+        GoLevel = self.cleaned_data.get("GoLevel")
+        return GoLevel
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
@@ -141,11 +164,47 @@ class CheckPlayerForm(forms.ModelForm):
         return birth_date
 
 
-class CheckTournamentForm(forms.ModelForm):
-    class Meta:
-        model = Tournament
-        fields = ['date', 'city', 'tournament_class', 'regulations', 'uploaded_by']
-        widgets = {'date': DateInput(attrs={'type': 'date'})}
+class CheckTournamentForm(forms.Form):
+    Name = forms.CharField(max_length=255)
+    location = forms.CharField(max_length=255)
+    Boardsize = forms.IntegerField()
+    NumberOfRounds = forms.IntegerField()
+    regulations = forms.CharField(max_length=255)
+    date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    city = forms.CharField(max_length=255)
+    tournament_class = forms.ChoiceField(choices=CLASS_CHOICES)
+
+    def clean_Name(self):
+        Name = self.cleaned_data.get('Name')
+        return Name
+
+    def clean_location(self):
+        location = self.cleaned_data.get('location')
+        return location
+
+    def clean_tournament_class(self):
+        tournament_class = self.cleaned_data.get('tournament_class')
+        return tournament_class
+
+    def clean_city(self):
+        city = self.cleaned_data.get('city')
+        return city
+
+    def clean_Boardsize(self):
+        Boardsize = self.cleaned_data.get('Boardsize')
+        return Boardsize
+
+    def clean_regulations(self):
+        regulations = self.cleaned_data.get('regulations')
+        return regulations
+
+    def clean_NumberOfRounds(self):
+        NumberOfRounds = self.cleaned_data.get('NumberOfRounds')
+        return NumberOfRounds
+
+    def clean_date(self):
+        date = self.cleaned_data.get('date')
+        return date
 
 
 class ClubForm(forms.ModelForm):
