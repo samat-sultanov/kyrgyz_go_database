@@ -321,21 +321,110 @@ def unpack_data_json_tournament(data):
 def unpack_data_json_players(data):
     new_list = []
     for key, value in data.items():
-        items = value
-        for k, v in items.items():
-            if k == 'IndividualParticipant':
-                list_of_players = v
-                for element in list_of_players:
-                    new_dict = dict()
-                    for m, n in element.items():
-                        if m == 'GoPlayer':
-                            person = n
-                            new_dict['FirstName'] = person.get('FirstName')
-                            new_dict['Surname'] = person.get('Surname')
-                            new_dict['GoLevel'] = person.get('GoLevel')
-                            new_dict['Rating'] = float(person.get('Rating'))
-                            new_dict['EgdPin'] = int(person.get('EgdPin'))
-                            new_dict['Club'] = person.get('Club')
-                            new_dict['birth_date'] = ''
-                            new_list.append(new_dict)
+        if key == "Tournament":
+            items = value
+            for k, v in items.items():
+                if k == 'IndividualParticipant':
+                    list_of_players = v
+                    for element in list_of_players:
+                        new_dict = dict()
+                        for m, n in element.items():
+                            if m == "Id":
+                                id_in_game = n
+                            elif m == 'GoPlayer':
+                                person = n
+                                new_dict['FirstName'] = person.get('FirstName')
+                                new_dict['Surname'] = person.get('Surname')
+                                new_dict['GoLevel'] = person.get('GoLevel')
+                                new_dict['Rating'] = float(person.get('Rating'))
+                                new_dict['EgdPin'] = int(person.get('EgdPin'))
+                                new_dict['Club'] = person.get('Club')
+                                new_dict['birth_date'] = ''
+                                new_dict['id_in_game'] = id_in_game
+                                new_list.append(new_dict)
     return new_list
+
+
+def update_json_tournament(data, some_dict, some_list):
+    updated_data = {}
+    for key, value in data.items():
+        if key == "Tournament":
+            items = value.copy()
+            items.update({
+                'Name': some_dict['Name'],
+                'NumberOfRounds': some_dict['NumberOfRounds'],
+                'Boardsize': some_dict['Boardsize'],
+                'date': some_dict['date'],
+                'city': some_dict['city'],
+                'tournament_class': some_dict['tournament_class'],
+                'regulations': some_dict['regulations'],
+                'uploaded_by': some_dict['uploaded_by']
+            })
+            if 'IndividualParticipant' in items:
+                list_of_players = items['IndividualParticipant']
+                for element in list_of_players:
+                    for m, n in element.items():
+                        for el in some_list:
+                            if m == 'Id':
+                                id_in_game = n
+                            elif m == 'GoPlayer':
+                                d = n
+                                new_element = {}
+                                for g, h in d.items():
+                                    new_element[g] = h
+                                if id_in_game == el['id_in_game']:
+                                    new_element.update({
+                                        'FirstName': el['FirstName'],
+                                        'Surname': el['Surname'],
+                                        'GoLevel': el['GoLevel'],
+                                        'Rating': el['Rating'],
+                                        'EgdPin': el['EgdPin'],
+                                        'birth_date': el['birth_date']
+                                    })
+                                    element['GoPlayer'] = new_element
+                                    updated_data[key] = items
+                                else:
+                                    updated_data[key] = value
+    return updated_data
+
+# def update_json_tournament(data, some_dict, some_list):
+#     data_copy = data.copy()
+#     for key, value in data_copy.items():
+#         if key == "Tournament":
+#             items = value
+#             for k, v in items.items():
+#                 if k == 'Name':
+#                     items['Name'] = some_dict['Name']
+#                 elif k == "NumberOfRounds":
+#                     items['NumberOfRounds'] = some_dict['NumberOfRounds']
+#                 elif k == "Boardsize":
+#                     items['Boardsize'] = some_dict['Boardsize']
+#                 else:
+#                     items['date'] = some_dict['date']
+#                     items['city'] = some_dict['city']
+#                     items['tournament_class'] = some_dict['tournament_class']
+#                     items['regulations'] = some_dict['regulations']
+#                     items['uploaded_by'] = some_dict['uploaded_by']
+#                 if k == 'IndividualParticipant':
+#                     list_of_players = v
+#                     for element in list_of_players:
+#                         for m, n in element.items():
+#                             for el in some_list:
+#                                 if m == 'Id':
+#                                     id_in_game = n
+#                                 elif m == 'GoPlayer':
+#                                     d = n
+#                                     new_element = {}
+#                                     for g, h in d.items():
+#                                         new_element[g] = h
+#                                     if id_in_game == el['id_in_game']:
+#                                         new_element['FirstName'] = el['FirstName']
+#                                         new_element['Surname'] = el['Surname']
+#                                         new_element['GoLevel'] = el['GoLevel']
+#                                         new_element['Rating'] = el['Rating']
+#                                         new_element['EgdPin'] = el['EgdPin']
+#                                         new_element['birth_date'] = el['birth_date']
+#                                         element['GoPlayer'] = new_element
+#     return data_copy
+
+
