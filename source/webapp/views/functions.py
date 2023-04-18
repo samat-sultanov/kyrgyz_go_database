@@ -3,7 +3,7 @@ from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game
+from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
@@ -303,11 +303,39 @@ def unpack_data_json_tournament(data):
             for k, v in items.items():
                 if k == 'Name':
                     tournament_name = v
-                    new_dict['name'] = tournament_name
+                    new_dict['Name'] = tournament_name
                 elif k == "NumberOfRounds":
-                    round_num = v
-                    new_dict['rounds'] = round_num
+                    round_num = int(v)
+                    new_dict['NumberOfRounds'] = round_num
                 elif k == "Boardsize":
-                    board_size = v
-                    new_dict['board_size'] = board_size
+                    board_size = int(v)
+                    new_dict['Boardsize'] = board_size
+                    new_dict['date'] = ''
+                    new_dict['tournament_class'] = DEFAULT_CLASS
+                    new_dict['location'] = ''
+                    new_dict['city'] = ''
+                    new_dict['regulations'] = ''
     return new_dict
+
+
+def unpack_data_json_players(data):
+    new_list = []
+    for key, value in data.items():
+        items = value
+        for k, v in items.items():
+            if k == 'IndividualParticipant':
+                list_of_players = v
+                for element in list_of_players:
+                    new_dict = dict()
+                    for m, n in element.items():
+                        if m == 'GoPlayer':
+                            person = n
+                            new_dict['FirstName'] = person.get('FirstName')
+                            new_dict['Surname'] = person.get('Surname')
+                            new_dict['GoLevel'] = person.get('GoLevel')
+                            new_dict['Rating'] = float(person.get('Rating'))
+                            new_dict['EgdPin'] = int(person.get('EgdPin'))
+                            new_dict['Club'] = person.get('Club')
+                            new_dict['birth_date'] = ''
+                            new_list.append(new_dict)
+    return new_list
