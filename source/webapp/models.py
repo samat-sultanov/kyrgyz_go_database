@@ -220,6 +220,7 @@ class News(models.Model):
     author = models.ForeignKey('accounts.User', on_delete=models.SET_DEFAULT, default=1, related_name='news',
                                verbose_name='Автор новости')
     news_image = models.ImageField(verbose_name='Изображение', null=True, blank=True, upload_to='news_images')
+    video_link = models.URLField(verbose_name='Ссылка на видео', null=True, blank=True)
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")

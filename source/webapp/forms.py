@@ -101,10 +101,21 @@ class CompetitorSearchForm(forms.Form):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'text', 'news_image']
+        fields = ['title', 'text', 'news_image', 'video_link']
         widgets = {
             'text': widgets.Textarea(attrs={"cols": 24, "rows": 3, 'class': 'form-control', 'placeholder': 'Текст'}),
             'title': widgets.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'})}
+
+    def clean(self):
+        cleaned_data = super().clean()
+        video_link = cleaned_data.get('video_link')
+        news_image = cleaned_data.get('news_image')
+
+        if video_link and news_image:
+            raise forms.ValidationError('Вы можете заполнить только одно из полей "Видео" или "Картинка".')
+
+        return cleaned_data
+
 
 
 class NewsBulkDeleteForm(forms.Form):
