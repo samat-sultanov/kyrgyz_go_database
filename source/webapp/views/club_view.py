@@ -7,7 +7,7 @@ from django.urls import reverse
 from webapp.forms import ClubSearch, ClubForm, ClubCreateForm
 from webapp.models import Club, Country
 from django.views.generic import ListView, TemplateView, UpdateView, CreateView
-from webapp.views.functions import average_go_level, get_total_wins
+from webapp.views.functions import average_go_level, get_total_wins , club_active_players
 
 
 class ClubsListView(ListView):
@@ -70,16 +70,24 @@ class ClubView(TemplateView):
     template_name = 'club/club_detail.html'
 
     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         pk = kwargs.get("pk")
         club = get_object_or_404(Club, pk=pk)
         players = club.players.all()
-        kwargs["club"] = club
-        kwargs['players'] = players
+        context['club'] = club
+        context['players'] = players
         club_list = average_go_level()
         for element in club_list:
             if club.pk == element['club']:
-                kwargs['average'] = element['average']
-        return super().get_context_data(**kwargs)
+                context['average'] = element['average']
+        context['all'] = club_active_players(pk)['all']
+        context['under_21k'] = club_active_players(pk)['under_21k']
+        context['under_11k'] = club_active_players(pk)['under_11k']
+        context['under_6k'] = club_active_players(pk)['under_6k']
+        context['under_1k'] = club_active_players(pk)['under_1k']
+        context['under_5d'] = club_active_players(pk)['under_5d']
+        context['under_10d'] = club_active_players(pk)['under_10d']
+        return context
 
 
 class ClubUpdate(LoginRequiredMixin, UpdateView):
