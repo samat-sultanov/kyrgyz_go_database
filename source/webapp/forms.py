@@ -106,6 +106,17 @@ class NewsForm(forms.ModelForm):
             'text': widgets.Textarea(attrs={"cols": 24, "rows": 3, 'class': 'form-control', 'placeholder': 'Текст'}),
             'title': widgets.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'})}
 
+    def clean(self):
+        cleaned_data = super().clean()
+        video_link = cleaned_data.get('video_link')
+        news_image = cleaned_data.get('news_image')
+
+        if video_link and news_image:
+            raise forms.ValidationError('Вы можете заполнить только одно из полей "Видео" или "Картинка".')
+
+        return cleaned_data
+
+
 
 class NewsBulkDeleteForm(forms.Form):
     checkboxes = forms.ModelMultipleChoiceField(News.objects.all(), widget=forms.CheckboxSelectMultiple)
