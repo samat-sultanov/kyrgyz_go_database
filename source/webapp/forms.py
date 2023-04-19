@@ -101,7 +101,7 @@ class CompetitorSearchForm(forms.Form):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'text', 'news_image']
+        fields = ['title', 'text', 'news_image', 'video_link']
         widgets = {
             'text': widgets.Textarea(attrs={"cols": 24, "rows": 3, 'class': 'form-control', 'placeholder': 'Текст'}),
             'title': widgets.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'})}
