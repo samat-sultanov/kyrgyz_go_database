@@ -102,21 +102,10 @@ class ParticipantCreate(CreateView):
         phonenumber = self.request.POST.get('phonenumber')
         participants = event.participant.all()
 
-        events = Calendar.objects.filter(event_date__gte=datetime.today())
-        players_in_events = []
-        for each_event in events:
-            players_in_events.append(each_event.participant.all())
-        event_players = list(itertools.chain.from_iterable(players_in_events))
-        for each_player in event_players:
-            if re.sub(' +', ' ', name.strip().capitalize()) == each_player.name and re.sub(' +', ' ',
-                                                                                           surname.strip().capitalize()) == each_player.surname:
-                form.add_error('name', f'Данный игрок уже участвует в турнире - "{each_player.event.event_name}"')
-                return super().form_invalid(form)
-
         for participant in participants:
             if re.sub(' +', ' ', name.strip().capitalize()) == participant.name and re.sub(' +', ' ',
                                                                                            surname.strip().capitalize()) == participant.surname:
-                form.add_error('name', 'Данный игрок уже зарегистрирован.')
+                form.add_error('name', f'Данный игрок уже зарегистрирован на данный турнир.')
                 return super().form_invalid(form)
             elif phonenumber == participant.phonenumber:
                 form.add_error('phonenumber', 'Номер телефона уже зарегистрирован.')
@@ -147,7 +136,7 @@ class ParticipantCreate(CreateView):
 def calendar_player_list(request, *args, **kwargs):
     event = get_object_or_404(Calendar, pk=kwargs.get('pk'))
     players_all = Player.objects.all()
-    participants = Participant.objects.all()
+    participants = event.participant.all()
 
     if request.method == 'GET':
         form = EmailToChangeRegInfoFrom()
