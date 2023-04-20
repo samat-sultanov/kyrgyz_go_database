@@ -294,6 +294,44 @@ def player_wins_loses(pk):
     statistics = dict(c)
     return statistics
 
+def club_active_players(pk):
+    club = get_object_or_404(Club, pk=pk)
+    players = club.players.all()
+    all_players = dict()
+    under_21k = []
+    under_11k = []
+    under_6k = []
+    under_1k = []
+    under_5d = []
+    under_10d = []
+    for player in players:
+        if player.current_rating <= 0:
+            under_21k.append(player)
+        elif player.current_rating > 0 and player.current_rating <= 1000:
+            under_11k.append(player)
+        elif player.current_rating > 1000 and player.current_rating <= 1500:
+            under_6k.append(player)
+        elif player.current_rating > 1500 and player.current_rating <= 2000:
+            under_1k.append(player)
+        elif player.current_rating > 2000 and player.current_rating <= 2500:
+            under_5d.append(player)
+        elif player.current_rating > 2500 and player.current_rating <= 3000:
+            under_10d.append(player)
+    all_players['all'] = len(players)
+    all_players['under_21k'] = len(under_21k)
+    all_players['under_11k'] = len(under_11k)
+    all_players['under_6k'] = len(under_6k)
+    all_players['under_1k'] = len(under_1k)
+    all_players['under_5d'] = len(under_5d)
+    all_players['under_10d'] = len(under_10d)
+    # print(f'21{under_21k}')
+    # print(f'11{under_11k}')
+    # print(f'6{under_6k}')
+    # print(f'1{under_1k}')
+    # print(f'5{under_5d}')
+    # print(f'10{under_10d}')
+    return all_players
+
 
 def unpack_data_json_tournament(data):
     new_dict = dict()
