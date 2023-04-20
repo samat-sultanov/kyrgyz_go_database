@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static "css/adaptiveiframe.css" %}">
 {% endblock %}
 
 {% block nav %}
@@ -20,8 +21,14 @@
         <div class="card mt-3">
             {% if single_news.news_image %}
                 <img style="border-radius: 19px" src="{{ single_news.news_image.url }}" class="card-img-top" alt="...">
-            {% else %}
-                <img src='{% static "images/no_image.jpg" %}' alt="..." width="250" height="250">
+            {% endif %}
+            {% if single_news.video_link %}
+                <div class="frame_blc">
+            <iframe width="560" height="315"
+                    src="{{ single_news.video_link }}"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe></div>
             {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ single_news.title }}</h5>

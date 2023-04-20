@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load thumbnail %}
-
+{% block src %}
+    <link rel="stylesheet" href="{% static "css/adaptiveiframe.css" %}">
+{% endblock %}
 
 {% block content %}
     <div id="carousel-main" class="carousel slide" data-bs-ride="carousel">
@@ -52,15 +54,23 @@
                     <div class="border-bottom mb-4"></div>
 
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4" style="margin-bottom: 5px">
+                    <h5 class="news-title">{{ news.title|truncatechars:60 }}</h5>
                         {% if news.news_image %}
                             {% thumbnail news.news_image "400x400" as im %}
                                 <img style="width: 100%; border: solid; border-color: grey; border-width: 1px"
                                      src="{{ im.url }}" alt="news_image">
                             {% endthumbnail %}
                         {% endif %}
+                        {% if news.video_link %}
+                            <div class="frame_blc">
+                            <iframe width="400" height="200"
+                            src="{{ news.video_link }}"
+                            title="YouTube video player" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen></iframe></div>
+                        {% endif %}
                     </div>
 
-                    <h5 class="news-title">{{ news.title|truncatechars:60 }}</h5>
                     <p>{{ news.text|truncatechars:400 }}</p>
                     <i>{{ news.created_at|date:"d F Y" }}</i>
                     <a class="btn btn-light ms-4" href="{{ news.get_absolute_url }}">Читать далее >></a>

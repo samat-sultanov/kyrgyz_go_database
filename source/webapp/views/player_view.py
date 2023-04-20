@@ -7,7 +7,7 @@ from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from webapp.views.functions import get_position_in_kgf, get_data_for_table_games, get_data_for_gor_evolution, \
-    get_tournaments_list_for_gor_evolution , player_wins_loses
+    get_tournaments_list_for_gor_evolution, player_wins_loses
 from webapp.views.GoR_calculator import get_rating_from_rank
 
 
@@ -160,18 +160,19 @@ class CompetitorSearch(ListView):
         if self.form.is_valid():
             return self.form.cleaned_data['search_country']
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset()
         rating = get_rating_from_rank(self.search_rank)
         if self.search_rank:
-            queryset = queryset.filter(Q(current_rating__range=(rating-300, rating+300)))
+            queryset = queryset.filter(Q(current_rating__range=(rating - 300, rating + 300)))
         if self.search_clubs:
             queryset = queryset.filter(Q(clubs__name__istartswith=self.search_clubs))
         if self.search_city:
             queryset = queryset.filter(Q(city__city__istartswith=self.search_city))
         if self.search_country:
-            queryset = queryset.filter(Q(country__country_code__istartswith=self.search_country))  # check
-        return queryset
+            queryset = queryset.filter(Q(country__country_code__istartswith=self.search_country))
+        player_exclude = self.kwargs.get('pk')
+        return queryset.exclude(id__in=[player_exclude])
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
