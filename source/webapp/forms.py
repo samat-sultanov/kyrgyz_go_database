@@ -3,7 +3,7 @@ from phonenumber_field.formfields import PhoneNumberField
 from django import forms
 from django.forms import FileInput, widgets
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner
+    Partner, DEFAULT_CLASS
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -146,13 +146,19 @@ class CheckPlayerForm(forms.Form):
 
 class CheckTournamentForm(forms.Form):
     Name = forms.CharField(max_length=255)
-    location = forms.CharField(max_length=255)
+    location = forms.CharField(max_length=255, required=False)
     Boardsize = forms.IntegerField()
     NumberOfRounds = forms.IntegerField()
-    regulations = forms.CharField(max_length=255)
-    date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
-    city = forms.CharField(max_length=255)
-    tournament_class = forms.ChoiceField(choices=CLASS_CHOICES)
+    regulations = forms.CharField(max_length=255, required=False)
+    date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=True)
+    city = forms.CharField(max_length=255, required=False)
+    tournament_class = forms.ChoiceField(choices=CLASS_CHOICES, required=True)
+
+    def clean_tournament_class(self):
+        tournament_class = self.cleaned_data.get('tournament_class')
+        if tournament_class == DEFAULT_CLASS:
+            self.add_error('tournament_class', 'Выберите корректный класс турнира!')
+        return tournament_class
 
 
 class ClubForm(forms.ModelForm):
