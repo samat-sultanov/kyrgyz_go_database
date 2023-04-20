@@ -19,6 +19,14 @@
                 <p>Location: {{ form1.location }}</p>
                 <p>{{ form1.uploaded_by.as_hidden }}</p>
             </div>
+            {% if form1.tournament_class.errors %}
+                <div class="alert alert-danger">
+            {% for error in form1.tournament_class.errors %}
+              <strong>{{ error|escape }}</strong><br>
+            {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="container">
             <table class="table">
                 <thead>
@@ -43,6 +51,13 @@
                         <td>{{ player_form.Rating }}</td>
                         <td>{{ player_form.id_in_game.as_hidden }}</td>
                     </tr>
+                    {% if player_form.errors %}
+                        <ul>
+                    {% for error in player_form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                        </ul>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
@@ -52,6 +67,8 @@
         </div>
         </div>
         </form>
+{% endblock %}
+
 
 
 
@@ -92,4 +109,3 @@
 {#                    </div>#}
 {#    </div>#}
 
-{% endblock %}
