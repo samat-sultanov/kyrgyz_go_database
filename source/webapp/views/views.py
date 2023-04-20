@@ -110,12 +110,19 @@ class TournamentCheckView(FormView):
 
     def form_invalid(self, form):
         context = self.get_context_data()
-        form1 = context['form1']
-        form2 = context['form2']
-        if not form1.is_valid():
-            return self.render_to_response(self.get_context_data(form1=form1, form2=form2))
-        if not form2.is_valid():
-            return self.render_to_response(self.get_context_data(form1=form1, form2=form2))
+        form1 = self.form_class(self.request.POST, initial=context['tournament'], prefix='form1')
+        form2 = self.CheckPlayerFormSet(self.request.POST, initial=context['players'], prefix='form')
+        context['form1'] = form1
+        context['form2'] = form2
+        context['form1_errors'] = form.errors
+        context['form2_errors'] = formset_errors(form2)
+        return self.render_to_response(context)
+
+
+def formset_errors(formset):
+    errors = [form.errors for form in formset.forms]
+    errors = [error for error in errors if error]
+    return errors
 
 
 def about_us_view(request, *args, **kwargs):
