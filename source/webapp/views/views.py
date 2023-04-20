@@ -40,12 +40,12 @@ class FileUpload(FormView):
         file_name = xml_file.name.strip().split('.')[0].lower().replace(' ', '_')
         file_ext = xml_file.name.split('.')[-1].lower()
         if file_ext != 'xml':
-            form.add_error('file', 'Only XML files are allowed.')
-            return self.form_invalid(form)
+            form.add_error(None, 'Действие отклонено! К загрузке доступны только файлы с расширением Xml!')
+            return render(self.request, self.template_name, {'form': form, 'error': form.errors})
         json_file_path = f'json/{file_name}.json'
         if default_storage.exists(json_file_path):
-            form.add_error('file', 'A file with this name already exists.')
-            return self.form_invalid(form)
+            form.add_error(None, 'Действие отклонено! Файл с таким именем уже был загружен!')
+            return render(self.request, self.template_name, {'form': form, 'error': form.errors})
         doc = xmltodict.parse(xml_file)
         json_data = json.dumps(doc, indent=4)
         with default_storage.open(json_file_path, 'w') as f:
