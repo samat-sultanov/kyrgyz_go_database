@@ -134,28 +134,8 @@ class CheckPlayerForm(forms.Form):
     EgdPin = forms.IntegerField()
     Rating = forms.FloatField()
     GoLevel = forms.CharField(max_length=255)
-    birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
     id_in_game = forms.IntegerField()
-
-    def clean_Surname(self):
-        Surname = self.cleaned_data.get('Surname')
-        return Surname
-
-    def clean_FirstName(self):
-        FirstName = self.cleaned_data.get('FirstName')
-        return FirstName
-
-    def clean_EgdPin(self):
-        EgdPin = self.cleaned_data.get('EgdPin')
-        return EgdPin
-
-    def clean_Rating(self):
-        Rating = self.cleaned_data.get('Rating')
-        return Rating
-
-    def clean_GoLevel(self):
-        GoLevel = self.cleaned_data.get("GoLevel")
-        return GoLevel
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
@@ -173,38 +153,6 @@ class CheckTournamentForm(forms.Form):
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}))
     city = forms.CharField(max_length=255)
     tournament_class = forms.ChoiceField(choices=CLASS_CHOICES)
-
-    def clean_Name(self):
-        Name = self.cleaned_data.get('Name')
-        return Name
-
-    def clean_location(self):
-        location = self.cleaned_data.get('location')
-        return location
-
-    def clean_tournament_class(self):
-        tournament_class = self.cleaned_data.get('tournament_class')
-        return tournament_class
-
-    def clean_city(self):
-        city = self.cleaned_data.get('city')
-        return city
-
-    def clean_Boardsize(self):
-        Boardsize = self.cleaned_data.get('Boardsize')
-        return Boardsize
-
-    def clean_regulations(self):
-        regulations = self.cleaned_data.get('regulations')
-        return regulations
-
-    def clean_NumberOfRounds(self):
-        NumberOfRounds = self.cleaned_data.get('NumberOfRounds')
-        return NumberOfRounds
-
-    def clean_date(self):
-        date = self.cleaned_data.get('date')
-        return date
 
 
 class ClubForm(forms.ModelForm):
