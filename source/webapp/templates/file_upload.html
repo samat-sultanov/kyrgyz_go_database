@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container">
-    {% if error %}
-        <div class="form-error text-center mt-3" style="color: red">{{ error }}</div>
-    {% endif %}
+    {% for field_errors in form.non_field_errors %}
+        <div class="form-error text-center mt-3" style="color: red">{{ field_errors }}</div>
+    {% endfor %}
+
     <form method = "post" enctype="multipart/form-data">
    {% csrf_token %}
         <div style="display: flex;flex-direction: column;align-items:center;margin-top: 15%;height: 200px">
