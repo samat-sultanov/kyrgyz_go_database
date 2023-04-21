@@ -427,3 +427,30 @@ def update_json_tournament(data, some_dict, some_list):
                                     element['GoPlayer'] = new_element
 
     return updated_data
+
+
+def unpack_data_for_moderation_tournament(data):
+    new_dict = {}
+    for k, v in data.get('Tournament', {}).items():
+        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'city', 'regulations'}:
+            new_dict[k] = int(v) if k == 'NumberOfRounds' or k == 'Boardsize' else v
+    return new_dict
+
+
+def unpack_data_for_moderation_players(data):
+    new_list = []
+    for player in data.get('Tournament', {}).get('IndividualParticipant', []):
+        person = player.get('GoPlayer', {})
+        new_dict = {
+            'FirstName': person.get('FirstName'),
+            'Surname': person.get('Surname'),
+            'GoLevel': person.get('GoLevel'),
+            'Rating': float(person.get('Rating', 0)),
+            'EgdPin': int(person.get('EgdPin', 0)),
+            'Club': person.get('Club'),
+            'birth_date': person.get('birth_date')
+        }
+        new_list.append(new_dict)
+    return new_list
+
+

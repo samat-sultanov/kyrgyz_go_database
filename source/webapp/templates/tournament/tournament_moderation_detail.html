@@ -7,12 +7,12 @@
 {% block content %}
     <div class="container mb-4 mt-4">
         <div class="mb-4">
-            <h2 class="title">Турнир на модерации: {{ tournament.name }}</h2>
-            <p>Дата: {{ tournament.date|date:"d-m-Y" }}</p>
+            <h2 class="title">Турнир на модерации: {{ tournament.Name }}</h2>
+            <p>Дата: {{ tournament.date }}</p>
             <p>Город: {{ tournament.city }}</p>
-            <p>Число участников: {{ tournament.player_set.count }}</p>
-            <p>Раунды: {{ tournament.rounds }}</p>
-            <p>Размер доски: {{ tournament.board_size }}</p>
+            <p>Место проведения: {{ tournament.location }}</p>
+            <p>Раунды: {{ tournament.NumberOfRounds }}</p>
+            <p>Размер доски: {{ tournament.Boardsize }}</p>
             <p>Класс: {{ tournament.tournament_class }}</p>
             <p>Регламент: {{ tournament.regulations|linebreaks }}</p>
         </div>
@@ -28,41 +28,34 @@
                 <th scope="col">Имя</th>
                 <th scope="col">Клуб</th>
                 <th scope="col">Ранг</th>
-                <th scope="col">Победы</th>
-                <th scope="col">Поражения</th>
+                <th scope="col">Рейтинг</th>
+                <th scope="col">Дата рождения</th>
             </tr>
             </thead>
             <tbody>
-            {% if sorted_players %}
-                {% for el in sorted_players %}
+                {% for el in players %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td data-label="EgdPin">{{ el.player.EgdPin }}</td>
-                    <td data-label="Last Name">{{ el.player.last_name }}</td>
-                    <td data-label="First Name">{{ el.player.first_name }}</td>
-                    {% if el.player.clubs.all %}
-                        {% for club in el.player.clubs.all %}
-                            <td data-label="Club">{{ club.name }}</td>
-                        {% endfor %}
+                    <td data-label="EgdPin">{{ el.EgdPin }}</td>
+                    <td data-label="Last Name">{{ el.Surname }}</td>
+                    <td data-label="First Name">{{ el.FirstName }}</td>
+                    {% if el.Club %}
+                        <td data-label="Club">{{ el.Club }}</td>
                     {% else %}
-                        <td data-label="Club"></td>
+                        <td data-label=Club"></td>
                     {% endif %}
                     <td data-label="Rank">{{ el.GoLevel }}</td>
-                    {% for winner in wins %}
-                        {% if el.player.pk == winner.player %}
-                            <td data-label="Wins">{{ winner.wins }}</td>
-                            <td data-label="Losses">{{ winner.losses }}</td>
-                        {% endif %}
-                    {% endfor %}
+                    <td data-label="Rating">{{ el.Rating }}</td>
+                    {% if el.birth_date %}
+                        <td data-label="Birthday">{{ el.birth_date }}</td>
+                    {% else %}
+                        <td data-label="Birthday">Не указано</td>
+                    {% endif %}
+
                 </tr>
                 {% endfor %}
-            {% endif %}
-            {% if players_with_rate_k %}
-
-            {% endif %}
             </tbody>
         </table>
     </div>
 {% endblock %}
 
-{##}
