@@ -437,3 +437,20 @@ def unpack_data_for_moderation_tournament(data):
     return new_dict
 
 
+def unpack_data_for_moderation_players(data):
+    new_list = []
+    for player in data.get('Tournament', {}).get('IndividualParticipant', []):
+        person = player.get('GoPlayer', {})
+        new_dict = {
+            'FirstName': person.get('FirstName'),
+            'Surname': person.get('Surname'),
+            'GoLevel': person.get('GoLevel'),
+            'Rating': float(person.get('Rating', 0)),
+            'EgdPin': int(person.get('EgdPin', 0)),
+            'Club': person.get('Club'),
+            'birth_date': person.get('birth_date')
+        }
+        new_list.append(new_dict)
+    return new_list
+
+
