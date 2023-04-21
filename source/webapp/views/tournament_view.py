@@ -1,17 +1,21 @@
+import json
 from urllib.parse import urlencode
 from django.contrib import messages
+from django.core.files.storage import default_storage
+from django.forms import formset_factory
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, TemplateView, DeleteView
+from django.views.generic import ListView, TemplateView, DeleteView, FormView, DetailView
 from django.db.models import Q
 
 from webapp.views.GoR_calculator import get_new_rating
-from webapp.forms import TournamentSearchForm
+from webapp.forms import TournamentSearchForm, CheckTournamentForm, CheckPlayerForm
 from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
-from webapp.views.functions import get_wins_losses
+from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, \
+    unpack_data_for_moderation_players
 
 
 class TournamentSearch(ListView):
@@ -133,14 +137,20 @@ class DeleteTournamentBeforeModeration(LoginRequiredMixin, DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
+
 class ModerationTournamentView(LoginRequiredMixin, TemplateView):
     template_name = 'tournament/tournament_moderation_detail.html'
 
     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         pk = kwargs.get("pk")
-        tournament = get_object_or_404(Tournament, pk=pk)
-        data = tournament.playerintournament_set.all().order_by('-rating_after')
-        kwargs["tournament"] = tournament
-        kwargs['sorted_players'] = data
-        kwargs['wins'] = get_wins_losses(pk=pk)
-        return super().get_context_data(**kwargs)
+        tournament = get_object_or_404(NotModeratedTournament, pk=pk)
+        file_name = tournament.name
+        json_file_path = f"json/{file_name.split('.')[0]}.json"
+        with default_storage.open(json_file_path, 'r') as f:
+            data = json.load(f)
+        tournament_data = unpack_data_for_moderation_tournament(data)
+        players_data = unpack_data_for_moderation_players(data)
+        context['tournament'] = tournament_data
+        context['players'] = players_data
+        return context
