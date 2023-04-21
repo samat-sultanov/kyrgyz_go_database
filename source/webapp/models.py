@@ -313,6 +313,21 @@ class Partner(models.Model):
                 img.save(self.logo.path)
 
 
+class NotModeratedTournament(models.Model):
+    name = models.CharField(verbose_name="Tournament name", max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Date of upload')
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
+                                    verbose_name="Uploaded by")
+
+    def __str__(self):
+        return f'{self.id}. {self.name[:30]}: {self.uploaded_by}'
+
+    class Meta:
+        db_table = "moderation"
+        verbose_name = "TournamentForModeration"
+        verbose_name_plural = "TournamentsForModeration"
+
+
 @receiver(models.signals.post_delete, sender=News)
 def auto_delete_img_on_delete(sender, instance, **kwargs):
     if instance.news_image:

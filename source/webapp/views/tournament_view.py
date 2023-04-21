@@ -9,7 +9,7 @@ from django.db.models import Q
 
 from webapp.views.GoR_calculator import get_new_rating
 from webapp.forms import TournamentSearchForm
-from webapp.models import Tournament
+from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses
 
@@ -96,15 +96,10 @@ class TournamentDetail(TemplateView):
 
 
 class TournamentModerationList(LoginRequiredMixin, ListView):
-    model = Tournament
+    model = NotModeratedTournament
     context_object_name = "tournaments"
     template_name = 'tournament/moderation_list.html'
     paginate_by = 10
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(Q(is_moderated=False))
-        return queryset
 
 
 class CheckModer(LoginRequiredMixin, View):
