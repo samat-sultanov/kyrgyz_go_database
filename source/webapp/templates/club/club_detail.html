@@ -54,7 +54,7 @@
 
             <div>
                 <div class="mb-5 mt-4">
-                  <p class="lead fw-normal mb-1">О клубе</p>
+                  <p class="lead fw-normal mb-1 ms-3">О клубе</p>
                   <div class="p-4" style="background-color: #f8f9fa;">
                     {% if club.num_players %}
                         <p class="mb-1">Число участников: {{ club.num_players }}</p>
@@ -66,7 +66,7 @@
                         <p class="mb-1">Адрес: {{ club.address }}</p>
                     {% endif %}
                     {% if club.phonenumber %}
-                        <p class="mb-1">Телефон: {{ club.phonenumber }}k</p>
+                        <p class="mb-1">Телефон: {{ club.phonenumber }}</p>
                     {% endif %}
                     {% if club.web_link %}
                         <p class="mb-1">Web-site: <a style="color: black;" href="{{ club.web_link }}">{{ club.web_link }}</a></p>
