@@ -11,7 +11,7 @@ from webapp.views.GoR_calculator import get_new_rating
 from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament
 from django.contrib.auth.mixins import LoginRequiredMixin
-from webapp.views.functions import get_wins_losses
+from webapp.views.functions import get_wins_losses, tournament_table_sorting
 
 
 class TournamentSearch(ListView):
@@ -87,6 +87,7 @@ class TournamentDetail(TemplateView):
 
     def get_context_data(self, **kwargs):
         pk = kwargs.get("pk")
+#        tournament_table_sorting(pk)
         tournament = get_object_or_404(Tournament, pk=pk)
         data = tournament.playerintournament_set.all().order_by('-rating_after')
         kwargs["tournament"] = tournament

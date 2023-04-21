@@ -1,9 +1,10 @@
 import re
+from random import randint
 from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game
+from webapp.models import Country, Player, Tournament, Club, Game, PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
@@ -294,6 +295,7 @@ def player_wins_loses(pk):
     statistics = dict(c)
     return statistics
 
+
 def club_active_players(pk):
     club = get_object_or_404(Club, pk=pk)
     players = club.players.all()
@@ -331,3 +333,116 @@ def club_active_players(pk):
     # print(f'5{under_5d}')
     # print(f'10{under_10d}')
     return all_players
+
+
+def tournament_table_sorting(tournament_pk):
+    # qsopit = queryset of players in tournament
+    # git = games in tournament
+    # dotrwdi = dictionary of tournament rounds with detailed info
+    # irpl = in_round_players_list
+
+    tournament = get_object_or_404(Tournament, pk=tournament_pk)
+    qsopit = tournament.playerintournament_set.all()
+    git = tournament.game_set.all().order_by('round_num')
+    dotrwdi = {}
+    previous_round_list = []
+
+    for round in range(tournament.rounds + 1):
+        if round == 0:
+            initial_players_list = []
+            for player in qsopit:
+                if player.GoLevel[-1] == 'k':
+                    initial_players_list.append({
+                        'player_in_tournament_id': player.pk,
+                        'player_id': player.player_id,
+                        'adapted_level': int(player.GoLevel[:-1]),
+                        'last_name': player.player.last_name,
+                        'first_name': player.player.first_name,
+                        'EgdPin': player.player.EgdPin
+                    })
+                elif player.GoLevel[-1] == 'd':
+                    initial_players_list.append({
+                        'player_in_tournament_id': player.pk,
+                        'player_id': player.player_id,
+                        'adapted_level': -1 * int(player.GoLevel[:-1]),
+                        'last_name': player.player.last_name,
+                        'first_name': player.player.first_name,
+                        'EgdPin': player.player.EgdPin
+                    })
+
+            sorted_initial_players_list = _quicksort_irpl(initial_players_list)
+
+            previous_round_list = sorted_initial_players_list
+            dotrwdi[f'round #{round}'] = {
+                'tournament_table': sorted_initial_players_list
+            }
+
+
+def _resort_prev_round(prev_round_list, games):
+    pass
+
+
+def _quicksort_irpl(array):
+    if len(array) < 2:
+        return array
+
+    low, same, high = [], [], []
+
+    pivot = array[randint(0, len(array) - 1)].get('adapted_level')
+
+    for item in array:
+        if item.get('adapted_level') < pivot:
+            low.append(item)
+        elif item.get('adapted_level') == pivot:
+            same.append(item)
+        elif item.get('adapted_level') > pivot:
+            high.append(item)
+
+    if len(same) > 1:
+        same = _sort_by_last_name(same)
+
+    return _quicksort_irpl(low) + same + _quicksort_irpl(high)
+
+
+def _sort_by_last_name(array):
+    if len(array) < 2:
+        return array
+
+    low, same, high = [], [], []
+
+    pivot = array[randint(0, len(array) - 1)].get('last_name').lower()
+
+    for item in array:
+        if item.get('last_name').lower() < pivot:
+            low.append(item)
+        elif item.get('last_name').lower() == pivot:
+            same.append(item)
+        elif item.get('last_name').lower() > pivot:
+            high.append(item)
+
+    if len(same) > 1:
+        same = _sort_by_first_name(same)
+
+    return _sort_by_last_name(low) + same + _sort_by_last_name(high)
+
+
+def _sort_by_first_name(array):
+    if len(array) < 2:
+        return array
+
+    low, same, high = [], [], []
+
+    pivot = array[randint(0, len(array) - 1)].get('first_name').lower()
+
+    for item in array:
+        if item.get('first_name').lower() < pivot:
+            low.append(item)
+        elif item.get('first_name').lower() == pivot:
+            same.append(item)
+        elif item.get('first_name').lower() > pivot:
+            high.append(item)
+
+    if len(same) > 1:
+        same = sorted(same, key=lambda d: d['EgdPin'])
+
+    return _sort_by_last_name(low) + same + _sort_by_last_name(high)
