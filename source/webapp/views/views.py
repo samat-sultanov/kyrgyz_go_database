@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, FormView
-from webapp.models import Calendar, News, Partner
+from webapp.models import Calendar, News, Partner, NotModeratedTournament
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.functions import get_position_in_kgf, \
     unpack_data_json_tournament, unpack_data_json_players, update_json_tournament
@@ -63,6 +63,7 @@ class TournamentCheckView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         file_name = self.kwargs.get('file_name')
+        NotModeratedTournament.objects.create(name=file_name, uploaded_by=self.request.user)
         json_file_path = f"json/{file_name.split('.')[0]}.json"
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
