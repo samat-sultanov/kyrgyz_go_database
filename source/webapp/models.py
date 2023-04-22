@@ -119,7 +119,6 @@ class Tournament(models.Model):
     regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
                                     verbose_name="Автор")
-    is_moderated = models.BooleanField(default=False, verbose_name='Статус модерации')
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
