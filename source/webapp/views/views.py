@@ -117,7 +117,8 @@ class TournamentCheckView(FormView):
         context['form2'] = form2
         context['form1_errors'] = form.errors
         context['form2_errors'] = formset_errors(form2)
-        return self.render_to_response(context)
+        self.extra_context = context
+        return super().form_invalid(form)
 
 
 def formset_errors(formset):
