@@ -256,6 +256,7 @@ class Calendar(models.Model):
     text = models.TextField(max_length=5000, verbose_name='Описание события')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_author), verbose_name='Автор',
                                default=get_author)
+    calendar_image = models.ImageField(verbose_name='Изображение', null=True, blank=True, upload_to='calendar_images')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
@@ -268,6 +269,15 @@ class Calendar(models.Model):
 
     def is_end_date(self):
         return dt.now().date() > self.deadline
+
+    def save(self, *args, **kwargs):
+        super(Calendar, self).save(*args, **kwargs)
+        if self.calendar_image:
+            img = Image.open(self.calendar_image.path)
+            if img.height > 1500 or img.width > 1500:
+                output_size = (1500, 1500)
+                img.thumbnail(output_size)
+                img.save(self.calendar_image.path)
 
 
 class Participant(models.Model):
