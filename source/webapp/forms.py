@@ -86,7 +86,7 @@ class TournamentSearchForm(forms.Form):
 class CompetitorSearchForm(forms.Form):
     search_rank = forms.CharField(required=True, label='Найти',
                                   widget=widgets.TextInput(
-                                      attrs={'class': "form-control w-30", 'placeholder': 'Ранк'}))
+                                      attrs={'class': "form-control w-30", 'placeholder': 'Ранг'}))
     search_clubs = forms.CharField(max_length=50, required=False, label='Найти',
                                    widget=widgets.TextInput(
                                        attrs={'class': "form-control w-30", 'placeholder': 'Клуб'}))
