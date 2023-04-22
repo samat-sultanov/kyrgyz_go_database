@@ -73,7 +73,7 @@ class ClubView(TemplateView):
         context = super().get_context_data(**kwargs)
         pk = kwargs.get("pk")
         club = get_object_or_404(Club, pk=pk)
-        players = club.players.all()
+        players = club.players.order_by('-current_rating')
         context['club'] = club
         context['players'] = players
         club_list = average_go_level()
