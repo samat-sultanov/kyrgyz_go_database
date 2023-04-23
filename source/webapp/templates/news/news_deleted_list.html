@@ -14,7 +14,7 @@
                 {% for deleted_news in deleted_news_list %}
                     <br>
                     <div class="card news_to_delete" data-id="{{ deleted_news.pk }}">
-                        <input type="checkbox" name="checkboxes" value="{{ deleted_news.pk }}" class="form-check-input">
+                        <input type="checkbox" name="checkboxes" value="{{ deleted_news.pk }}" class="form-check-input mt-3 ms-3">
                         <div class="card-body">
                             <h5 class="card-title">{{ deleted_news.title }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ deleted_news.author.username }}.
@@ -36,18 +36,18 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="myModalLabel">Вы точно хотите безвозвратно
-                                                удалить эту статью? Его потом невозможно будет восстановить.</h1>
+                                            <h3 class="modal-title fs-5" id="myModalLabel">Вы уверены, что хотите безвозвратно
+                                                                удалить эту новость?</h3>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет
                                             </button>
                                             <form method="POST" id="modal_form_link"
                                                   action="{% url 'webapp:news_hard_delete_one' deleted_news.pk %}">
                                                 {% csrf_token %}<input type="submit" id="confirm_button"
-                                                                       class="btn btn-danger"
+                                                                       class="btn btn-outline-secondary"
                                                                        value="Да">
                                             </form>
                                         </div>
