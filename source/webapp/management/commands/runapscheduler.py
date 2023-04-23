@@ -12,7 +12,7 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
-from webapp.models import Player
+from webapp.models import Player, Calendar
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,6 @@ def sync_pin_job():
                 counter = 0
                 temp_matching_player = None
                 for player_in_list in egd_response_players_list:
-                    print(f"{player_in_list.get('Last_Name')} == {player.last_name} and {player_in_list.get('Name')} == {player.first_name}")
                     if player_in_list.get('Last_Name') == player.last_name and player_in_list.get(
                             'Name') == player.first_name:
                         temp_matching_player = player_in_list
@@ -104,6 +103,17 @@ def sync_pin_job():
                         f"Ошибка произошла при итерации: {player.first_name} "
                         f"{player.last_name}\n_______________________________________\n")
             continue
+
+
+def delete_expired_event():
+    now = timezone.now()
+    seven_days_ago = now - timezone.timedelta(days=7)
+    expired_calendars = Calendar.objects.filter(event_date__lt=seven_days_ago)
+
+    for calendar in expired_calendars:
+        calendar.participant.all().delete()
+
+    expired_calendars.delete()
 
 
 @util.close_old_connections
@@ -152,8 +162,17 @@ class Command(BaseCommand):
             replace_existing=True,
         )
         logger.info(
-            "Added yearly job: 'delete_old_job_executions'."
+            "Added 4 yearly job: 'delete_old_job_executions'."
         )
+
+        scheduler.add_job(
+            delete_expired_event,
+            trigger=CronTrigger(day_of_week="mon", hour=3, minute=0),
+            id="delete_expired_event",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'delete_expired_events'")
 
         try:
             logger.info("Starting scheduler...")
