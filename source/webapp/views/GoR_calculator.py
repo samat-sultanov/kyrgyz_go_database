@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from webapp.models import Tournament, Game
 import math
 
-RANK_FROM_RATING = [{-800: "30k"}, {-700: "28k"}, {-600: '27k'}, {-500: '26k'}, {-400: "25k"}, {-300: "24k"},
+RANK_FROM_RATING = [{-800: "29k"}, {-700: "28k"}, {-600: '27k'}, {-500: '26k'}, {-400: "25k"}, {-300: "24k"},
                     {-200: "23k"}, {-100: "22k"}, {0: "21k"}, {100: "20k"}, {200: "19k"}, {300: "18k"}, {400: "17k"},
                     {500: "16k"}, {600: "15k"}, {700: "14k"}, {800: "13k"}, {900: "12k"}, {1000: "11k"}, {1100: "10k"},
                     {1200: "9k"}, {1300: "8k"}, {1400: "7k"}, {1500: "6k"}, {1600: "5k"}, {1700: "4k"}, {1800: "3k"},
@@ -162,33 +162,33 @@ def get_new_rating(pk):
                 if item.rating == 0:
                     item.GoLevel_after = item.GoLevel
                     item.save()
-                    item.player.current_rank = item.GoLevel
-                    item.player.current_rating = get_rating_from_rank(item.GoLevel)
-                    item.player.save()
                 if item.rating >= 100:
                     new_rating = item.rating + element['total']
                     new_rank = get_new_rank_from_rating(new_rating)
                     item.rating_after = new_rating
                     item.GoLevel_after = new_rank
                     item.save()
-                    item.player.current_rating = new_rating
-                    item.player.current_rank = new_rank
-                    item.player.save()
                 elif 100 > item.rating > item.rating + element['total']:
                     new_rating = item.rating
                     item.rating_after = new_rating
                     item.GoLevel_after = item.GoLevel
                     item.save()
-                    new_rank = get_new_rank_from_rating(new_rating)
-                    item.player.current_rating = new_rating
-                    item.player.current_rank = new_rank
-                    item.player.save()
                 elif 100 > item.rating < item.rating + element['total']:
                     new_rating = item.rating + element['total']
                     new_rank = get_new_rank_from_rating(new_rating)
                     item.rating_after = new_rating
                     item.GoLevel_after = new_rank
                     item.save()
-                    item.player.current_rating = new_rating
-                    item.player.current_rank = new_rank
-                    item.player.save()
+
+
+def get_current_rating_and_rank(pk):
+    tournament = get_object_or_404(Tournament, pk=pk)
+    players = tournament.player_set.all()
+    for player in players:
+        last_tournament = player.tournaments.order_by('-date')[0]
+        data = player.playerintournament_set.filter(tournament=last_tournament)
+        for element in data:
+            player.current_rank = element.GoLevel_after
+            player.current_rating = element.rating_after
+            player.save()
+
