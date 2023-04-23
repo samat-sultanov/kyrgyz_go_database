@@ -339,7 +339,7 @@ def tournament_table_sorting(tournament_pk):
     # qsopit = queryset of players in tournament
     # git = games in tournament
     # dotrwdi = dictionary of tournament rounds with detailed info
-    # irpl = in_round_players_list
+    # ipl = initial_players_list
 
     tournament = get_object_or_404(Tournament, pk=tournament_pk)
     qsopit = tournament.playerintournament_set.all()
@@ -370,7 +370,7 @@ def tournament_table_sorting(tournament_pk):
                         'EgdPin': player.player.EgdPin
                     })
 
-            sorted_initial_players_list = _quicksort_irpl(initial_players_list)
+            sorted_initial_players_list = _quicksort_ipl(initial_players_list)
 
             previous_round_list = sorted_initial_players_list
             dotrwdi[f'round #{round}'] = {
@@ -379,10 +379,11 @@ def tournament_table_sorting(tournament_pk):
 
 
 def _resort_prev_round(prev_round_list, games):
-    pass
+    for game in games:
+        pass
 
 
-def _quicksort_irpl(array):
+def _quicksort_ipl(array):
     if len(array) < 2:
         return array
 
