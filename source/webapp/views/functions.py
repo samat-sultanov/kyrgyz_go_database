@@ -487,6 +487,7 @@ def tournament_table_sorting(tournament_pk):
 def _sort_ipl(lopit):
     #lopit = list of players in tournament(from json)
     unsorted_players_list = []
+    by_rating = False
     for element in lopit:
         new_dict = dict()
         for m, n in element.items():
@@ -494,18 +495,21 @@ def _sort_ipl(lopit):
                 id_in_tournament = n
             elif m == 'GoPlayer':
                 person = n
+                rating = person.get('Rating')
+                if rating != '0':
+                    by_rating = True
                 new_dict['FirstName'] = person.get('FirstName')
                 new_dict['Surname'] = person.get('Surname')
                 new_dict['GoLevel'] = person.get('GoLevel')
                 new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
-                new_dict['Rating'] = float(person.get('Rating'))
+                new_dict['Rating'] = float(rating)
                 new_dict['EgdPin'] = int(person.get('EgdPin'))
                 new_dict['Club'] = person.get('Club')
                 new_dict['birth_date'] = ''
                 new_dict['id_in_tournament'] = id_in_tournament
                 unsorted_players_list.append(new_dict)
 
-    sorted_initial_players_list = _quicksort_ipl(unsorted_players_list)
+    sorted_initial_players_list = _quicksort_ipl(unsorted_players_list, by_rating)
 
     for player in sorted_initial_players_list:
         player['position'] = sorted_initial_players_list.index(player) + 1
@@ -529,26 +533,31 @@ def _resort_prev_round(prev_round_list, games):
         pass
 
 
-def _quicksort_ipl(array):
+def _quicksort_ipl(array, by_rating):
     if len(array) < 2:
         return array
 
     low, same, high = [], [], []
 
-    pivot = array[randint(0, len(array) - 1)].get('adapted_level')
+    if not by_rating:
+        pivot = array[randint(0, len(array) - 1)].get('adapted_level')
+        sort_by = 'adapted_level'
+    else:
+        pivot = array[randint(0, len(array) - 1)].get('Rating')
+        sort_by = 'Rating'
 
     for item in array:
-        if item.get('adapted_level') < pivot:
+        if item.get(sort_by) < pivot:
             low.append(item)
-        elif item.get('adapted_level') == pivot:
+        elif item.get(sort_by) == pivot:
             same.append(item)
-        elif item.get('adapted_level') > pivot:
+        elif item.get(sort_by) > pivot:
             high.append(item)
 
     if len(same) > 1:
         same = _sort_by_last_name(same)
 
-    return _quicksort_ipl(low) + same + _quicksort_ipl(high)
+    return _quicksort_ipl(low, by_rating) + same + _quicksort_ipl(high, by_rating)
 
 
 def _sort_by_last_name(array):
