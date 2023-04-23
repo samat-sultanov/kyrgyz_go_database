@@ -112,12 +112,14 @@
                     Клубы: Не состоит в клубах
                 {% endif %}
             </button>
-            <ul class="dropdown-menu">
-                {% for club in player.clubs.all %}
-                    <li><a class="dropdown-item" href="#"
-                           style="background-color: #9400D3; color: white">{{ club.name }}</a></li>
-                {% endfor %}
-            </ul>
+            {% if player.clubs.all %}
+                <ul class="dropdown-menu">
+                    {% for club in player.clubs.all %}
+                        <li><a class="dropdown-item" href="{% url 'webapp:club_view' club.pk %}"
+                               style="background-color: #9400D3; color: white">{{ club.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
         <a href="{% url "webapp:competitor_search" player.pk %}" class="btn ms-1 mt-2"
            style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск соперников</a>

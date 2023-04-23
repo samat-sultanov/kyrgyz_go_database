@@ -4,7 +4,7 @@ from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game, PlayerInTournament
+from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS, PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
@@ -333,6 +333,127 @@ def club_active_players(pk):
     # print(f'5{under_5d}')
     # print(f'10{under_10d}')
     return all_players
+
+
+def unpack_data_json_tournament(data):
+    new_dict = dict()
+    for key, value in data.items():
+        if key == "Tournament":
+            items = value
+            for k, v in items.items():
+                if k == 'Name':
+                    tournament_name = v
+                    new_dict['Name'] = tournament_name
+                elif k == "NumberOfRounds":
+                    round_num = int(v)
+                    new_dict['NumberOfRounds'] = round_num
+                elif k == "Boardsize":
+                    board_size = int(v)
+                    new_dict['Boardsize'] = board_size
+                    new_dict['date'] = ''
+                    new_dict['tournament_class'] = DEFAULT_CLASS
+                    new_dict['location'] = ''
+                    new_dict['city'] = ''
+                    new_dict['regulations'] = ''
+    return new_dict
+
+
+def unpack_data_json_players(data):
+    new_list = []
+    for key, value in data.items():
+        if key == "Tournament":
+            items = value
+            for k, v in items.items():
+                if k == 'IndividualParticipant':
+                    list_of_players = v
+                    for element in list_of_players:
+                        new_dict = dict()
+                        for m, n in element.items():
+                            if m == "Id":
+                                id_in_game = n
+                            elif m == 'GoPlayer':
+                                person = n
+                                new_dict['FirstName'] = person.get('FirstName')
+                                new_dict['Surname'] = person.get('Surname')
+                                new_dict['GoLevel'] = person.get('GoLevel')
+                                new_dict['Rating'] = float(person.get('Rating'))
+                                new_dict['EgdPin'] = int(person.get('EgdPin'))
+                                new_dict['Club'] = person.get('Club')
+                                new_dict['birth_date'] = ''
+                                new_dict['id_in_game'] = id_in_game
+                                new_list.append(new_dict)
+    return new_list
+
+
+def update_json_tournament(data, some_dict, some_list):
+    updated_data = {}
+    for key, value in data.items():
+        if key == "Tournament":
+            items = value.copy()
+            element = {}
+            for k, v in items.items():
+                element[k] = v
+                element.update({
+                    'Name': some_dict['Name'],
+                    'NumberOfRounds': some_dict['NumberOfRounds'],
+                    'Boardsize': some_dict['Boardsize'],
+                    'date': some_dict['date'],
+                    'city': some_dict['city'],
+                    'tournament_class': some_dict['tournament_class'],
+                    'regulations': some_dict['regulations'],
+                    'uploaded_by': some_dict['uploaded_by'],
+                })
+            updated_data['Tournament'] = element
+            if 'IndividualParticipant' in items:
+                list_of_players = items['IndividualParticipant']
+                for element in list_of_players:
+                    for m, n in element.items():
+                        for el in some_list:
+                            if m == 'Id':
+                                id_in_game = n
+                            elif m == 'GoPlayer':
+                                d = n
+                                new_element = {}
+                                for g, h in d.items():
+                                    new_element[g] = h
+                                if id_in_game == el['id_in_game']:
+                                    new_element.update({
+                                        'FirstName': el['FirstName'],
+                                        'Surname': el['Surname'],
+                                        'GoLevel': el['GoLevel'],
+                                        'Rating': el['Rating'],
+                                        'EgdPin': el['EgdPin'],
+                                        'birth_date': el['birth_date'],
+                                        'id_in_game': el['id_in_game']
+                                    })
+                                    element['GoPlayer'] = new_element
+
+    return updated_data
+
+
+def unpack_data_for_moderation_tournament(data):
+    new_dict = {}
+    for k, v in data.get('Tournament', {}).items():
+        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'city', 'regulations'}:
+            new_dict[k] = int(v) if k == 'NumberOfRounds' or k == 'Boardsize' else v
+    return new_dict
+
+
+def unpack_data_for_moderation_players(data):
+    new_list = []
+    for player in data.get('Tournament', {}).get('IndividualParticipant', []):
+        person = player.get('GoPlayer', {})
+        new_dict = {
+            'FirstName': person.get('FirstName'),
+            'Surname': person.get('Surname'),
+            'GoLevel': person.get('GoLevel'),
+            'Rating': float(person.get('Rating', 0)),
+            'EgdPin': int(person.get('EgdPin', 0)),
+            'Club': person.get('Club'),
+            'birth_date': person.get('birth_date')
+        }
+        new_list.append(new_dict)
+    return new_list
 
 
 def tournament_table_sorting(tournament_pk):

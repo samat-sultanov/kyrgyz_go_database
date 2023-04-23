@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import file_upload, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
+from .views import FileUpload, TournamentCheckView, IndexView, NewsListView, PlayerSearch, TournamentSearch, CalendarCreateView, \
     CalendarUpdateView, CalendarDeleteView, CompetitorSearch, ClubsListView, PlayerDetail, TournamentDetail, \
     NewsCreateView, NewsDetailView, NewsUpdateView, NewsDeleteView, DeletedNewsListView, restore_one_deleted_news, \
-    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, file_upload_check, ClubUpdate, ParticipantCreate, \
+    hard_delete_one_news, UpdatePlayer, about_us_view, DeletePlayer, ClubUpdate, ParticipantCreate, \
     CalendarDetailView, ClubView, DeletedCalendarListView, restore_one_deleted_event, \
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView, \
@@ -15,10 +15,10 @@ app_name = 'webapp'
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('player_search/', PlayerSearch.as_view(), name='player_search'),
-    path('player_detail/<int:pk>', PlayerDetail.as_view(), name='player_detail'),
-    path('update_player/<int:pk>', UpdatePlayer.as_view(), name='update_player'),
-    path('delete_player/<int:pk>', DeletePlayer.as_view(), name='delete_player'),
-    path('file_upload/', file_upload, name='file_upload'),
+    path('player_detail/<int:pk>/', PlayerDetail.as_view(), name='player_detail'),
+    path('update_player/<int:pk>/', UpdatePlayer.as_view(), name='update_player'),
+    path('delete_player/<int:pk>/', DeletePlayer.as_view(), name='delete_player'),
+    path('file_upload/', FileUpload.as_view(), name='file_upload'),
     path('news/', NewsListView.as_view(), name='news_list'),
     path('news/deleted_list/', DeletedNewsListView.as_view(), name='deleted_news_list'),
     path('news/restore/<int:pk>/', restore_one_deleted_news, name='news_restore_one_deleted'),
@@ -43,7 +43,7 @@ urlpatterns = [
     path('competitors/<int:pk>/', CompetitorSearch.as_view(), name='competitor_search'),
     path('about/', about_us_view, name='about'),
     path('feedback_to_mail/', send_feedback_to_admin, name='feedback_to_admin'),
-    path('file_check/<int:pk>/', file_upload_check, name='file_check'),
+    path('file_check/<str:file_name>/', TournamentCheckView.as_view(), name='file_check'),
     path('file_check/<int:pk>/delete/', DeleteTournamentBeforeModeration.as_view(), name='delete_tournament'),
     path('participiant_create/<int:pk>/', ParticipantCreate.as_view(), name='ParticipantCreate'),
     path('player_detail/<int:pk>/recommendation_add/', RecommendationCreateView.as_view(), name='recommendation_add'),

@@ -119,7 +119,6 @@ class Tournament(models.Model):
     regulations = models.TextField(verbose_name='Regulations', null=True, blank=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
                                     verbose_name="Автор")
-    is_moderated = models.BooleanField(default=False, verbose_name='Статус модерации')
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.board_size}'
@@ -257,6 +256,7 @@ class Calendar(models.Model):
     text = models.TextField(max_length=5000, verbose_name='Описание события')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET(get_author), verbose_name='Автор',
                                default=get_author)
+    calendar_image = models.ImageField(verbose_name='Изображение', null=True, blank=True, upload_to='calendar_images')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время изменения")
     is_deleted = models.BooleanField(default=False, verbose_name='Удален')
@@ -269,6 +269,15 @@ class Calendar(models.Model):
 
     def is_end_date(self):
         return dt.now().date() > self.deadline
+
+    def save(self, *args, **kwargs):
+        super(Calendar, self).save(*args, **kwargs)
+        if self.calendar_image:
+            img = Image.open(self.calendar_image.path)
+            if img.height > 1500 or img.width > 1500:
+                output_size = (1500, 1500)
+                img.thumbnail(output_size)
+                img.save(self.calendar_image.path)
 
 
 class Participant(models.Model):
@@ -311,6 +320,21 @@ class Partner(models.Model):
                 output_size = (500, 500)
                 img.thumbnail(output_size)
                 img.save(self.logo.path)
+
+
+class NotModeratedTournament(models.Model):
+    name = models.CharField(verbose_name="Tournament name", max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Date of upload')
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
+                                    verbose_name="Uploaded by")
+
+    def __str__(self):
+        return f'{self.id}. {self.name[:30]}: {self.uploaded_by}'
+
+    class Meta:
+        db_table = "moderation"
+        verbose_name = "TournamentForModeration"
+        verbose_name_plural = "TournamentsForModeration"
 
 
 @receiver(models.signals.post_delete, sender=News)
