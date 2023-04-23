@@ -366,22 +366,7 @@ def unpack_data_json_players(data):
             for k, v in items.items():
                 if k == 'IndividualParticipant':
                     list_of_players = v
-                    for element in list_of_players:
-                        new_dict = dict()
-                        for m, n in element.items():
-                            if m == "Id":
-                                id_in_game = n
-                            elif m == 'GoPlayer':
-                                person = n
-                                new_dict['FirstName'] = person.get('FirstName')
-                                new_dict['Surname'] = person.get('Surname')
-                                new_dict['GoLevel'] = person.get('GoLevel')
-                                new_dict['Rating'] = float(person.get('Rating'))
-                                new_dict['EgdPin'] = int(person.get('EgdPin'))
-                                new_dict['Club'] = person.get('Club')
-                                new_dict['birth_date'] = ''
-                                new_dict['id_in_game'] = id_in_game
-                                new_list.append(new_dict)
+                    new_list = _sort_ipl(list_of_players)
     return new_list
 
 
@@ -499,6 +484,46 @@ def tournament_table_sorting(tournament_pk):
             }
 
 
+def _sort_ipl(lopit):
+    #lopit = list of players in tournament(from json)
+    unsorted_players_list = []
+    for element in lopit:
+        new_dict = dict()
+        for m, n in element.items():
+            if m == "Id":
+                id_in_tournament = n
+            elif m == 'GoPlayer':
+                person = n
+                new_dict['FirstName'] = person.get('FirstName')
+                new_dict['Surname'] = person.get('Surname')
+                new_dict['GoLevel'] = person.get('GoLevel')
+                new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
+                new_dict['Rating'] = float(person.get('Rating'))
+                new_dict['EgdPin'] = int(person.get('EgdPin'))
+                new_dict['Club'] = person.get('Club')
+                new_dict['birth_date'] = ''
+                new_dict['id_in_tournament'] = id_in_tournament
+                unsorted_players_list.append(new_dict)
+
+    sorted_initial_players_list = _quicksort_ipl(unsorted_players_list)
+
+    for player in sorted_initial_players_list:
+        player['position'] = sorted_initial_players_list.index(player) + 1
+
+    return sorted_initial_players_list
+
+
+def _adapt_go_level(str):
+    adapted_level = 35
+
+    if str[-1] == 'k':
+        adapted_level = int(str[:-1])
+    elif str[-1] == 'd':
+        adapted_level = -1 * int(str[:-1])
+
+    return adapted_level
+
+
 def _resort_prev_round(prev_round_list, games):
     for game in games:
         pass
@@ -523,7 +548,7 @@ def _quicksort_ipl(array):
     if len(same) > 1:
         same = _sort_by_last_name(same)
 
-    return _quicksort_irpl(low) + same + _quicksort_irpl(high)
+    return _quicksort_ipl(low) + same + _quicksort_ipl(high)
 
 
 def _sort_by_last_name(array):
@@ -532,14 +557,14 @@ def _sort_by_last_name(array):
 
     low, same, high = [], [], []
 
-    pivot = array[randint(0, len(array) - 1)].get('last_name').lower()
+    pivot = array[randint(0, len(array) - 1)].get('Surname').lower()
 
     for item in array:
-        if item.get('last_name').lower() < pivot:
+        if item.get('Surname').lower() < pivot:
             low.append(item)
-        elif item.get('last_name').lower() == pivot:
+        elif item.get('Surname').lower() == pivot:
             same.append(item)
-        elif item.get('last_name').lower() > pivot:
+        elif item.get('Surname').lower() > pivot:
             high.append(item)
 
     if len(same) > 1:
@@ -554,17 +579,17 @@ def _sort_by_first_name(array):
 
     low, same, high = [], [], []
 
-    pivot = array[randint(0, len(array) - 1)].get('first_name').lower()
+    pivot = array[randint(0, len(array) - 1)].get('FirstName').lower()
 
     for item in array:
-        if item.get('first_name').lower() < pivot:
+        if item.get('FirstName').lower() < pivot:
             low.append(item)
-        elif item.get('first_name').lower() == pivot:
+        elif item.get('FirstName').lower() == pivot:
             same.append(item)
-        elif item.get('first_name').lower() > pivot:
+        elif item.get('FirstName').lower() > pivot:
             high.append(item)
 
     if len(same) > 1:
-        same = sorted(same, key=lambda d: d['EgdPin'])
+        same = sorted(same, key=lambda d: d['id_in_tournament'])
 
     return _sort_by_last_name(low) + same + _sort_by_last_name(high)
