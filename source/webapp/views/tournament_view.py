@@ -1,17 +1,15 @@
 import json
+import os
 from urllib.parse import urlencode
-from django.contrib import messages
 from django.core.files.storage import default_storage
-from django.forms import formset_factory
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views import View
-from django.views.generic import ListView, TemplateView, DeleteView, FormView, DetailView
+from django.views.generic import ListView, TemplateView, DeleteView
 from django.db.models import Q
-
-from webapp.views.GoR_calculator import get_new_rating
-from webapp.forms import TournamentSearchForm, CheckTournamentForm, CheckPlayerForm
+from webapp.handle_upload import unpack_tournament_to_bd, unpack_countries_clubs, unpack_players, unpack_games
+from webapp.views.GoR_calculator import get_new_rating, get_current_rating_and_rank
+from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, \
@@ -106,14 +104,33 @@ class TournamentModerationList(LoginRequiredMixin, ListView):
     paginate_by = 10
 
 
-class CheckModer(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        tournament = get_object_or_404(Tournament, pk=self.kwargs.get('pk'))
-        tournament.is_moderated = True
-        tournament.save()
-        get_new_rating(tournament.pk)
-        response = JsonResponse({'status': tournament.is_moderated})
-        return response
+class CheckModer(LoginRequiredMixin, TemplateView):
+    template_name = 'tournament/tournament_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = kwargs.get("pk")
+        tournament = get_object_or_404(NotModeratedTournament, pk=pk)
+        file_name = tournament.name
+        json_file_path = f"json/{file_name.split('.')[0]}.json"
+        with default_storage.open(json_file_path, 'r') as f:
+            data = json.load(f)
+        new_pk = unpack_tournament_to_bd(data)
+        unpack_countries_clubs(data)
+        unpack_players(data, new_pk)
+        unpack_games(data, new_pk)
+        moder_tournament = get_object_or_404(Tournament, pk=new_pk)
+        context['tournament'] = moder_tournament
+        players = moder_tournament.playerintournament_set.all()
+        context['players'] = players
+        wins = get_wins_losses(new_pk)
+        context['wins'] = wins
+        tournament.delete()
+        file_path = f"uploads/json/{file_name.split('.')[0]}.json"
+        os.remove(file_path)
+        get_new_rating(new_pk)
+        get_current_rating_and_rank(new_pk)
+        return context
 
 
 class CheckCancelModer(LoginRequiredMixin, DeleteView):
@@ -153,4 +170,5 @@ class ModerationTournamentView(LoginRequiredMixin, TemplateView):
         players_data = unpack_data_for_moderation_players(data)
         context['tournament'] = tournament_data
         context['players'] = players_data
+        context['pk'] = pk
         return context
