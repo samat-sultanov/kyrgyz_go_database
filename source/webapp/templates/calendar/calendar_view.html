@@ -6,19 +6,26 @@
 
 {% block content %}
     <div class="container mb-4 mt-4">
-        <div>
-            <h2 class="title">Мероприятие: {{ event.event_name }}</h2>
-            <p>Город: {{ event.event_city }}</p>
-            <p>Дата: {{ event.event_date }}</p>
-            <p>{{ event.text }}</p>
-            {% if event.is_end_date %}
-                <p><em><strong>Регистрация на турнир {{ event.event_name }} закончена.</strong></em></p>
-            {% else %}
-             <a href="{% url "webapp:ParticipantCreate" event.pk %}" class="btn"
-                style="background-color: #9400D3; color: white" id="slide_stop_button">Записаться</a>
+        <div class="card mt-3">
+            {% if event.calendar_image %}
+                <img style="border-radius: 19px" src="{{ event.calendar_image.url }}" class="card-img-top" alt="...">
             {% endif %}
-             &nbsp;&nbsp;<a href="{% url "webapp:CalendarPlayerList" event.pk %}" class="btn"
-                style="background-color: #9400D3; color: white" id="slide_stop_button">Список зарегистрировавшихся</a>
+            <div class="card-body">
+                <h2 class="card-title">Мероприятие: {{ event.event_name }}</h2>
+                <br>
+                <p>Город: {{ event.event_city }}</p>
+                <p>Дата: {{ event.event_date }}</p>
+                <p>{{ event.text }}</p>
+                {% if event.is_end_date %}
+                    <p><em><strong>Регистрация на турнир {{ event.event_name }} закончена.</strong></em></p>
+                {% else %}
+                    <a href="{% url "webapp:ParticipantCreate" event.pk %}" class="btn"
+                       style="background-color: #9400D3; color: white" id="slide_stop_button">Записаться</a>
+                {% endif %}
+                &nbsp;&nbsp;<a href="{% url "webapp:CalendarPlayerList" event.pk %}" class="btn"
+                               style="background-color: #9400D3; color: white" id="slide_stop_button">Список
+                зарегистрировавшихся</a>
+            </div>
         </div>
     </div>
 {% endblock %}

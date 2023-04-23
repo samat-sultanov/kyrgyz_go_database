@@ -50,7 +50,7 @@ class DateInput(forms.DateInput):
 class CalendarForm(forms.ModelForm):
     class Meta:
         model = Calendar
-        fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline']
+        fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline', 'calendar_image']
         widgets = {
             'event_date': forms.DateInput(attrs={'type': 'date'}),
             'deadline': forms.DateTimeInput(attrs={'type': 'date'})
@@ -181,16 +181,16 @@ class ClubForm(forms.ModelForm):
             'coaches': forms.CheckboxSelectMultiple(),
         }
         labels = {
-            'logo': 'Logo:',
-            'name': 'Club name:',
+            'logo': 'Логотип:',
+            'name': 'Наименование клуба:',
             'EGDName': 'EGD name:',
-            'city': 'City:',
-            'coaches': 'Coaches:',
-            'num_players': 'Number of members:',
-            'address': "Address",
-            'phonenumber': "Phone number",
-            'web_link': "Link to social media or web-site",
-            'schedule': 'Working hours',
+            'city': 'Город:',
+            'coaches': 'Тренера:',
+            'num_players': 'Число участников:',
+            'address': "Адрес:",
+            'phonenumber': "Номер телефона:",
+            'web_link': "Web-site:",
+            'schedule': 'Рабочие часы:',
         }
 
     def clean_num_players(self):
