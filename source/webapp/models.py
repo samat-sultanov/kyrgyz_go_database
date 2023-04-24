@@ -137,8 +137,8 @@ class Player(models.Model):
     tournaments = models.ManyToManyField('webapp.Tournament', through='webapp.PlayerInTournament')
     city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, blank=True, null=True)
     birth_date = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
-    current_rank = models.CharField(verbose_name='GoLevel', max_length=3, default="0k")
-    current_rating = models.IntegerField(verbose_name='Rating', default=0)
+    current_rank = models.CharField(verbose_name='GoLevel', max_length=3, null=True, blank=True, default='0k')
+    current_rating = models.IntegerField(verbose_name='Rating', null=True, blank=True, default=0)
     EgdPin = models.PositiveIntegerField(verbose_name='EgdPin', blank=True, null=True)
 
     def __str__(self):
@@ -323,7 +323,7 @@ class Partner(models.Model):
 
 
 class NotModeratedTournament(models.Model):
-    name = models.CharField(verbose_name="Tournament name", max_length=50)
+    name = models.CharField(verbose_name="Tournament name", max_length=255)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Date of upload')
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default=1,
                                     verbose_name="Uploaded by")

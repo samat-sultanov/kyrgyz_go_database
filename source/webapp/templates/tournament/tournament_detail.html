@@ -8,7 +8,7 @@
     <div class="container mb-4 mt-4">
         <div class="mb-4">
             <h2 class="title">Турнир: {{ tournament.name }}</h2>
-            <p>Дата: {{ tournament.date|date:"d-m-Y" }}</p>
+            <p>Дата: {{ tournament.date }}</p>
             <p>Город: {{ tournament.city }}</p>
             <p>Число участников: {{ tournament.player_set.count }}</p>
             <p>Раунды: {{ tournament.rounds }}</p>
@@ -33,18 +33,15 @@
             </tr>
             </thead>
             <tbody>
-            {% if sorted_players %}
-                {% for el in sorted_players %}
+                {% for el in players %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td data-label="EgdPin">{{ el.player.EgdPin }}</td>
                     <td data-label="Last Name"><a style="color: black"
                            href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
                     <td data-label="First Name">{{ el.player.first_name }}</td>
-                    {% if el.player.clubs.all %}
-                        {% for club in el.player.clubs.all %}
-                            <td data-label="Club">{{ club.name }}</td>
-                        {% endfor %}
+                    {% if el.club %}
+                    <td data-label="Club">{{ el.club.name }}</td>
                     {% else %}
                         <td data-label="Club"></td>
                     {% endif %}
@@ -57,10 +54,6 @@
                     {% endfor %}
                 </tr>
                 {% endfor %}
-            {% endif %}
-            {% if players_with_rate_k %}
-
-            {% endif %}
             </tbody>
         </table>
     </div>

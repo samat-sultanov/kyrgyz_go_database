@@ -12,7 +12,7 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
-from webapp.models import Player
+from webapp.models import Player, Calendar
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +105,17 @@ def sync_pin_job():
             continue
 
 
+def delete_expired_event():
+    now = timezone.now()
+    seven_days_ago = now - timezone.timedelta(days=7)
+    expired_calendars = Calendar.objects.filter(event_date__lt=seven_days_ago)
+
+    for calendar in expired_calendars:
+        calendar.participant.all().delete()
+
+    expired_calendars.delete()
+
+
 @util.close_old_connections
 def delete_old_job_executions(max_age=604_800):
     """
@@ -151,8 +162,17 @@ class Command(BaseCommand):
             replace_existing=True,
         )
         logger.info(
-            "Added yearly job: 'delete_old_job_executions'."
+            "Added 4 yearly job: 'delete_old_job_executions'."
         )
+
+        scheduler.add_job(
+            delete_expired_event,
+            trigger=CronTrigger(day_of_week="mon", hour=3, minute=0),
+            id="delete_expired_event",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job 'delete_expired_events'")
 
         try:
             logger.info("Starting scheduler...")
