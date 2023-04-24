@@ -89,7 +89,6 @@ class TournamentDetail(TemplateView):
 
     def get_context_data(self, **kwargs):
         pk = kwargs.get("pk")
-#       tournament_table_sorting(pk)
         tournament = get_object_or_404(Tournament, pk=pk)
         data = tournament.playerintournament_set.all().order_by('-rating_after')
         kwargs["tournament"] = tournament
