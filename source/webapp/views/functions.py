@@ -363,11 +363,74 @@ def unpack_data_json_players(data):
     for key, value in data.items():
         if key == "Tournament":
             items = value
+            list_of_players = []
+            list_of_rounds = []
             for k, v in items.items():
                 if k == 'IndividualParticipant':
                     list_of_players = v
-                    new_list = _sort_ipl(list_of_players)
+                elif k == 'TournamentRound':
+                    list_of_rounds = v
+            new_list = _sort_ipl(list_of_players)
+            new_list = unpack_data_json_games(list_of_rounds, new_list)
+
     return new_list
+
+
+def unpack_data_json_games(list_of_rounds, list_of_players):
+    list_of_players = list_of_players
+    for player in list_of_players:
+        id_in_tournament = player.get('id_in_tournament')
+        for one_round in list_of_rounds:
+            new_dict = dict()
+            for k, v in one_round.items():
+                if k == 'RoundNumber':
+                    round_number = v
+                    new_dict['round'] = round_number
+                elif k == 'Pairing':
+                    list_of_games = v
+                    for game in list_of_games:
+                        if game.get('Black') and game.get('White'):
+                            black = game.get('Result')[0]
+                            white = game.get('Result')[2]
+
+                            if game.get('Black') == id_in_tournament:
+                                if black == '1' and white == '0':
+                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
+                                    new_dict['font_color'] = 'green'
+                                elif black == '0' and white == '1':
+                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
+                                    new_dict['font_color'] = 'red'
+                                else:
+                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
+                                    new_dict['font_color'] = 'black'
+
+                            elif game.get('White') == id_in_tournament:
+                                if white == '1' and black == '0':
+                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
+                                    new_dict['font_color'] = 'green'
+                                elif white == '0' and black == '1':
+                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
+                                    new_dict['font_color'] = 'red'
+                                else:
+                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
+                                    new_dict['font_color'] = 'black'
+                        else:
+                            if id_in_tournament in (game.get('Black'), game.get('White')):
+                                new_dict['result_to_display'] = '0+'
+                                new_dict['font_color'] = 'green'
+            player['results'].append(new_dict)
+
+    return list_of_players
+
+
+def get_position(array, id_num):
+    flag = False
+    for player in array:
+        if player.get('id_in_tournament') == id_num:
+            flag = True
+            return player.get('position')
+    if not flag:
+        return f'id: {id_num}'
 
 
 def update_json_tournament(data, some_dict, some_list):
@@ -513,17 +576,18 @@ def _sort_ipl(lopit):
 
     for player in sorted_initial_players_list:
         player['position'] = sorted_initial_players_list.index(player) + 1
+        player['results'] = []
 
     return sorted_initial_players_list
 
 
-def _adapt_go_level(str):
+def _adapt_go_level(strr):
     adapted_level = 35
 
-    if str[-1] == 'k':
-        adapted_level = int(str[:-1])
-    elif str[-1] == 'd':
-        adapted_level = -1 * int(str[:-1])
+    if strr[-1] == 'k':
+        adapted_level = int(strr[:-1])
+    elif strr[-1] == 'd':
+        adapted_level = -1 * int(strr[:-1])
 
     return adapted_level
 
