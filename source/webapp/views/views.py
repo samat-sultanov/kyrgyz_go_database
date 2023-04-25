@@ -1,5 +1,6 @@
 import xmltodict
 import json
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.mail import send_mail, BadHeaderError
@@ -31,7 +32,7 @@ class IndexView(TemplateView):
         return context
 
 
-class FileUpload(FormView):
+class FileUpload(LoginRequiredMixin, FormView):
     template_name = 'file_upload.html'
     form_class = FileForm
 
@@ -54,7 +55,7 @@ class FileUpload(FormView):
         return HttpResponseRedirect(reverse('webapp:file_check', args=[file_name]))
 
 
-class TournamentCheckView(FormView):
+class TournamentCheckView(LoginRequiredMixin, FormView):
     template_name = 'tournament/tournament_check.html'
     form_class = CheckTournamentForm
     CheckPlayerFormSet = formset_factory(CheckPlayerForm, extra=0)
@@ -63,7 +64,6 @@ class TournamentCheckView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         file_name = self.kwargs.get('file_name')
-        NotModeratedTournament.objects.create(name=file_name, uploaded_by=self.request.user)
         json_file_path = f"json/{file_name.split('.')[0]}.json"
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
@@ -107,6 +107,7 @@ class TournamentCheckView(FormView):
         json_data = json.dumps(update_data, indent=4)
         with default_storage.open(json_file_path, 'w') as f:
             f.write(ContentFile(json_data).read())
+        NotModeratedTournament.objects.create(name=file_name, uploaded_by=self.request.user)
         return super().form_valid(form)
 
     def form_invalid(self, form):
