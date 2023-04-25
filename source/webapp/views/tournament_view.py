@@ -144,15 +144,22 @@ class CheckCancelModer(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class DeleteTournamentBeforeModeration(LoginRequiredMixin, DeleteView):
-    queryset = Tournament.objects.all()
-    context_object_name = 'Tournament'
-    success_url = reverse_lazy('webapp:file_upload')
+class DeleteTournamentBeforeModeration(LoginRequiredMixin, TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        file_name = self.kwargs.get('file_name')
+        file_path = f"uploads/json/{file_name.split('.')[0]}.json"
+        context['file_path'] = file_path
+        return context
 
-    def form_valid(self, form):
-        success_url = self.get_success_url()
-        self.object.delete()
-        return HttpResponseRedirect(success_url)
+    def get_success_url(self):
+        return reverse_lazy('webapp:file_upload')
+
+    def post(self, request, *args, **kwargs):
+        file_name = self.kwargs.get('file_name')
+        file_path = f"uploads/json/{file_name.split('.')[0]}.json"
+        os.remove(file_path)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ModerationTournamentView(LoginRequiredMixin, TemplateView):
