@@ -558,7 +558,7 @@ def _sort_ipl(lopit):
                 id_in_tournament = n
             elif m == 'GoPlayer':
                 person = n
-                rating = person.get('Rating')
+                rating = person.get('Rating', 0)
                 if rating != '0':
                     by_rating = True
                 new_dict['FirstName'] = person.get('FirstName')
@@ -566,9 +566,9 @@ def _sort_ipl(lopit):
                 new_dict['GoLevel'] = person.get('GoLevel')
                 new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
                 new_dict['Rating'] = float(rating)
-                new_dict['EgdPin'] = int(person.get('EgdPin'))
+                new_dict['EgdPin'] = int(person.get('EgdPin', 0))
                 new_dict['Club'] = person.get('Club')
-                new_dict['birth_date'] = ''
+                new_dict['birth_date'] = person.get('birth_date', '')
                 new_dict['id_in_tournament'] = id_in_tournament
                 unsorted_players_list.append(new_dict)
 
