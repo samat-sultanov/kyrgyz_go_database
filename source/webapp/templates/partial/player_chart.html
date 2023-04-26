@@ -1,0 +1,35 @@
+<div style="width: 1200px;">
+    <canvas id="line-chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
+
+<script>
+	new Chart(document.getElementById("line-chart"), {
+		type : 'line',
+		data : {
+			datasets: [{
+                label: 'Rating',
+                data: [{% for date , rating in chart %}{
+                    x: '{{ date }}',
+                    y: {{ rating }}
+                },
+                {% endfor %}
+                ]
+            }],
+		},
+		options: {
+          scales: {
+            y: {
+            title: {
+              display: true,
+              text: 'Gor'
+            },
+            ticks: {
+                stepSize: 100
+            }
+
+          },
+        },}
+	});
+</script>
