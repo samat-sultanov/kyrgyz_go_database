@@ -2,7 +2,7 @@ from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS
+from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS , PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
@@ -245,6 +245,7 @@ def player_wins_loses(pk):
     player = Player.objects.get(pk=pk)
     games = Game.objects.filter(Q(black=player) | Q(white=player))
     wl = []
+    total_games = games.count()
     for game in games:
         new_dict = dict()
         wins_stronger = 0
@@ -290,6 +291,7 @@ def player_wins_loses(pk):
     for d in wl:
         c.update(d)
     statistics = dict(c)
+    statistics['all'] = total_games
     return statistics
 
 def club_active_players(pk):
@@ -322,12 +324,6 @@ def club_active_players(pk):
     all_players['under_1k'] = len(under_1k)
     all_players['under_5d'] = len(under_5d)
     all_players['under_10d'] = len(under_10d)
-    # print(f'21{under_21k}')
-    # print(f'11{under_11k}')
-    # print(f'6{under_6k}')
-    # print(f'1{under_1k}')
-    # print(f'5{under_5d}')
-    # print(f'10{under_10d}')
     return all_players
 
 
@@ -451,4 +447,13 @@ def unpack_data_for_moderation_players(data):
         new_list.append(new_dict)
     return new_list
 
-
+def player_rating_for_chart(pk):
+    player = Player.objects.get(pk=pk)
+    tournaments= PlayerInTournament.objects.filter(player=player)
+    date = []
+    rating = []
+    for tournament in tournaments:
+        date.append(str(tournament.tournament.date))
+        rating.append(tournament.rating)
+    total = zip(date, rating)
+    return total
