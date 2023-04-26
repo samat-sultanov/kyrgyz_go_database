@@ -6,8 +6,8 @@
           <span style="font-weight: bold">Турнир: </span> {{ item.tournament.name }}
       </div>
       <div class="card-body">
-      {% if item.tournament.class %}
-          <p><span style="font-weight: bold">Класс: </span>{{ item.tournament.class }} </p>
+      {% if item.tournament.tournament_class %}
+          <p><span style="font-weight: bold">Класс: </span>{{ item.tournament.tournament_class }} </p>
       {% else %}
           <p><span style="font-weight: bold">Класс: </span> Не присвоен </p>
       {% endif %}
