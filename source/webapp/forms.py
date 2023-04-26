@@ -140,6 +140,7 @@ class ClubSearch(forms.Form):
 
 
 class CheckPlayerForm(forms.Form):
+    position = forms.CharField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
     Surname = forms.CharField(max_length=255)
     FirstName = forms.CharField(max_length=255)
     EgdPin = forms.IntegerField()

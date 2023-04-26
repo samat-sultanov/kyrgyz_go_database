@@ -41,7 +41,7 @@
                 {{ form2.management_form }}
                 {% for player_form in form2 %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ player_form.position }}</td>
                         <td>{{ player_form.EgdPin}}</td>
                         <td>{{ player_form.Surname }} {{ player_form.FirstName }}</td>
                         <td>{{ player_form.birth_date }}</td>
