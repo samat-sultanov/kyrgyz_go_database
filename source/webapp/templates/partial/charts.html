@@ -1,4 +1,4 @@
-<div style="height: 340px;width: 340px;">
+<div style="height: 350px;width: 350px;">
   <canvas id="myChart"></canvas>
 </div>
 
@@ -36,6 +36,18 @@
             ],
             hoverOffset: 4
           }]
-    }
+    },
+      options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Всего:{{ all }} рейтинговых партий'
+            },
+            legend: {
+                position: 'bottom',
+                align:'start'
+            }
+        }
+      }
   });
 </script>
