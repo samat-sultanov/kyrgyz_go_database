@@ -11,7 +11,7 @@ from datetime import datetime
 import re
 
 
-latin_regex = re.compile('^[a-zA-Z_.,-]+$')
+latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
 def validate_latin_chars(value):
     if not latin_regex.match(value):

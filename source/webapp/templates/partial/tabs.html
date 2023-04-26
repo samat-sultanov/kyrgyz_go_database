@@ -17,6 +17,7 @@
                 <th scope="col">Дата</th>
                 <th scope="col">Класс</th>
                 <th scope="col">Ранг</th>
+                <th scope="col">GoR до/после</th>
             </tr>
             </thead>
             <tbody>
@@ -33,6 +34,7 @@
                     {% for person in tournament.playerintournament_set.all %}
                         {% if player.pk == person.player_id %}
                             <td data-label="Ранг">{{ person.GoLevel_after }}</td>
+                            <td data-label="GoR до/после" style="color: green">{{ person.rating }} => {{ person.rating_after }}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
