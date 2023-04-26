@@ -174,7 +174,7 @@ class ModerationTournamentView(LoginRequiredMixin, TemplateView):
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
         tournament_data = unpack_data_for_moderation_tournament(data)
-        players_data = unpack_data_json_players(data)
+        players_data = unpack_data_for_moderation_players(data)
         context['tournament'] = tournament_data
         context['players'] = players_data
         context['pk'] = pk

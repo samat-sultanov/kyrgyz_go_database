@@ -456,15 +456,15 @@ def update_json_tournament(data, some_dict, some_list):
                 list_of_players = items['IndividualParticipant']
                 for element in list_of_players:
                     for m, n in element.items():
-                        for el in some_list:
+                        for el in _sort_lod(some_list):
                             if m == 'Id':
-                                id_in_game = n
+                                id_in_tournament = n
                             elif m == 'GoPlayer':
                                 d = n
                                 new_element = {}
                                 for g, h in d.items():
                                     new_element[g] = h
-                                if id_in_game == el['id_in_game']:
+                                if id_in_tournament == el['id_in_tournament']:
                                     new_element.update({
                                         'FirstName': el['FirstName'],
                                         'Surname': el['Surname'],
@@ -472,7 +472,8 @@ def update_json_tournament(data, some_dict, some_list):
                                         'Rating': el['Rating'],
                                         'EgdPin': el['EgdPin'],
                                         'birth_date': el['birth_date'],
-                                        'id_in_game': el['id_in_game']
+                                        'id_in_tournament': el['id_in_tournament'],
+                                        'position': el['position']
                                     })
                                     element['GoPlayer'] = new_element
 
@@ -547,6 +548,35 @@ def tournament_table_sorting(tournament_pk):
             }
 
 
+def _sort_lod(lop):
+    #lop = list of players (list of dictionaries)
+    unsorted_players_list = []
+    by_rating = False
+    for person in lop:
+        new_dict = dict()
+        rating = person.get('Rating', 0)
+        if rating not in ['0', '0.0', 0, 0.0]:
+            by_rating = True
+        new_dict['FirstName'] = person.get('FirstName')
+        new_dict['Surname'] = person.get('Surname')
+        new_dict['GoLevel'] = person.get('GoLevel')
+        new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
+        new_dict['Rating'] = float(rating)
+        new_dict['EgdPin'] = int(person.get('EgdPin', 0))
+        new_dict['Club'] = person.get('Club')
+        new_dict['birth_date'] = person.get('birth_date', '')
+        new_dict['id_in_tournament'] = person.get('id_in_tournament')
+        unsorted_players_list.append(new_dict)
+
+    sorted_initial_players_list = _quicksort_ipl(unsorted_players_list, by_rating)
+
+    for player in sorted_initial_players_list:
+        player['position'] = sorted_initial_players_list.index(player) + 1
+        player['results'] = []
+
+    return sorted_initial_players_list
+
+
 def _sort_ipl(lopit):
     #lopit = list of players in tournament(from json)
     unsorted_players_list = []
@@ -559,7 +589,7 @@ def _sort_ipl(lopit):
             elif m == 'GoPlayer':
                 person = n
                 rating = person.get('Rating', 0)
-                if rating != '0':
+                if rating not in ['0', '0.0', 0, 0.0]:
                     by_rating = True
                 new_dict['FirstName'] = person.get('FirstName')
                 new_dict['Surname'] = person.get('Surname')
@@ -605,23 +635,31 @@ def _quicksort_ipl(array, by_rating):
 
     if not by_rating:
         pivot = array[randint(0, len(array) - 1)].get('adapted_level')
-        sort_by = 'adapted_level'
-    else:
-        pivot = array[randint(0, len(array) - 1)].get('Rating')
-        sort_by = 'Rating'
+        for item in array:
+            if item.get('adapted_level') < pivot:
+                low.append(item)
+            elif item.get('adapted_level') == pivot:
+                same.append(item)
+            elif item.get('adapted_level') > pivot:
+                high.append(item)
+        if len(same) > 1:
+            same = _sort_by_last_name(same)
+        return _quicksort_ipl(low, by_rating) + same + _quicksort_ipl(high, by_rating)
+
+    pivot = array[randint(0, len(array) - 1)].get('Rating')
 
     for item in array:
-        if item.get(sort_by) < pivot:
+        if item.get('Rating') < pivot:
             low.append(item)
-        elif item.get(sort_by) == pivot:
+        elif item.get('Rating') == pivot:
             same.append(item)
-        elif item.get(sort_by) > pivot:
+        elif item.get('Rating') > pivot:
             high.append(item)
 
     if len(same) > 1:
         same = _sort_by_last_name(same)
 
-    return _quicksort_ipl(low, by_rating) + same + _quicksort_ipl(high, by_rating)
+    return _quicksort_ipl(high, by_rating) + same + _quicksort_ipl(low, by_rating)
 
 
 def _sort_by_last_name(array):

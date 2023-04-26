@@ -147,7 +147,7 @@ class CheckPlayerForm(forms.Form):
     Rating = forms.FloatField()
     GoLevel = forms.CharField(max_length=255)
     birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
-    id_in_game = forms.IntegerField()
+    id_in_tournament = forms.IntegerField()
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
