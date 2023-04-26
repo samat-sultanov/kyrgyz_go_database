@@ -1,4 +1,3 @@
-import re
 from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
@@ -8,9 +7,8 @@ from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_scor
 
 
 # Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
-# (содержит pk клуба) и average (посчитанное значение). На доработке
+# (содержит pk клуба) и average (посчитанное значение)
 def average_go_level():
-    # Здесь нужно будет привязать фильтр через страну клуба, чтобы выводил только по Кыргызстану
     clubs = Club.objects.all()
     club_list = []
     for club in clubs:
@@ -120,7 +118,7 @@ def get_rank_for_json(data):
 
 def get_data_for_table_games(pk):
     player = Player.objects.get(pk=pk)
-    tournaments = player.playerintournament_set.all()
+    tournaments = player.playerintournament_set.all().order_by('-tournament__date')
     new_list = []
     for element in tournaments:
         tournament = Tournament.objects.get(pk=element.tournament_id)
