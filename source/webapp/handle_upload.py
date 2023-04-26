@@ -111,8 +111,9 @@ def unpack_players(data, pk):
                         EgdPin = player.get('EgdPin')
                         country = get_object_or_404(Country, country_code=country_code)
                         club_name = player.get('Club')
-                        id_in_game = player.get('id_in_game')
+                        id_in_tournament = player.get('id_in_tournament')
                         birth_date = player.get('birth_date')
+                        position = player.get('position')
                         if birth_date == '':
                             birth_date = None
                         if club_name in ["Seng", "Sengoku", "Sengoku Go Club"]:
@@ -139,20 +140,22 @@ def unpack_players(data, pk):
                             if EgdPin != 0 and player.EgdPin == 0:
                                 player.EgdPin = EgdPin
                                 player.save()
-                                PlayerInTournament.objects.create(game_id=id_in_game,
+                                PlayerInTournament.objects.create(game_id=id_in_tournament,
                                                                   player=player,
                                                                   tournament=tournament,
                                                                   GoLevel=GoLevel,
                                                                   rating=rating,
-                                                                  club=club)
+                                                                  club=club,
+                                                                  position=position)
 
                             elif (EgdPin != 0 and player.EgdPin == EgdPin) or (EgdPin == 0 and player.EgdPin == EgdPin):
-                                PlayerInTournament.objects.create(game_id=id_in_game,
+                                PlayerInTournament.objects.create(game_id=id_in_tournament,
                                                                   player=player,
                                                                   tournament=tournament,
                                                                   GoLevel=GoLevel,
                                                                   rating=rating,
-                                                                  club=club)
+                                                                  club=club,
+                                                                  position=position)
 
                             elif player.EgdPin != EgdPin != 0:
                                 new_player = Player.objects.create(first_name=first_name,
@@ -165,12 +168,13 @@ def unpack_players(data, pk):
                                     clubs_list = [club_id]
                                     if club_id not in player.clubs.all():
                                         player.clubs.set(clubs_list)
-                                PlayerInTournament.objects.create(game_id=id_in_game,
+                                PlayerInTournament.objects.create(game_id=id_in_tournament,
                                                                   player=new_player,
                                                                   tournament=tournament,
                                                                   GoLevel=GoLevel,
                                                                   rating=rating,
-                                                                  club=club)
+                                                                  club=club,
+                                                                  position=position)
                         except:
                             new_player = Player.objects.create(first_name=first_name,
                                                                last_name=last_name,
@@ -182,12 +186,13 @@ def unpack_players(data, pk):
                                 clubs_list = [club_id]
                                 if club_id not in new_player.clubs.all():
                                     new_player.clubs.set(clubs_list)
-                            PlayerInTournament.objects.create(game_id=id_in_game,
+                            PlayerInTournament.objects.create(game_id=id_in_tournament,
                                                               player=new_player,
                                                               tournament=tournament,
                                                               GoLevel=GoLevel,
                                                               rating=rating,
-                                                              club=club)
+                                                              club=club,
+                                                              position=position)
 
 
 def unpack_games(data, pk):
