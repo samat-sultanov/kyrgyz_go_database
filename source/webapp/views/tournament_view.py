@@ -13,7 +13,7 @@ from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, \
-    unpack_data_for_moderation_players, unpack_data_json_players, parse_results
+    unpack_data_for_moderation_players
 
 
 class TournamentSearch(ListView):
@@ -90,16 +90,10 @@ class TournamentDetail(TemplateView):
     def get_context_data(self, **kwargs):
         pk = kwargs.get("pk")
         tournament = get_object_or_404(Tournament, pk=pk)
-        data = tournament.playerintournament_set.all().order_by('position')
-
-        list_of_rounds = []
-        for roundd in range(tournament.rounds):
-            list_of_rounds.append(roundd + 1)
-
+        data = tournament.playerintournament_set.all().order_by('-rating_after')
         kwargs["tournament"] = tournament
-        kwargs['players'] = parse_results(data)
+        kwargs['sorted_players'] = data
         kwargs['wins'] = get_wins_losses(pk=pk)
-        kwargs['list_of_rounds'] = list_of_rounds
         return super().get_context_data(**kwargs)
 
 
@@ -180,15 +174,8 @@ class ModerationTournamentView(LoginRequiredMixin, TemplateView):
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
         tournament_data = unpack_data_for_moderation_tournament(data)
-
-        players_data = unpack_data_json_players(data)
-        players_data = parse_results(players_data)
-
-        list_of_rounds = []
-        for roundd in range(tournament_data.get('NumberOfRounds')):
-            list_of_rounds.append(roundd + 1)
+        players_data = unpack_data_for_moderation_players(data)
         context['tournament'] = tournament_data
         context['players'] = players_data
-        context['list_of_rounds'] = list_of_rounds
         context['pk'] = pk
         return context

@@ -30,9 +30,6 @@
                 <th scope="col">Ранг</th>
                 <th scope="col">Победы</th>
                 <th scope="col">Поражения</th>
-                {% for round in list_of_rounds %}
-                    <th scope="col">{{ round }}</th>
-                {% endfor %}
             </tr>
             </thead>
             <tbody>
@@ -54,9 +51,6 @@
                             <td data-label="Wins">{{ winner.wins }}</td>
                             <td data-label="Losses">{{ winner.losses }}</td>
                         {% endif %}
-                    {% endfor %}
-                    {% for result in el.results %}
-                        <td data-label="result" style="color: {{ result.font_color }}">{{ result.result_to_display }}</td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
