@@ -97,7 +97,8 @@ class TournamentCheckView(LoginRequiredMixin, FormView):
                 'GoLevel': form.data[f'form-{i}-GoLevel'],
                 'Rating': form.data[f'form-{i}-Rating'],
                 'id_in_tournament': form.data[f'form-{i}-id_in_tournament'],
-                'position': form.data[f'form-{i}-position']
+                'position': form.data[f'form-{i}-position'],
+                'results': form.data[f'form-{i}-results'],
             }
             players_data.append(player_data)
         file_name = self.kwargs.get('file_name')

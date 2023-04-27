@@ -29,10 +29,10 @@
                 <th scope="col">Клуб</th>
                 <th scope="col">Ранг</th>
                 <th scope="col">Рейтинг</th>
+                <th scope="col">Дата рождения</th>
                 {% for round in list_of_rounds %}
                     <th scope="col">{{ round }}</th>
                 {% endfor %}
-                <th scope="col">Дата рождения</th>
             </tr>
             </thead>
             <tbody>
@@ -49,14 +49,14 @@
                     {% endif %}
                     <td data-label="Rank">{{ el.GoLevel }}</td>
                     <td data-label="Rating">{{ el.Rating }}</td>
-                    {% for result in el.results %}
-                        <td data-label="result" style="color: {{ result.font_color }}">{{ result.result_to_display }}</td>
-                    {% endfor %}
                     {% if el.birth_date %}
                         <td data-label="Birthday">{{ el.birth_date }}</td>
                     {% else %}
                         <td data-label="Birthday">Не указано</td>
                     {% endif %}
+                    {% for result in el.results %}
+                        <td data-label="result" style="color: {{ result.font_color }}">{{ result.result_to_display }}</td>
+                    {% endfor %}
 
                 </tr>
                 {% endfor %}
