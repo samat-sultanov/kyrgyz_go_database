@@ -30,12 +30,15 @@
                 <th scope="col">Ранг</th>
                 <th scope="col">Рейтинг</th>
                 <th scope="col">Дата рождения</th>
+                {% for round in list_of_rounds %}
+                    <th scope="col">{{ round }}</th>
+                {% endfor %}
             </tr>
             </thead>
             <tbody>
                 {% for el in players %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
+                    <th scope="row">{{ el.position }}</th>
                     <td data-label="EgdPin">{{ el.EgdPin }}</td>
                     <td data-label="Last Name">{{ el.Surname }}</td>
                     <td data-label="First Name">{{ el.FirstName }}</td>
@@ -51,6 +54,9 @@
                     {% else %}
                         <td data-label="Birthday">Не указано</td>
                     {% endif %}
+                    {% for result in el.results %}
+                        <td data-label="result" style="color: {{ result.font_color }}">{{ result.result_to_display }}</td>
+                    {% endfor %}
 
                 </tr>
                 {% endfor %}
