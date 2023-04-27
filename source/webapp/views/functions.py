@@ -517,49 +517,6 @@ def unpack_data_for_moderation_players(data):
     return new_list
 
 
-def tournament_table_sorting(tournament_pk):
-    # qsopit = queryset of players in tournament
-    # git = games in tournament
-    # dotrwdi = dictionary of tournament rounds with detailed info
-    # ipl = initial_players_list
-
-    tournament = get_object_or_404(Tournament, pk=tournament_pk)
-    qsopit = tournament.playerintournament_set.all()
-    git = tournament.game_set.all().order_by('round_num')
-    dotrwdi = {}
-    previous_round_list = []
-
-    for round in range(tournament.rounds + 1):
-        if round == 0:
-            initial_players_list = []
-            for player in qsopit:
-                if player.GoLevel[-1] == 'k':
-                    initial_players_list.append({
-                        'player_in_tournament_id': player.pk,
-                        'player_id': player.player_id,
-                        'adapted_level': int(player.GoLevel[:-1]),
-                        'last_name': player.player.last_name,
-                        'first_name': player.player.first_name,
-                        'EgdPin': player.player.EgdPin
-                    })
-                elif player.GoLevel[-1] == 'd':
-                    initial_players_list.append({
-                        'player_in_tournament_id': player.pk,
-                        'player_id': player.player_id,
-                        'adapted_level': -1 * int(player.GoLevel[:-1]),
-                        'last_name': player.player.last_name,
-                        'first_name': player.player.first_name,
-                        'EgdPin': player.player.EgdPin
-                    })
-
-            sorted_initial_players_list = _quicksort_ipl(initial_players_list)
-
-            previous_round_list = sorted_initial_players_list
-            dotrwdi[f'round #{round}'] = {
-                'tournament_table': sorted_initial_players_list
-            }
-
-
 def _sort_lod(lop):
     #lop = list of players (list of dictionaries)
     unsorted_players_list = []
@@ -668,11 +625,6 @@ def _adapt_go_level(strr):
         adapted_level = -1 * int(strr[:-1])
 
     return adapted_level
-
-
-def _resort_prev_round(prev_round_list, games):
-    for game in games:
-        pass
 
 
 def _quicksort_ipl(array, by_rating):
