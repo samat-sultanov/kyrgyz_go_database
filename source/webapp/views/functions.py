@@ -248,6 +248,7 @@ def player_wins_loses(pk):
     player = Player.objects.get(pk=pk)
     games = Game.objects.filter(Q(black=player) | Q(white=player))
     wl = []
+    total_games = games.count()
     for game in games:
         new_dict = dict()
         wins_stronger = 0
@@ -293,6 +294,7 @@ def player_wins_loses(pk):
     for d in wl:
         c.update(d)
     statistics = dict(c)
+    statistics['all'] = total_games
     return statistics
 
 
@@ -326,12 +328,6 @@ def club_active_players(pk):
     all_players['under_1k'] = len(under_1k)
     all_players['under_5d'] = len(under_5d)
     all_players['under_10d'] = len(under_10d)
-    # print(f'21{under_21k}')
-    # print(f'11{under_11k}')
-    # print(f'6{under_6k}')
-    # print(f'1{under_1k}')
-    # print(f'5{under_5d}')
-    # print(f'10{under_10d}')
     return all_players
 
 
@@ -701,3 +697,15 @@ def _sort_by_first_name(array):
         same = sorted(same, key=lambda d: d['id_in_tournament'])
 
     return _sort_by_last_name(low) + same + _sort_by_last_name(high)
+
+def player_rating_for_chart(pk):
+    player = Player.objects.get(pk=pk)
+    tournaments= PlayerInTournament.objects.filter(player=player)
+    date = []
+    rating = []
+    for tournament in tournaments:
+        date.append(str(tournament.tournament.date))
+        rating.append(tournament.rating)
+    total = zip(date, rating)
+    return total
+

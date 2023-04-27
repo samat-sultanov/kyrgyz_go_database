@@ -7,7 +7,7 @@ from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from webapp.views.functions import get_position_in_kgf, get_data_for_table_games, get_data_for_gor_evolution, \
-    get_tournaments_list_for_gor_evolution, player_wins_loses
+    get_tournaments_list_for_gor_evolution, player_wins_loses, player_rating_for_chart
 from webapp.views.GoR_calculator import get_rating_from_rank
 
 
@@ -29,12 +29,13 @@ class PlayerDetail(TemplateView):
         context['player_losses_stronger'] = player_wins_loses(pk)['losses_stronger']
         context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
         context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
+        context['all'] = player_wins_loses(pk)['all']
         context['evolution'] = get_data_for_gor_evolution(pk)
         context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
         player = get_object_or_404(Player, pk=pk)
         player_tournaments = player.tournaments.order_by("-date")
         context['tab_tournaments'] = player_tournaments
-
+        context['chart'] = player_rating_for_chart(pk)
         if not self.request.user.is_anonymous:
             player_clubs = get_object_or_404(Player, pk=self.kwargs.get('pk')).clubs.all()
             coach_clubs = self.request.user.clubs.all()
