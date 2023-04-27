@@ -359,12 +359,9 @@ def unpack_data_json_tournament(data):
 
 
 def unpack_data_json_players(data):
-    data_to_update = dict()
-
     new_list = []
     for key, value in data.items():
         if key == "Tournament":
-            data_to_update["Tournament"] = value.copy()
             items = value
             list_of_players = []
             list_of_rounds = []
@@ -392,42 +389,83 @@ def unpack_data_json_games(list_of_rounds, list_of_players):
                     round_number = v
                     new_dict['round'] = round_number
                 elif k == 'Pairing':
-                    list_of_games = v
-                    for game in list_of_games:
+                    if isinstance(v, list):
+                        list_of_games = v
+                        for game in list_of_games:
+                            if game.get('Black') and game.get('White'):
+                                black = game.get('Result')[0]
+                                white = game.get('Result')[2]
+
+                                if game.get('Black') == id_in_tournament:
+                                    if black == '1' and white == '0':
+                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
+                                        new_dict['font_color'] = 'green'
+                                    elif black == '0' and white == '1':
+                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
+                                        new_dict['font_color'] = 'red'
+                                    else:
+                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
+                                        new_dict['font_color'] = 'black'
+
+                                elif game.get('White') == id_in_tournament:
+                                    if white == '1' and black == '0':
+                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
+                                        new_dict['font_color'] = 'green'
+                                    elif white == '0' and black == '1':
+                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
+                                        new_dict['font_color'] = 'red'
+                                    else:
+                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
+                                        new_dict['font_color'] = 'black'
+                            else:
+                                if id_in_tournament in (game.get('Black'), game.get('White')):
+                                    new_dict['result_to_display'] = '0+'
+                                    new_dict['font_color'] = 'green'
+
+                    elif isinstance(v, dict):
+                        game = v
                         if game.get('Black') and game.get('White'):
                             black = game.get('Result')[0]
                             white = game.get('Result')[2]
 
                             if game.get('Black') == id_in_tournament:
                                 if black == '1' and white == '0':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
+                                    new_dict[
+                                        'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
                                     new_dict['font_color'] = 'green'
                                 elif black == '0' and white == '1':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
+                                    new_dict[
+                                        'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
                                     new_dict['font_color'] = 'red'
                                 else:
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
+                                    new_dict[
+                                        'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
                                     new_dict['font_color'] = 'black'
 
                             elif game.get('White') == id_in_tournament:
                                 if white == '1' and black == '0':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
+                                    new_dict[
+                                        'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
                                     new_dict['font_color'] = 'green'
                                 elif white == '0' and black == '1':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
+                                    new_dict[
+                                        'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
                                     new_dict['font_color'] = 'red'
                                 else:
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
+                                    new_dict[
+                                        'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
                                     new_dict['font_color'] = 'black'
                         else:
                             if id_in_tournament in (game.get('Black'), game.get('White')):
                                 new_dict['result_to_display'] = '0+'
                                 new_dict['font_color'] = 'green'
+
             list_of_results_by_round.append(new_dict)
 
         for round_result in list_of_results_by_round:
-            player_results_str += round_result.get('result_to_display')
-            player_results_str += '#'
+            if round_result.get('result_to_display'):
+                player_results_str += round_result.get('result_to_display')
+                player_results_str += '#'
 
         player['results'] = player_results_str[:-1]
 
