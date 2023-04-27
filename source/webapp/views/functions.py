@@ -585,8 +585,6 @@ def _sort_ipl(lopit):
 def parse_results(array):
     #функция меняет значение поля "results" со строки в список со словарями
 
-    print(f"Type______________{type(array)}")
-
     players_data = array
     for pl in players_data:
         new_list = []
@@ -596,7 +594,6 @@ def parse_results(array):
             player_results = pl.get('results')
         elif isinstance(array, QuerySet):
             player_results = pl.results
-            print(player_results)
 
         player_results = player_results.split('#')
         for result_in_round in player_results:

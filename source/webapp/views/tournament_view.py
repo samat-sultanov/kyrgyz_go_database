@@ -13,7 +13,7 @@ from webapp.forms import TournamentSearchForm
 from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, \
-    unpack_data_for_moderation_players, tournament_table_sorting, unpack_data_json_players, parse_results
+    unpack_data_for_moderation_players, unpack_data_json_players, parse_results
 
 
 class TournamentSearch(ListView):
@@ -91,7 +91,6 @@ class TournamentDetail(TemplateView):
         pk = kwargs.get("pk")
         tournament = get_object_or_404(Tournament, pk=pk)
         data = tournament.playerintournament_set.all().order_by('position')
-        print(f"Type of data ___________ {data}")
 
         list_of_rounds = []
         for roundd in range(tournament.rounds):
