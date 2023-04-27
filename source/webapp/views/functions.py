@@ -1,11 +1,8 @@
-import re
-from random import randint
 from operator import itemgetter
 from collections import Counter
 from django.db.models import Q
-from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
-from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS, PlayerInTournament
+from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS , PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
@@ -297,7 +294,6 @@ def player_wins_loses(pk):
     statistics['all'] = total_games
     return statistics
 
-
 def club_active_players(pk):
     club = get_object_or_404(Club, pk=pk)
     players = club.players.all()
@@ -355,89 +351,30 @@ def unpack_data_json_tournament(data):
 
 
 def unpack_data_json_players(data):
-    data_to_update = dict()
-
     new_list = []
     for key, value in data.items():
         if key == "Tournament":
-            data_to_update["Tournament"] = value.copy()
             items = value
-            list_of_players = []
-            list_of_rounds = []
             for k, v in items.items():
                 if k == 'IndividualParticipant':
                     list_of_players = v
-                elif k == 'TournamentRound':
-                    list_of_rounds = v
-            new_list = _sort_ipl(list_of_players)
-            new_list = unpack_data_json_games(list_of_rounds, new_list)
-
+                    for element in list_of_players:
+                        new_dict = dict()
+                        for m, n in element.items():
+                            if m == "Id":
+                                id_in_game = n
+                            elif m == 'GoPlayer':
+                                person = n
+                                new_dict['FirstName'] = person.get('FirstName')
+                                new_dict['Surname'] = person.get('Surname')
+                                new_dict['GoLevel'] = person.get('GoLevel')
+                                new_dict['Rating'] = float(person.get('Rating'))
+                                new_dict['EgdPin'] = int(person.get('EgdPin'))
+                                new_dict['Club'] = person.get('Club')
+                                new_dict['birth_date'] = ''
+                                new_dict['id_in_game'] = id_in_game
+                                new_list.append(new_dict)
     return new_list
-
-
-def unpack_data_json_games(list_of_rounds, list_of_players):
-    list_of_players = list_of_players
-    for player in list_of_players:
-        list_of_results_by_round = []
-        player_results_str = ''
-        id_in_tournament = player.get('id_in_tournament')
-        for one_round in list_of_rounds:
-            new_dict = dict()
-            for k, v in one_round.items():
-                if k == 'RoundNumber':
-                    round_number = v
-                    new_dict['round'] = round_number
-                elif k == 'Pairing':
-                    list_of_games = v
-                    for game in list_of_games:
-                        if game.get('Black') and game.get('White'):
-                            black = game.get('Result')[0]
-                            white = game.get('Result')[2]
-
-                            if game.get('Black') == id_in_tournament:
-                                if black == '1' and white == '0':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
-                                    new_dict['font_color'] = 'green'
-                                elif black == '0' and white == '1':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
-                                    new_dict['font_color'] = 'red'
-                                else:
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
-                                    new_dict['font_color'] = 'black'
-
-                            elif game.get('White') == id_in_tournament:
-                                if white == '1' and black == '0':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
-                                    new_dict['font_color'] = 'green'
-                                elif white == '0' and black == '1':
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
-                                    new_dict['font_color'] = 'red'
-                                else:
-                                    new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
-                                    new_dict['font_color'] = 'black'
-                        else:
-                            if id_in_tournament in (game.get('Black'), game.get('White')):
-                                new_dict['result_to_display'] = '0+'
-                                new_dict['font_color'] = 'green'
-            list_of_results_by_round.append(new_dict)
-
-        for round_result in list_of_results_by_round:
-            player_results_str += round_result.get('result_to_display')
-            player_results_str += '#'
-
-        player['results'] = player_results_str[:-1]
-
-    return list_of_players
-
-
-def get_position(array, id_num):
-    flag = False
-    for player in array:
-        if player.get('id_in_tournament') == id_num:
-            flag = True
-            return player.get('position')
-    if not flag:
-        return f'id: {id_num}'
 
 
 def update_json_tournament(data, some_dict, some_list):
@@ -463,15 +400,15 @@ def update_json_tournament(data, some_dict, some_list):
                 list_of_players = items['IndividualParticipant']
                 for element in list_of_players:
                     for m, n in element.items():
-                        for el in _sort_lod(some_list):
+                        for el in some_list:
                             if m == 'Id':
-                                id_in_tournament = n
+                                id_in_game = n
                             elif m == 'GoPlayer':
                                 d = n
-                                new_element = dict()
+                                new_element = {}
                                 for g, h in d.items():
                                     new_element[g] = h
-                                if id_in_tournament == el['id_in_tournament']:
+                                if id_in_game == el['id_in_game']:
                                     new_element.update({
                                         'FirstName': el['FirstName'],
                                         'Surname': el['Surname'],
@@ -479,9 +416,7 @@ def update_json_tournament(data, some_dict, some_list):
                                         'Rating': el['Rating'],
                                         'EgdPin': el['EgdPin'],
                                         'birth_date': el['birth_date'],
-                                        'id_in_tournament': el['id_in_tournament'],
-                                        'position': el['position'],
-                                        'results': el['results']
+                                        'id_in_game': el['id_in_game']
                                     })
                                     element['GoPlayer'] = new_element
 
@@ -512,192 +447,6 @@ def unpack_data_for_moderation_players(data):
         new_list.append(new_dict)
     return new_list
 
-
-def _sort_lod(lop):
-    #lop = list of players (list of dictionaries)
-    unsorted_players_list = []
-    by_rating = False
-    for person in lop:
-        new_dict = dict()
-        rating = person.get('Rating', 0)
-        if rating not in ['0', '0.0', 0, 0.0]:
-            by_rating = True
-        new_dict['FirstName'] = person.get('FirstName')
-        new_dict['Surname'] = person.get('Surname')
-        new_dict['GoLevel'] = person.get('GoLevel')
-        new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
-        new_dict['Rating'] = float(rating)
-        new_dict['EgdPin'] = int(person.get('EgdPin', 0))
-        new_dict['Club'] = person.get('Club')
-        new_dict['Country'] = person.get('Country')
-        new_dict['birth_date'] = person.get('birth_date', '')
-        new_dict['id_in_tournament'] = person.get('id_in_tournament')
-        unsorted_players_list.append(new_dict)
-
-    sorted_initial_players_list = _quicksort_ipl(unsorted_players_list, by_rating)
-
-    for player in sorted_initial_players_list:
-        player['position'] = sorted_initial_players_list.index(player) + 1
-        player['results'] = ''
-
-    return sorted_initial_players_list
-
-
-def _sort_ipl(lopit):
-    #lopit = list of players in tournament(from json)
-    unsorted_players_list = []
-    by_rating = False
-    for element in lopit:
-        new_dict = dict()
-        for m, n in element.items():
-            if m == "Id":
-                id_in_tournament = n
-            elif m == 'GoPlayer':
-                person = n
-                rating = person.get('Rating', 0)
-                if rating not in ['0', '0.0', 0, 0.0]:
-                    by_rating = True
-                new_dict['FirstName'] = person.get('FirstName')
-                new_dict['Surname'] = person.get('Surname')
-                new_dict['GoLevel'] = person.get('GoLevel')
-                new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
-                new_dict['Rating'] = float(rating)
-                new_dict['EgdPin'] = int(person.get('EgdPin', 0))
-                new_dict['Club'] = person.get('Club')
-                new_dict['Country'] = person.get('Country')
-                new_dict['birth_date'] = person.get('birth_date', '')
-                new_dict['id_in_tournament'] = id_in_tournament
-                unsorted_players_list.append(new_dict)
-
-    sorted_initial_players_list = _quicksort_ipl(unsorted_players_list, by_rating)
-
-    for player in sorted_initial_players_list:
-        player['position'] = sorted_initial_players_list.index(player) + 1
-        player['results'] = ''
-
-    return sorted_initial_players_list
-
-
-def parse_results(array):
-    #функция меняет значение поля "results" со строки в список со словарями
-
-    players_data = array
-    for pl in players_data:
-        new_list = []
-        player_results = ''
-
-        if isinstance(array, list):
-            player_results = pl.get('results')
-        elif isinstance(array, QuerySet):
-            player_results = pl.results
-
-        player_results = player_results.split('#')
-        for result_in_round in player_results:
-            new_dict = dict()
-            new_dict['result_to_display'] = result_in_round
-            if '+' in result_in_round:
-                new_dict['font_color'] = 'green'
-            elif '-' in result_in_round:
-                new_dict['font_color'] = 'red'
-            new_list.append(new_dict)
-
-        if isinstance(array, list):
-            pl['results'] = new_list
-        elif isinstance(array, QuerySet):
-            pl.results = new_list
-
-    return players_data
-
-
-def _adapt_go_level(strr):
-    adapted_level = 35
-
-    if strr[-1] == 'k':
-        adapted_level = int(strr[:-1])
-    elif strr[-1] == 'd':
-        adapted_level = -1 * int(strr[:-1])
-
-    return adapted_level
-
-
-def _quicksort_ipl(array, by_rating):
-    if len(array) < 2:
-        return array
-
-    low, same, high = [], [], []
-
-    if not by_rating:
-        pivot = array[randint(0, len(array) - 1)].get('adapted_level')
-        for item in array:
-            if item.get('adapted_level') < pivot:
-                low.append(item)
-            elif item.get('adapted_level') == pivot:
-                same.append(item)
-            elif item.get('adapted_level') > pivot:
-                high.append(item)
-        if len(same) > 1:
-            same = _sort_by_last_name(same)
-        return _quicksort_ipl(low, by_rating) + same + _quicksort_ipl(high, by_rating)
-
-    pivot = array[randint(0, len(array) - 1)].get('Rating')
-
-    for item in array:
-        if item.get('Rating') < pivot:
-            low.append(item)
-        elif item.get('Rating') == pivot:
-            same.append(item)
-        elif item.get('Rating') > pivot:
-            high.append(item)
-
-    if len(same) > 1:
-        same = _sort_by_last_name(same)
-
-    return _quicksort_ipl(high, by_rating) + same + _quicksort_ipl(low, by_rating)
-
-
-def _sort_by_last_name(array):
-    if len(array) < 2:
-        return array
-
-    low, same, high = [], [], []
-
-    pivot = array[randint(0, len(array) - 1)].get('Surname').lower()
-
-    for item in array:
-        if item.get('Surname').lower() < pivot:
-            low.append(item)
-        elif item.get('Surname').lower() == pivot:
-            same.append(item)
-        elif item.get('Surname').lower() > pivot:
-            high.append(item)
-
-    if len(same) > 1:
-        same = _sort_by_first_name(same)
-
-    return _sort_by_last_name(low) + same + _sort_by_last_name(high)
-
-
-def _sort_by_first_name(array):
-    if len(array) < 2:
-        return array
-
-    low, same, high = [], [], []
-
-    pivot = array[randint(0, len(array) - 1)].get('FirstName').lower()
-
-    for item in array:
-        if item.get('FirstName').lower() < pivot:
-            low.append(item)
-        elif item.get('FirstName').lower() == pivot:
-            same.append(item)
-        elif item.get('FirstName').lower() > pivot:
-            high.append(item)
-
-    if len(same) > 1:
-        same = sorted(same, key=lambda d: d['id_in_tournament'])
-
-    return _sort_by_last_name(low) + same + _sort_by_last_name(high)
-
 def player_rating_for_chart(pk):
     player = Player.objects.get(pk=pk)
     tournaments= PlayerInTournament.objects.filter(player=player)
@@ -708,4 +457,3 @@ def player_rating_for_chart(pk):
         rating.append(tournament.rating)
     total = zip(date, rating)
     return total
-

@@ -188,7 +188,7 @@ class Recommendation(models.Model):
 
 
 class PlayerInTournament(models.Model):
-    game_id = models.PositiveIntegerField(verbose_name="ID in tournament(id_in_tournament)")
+    game_id = models.PositiveIntegerField(verbose_name="Game id")
     player = models.ForeignKey('webapp.Player', on_delete=models.CASCADE)
     tournament = models.ForeignKey('webapp.Tournament', on_delete=models.CASCADE)
     GoLevel = models.CharField(verbose_name='GoLevel', max_length=3)
@@ -196,8 +196,6 @@ class PlayerInTournament(models.Model):
     rating = models.IntegerField(verbose_name='Rating', blank=True, null=True)
     rating_after = models.IntegerField(verbose_name='Rating after', blank=True, null=True)
     club = models.ForeignKey('webapp.Club', on_delete=models.CASCADE, blank=True, null=True)
-    position = models.PositiveIntegerField(verbose_name='Позиция/место', default=0)
-    results = models.CharField(verbose_name='results by round', max_length=200, blank=True, null=True)
 
     def __str__(self):
         return f'{self.id} - {self.player}: {self.tournament}, {self.GoLevel}'
