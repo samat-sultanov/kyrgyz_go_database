@@ -36,3 +36,10 @@ class RecommendationModelTest(TestCase):
     def test_updated_at_auto_now(self):
         updated_at_field = Recommendation._meta.get_field('updated_at')
         self.assertTrue(updated_at_field.auto_now)
+
+    def test_object_creation(self):
+        self.assertEqual(self.recommendation.text, 'Test recommendation')
+        self.assertEqual(self.recommendation.author, self.user)
+        self.assertEqual(self.recommendation.player, self.player)
+        self.assertIsNotNone(self.recommendation.created_at)
+        self.assertIsNotNone(self.recommendation.updated_at)
