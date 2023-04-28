@@ -14,7 +14,7 @@ from accounts.models import User
 DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
 STATUS = [('Confirmed', 'Confirmed'), ('Not confirmed', 'Not confirmed')]
-
+DAYS = [('Пн', 'Пн'), ('Вт', 'Вт'), ('Ср', 'Ср'), ('Чт', 'Чт'), ('Пт', 'Пт'), ('Сб', 'Сб'), ('Вс', 'Вс')]
 
 class Country(models.Model):
     country_code = models.CharField(verbose_name='Country', max_length=2)
@@ -51,6 +51,11 @@ class Region(models.Model):
         verbose_name = "Регион"
         verbose_name_plural = "Регионы"
 
+class DayOfWeek(models.Model):
+    name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f'{self.name}'
 
 class Club(models.Model):
     logo = models.ImageField(verbose_name='Лого', null=True, blank=True, upload_to='club_logo')
@@ -64,7 +69,14 @@ class Club(models.Model):
     address = models.CharField(verbose_name='Address', max_length=50, null=True, blank=True)
     phonenumber = PhoneNumberField(verbose_name='Номер телефона', null=True, blank=True)
     web_link = models.URLField(verbose_name='Интернет-ссылка', null=True, blank=True)
-    schedule = models.CharField(verbose_name='Расписание', max_length=100, null=True, blank=True)
+    schedule_from = models.TimeField(verbose_name='С', null=True, blank=True)
+    schedule_to = models.TimeField(verbose_name='До', null=True, blank=True)
+    breakfast_from = models.TimeField(verbose_name='Обед c', null=True, blank=True)
+    breakfast_to = models.TimeField(verbose_name='до', null=True, blank=True)
+    days_of_work = models.ManyToManyField(DayOfWeek, related_name='days_of_work', blank=True, null=True)
+    day_of_week = models.ManyToManyField(DayOfWeek, related_name='day_of_week', blank=True, null=True)
+
+
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
