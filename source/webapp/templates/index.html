@@ -54,7 +54,7 @@
                     <div class="border-bottom mb-4"></div>
 
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4" style="margin-bottom: 5px">
-                    <h5 class="news-title">{{ news.title|truncatechars:60 }}</h5>
+                        <h5 class="news-title">{{ news.title|truncatechars:60 }}</h5>
                         {% if news.news_image %}
                             {% thumbnail news.news_image "400x400" as im %}
                                 <img style="width: 100%; border: solid; border-color: grey; border-width: 1px"
@@ -63,11 +63,12 @@
                         {% endif %}
                         {% if news.video_link %}
                             <div class="frame_blc">
-                            <iframe width="400" height="200"
-                            src="{{ news.video_link }}"
-                            title="YouTube video player" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen></iframe></div>
+                                <iframe width="400" height="200"
+                                        src="{{ news.video_link }}"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen></iframe>
+                            </div>
                         {% endif %}
                     </div>
 
@@ -117,11 +118,11 @@
                                             <!-- Открывает модалку подтверждения -->
                                             <a style="color: black" class="ms-2 kgf_modal" href=""
                                                data-bs-toggle="modal"
-                                               data-bs-target="#delete_event_Modal" type="button"><i
+                                               data-bs-target="#delete_event_Modal_{{ event.pk }}" type="button"><i
                                                     class="bi bi-trash3-fill"></i></a>
 
                                             <!-- Модалка подтверждения -->
-                                            <div class="modal fade" id="delete_event_Modal" tabindex="-1"
+                                            <div class="modal fade" id="delete_event_Modal_{{ event.pk }}" tabindex="-1"
                                                  aria-labelledby="delete_event_ModalLabel"
                                                  aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
@@ -167,31 +168,35 @@
         </div>
     </div>
 
-    <div class="bg-light">
-        <div class="container mt-3 mb-2 pt-3">
-            <h3 class="title" style="margin-top: 50px; text-align: center">Топ игроки Федерации Кыргызстана:</h3>
-            <div class="card-group">
-                {% for element in position %}
-                    <div class="card text-center card-player bg-light">
-                        {% if element.player.avatar %}
-                            {% thumbnail element.player.avatar "500x500" crop="center" as im %}
-                                <img class="img-main-player" src="{{ im.url }}" alt="avatar">
-                            {% endthumbnail %}
-                        {% else %}
-                            <img class="img-main-player" src="{% static "images/no_image.jpg" %}" alt="no_pic_avatar">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title mb-2"
-                                style="font-weight: bold">{{ element.player.last_name }} {{ element.player.first_name }}</h5>
-                            <p class="card-text border-top mt-4">Позиция в KGF: {{ element.position }}</p>
-                            <a class="btn btn-outline-secondary" style="margin-bottom: 40px; margin-top: 15px"
-                               href="{% url "webapp:player_detail" element.player.pk %}" role="button">Подробнее</a>
+    {% if position %}
+        <div class="bg-light">
+            <div class="container mt-3 mb-2 pt-3">
+                <h3 class="title" style="margin-top: 50px; text-align: center">Топ игроки Федерации Кыргызстана:</h3>
+                <div class="card-group">
+                    {% for element in position %}
+                        <div class="card text-center card-player bg-light">
+                            {% if element.player.avatar %}
+                                {% thumbnail element.player.avatar "500x500" crop="center" as im %}
+                                    <img class="img-main-player" src="{{ im.url }}" alt="avatar">
+                                {% endthumbnail %}
+                            {% else %}
+                                <img class="img-main-player" src="{% static "images/no_image.jpg" %}"
+                                     alt="no_pic_avatar">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title mb-2"
+                                    style="font-weight: bold">{{ element.player.last_name }} {{ element.player.first_name }}</h5>
+                                <p class="card-text border-top mt-4">Позиция в KGF: {{ element.position }}</p>
+                                <a class="btn btn-outline-secondary" style="margin-bottom: 40px; margin-top: 15px"
+                                   href="{% url "webapp:player_detail" element.player.pk %}" role="button">Подробнее</a>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
+
     <div class="container text-center mt-5 mb-5 ">
         <h3 class="title">Наши Партнеры:</h3>
         <div class="row">
