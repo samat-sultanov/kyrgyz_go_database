@@ -79,6 +79,7 @@
             <div class="col-12 col-sm-8 col-md-6 col-lg-4">
                 {% include "partial/charts.html" %}
             </div>
+
             <div class="col-12 col-sm-4 col-md-4 col-lg-12 mt-2">
                 {% if request.user.is_authenticated %}
                     {% if player.birth_date %}
@@ -99,6 +100,7 @@
                     <p><span style="font-weight: bold">EgdPin: </span> Не присвоен</p>
                 {% endif %}
             </div>
+        {% include "partial/player_chart.html" %}
         </div>
 
 
