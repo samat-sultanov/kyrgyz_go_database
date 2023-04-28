@@ -28,3 +28,7 @@ class RecommendationModelTest(TestCase):
     def test_player_foreign_key(self):
         player_field = Recommendation._meta.get_field('player')
         self.assertEqual(player_field.related_model, Player)
+
+    def test_created_at_auto_now_add(self):
+        created_at_field = Recommendation._meta.get_field('created_at')
+        self.assertTrue(created_at_field.auto_now_add)
