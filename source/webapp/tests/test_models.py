@@ -43,3 +43,10 @@ class RecommendationModelTest(TestCase):
         self.assertEqual(self.recommendation.player, self.player)
         self.assertIsNotNone(self.recommendation.created_at)
         self.assertIsNotNone(self.recommendation.updated_at)
+
+    def test_object_update(self):
+        self.recommendation.text = 'Updated recommendation'
+        self.recommendation.save()
+        updated_recommendation = Recommendation.objects.get(pk=self.recommendation.pk)
+        self.assertEqual(updated_recommendation.text, 'Updated recommendation')
+        self.assertGreater(updated_recommendation.updated_at, self.recommendation.created_at)
