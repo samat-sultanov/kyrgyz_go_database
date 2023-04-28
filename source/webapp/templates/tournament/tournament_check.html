@@ -48,7 +48,9 @@
                                 <td>{{ player_form.birth_date }}</td>
                                 <td>{{ player_form.GoLevel }}</td>
                                 <td>{{ player_form.Rating }}</td>
-                                <td>{{ player_form.id_in_game.as_hidden }}</td>
+                                <td>{{ player_form.id_in_tournament.as_hidden }}</td>
+                                <td>{{ player_form.position.as_hidden }}</td>
+                                <td>{{ player_form.results.as_hidden }}</td>
                             </tr>
                         {% endfor %}
                         {% if form2_errors %}
