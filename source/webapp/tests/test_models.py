@@ -20,3 +20,8 @@ class RecommendationModelTest(TestCase):
     def test_text_max_length(self):
         max_length = Recommendation._meta.get_field('text').max_length
         self.assertEqual(max_length, 400)
+
+    def test_author_foreign_key(self):
+        author_field = Recommendation._meta.get_field('author')
+        self.assertEqual(author_field.related_model, accounts.models.User)
+
