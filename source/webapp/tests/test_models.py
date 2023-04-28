@@ -54,3 +54,10 @@ class RecommendationModelTest(TestCase):
     def test_player_deletion(self):
         self.player.delete()
         self.assertFalse(Recommendation.objects.filter(pk=self.recommendation.pk).exists())
+
+    def test_author_default_value(self):
+        recommendation = Recommendation.objects.create(
+            text='Test recommendation',
+            player=self.player
+        )
+        self.assertEqual(recommendation.author_id, 1)
