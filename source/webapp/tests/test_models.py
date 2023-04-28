@@ -32,3 +32,7 @@ class RecommendationModelTest(TestCase):
     def test_created_at_auto_now_add(self):
         created_at_field = Recommendation._meta.get_field('created_at')
         self.assertTrue(created_at_field.auto_now_add)
+
+    def test_updated_at_auto_now(self):
+        updated_at_field = Recommendation._meta.get_field('updated_at')
+        self.assertTrue(updated_at_field.auto_now)
