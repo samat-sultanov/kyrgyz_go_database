@@ -25,3 +25,6 @@ class RecommendationModelTest(TestCase):
         author_field = Recommendation._meta.get_field('author')
         self.assertEqual(author_field.related_model, accounts.models.User)
 
+    def test_player_foreign_key(self):
+        player_field = Recommendation._meta.get_field('player')
+        self.assertEqual(player_field.related_model, Player)
