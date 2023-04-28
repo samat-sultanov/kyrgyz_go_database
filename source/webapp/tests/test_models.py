@@ -12,3 +12,7 @@ class RecommendationModelTest(TestCase):
         cls.user = User.objects.create_user(username='testuser', password='testpass')
         cls.player = Player.objects.create(first_name='Test player', country=Country.objects.create(country_code='kg'))
         cls.recommendation = Recommendation.objects.create(text='Test recommendation', author=cls.user, player=cls.player)
+
+    def test_str_method(self):
+        expected_method = f'{self.recommendation.pk}. Test recommendation'
+        self.assertEqual(str(self.recommendation), expected_method)
