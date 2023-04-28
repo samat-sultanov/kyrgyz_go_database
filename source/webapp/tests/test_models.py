@@ -16,3 +16,7 @@ class RecommendationModelTest(TestCase):
     def test_str_method(self):
         expected_method = f'{self.recommendation.pk}. Test recommendation'
         self.assertEqual(str(self.recommendation), expected_method)
+
+    def test_text_max_length(self):
+        max_length = Recommendation._meta.get_field('text').max_length
+        self.assertEqual(max_length, 400)
