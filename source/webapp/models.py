@@ -196,7 +196,7 @@ class PlayerInTournament(models.Model):
     rating = models.IntegerField(verbose_name='Rating', blank=True, null=True)
     rating_after = models.IntegerField(verbose_name='Rating after', blank=True, null=True)
     club = models.ForeignKey('webapp.Club', on_delete=models.CASCADE, blank=True, null=True)
-    position = models.PositiveIntegerField(verbose_name='Позиция/место', default=0)
+    position = models.PositiveIntegerField(verbose_name='Позиция/место')
     results = models.CharField(verbose_name='results by round', max_length=200, blank=True, null=True)
 
     def __str__(self):
