@@ -61,3 +61,7 @@ class RecommendationModelTest(TestCase):
             player=self.player
         )
         self.assertEqual(recommendation.author_id, 1)
+
+    def test_related_name_parameter(self):
+        self.assertIn(self.recommendation, self.user.author.all())
+        self.assertIn(self.recommendation, self.player.player.all())
