@@ -50,3 +50,7 @@ class RecommendationModelTest(TestCase):
         updated_recommendation = Recommendation.objects.get(pk=self.recommendation.pk)
         self.assertEqual(updated_recommendation.text, 'Updated recommendation')
         self.assertGreater(updated_recommendation.updated_at, self.recommendation.created_at)
+
+    def test_player_deletion(self):
+        self.player.delete()
+        self.assertFalse(Recommendation.objects.filter(pk=self.recommendation.pk).exists())
