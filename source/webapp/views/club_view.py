@@ -1,13 +1,14 @@
 from urllib.parse import urlencode
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.views.generic import ListView, TemplateView, UpdateView, CreateView
+
 from webapp.forms import ClubSearch, ClubForm, ClubCreateForm
 from webapp.models import Club, Country
-from django.views.generic import ListView, TemplateView, UpdateView, CreateView
-from webapp.views.functions import average_go_level, get_total_wins , club_active_players
+from webapp.views.functions import average_go_level, get_total_wins, club_active_players
 
 
 class ClubsListView(ListView):
@@ -16,8 +17,6 @@ class ClubsListView(ListView):
     context_object_name = 'clubs'
     paginate_by = 15
     paginate_orphans = 4
-    # country = Country.objects.get(country_code='kg')
-    # queryset = Club.objects.filter(country=country)
 
     def get_ordering(self):
         ordering = '-num_players'
@@ -26,6 +25,13 @@ class ClubsListView(ListView):
         return ordering
 
     def get(self, request, *args, **kwargs):
+        try:
+            country = Country.objects.get(country_code='kg')
+        except ObjectDoesNotExist:
+            Country.objects.create(country_code='kg')
+            country = Country.objects.get(country_code='kg')
+
+        self.queryset = Club.objects.filter(country=country)
         self.form = self.get_search_form()
         self.search_name = self.get_search_name()
         self.search_city = self.get_search_city()
@@ -105,4 +111,4 @@ class ClubCreate(LoginRequiredMixin, CreateView):
     form_class = ClubCreateForm
 
     def get_success_url(self):
-        return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:index')
