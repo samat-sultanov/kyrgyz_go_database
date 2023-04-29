@@ -140,15 +140,16 @@ class ClubSearch(forms.Form):
 
 
 class CheckPlayerForm(forms.Form):
-    position = forms.CharField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
+    position = forms.CharField(widget=forms.widgets.TextInput(attrs={'style': 'width: 100px;'}))
     results = forms.CharField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
-    Surname = forms.CharField(max_length=255)
-    FirstName = forms.CharField(max_length=255)
-    EgdPin = forms.IntegerField()
-    Rating = forms.FloatField()
-    GoLevel = forms.CharField(max_length=255)
+    Surname = forms.CharField(max_length=255, widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
+    FirstName = forms.CharField(max_length=255, widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
+    EgdPin = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
+    Club = forms.CharField(max_length=255, widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
+    Rating = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'style': 'width: 100px;'}))
+    GoLevel = forms.CharField(max_length=3, widget=forms.widgets.TextInput(attrs={'style': 'width: 100px;'}))
     birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
-    id_in_tournament = forms.IntegerField()
+    id_in_tournament = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')

@@ -30,7 +30,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col"></th>
+                            <th scope="col">#</th>
                             <th scope="col">EgdPin</th>
                             <th scope="col">Участник</th>
                             <td scope="col">Клуб</td>
@@ -43,6 +43,7 @@
                     <tbody>
                         {{ form2.management_form }}
                         {% for player_form in form2 %}
+
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ player_form.EgdPin}}</td>
@@ -52,9 +53,10 @@
                                 <td>{{ player_form.GoLevel }}</td>
                                 <td>{{ player_form.Rating }}</td>
                                 <td>{{ player_form.position }}</td>
-                                <td>{{ player_form.id_in_tournament.as_hidden }}</td>
                                 <td>{{ player_form.results.as_hidden }}</td>
+                                <td>{{ player_form.id_in_tournament.as_hidden }}</td>
                             </tr>
+
                         {% endfor %}
                         {% if form2_errors %}
                             <div class="alert alert-danger" role="alert">
@@ -90,7 +92,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
-                    <form method="POST" id="modal_form_link" action="{% url 'webapp:delete_tournament' file_name %}">
+                    <form method="POST" id="modal_form_link" action="">
                         {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-outline-secondary" value="Да">
                     </form>
                 </div>

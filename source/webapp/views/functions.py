@@ -541,7 +541,7 @@ def unpack_data_for_moderation_players(data):
             'FirstName': person.get('FirstName'),
             'Surname': person.get('Surname'),
             'GoLevel': person.get('GoLevel'),
-            'Rating': float(person.get('Rating', 0)),
+            'Rating': int(person.get('Rating', 0)),
             'EgdPin': int(person.get('EgdPin', 0)),
             'Club': person.get('Club'),
             'birth_date': person.get('birth_date')
@@ -575,7 +575,7 @@ def _sort_lod(lop):
         new_dict['Surname'] = person.get('Surname')
         new_dict['GoLevel'] = person.get('GoLevel')
         new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
-        new_dict['Rating'] = float(rating)
+        new_dict['Rating'] = int(rating)
         new_dict['EgdPin'] = int(person.get('EgdPin', 0))
         new_dict['Club'] = person.get('Club')
         new_dict['Country'] = person.get('Country')
@@ -610,7 +610,7 @@ def _sort_ipl(lopit):
                 new_dict['Surname'] = person.get('Surname')
                 new_dict['GoLevel'] = person.get('GoLevel')
                 new_dict['adapted_level'] = _adapt_go_level(person.get('GoLevel'))
-                new_dict['Rating'] = float(rating)
+                new_dict['Rating'] = int(rating)
                 new_dict['EgdPin'] = int(person.get('EgdPin', 0))
                 new_dict['Club'] = person.get('Club')
                 new_dict['Country'] = person.get('Country')
