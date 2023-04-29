@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from http import HTTPStatus
 from webapp.models import Club, City, Country, Region
 from accounts.models import User
 from io import BytesIO
@@ -67,3 +66,71 @@ class ClubTestsForUnregisteredUser(TestCase):
         self.test_club.refresh_from_db()  # Обновление/актуализация бд
         self.assertEqual(self.test_club.name, 'Test name')  # Проверка, что название клуба не поменялось
         self.assertEqual(self.test_club.city, self.test_city)  # Проверка, что город не поменялся
+
+
+class ClubTestsForRegisteredUser(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_country = Country.objects.create(country_code='KG')
+        test_region = Region.objects.create(name='Test region', country=test_country)
+        cls.test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
+        cls.new_city = City.objects.create(city='New city', country=test_country, region=test_region)
+        cls.test_user = User.objects.create_user(
+            username='test_user',
+            password='test_password'
+        )
+        cls.new_user = User.objects.create_user(
+            username='new_user',
+            email='new_user@example.com',
+            password='test_password'
+        )
+
+        cls.test_club = Club.objects.create(
+            name='Test name',
+            city=cls.test_city
+        )
+        cls.test_club.coaches.set([cls.test_user])
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.login(username='new_user', password='test_password')
+
+    def test_club_create(self):
+        url = reverse('webapp:club_create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = {'name': 'Test_club_create',
+                'city': self.new_city.pk,
+                'coaches': [self.new_user.pk]
+                }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Club.objects.count(), 2)
+        new_club = Club.objects.get(name='Test_club_create')
+        self.assertEqual(new_club.name, 'Test_club_create')
+        self.assertEqual(new_club.city, self.new_city)
+        self.assertEqual(new_club.coaches.first(), self.new_user)
+
+    def test_club_update(self):
+        url = reverse('webapp:club_update', args=[self.test_club.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = {
+            'name': 'New club name',
+            'city': self.test_city.pk,
+            'coaches': [self.new_user.pk],
+        }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Club.objects.count(), 1)
+        updated_club = Club.objects.get(name='New club name')
+        self.assertEqual(updated_club.name, 'New club name')
+        self.assertEqual(updated_club.city, self.test_city)
+        self.assertEqual(updated_club.coaches.first(), self.new_user)
+        club_detail_url = reverse('webapp:club_view', args=[self.test_club.pk])
+        self.assertRedirects(response, club_detail_url)
+
+    def test_club_detail(self):
+        url = reverse('webapp:club_view', args=[self.test_club.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)

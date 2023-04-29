@@ -111,4 +111,4 @@ class ClubCreate(LoginRequiredMixin, CreateView):
     form_class = ClubCreateForm
 
     def get_success_url(self):
-        return reverse('webapp:index')
+        return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
