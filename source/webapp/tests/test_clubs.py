@@ -67,3 +67,32 @@ class ClubTestsForUnregisteredUser(TestCase):
         self.test_club.refresh_from_db()  # Обновление/актуализация бд
         self.assertEqual(self.test_club.name, 'Test name')  # Проверка, что название клуба не поменялось
         self.assertEqual(self.test_club.city, self.test_city)  # Проверка, что город не поменялся
+
+
+class ClubTestsForRegisteredUser(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_country = Country.objects.create(country_code='KG')
+        test_region = Region.objects.create(name='Test region', country=test_country)
+        cls.test_city = City.objects.create(city='Test city', country=test_country, region=test_region)
+        cls.new_city = City.objects.create(city='New city', country=test_country, region=test_region)
+        cls.test_user = User.objects.create_user(
+            username='test_user',
+            password='test_password'
+        )
+        cls.new_user = User.objects.create_user(
+            username='new_user',
+            email='new_user@example.com',
+            password='test_password'
+        )
+
+        cls.test_club = Club.objects.create(
+            name='Test name',
+            city=cls.test_city
+        )
+        cls.test_club.coaches.set([cls.test_user])
+
+    def setUp(self) -> None:
+        self.client = Client()
+        self.client.login(username='new_user', password='test_password')
+
