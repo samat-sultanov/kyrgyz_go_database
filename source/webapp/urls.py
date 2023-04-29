@@ -8,7 +8,7 @@ from .views import FileUpload, TournamentCheckView, IndexView, NewsListView, Pla
     hard_delete_one_event, RecommendationCreateView, send_feedback_to_admin, RecommendationUpdateView, \
     RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView, \
     PartnersListView, PartnerDetailView, PartnerUpdateView, PartnerDeleteView, UpdateParticipant, ClubCreate, \
-    TournamentModerationList, CheckCancelModer, CheckModer, DeleteTournamentBeforeModeration, ModerationTournamentView
+    TournamentModerationList, CheckCancelModer, DeleteTournamentBeforeModeration, ModerationTournamentView
 
 app_name = 'webapp'
 
@@ -59,7 +59,6 @@ urlpatterns = [
     path('partner_update/<int:pk>/', PartnerUpdateView.as_view(), name='partner_update'),
     path('partner_delete/<int:pk>/', PartnerDeleteView.as_view(), name='partner_delete'),
     path('moderation_tournaments/', TournamentModerationList.as_view(), name='moderation_tournaments'),
-    path('confirm_tournament/<int:pk>/', CheckModer.as_view(), name='confirm_tournament'),
     path('cancel_tournament/<int:pk>/', CheckCancelModer.as_view(), name='cancel_tournament'),
     path('moderation_tournaments/<int:pk>/', ModerationTournamentView.as_view(), name='tournament_moderation_detail'),
 ]
