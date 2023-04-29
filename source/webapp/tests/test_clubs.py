@@ -96,3 +96,18 @@ class ClubTestsForRegisteredUser(TestCase):
         self.client = Client()
         self.client.login(username='new_user', password='test_password')
 
+    def test_club_create(self):
+        url = reverse('webapp:club_create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = {'name': 'Test_club_create',
+                'city': self.new_city.pk,
+                'coaches': [self.new_user.pk]
+                }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Club.objects.count(), 2)
+        new_club = Club.objects.get(name='Test_club_create')
+        self.assertEqual(new_club.name, 'Test_club_create')
+        self.assertEqual(new_club.city, self.new_city)
+        self.assertEqual(new_club.coaches.first(), self.new_user)
