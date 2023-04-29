@@ -111,3 +111,22 @@ class ClubTestsForRegisteredUser(TestCase):
         self.assertEqual(new_club.name, 'Test_club_create')
         self.assertEqual(new_club.city, self.new_city)
         self.assertEqual(new_club.coaches.first(), self.new_user)
+
+    def test_club_update(self):
+        url = reverse('webapp:club_update', args=[self.test_club.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = {
+            'name': 'New club name',
+            'city': self.test_city.pk,
+            'coaches': [self.new_user.pk],
+        }
+        response = self.client.post(url, data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Club.objects.count(), 1)
+        updated_club = Club.objects.get(name='New club name')
+        self.assertEqual(updated_club.name, 'New club name')
+        self.assertEqual(updated_club.city, self.test_city)
+        self.assertEqual(updated_club.coaches.first(), self.new_user)
+        club_detail_url = reverse('webapp:club_view', args=[self.test_club.pk])
+        self.assertRedirects(response, club_detail_url)
