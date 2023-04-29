@@ -3,7 +3,7 @@ from phonenumber_field.formfields import PhoneNumberField
 from django import forms
 from django.forms import FileInput, widgets
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner, DEFAULT_CLASS
+    Partner, DEFAULT_CLASS, DayOfWeek
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -140,13 +140,15 @@ class ClubSearch(forms.Form):
 
 
 class CheckPlayerForm(forms.Form):
+    position = forms.CharField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
+    results = forms.CharField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
     Surname = forms.CharField(max_length=255)
     FirstName = forms.CharField(max_length=255)
     EgdPin = forms.IntegerField()
     Rating = forms.FloatField()
     GoLevel = forms.CharField(max_length=255)
     birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
-    id_in_game = forms.IntegerField()
+    id_in_tournament = forms.IntegerField()
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data.get('birth_date')
@@ -173,12 +175,19 @@ class CheckTournamentForm(forms.Form):
 
 
 class ClubForm(forms.ModelForm):
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+
     class Meta:
         model = Club
         fields = ['logo', 'name', 'EGDName', 'num_players', 'city', 'coaches', 'address', 'phonenumber', 'web_link',
-                  'schedule']
+                  'schedule_from', 'schedule_to', 'breakfast_from', 'breakfast_to', 'days_of_work', 'day_of_week']
         widgets = {
             'coaches': forms.CheckboxSelectMultiple(),
+            'schedule_from': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
+            'schedule_to': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
+            'breakfast_from': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
+            'breakfast_to': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
         }
         labels = {
             'logo': 'Логотип:',
@@ -190,7 +199,10 @@ class ClubForm(forms.ModelForm):
             'address': "Адрес:",
             'phonenumber': "Номер телефона:",
             'web_link': "Web-site:",
-            'schedule': 'Рабочие часы:',
+            'schedule_from': "Работаем С (Время)",
+            'schedule_to': "До (Время)",
+            'breakfast_from': "Обед с",
+            'breakfast_to': "До",
         }
 
     def clean_num_players(self):
@@ -206,12 +218,19 @@ class ClubForm(forms.ModelForm):
 
 
 class ClubCreateForm(forms.ModelForm):
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+
     class Meta:
         model = Club
         fields = ['logo', 'name', 'EGDName', 'num_players', 'city', 'coaches', 'address', 'phonenumber', 'web_link',
-                  'schedule']
+                  'schedule_from', 'schedule_to', 'breakfast_from', 'breakfast_to', 'days_of_work', 'day_of_week']
         widgets = {
             'coaches': forms.CheckboxSelectMultiple(),
+            'schedule_from': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
+            'schedule_to': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
+            'breakfast_from': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
+            'breakfast_to': forms.TextInput(attrs={'type': 'time', 'step': '60'}),
         }
         labels = {
             'logo': 'Логотип:',
@@ -223,7 +242,10 @@ class ClubCreateForm(forms.ModelForm):
             'address': "Адрес",
             'phonenumber': "Номер телефона",
             'web_link': "Ссылка на соц. сети или сайт",
-            'schedule': 'Рабочие часы',
+            'schedule_from': "Работаем С (Время)",
+            'schedule_to': "До (Время)",
+            'breakfast_from': "Обед с",
+            'breakfast_to': "До",
         }
 
 

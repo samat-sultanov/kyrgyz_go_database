@@ -1,0 +1,51 @@
+[
+{
+  "model": "webapp.dayofweek",
+  "pk": 1,
+  "fields": {
+    "name": "Пн"
+  }
+},
+{
+  "model": "webapp.dayofweek",
+  "pk": 2,
+  "fields": {
+    "name": "Вт"
+  }
+},
+{
+  "model": "webapp.dayofweek",
+  "pk": 3,
+  "fields": {
+    "name": "Ср"
+  }
+},
+{
+  "model": "webapp.dayofweek",
+  "pk": 4,
+  "fields": {
+    "name": "Чт"
+  }
+},
+{
+  "model": "webapp.dayofweek",
+  "pk": 5,
+  "fields": {
+    "name": "Пт"
+  }
+},
+{
+  "model": "webapp.dayofweek",
+  "pk": 6,
+  "fields": {
+    "name": "Сб"
+  }
+},
+{
+  "model": "webapp.dayofweek",
+  "pk": 7,
+  "fields": {
+    "name": "Вс"
+  }
+}
+]

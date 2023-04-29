@@ -10,7 +10,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, FormView
-from webapp.models import Calendar, News, Partner, NotModeratedTournament
+from django.core.exceptions import ObjectDoesNotExist
+
+from webapp.models import Calendar, News, Partner, NotModeratedTournament, Country
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.functions import get_position_in_kgf, \
     unpack_data_json_tournament, unpack_data_json_players, update_json_tournament
@@ -23,7 +25,11 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         calendar = Calendar.objects.filter(is_deleted=False).order_by('event_date')
         context['calendar'] = calendar
-        players = get_position_in_kgf()[0:3]
+        try:
+            players = get_position_in_kgf()[0:3]
+        except ObjectDoesNotExist:
+            Country.objects.create(country_code='kg')
+            players = get_position_in_kgf()[0:3]
         context['position'] = players
         latest_news = News.objects.filter(is_deleted=False).order_by('-created_at')[:3]
         context['latest_news'] = latest_news
@@ -96,7 +102,9 @@ class TournamentCheckView(LoginRequiredMixin, FormView):
                 'birth_date': form.data[f'form-{i}-birth_date'],
                 'GoLevel': form.data[f'form-{i}-GoLevel'],
                 'Rating': form.data[f'form-{i}-Rating'],
-                'id_in_game': form.data[f'form-{i}-id_in_game']
+                'id_in_tournament': form.data[f'form-{i}-id_in_tournament'],
+                'position': form.data[f'form-{i}-position'],
+                'results': form.data[f'form-{i}-results']
             }
             players_data.append(player_data)
         file_name = self.kwargs.get('file_name')
