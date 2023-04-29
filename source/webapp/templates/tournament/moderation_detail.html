@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+    <div>
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="container mt-4 mb-4">
+            <h2 class="title">Турнир: {{ form1.Name }}</h2>
+            <div class="form-group">
+                <p>Количество раундов: {{ form1.NumberOfRounds }}</p>
+                <p>Размер доски: {{ form1.Boardsize }}</p>
+                <p>Дата: {{ form1.date }}</p>
+                <p>Город: {{ form1.city }}</p>
+                <p>Класс: {{ form1.tournament_class }}</p>
+                <p>Регламент: {{ form1.regulations }}</p>
+                <p>Location: {{ form1.location }}</p>
+                <p>{{ form1.uploaded_by.as_hidden }}</p>
+            </div>
+            {% if form1_errors %}
+            <div class="alert alert-danger" role="alert">
+            {{ form1_errors }}
+            </div>
+            {% endif %}
+
+            <div class="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">EgdPin</th>
+                            <th scope="col">Участник</th>
+                            <td scope="col">Клуб</td>
+                            <th scope="col">Дата рождения</th>
+                            <th scope="col">Ранг</th>
+                            <th scope="col">Рейтинг</th>
+                            <th scope="col">Место</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ form2.management_form }}
+                        {% for player_form in form2 %}
+
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ player_form.EgdPin}}</td>
+                                <td>{{ player_form.Surname }} {{ player_form.FirstName }}</td>
+                                <td>{{ player_form.Club }}</td>
+                                <td>{{ player_form.birth_date }}</td>
+                                <td>{{ player_form.GoLevel }}</td>
+                                <td>{{ player_form.Rating }}</td>
+                                <td>{{ player_form.position }}</td>
+                                <td>{{ player_form.results.as_hidden }}</td>
+                                <td>{{ player_form.id_in_tournament.as_hidden }}</td>
+                            </tr>
+
+                        {% endfor %}
+                        {% if form2_errors %}
+                            <div class="alert alert-danger" role="alert">
+                            {{ form2_errors.non_form_errors }}
+                        {% for errors in form2_errors %}
+                            {{ errors.as_ul }}
+                        {% endfor %}
+                            </div>
+                        {% endif %}
+                    </tbody>
+                </table>
+
+                <p class="mt-4"><input class="btn" style="background: #9400D3;color: white;" type="submit" value="Подтвердить"></p>
+                <!-- Открывает модалку подтверждения -->
+                {% if request.user.is_authenticated %}
+                    <button type="button" class="btn btn-outline-secondary kgf_modal mb-5" data-bs-toggle="modal"
+                    data-bs-target="#delete_tournament_Modal">Удалить</button>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+
+    <!-- Модалка подтверждения -->
+    <div class="modal fade" id="delete_tournament_Modal" tabindex="-1" aria-labelledby="delete_tournament_ModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title fs-5" id="delete_tournament_ModalLabel">Подтвердите удаление</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
+                    <form method="POST" id="modal_form_link" action="">
+                        {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-outline-secondary" value="Да">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
