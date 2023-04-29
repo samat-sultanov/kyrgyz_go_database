@@ -16,7 +16,7 @@ from webapp.forms import TournamentSearchForm, CheckTournamentForm, CheckPlayerF
 from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, unpack_data_json_players, \
-    parse_results, update_json_tournament, get_results_for_moderation_view
+    parse_results, update_json_tournament
 
 
 class TournamentSearch(ListView):
