@@ -98,10 +98,11 @@ class ClubUpdate(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
 
+
 class ClubCreate(LoginRequiredMixin, CreateView):
     template_name = 'club/club_create.html'
     model = Club
     form_class = ClubCreateForm
 
     def get_success_url(self):
-        return reverse('webapp:index')
+        return reverse('webapp:club_view', kwargs={'pk': self.object.pk})
