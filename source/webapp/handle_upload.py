@@ -102,7 +102,7 @@ def unpack_players(data, pk):
         first_name = player.get('FirstName')
         last_name = player.get('Surname')
         GoLevel = player.get('GoLevel')
-        rating = int(float(player.get('Rating')))
+        rating = int(player.get('Rating'))
         country_code = player.get('Country')
         EgdPin = player.get('EgdPin')
         country = get_object_or_404(Country, country_code=country_code)
