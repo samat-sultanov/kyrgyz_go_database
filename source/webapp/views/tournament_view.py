@@ -1,19 +1,22 @@
 import json
 import os
 from urllib.parse import urlencode
+
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView, DeleteView
+from django.views.generic import ListView, TemplateView, DeleteView, FormView
 from django.db.models import Q
 from webapp.handle_upload import unpack_tournament_to_bd, unpack_countries_clubs, unpack_players, unpack_games
 from webapp.views.GoR_calculator import get_new_rating, get_current_rating_and_rank
-from webapp.forms import TournamentSearchForm
+from webapp.forms import TournamentSearchForm, CheckTournamentForm, CheckPlayerForm
 from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, unpack_data_json_players, \
-    parse_results
+    parse_results, update_json_tournament, get_results_for_moderation_view
 
 
 class TournamentSearch(ListView):
@@ -110,35 +113,6 @@ class TournamentModerationList(LoginRequiredMixin, ListView):
     paginate_by = 10
 
 
-class CheckModer(LoginRequiredMixin, TemplateView):
-    template_name = 'tournament/tournament_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        pk = kwargs.get("pk")
-        tournament = get_object_or_404(NotModeratedTournament, pk=pk)
-        file_name = tournament.name
-        json_file_path = f"json/{file_name.split('.')[0]}.json"
-        with default_storage.open(json_file_path, 'r') as f:
-            data = json.load(f)
-        new_pk = unpack_tournament_to_bd(data)
-        unpack_countries_clubs(data)
-        unpack_players(data, new_pk)
-        unpack_games(data, new_pk)
-        moder_tournament = get_object_or_404(Tournament, pk=new_pk)
-        context['tournament'] = moder_tournament
-        players = moder_tournament.playerintournament_set.all()
-        context['players'] = players
-        wins = get_wins_losses(new_pk)
-        context['wins'] = wins
-        tournament.delete()
-        file_path = f"uploads/json/{file_name.split('.')[0]}.json"
-        os.remove(file_path)
-        get_new_rating(new_pk)
-        get_current_rating_and_rank(new_pk)
-        return context
-
-
 class CheckCancelModer(LoginRequiredMixin, DeleteView):
     queryset = Tournament.objects.all()
     context_object_name = 'Tournament'
@@ -168,27 +142,96 @@ class DeleteTournamentBeforeModeration(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ModerationTournamentView(LoginRequiredMixin, TemplateView):
-    template_name = 'tournament/tournament_moderation_detail.html'
+class ModerationTournamentView(LoginRequiredMixin, FormView):
+    template_name = 'tournament/moderation_detail.html'
+    form_class = CheckTournamentForm
+    CheckPlayerFormSet = formset_factory(CheckPlayerForm, extra=0)
+    success_url = '/moderation_tournaments/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        pk = kwargs.get("pk")
+        pk = self.kwargs.get('pk')
         tournament = get_object_or_404(NotModeratedTournament, pk=pk)
         file_name = tournament.name
         json_file_path = f"json/{file_name.split('.')[0]}.json"
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
         tournament_data = unpack_data_for_moderation_tournament(data)
-
-        players_data = unpack_data_json_players(data)
-        players_data = parse_results(players_data)
-
+        players = unpack_data_json_players(data)
+        players_data = parse_results(players)
         list_of_rounds = []
-        for roundd in range(tournament_data.get('NumberOfRounds')):
-            list_of_rounds.append(roundd + 1)
+        for i in range(tournament_data.get('NumberOfRounds')):
+            list_of_rounds.append(i + 1)
         context['tournament'] = tournament_data
         context['players'] = players_data
         context['list_of_rounds'] = list_of_rounds
         context['pk'] = pk
+        context['form1'] = self.form_class(initial=tournament_data)
+        context['form2'] = self.CheckPlayerFormSet(initial=players_data)
         return context
+
+    def form_valid(self, form):
+        tournament_data = {
+            'Name': form.cleaned_data['Name'],
+            'NumberOfRounds': form.cleaned_data['NumberOfRounds'],
+            'Boardsize': form.cleaned_data['Boardsize'],
+            'date': form.cleaned_data['date'].isoformat(),
+            'city': form.cleaned_data['city'],
+            'tournament_class': form.cleaned_data['tournament_class'],
+            'regulations': form.cleaned_data['regulations'],
+            'uploaded_by': self.request.user.username
+        }
+        players_data = []
+        for i in range(int(form.data['form-TOTAL_FORMS'])):
+            player_data = {
+                'EgdPin': form.data[f'form-{i}-EgdPin'],
+                'Surname': form.data[f'form-{i}-Surname'],
+                'FirstName': form.data[f'form-{i}-FirstName'],
+                'birth_date': form.data[f'form-{i}-birth_date'],
+                'GoLevel': form.data[f'form-{i}-GoLevel'],
+                'Rating': form.data[f'form-{i}-Rating'],
+                'id_in_tournament': form.data[f'form-{i}-id_in_tournament'],
+                'position': form.data[f'form-{i}-position'],
+                'results': form.data[f'form-{i}-results'],
+                'club': form.data[f'form-{i}-Club']
+            }
+            players_data.append(player_data)
+        pk = self.kwargs.get('pk')
+        tournament = get_object_or_404(NotModeratedTournament, pk=pk)
+        file_name = tournament.name
+        json_file_path = f"json/{file_name.split('.')[0]}.json"
+        with default_storage.open(json_file_path, 'r') as f:
+            data = json.load(f)
+            update_data = update_json_tournament(data, tournament_data, players_data)
+        json_data = json.dumps(update_data, indent=4)
+        with default_storage.open(json_file_path, 'w') as f:
+            f.write(ContentFile(json_data).read())
+        with default_storage.open(json_file_path, 'r') as f:
+            data = json.load(f)
+        new_pk = unpack_tournament_to_bd(data)
+        unpack_countries_clubs(data)
+        unpack_players(data, new_pk)
+        unpack_games(data, new_pk)
+        tournament.delete()
+        file_path = f"uploads/json/{file_name.split('.')[0]}.json"
+        os.remove(file_path)
+        get_new_rating(new_pk)
+        get_current_rating_and_rank(new_pk)
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        context = self.get_context_data()
+        form1 = self.form_class(self.request.POST, initial=context['tournament'], prefix='form1')
+        form2 = self.CheckPlayerFormSet(self.request.POST, initial=context['players'], prefix='form')
+        context['form1'] = form1
+        context['form2'] = form2
+        context['form1_errors'] = form.errors
+        context['form2_errors'] = formset_errors(form2)
+        self.extra_context = context
+        return super().form_invalid(form)
+
+
+def formset_errors(formset):
+    errors = [form.errors for form in formset.forms]
+    errors = [error for error in errors if error]
+    return errors
