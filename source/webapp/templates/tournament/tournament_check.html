@@ -33,9 +33,11 @@
                             <th scope="col"></th>
                             <th scope="col">EgdPin</th>
                             <th scope="col">Участник</th>
+                            <td scope="col">Клуб</td>
                             <th scope="col">Дата рождения</th>
-                            <th scope="col">Rank</th>
-                            <th scope="col">Rating</th>
+                            <th scope="col">Ранг</th>
+                            <th scope="col">Рейтинг</th>
+                            <th scope="col">Место</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,11 +47,12 @@
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ player_form.EgdPin}}</td>
                                 <td>{{ player_form.Surname }} {{ player_form.FirstName }}</td>
+                                <td>{{ player_form.Club }}</td>
                                 <td>{{ player_form.birth_date }}</td>
                                 <td>{{ player_form.GoLevel }}</td>
                                 <td>{{ player_form.Rating }}</td>
+                                <td>{{ player_form.position }}</td>
                                 <td>{{ player_form.id_in_tournament.as_hidden }}</td>
-                                <td>{{ player_form.position.as_hidden }}</td>
                                 <td>{{ player_form.results.as_hidden }}</td>
                             </tr>
                         {% endfor %}
