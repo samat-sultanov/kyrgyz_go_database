@@ -1,7 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from http import HTTPStatus
 from webapp.models import Club, City, Country, Region
 from accounts.models import User
 from io import BytesIO
