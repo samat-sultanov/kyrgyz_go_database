@@ -27,12 +27,12 @@
                                class="btn btn-secondary">Восстановить</a>
 
                             <!-- Открывает модалку подтверждения -->
-                            <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal" data-bs-target="#delete_one_event_Modal">
+                            <button type="button" class="btn btn-danger kgf_modal" data-bs-toggle="modal" data-bs-target="#delete_one_event_Modal_{{ deleted_calendar.pk }}">
                                 Удалить
                             </button>
 
                             <!-- Модалка подтверждения -->
-                            <div class="modal fade" id="delete_one_event_Modal" tabindex="-1"
+                            <div class="modal fade" id="delete_one_event_Modal_{{ deleted_calendar.pk }}" tabindex="-1"
                                  aria-labelledby="delete_one_event_ModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
