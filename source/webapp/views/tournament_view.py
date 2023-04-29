@@ -193,7 +193,7 @@ class ModerationTournamentView(LoginRequiredMixin, FormView):
                 'id_in_tournament': form.data[f'form-{i}-id_in_tournament'],
                 'position': form.data[f'form-{i}-position'],
                 'results': form.data[f'form-{i}-results'],
-                'club': form.data[f'form-{i}-Club']
+                'Club': form.data[f'form-{i}-Club']
             }
             players_data.append(player_data)
         pk = self.kwargs.get('pk')
