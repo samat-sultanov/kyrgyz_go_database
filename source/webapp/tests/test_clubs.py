@@ -130,3 +130,8 @@ class ClubTestsForRegisteredUser(TestCase):
         self.assertEqual(updated_club.coaches.first(), self.new_user)
         club_detail_url = reverse('webapp:club_view', args=[self.test_club.pk])
         self.assertRedirects(response, club_detail_url)
+
+    def test_club_detail(self):
+        url = reverse('webapp:club_view', args=[self.test_club.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
