@@ -78,8 +78,17 @@
                                 <p class="mb-1">Web-site: <a style="color: black;"
                                                              href="{{ club.web_link }}">{{ club.web_link }}</a></p>
                             {% endif %}
-                            {% if club.schedule %}
-                                <p class="mb-1">Рабочие часы: {{ club.schedule }}</p>
+                            {% if club.schedule_from and club.schedule_to %}
+                                <p class="mb-1">Рабочие часы: с {{ club.schedule_from }} до {{ club.schedule_to }}</p>
+                            {% endif %}
+                            {% if club.breakfast_from and club.breakfast_to %}
+                               <p class="mb-1">Обед: с {{ club.breakfast_from }} до {{ club.breakfast_to }}</p>
+                            {% endif %}
+                            {% if club.days_of_work.all %}
+                                <p class="mb-1">Рабочие дни: {% for days in club.days_of_work.all %}{{ days.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %}</p>
+                            {% endif %}
+                            {% if club.day_of_week.all %}
+                                <p class="mb-1">Выходные: {% for days in club.day_of_week.all %}{{ days.name }}{% if forloop.last %}.{% else %}, {% endif %}{% endfor %}</p>
                             {% endif %}
                         </div>
                     </div>
@@ -104,5 +113,4 @@
             {% endif %}
         </div>
     </div>
-
 {% endblock %}
