@@ -1,7 +1,8 @@
 from django.test import TestCase
 import accounts.models
+from django.core.exceptions import ValidationError
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country
+from webapp.models import Recommendation, Player, Country, Region
 import time
 
 
@@ -82,7 +83,6 @@ class CountryModelTest(TestCase):
     def test_update_country(self):
         country = Country.objects.create(country_code='us')
         self.assertEqual(len(Country.objects.all()), 1)
-
         country.country_code = 'ca'
         country.save()
         updated_country = Country.objects.get(pk=country.pk)
@@ -91,6 +91,38 @@ class CountryModelTest(TestCase):
     def test_delete_country(self):
         country = Country.objects.create(country_code='kg')
         self.assertEqual(len(Country.objects.all()), 1)
-
         country.delete()
         self.assertEqual(len(Country.objects.all()), 0)
+
+
+class RegionModelTest(TestCase):
+    def test_create_region_with_correct_parameters(self):
+        country = Country.objects.create(country_code='kg')
+        Region.objects.create(name='Chuy', country=country)
+        self.assertEqual(len(Region.objects.all()), 1)
+        created_region = Region.objects.filter(name='Chuy').first()
+        self.assertEqual(created_region.name, 'Chuy')
+        self.assertEqual(created_region.country, country)
+
+    def test_create_region_with_wrong_parameters(self):
+        country = Country.objects.create(country_code='US')
+        region = Region(country=country, name='')
+        with self.assertRaises(ValidationError):
+            region.full_clean()
+            region.save()
+        self.assertEqual(len(Region.objects.all()), 0)
+
+    def test_update_region(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        region.name = 'Naryn'
+        region.save()
+        updated_region = Region.objects.first()
+        self.assertEqual(updated_region.name, 'Naryn')
+
+    def test_delete_region(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        self.assertEqual(len(Region.objects.all()), 1)
+        region.delete()
+        self.assertEqual(len(Region.objects.all()), 0)
