@@ -252,3 +252,8 @@ class TournamentModelTest(TestCase):
     def test_board_size_default(self):
         default_size = Tournament._meta.get_field('board_size').default
         self.assertEqual(default_size, 19)
+
+    def test_board_size_positive_integer(self):
+        board_size_field = Tournament._meta.get_field('board_size')
+        self.assertIsInstance(board_size_field, PositiveIntegerField)
+
