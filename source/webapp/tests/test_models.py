@@ -245,4 +245,7 @@ class TournamentModelTest(TestCase):
         expected_method = f'{self.tournament.id}. Test Tournament - 19'
         self.assertEqual(str(self.tournament), expected_method)
 
+    def test_name_max_length(self):
+        max_length = Tournament._meta.get_field('name').max_length
+        self.assertEqual(max_length, 50)
 
