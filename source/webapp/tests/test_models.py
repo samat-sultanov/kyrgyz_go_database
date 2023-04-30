@@ -260,3 +260,8 @@ class TournamentModelTest(TestCase):
     def test_rounds_positive_integer(self):
         rounds_field = Tournament._meta.get_field('rounds')
         self.assertIsInstance(rounds_field, PositiveIntegerField)
+
+    def test_tournament_class_choices(self):
+        choices_field = Tournament._meta.get_field('tournament_class')
+        self.assertEqual(choices_field.choices, CLASS_CHOICES)
+
