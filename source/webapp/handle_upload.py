@@ -98,7 +98,7 @@ def unpack_players(data, pk):
                 club.country = country
                 club.save()
         try:
-            player = get_object_or_404(Player, last_name=last_name, first_name=first_name)
+            player = Player.objects.get(last_name=last_name, first_name=first_name)
             if country != player.country:
                 player.country = country
                 player.save()
@@ -119,7 +119,8 @@ def unpack_players(data, pk):
                                                   position=position,
                                                   results=results)
 
-            elif (EgdPin != 0 and player.EgdPin == EgdPin) or (EgdPin == 0 and player.EgdPin == EgdPin):
+            elif (EgdPin != 0 and player.EgdPin == EgdPin) or (EgdPin == 0 and player.EgdPin == EgdPin) or (EgdPin == 0
+                                                                                                            and player.EgdPin != 0):
                 PlayerInTournament.objects.create(game_id=id_in_tournament,
                                                   player=player,
                                                   tournament=tournament,
