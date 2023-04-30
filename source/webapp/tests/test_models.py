@@ -269,3 +269,14 @@ class TournamentModelTest(TestCase):
         uploaded_by_field = Tournament._meta.get_field('uploaded_by')
         self.assertEqual(uploaded_by_field.related_model, accounts.models.User)
 
+    def test_object_creation(self):
+        self.assertEqual(self.tournament.name, 'Test Tournament')
+        self.assertEqual(self.tournament.city, self.city)
+        self.assertEqual(self.tournament.region, self.region)
+        self.assertEqual(self.tournament.location, 'Test Location')
+        self.assertEqual(self.tournament.board_size, 19)
+        self.assertEqual(self.tournament.rounds, 5)
+        self.assertEqual(self.tournament.date, datetime.date.today())
+        self.assertEqual(self.tournament.tournament_class, 'Test Class')
+        self.assertEqual(self.tournament.regulations, 'Test Regulations')
+        self.assertEqual(self.tournament.uploaded_by, self.user)
