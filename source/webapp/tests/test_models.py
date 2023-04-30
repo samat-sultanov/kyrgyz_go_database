@@ -241,3 +241,8 @@ class TournamentModelTest(TestCase):
                                                    date=datetime.date.today(), tournament_class='Test Class',
                                                    regulations='Test Regulations', uploaded_by=cls.user)
 
+    def test_str_method(self):
+        expected_method = f'{self.tournament.id}. Test Tournament - 19'
+        self.assertEqual(str(self.tournament), expected_method)
+
+
