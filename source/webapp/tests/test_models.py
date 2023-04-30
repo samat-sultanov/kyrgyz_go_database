@@ -338,3 +338,27 @@ class GameModelTest(TestCase):
     def test_white_foreign_key(self):
         white_field = Game._meta.get_field('white')
         self.assertEqual(white_field.related_model, Player)
+
+    def test_board_number_default_value(self):
+        default_value = Game._meta.get_field('board_number').default
+        self.assertEqual(default_value, 0)
+
+    def test_date_field_type(self):
+        date_field = Game._meta.get_field('date')
+        self.assertIsInstance(date_field, DateTimeField)
+
+    def test_tournament_foreign_key(self):
+        tournament_field = Game._meta.get_field('tournament')
+        self.assertEqual(tournament_field.related_model, Tournament)
+
+    def test_round_num_positive_integer(self):
+        round_num_field = Game._meta.get_field('round_num')
+        self.assertIsInstance(round_num_field, PositiveIntegerField)
+
+    def test_black_gor_change_float(self):
+        black_gor_change_field = Game._meta.get_field('black_gor_change')
+        self.assertIsInstance(black_gor_change_field, FloatField)
+
+    def test_white_gor_change_float(self):
+        white_gor_change_field = Game._meta.get_field('white_gor_change')
+        self.assertIsInstance(white_gor_change_field, FloatField)
