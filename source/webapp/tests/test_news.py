@@ -109,3 +109,14 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         response = self.client.post(url)
         self.assertEqual(response.status_code, 403)
 
+        superuser = User.objects.create_superuser('superuser', 'superuser@test.com', 'password123')
+        self.client.force_login(superuser)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('webapp:news_list'))
+        self.news.refresh_from_db()
+        self.assertTrue(self.news.is_deleted)
+        self.assertTrue(News.objects.filter(pk=self.news.pk, is_deleted=True).exists())
+        self.assertEqual(News.objects.count(), 1)
+
+
