@@ -51,11 +51,13 @@ class Region(models.Model):
         verbose_name = "Регион"
         verbose_name_plural = "Регионы"
 
+
 class DayOfWeek(models.Model):
     name = models.CharField(max_length=10)
 
     def __str__(self):
         return f'{self.name}'
+
 
 class Club(models.Model):
     logo = models.ImageField(verbose_name='Лого', null=True, blank=True, upload_to='club_logo')
