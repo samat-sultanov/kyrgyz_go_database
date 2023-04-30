@@ -99,16 +99,13 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         self.assertEqual(self.news.text, 'Updated text')
         self.assertEqual(News.objects.count(), 1)
 
-    def test_delete_news(self):
+    def test_news_detail(self):
         url = reverse('webapp:news_detail', args=[self.news.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'data-bs-target="#delete_news_Modal"')
-        response = self.client.post(reverse('webapp:news_delete', args=[self.news.pk]))
-        self.news.refresh_from_db()
-        self.assertTrue(News.objects.filter(pk=self.news.pk).exists())
-        self.assertEqual(self.news.is_deleted, True)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(News.objects.count(), 1)
-        self.assertRedirects(response, reverse('webapp:news_list'))
+
+    def test_delete_news(self):
+        url = reverse('webapp:news_delete', args=[self.news.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
 
