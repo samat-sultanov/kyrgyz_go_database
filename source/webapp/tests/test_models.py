@@ -265,3 +265,7 @@ class TournamentModelTest(TestCase):
         choices_field = Tournament._meta.get_field('tournament_class')
         self.assertEqual(choices_field.choices, CLASS_CHOICES)
 
+    def test_uploaded_by_foreign_key(self):
+        uploaded_by_field = Tournament._meta.get_field('uploaded_by')
+        self.assertEqual(uploaded_by_field.related_model, accounts.models.User)
+
