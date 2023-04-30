@@ -326,3 +326,15 @@ class GameModelTest(TestCase):
                                        result='1-0', black_score=1, white_score=0,
                                        board_number=1, date=timezone.now(), tournament=cls.tournament,
                                        round_num=1, black_gor_change=200, white_gor_change=-200)
+
+    def test_str_method(self):
+        expected_method = f'{self.game.id}. {self.black_player} : {self.white_player} = 1-0'
+        self.assertEqual(str(self.game), expected_method)
+
+    def test_black_foreign_key(self):
+        black_field = Game._meta.get_field('black')
+        self.assertEqual(black_field.related_model, Player)
+
+    def test_white_foreign_key(self):
+        white_field = Game._meta.get_field('white')
+        self.assertEqual(white_field.related_model, Player)
