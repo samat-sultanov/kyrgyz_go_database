@@ -362,3 +362,22 @@ class GameModelTest(TestCase):
     def test_white_gor_change_float(self):
         white_gor_change_field = Game._meta.get_field('white_gor_change')
         self.assertIsInstance(white_gor_change_field, FloatField)
+
+    def test_object_creation(self):
+        self.assertEqual(self.game.black, self.black_player)
+        self.assertEqual(self.game.white, self.white_player)
+        self.assertEqual(self.game.result, '1-0')
+        self.assertEqual(self.game.black_score, 1)
+        self.assertEqual(self.game.white_score, 0)
+        self.assertEqual(self.game.board_number, 1)
+        self.assertIsNotNone(self.game.date)
+        self.assertEqual(self.game.tournament, self.tournament)
+        self.assertEqual(self.game.round_num, 1)
+        self.assertEqual(self.game.black_gor_change, 200)
+        self.assertEqual(self.game.white_gor_change, -200)
+
+    def test_object_update(self):
+        self.game.black_score = 0
+        self.game.save()
+        updated_game = Game.objects.get(pk=self.game.pk)
+        self.assertEqual(updated_game.black_score, 0)
