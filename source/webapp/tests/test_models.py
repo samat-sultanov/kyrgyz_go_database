@@ -294,3 +294,17 @@ class TournamentModelTest(TestCase):
     def test_region_deletion(self):
         self.region.delete()
         self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+
+    def test_author_default_value(self):
+        tournament = Tournament.objects.create(
+            name='Test Tournament',
+            city=self.city,
+            region=self.region,
+            location='Test Location',
+            board_size=19,
+            rounds=5,
+            date=datetime.date.today(),
+            tournament_class='Test Class',
+            regulations='Test Regulations'
+        )
+        self.assertEqual(tournament.uploaded_by_id, 1)
