@@ -290,3 +290,7 @@ class TournamentModelTest(TestCase):
     def test_city_deletion(self):
         self.city.delete()
         self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+
+    def test_region_deletion(self):
+        self.region.delete()
+        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
