@@ -12,10 +12,10 @@ from django.urls import reverse
 from django.views.generic import TemplateView, FormView
 from django.core.exceptions import ObjectDoesNotExist
 
-from webapp.models import Calendar, News, Partner, NotModeratedTournament, Country
+from webapp.models import Calendar, News, Partner, NotModeratedTournament, Country, Tournament
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.functions import get_position_in_kgf, \
-    unpack_data_json_tournament, unpack_data_json_players, update_json_tournament
+    unpack_data_json_tournament, unpack_data_json_players, update_json_tournament, unpack_data_for_moderation_tournament
 
 
 class IndexView(TemplateView):
@@ -54,10 +54,18 @@ class FileUpload(LoginRequiredMixin, FormView):
             form.add_error(None, 'Действие отклонено! Файл с таким именем уже был загружен!')
             return render(self.request, self.template_name, {'form': form, 'error': form.errors})
         doc = xmltodict.parse(xml_file)
-        json_data = json.dumps(doc, indent=4)
-        with default_storage.open(json_file_path, 'w') as f:
-            f.write(ContentFile(json_data).read())
-        xml_file.file.close()
+        data = doc['Tournament']
+        for key, value in data.items():
+            if key == 'Name':
+                name = value
+                if name in Tournament.objects.all():
+                    form.add_error(None, 'Действие отклонено! Файл с таким именем уже был загружен!')
+                    return render(self.request, self.template_name, {'form': form, 'error': form.errors})
+                else:
+                    json_data = json.dumps(doc, indent=4)
+                    with default_storage.open(json_file_path, 'w') as f:
+                        f.write(ContentFile(json_data).read())
+                    xml_file.file.close()
         return HttpResponseRedirect(reverse('webapp:file_check', args=[file_name]))
 
 
