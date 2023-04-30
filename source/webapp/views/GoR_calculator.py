@@ -161,6 +161,7 @@ def get_new_rating(pk):
             if element['player'].pk == item.player.pk:
                 if item.rating == 0:
                     item.GoLevel_after = item.GoLevel
+                    item.rating_after = 0
                     item.save()
                 if item.rating >= 100:
                     new_rating = item.rating + element['total']
