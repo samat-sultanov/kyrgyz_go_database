@@ -1,11 +1,13 @@
 import os
 import shutil
+import datetime
 
+from django.db.models import PositiveIntegerField
 from django.test import TestCase
 import accounts.models
 from django.core.exceptions import ValidationError
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES
 
 
 class RecommendationModelTest(TestCase):
@@ -224,3 +226,18 @@ class NewsModelTest(TestCase):
     def test_author_default_value(self):
         news = News.objects.create(title='Test title', text='Test text')
         self.assertEqual(news.author_id, 1)
+
+
+class TournamentModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.country = Country.objects.create(country_code='kg')
+        cls.city = City.objects.create(city='Test City', country=cls.country)
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.tournament = Tournament.objects.create(name='Test Tournament', city=cls.city, region=cls.region,
+                                                   location='Test Location', board_size=19, rounds=5,
+                                                   date=datetime.date.today(), tournament_class='Test Class',
+                                                   regulations='Test Regulations', uploaded_by=cls.user)
+
