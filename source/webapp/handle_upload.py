@@ -58,41 +58,6 @@ def unpack_countries_clubs(data):
                         except:
                             Country.objects.create(country_code=code)
 
-    #                 elif k == 'Club':
-    #                     list_of_clubs = v
-    #                     new_list.append(list_of_clubs)
-    #
-    # for element in new_list:
-    #     if type(element) == list:
-    #         for elem in element:
-    #             name = elem.get('Name')
-    #             if name in ["Seng", "Sengoku", "Sengoku Go Club"]:
-    #                 name = "Sengoku Go Club"
-    #             try:
-    #                 EGDName = elem.get("EGDName")
-    #                 if name == "Sengoku Go Club":
-    #                     EGDName = 'Seng'
-    #             except:
-    #                 EGDName = None
-    #             try:
-    #                 Club.objects.get(name=name, EGDName=EGDName)
-    #             except Club.DoesNotExist:
-    #                 Club.objects.create(name=name, EGDName=EGDName)
-    #     else:
-    #         name = element.get('Name')
-    #         if name in ["Seng", "Sengoku", "Sengoku Go Club"]:
-    #             name = "Sengoku Go Club"
-    #         try:
-    #             EGDName = element.get("EGDName")
-    #             if name == "Sengoku Go Club":
-    #                 EGDName = 'Seng'
-    #         except:
-    #             EGDName = None
-    #         try:
-    #             Club.objects.get(name=name, EGDName=EGDName)
-    #         except Club.DoesNotExist:
-    #             Club.objects.create(name=name, EGDName=EGDName)
-
 
 def unpack_players(data, pk):
     tournament = get_object_or_404(Tournament, pk=pk)
