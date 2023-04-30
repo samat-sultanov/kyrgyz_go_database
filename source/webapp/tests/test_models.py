@@ -249,3 +249,6 @@ class TournamentModelTest(TestCase):
         max_length = Tournament._meta.get_field('name').max_length
         self.assertEqual(max_length, 50)
 
+    def test_board_size_default(self):
+        default_size = Tournament._meta.get_field('board_size').default
+        self.assertEqual(default_size, 19)
