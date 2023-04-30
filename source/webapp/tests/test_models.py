@@ -381,3 +381,11 @@ class GameModelTest(TestCase):
         self.game.save()
         updated_game = Game.objects.get(pk=self.game.pk)
         self.assertEqual(updated_game.black_score, 0)
+
+    def test_black_player_deletion(self):
+        self.black_player.delete()
+        self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
+
+    def test_white_player_deletion(self):
+        self.white_player.delete()
+        self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
