@@ -167,7 +167,7 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             delete_expired_event,
-            trigger=CronTrigger(day_of_week="mon", hour=3, minute=0),
+            trigger=CronTrigger(day_of_week="mon", hour=1, minute=0),
             id="delete_expired_event",
             max_instances=1,
             replace_existing=True,
