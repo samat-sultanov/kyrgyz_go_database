@@ -99,16 +99,32 @@ class NewsTestsForRegisterUser(TestCase):  # Для зарегистрирова
         self.assertEqual(self.news.text, 'Updated text')
         self.assertEqual(News.objects.count(), 1)
 
-    def test_delete_news(self):
+    def test_news_detail(self):
         url = reverse('webapp:news_detail', args=[self.news.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'data-bs-target="#delete_news_Modal"')
-        response = self.client.post(reverse('webapp:news_delete', args=[self.news.pk]))
-        self.news.refresh_from_db()
-        self.assertTrue(News.objects.filter(pk=self.news.pk).exists())
-        self.assertEqual(self.news.is_deleted, True)
+
+    def test_delete_news(self):
+        url = reverse('webapp:news_delete', args=[self.news.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+
+        superuser = User.objects.create_superuser('superuser', 'superuser@test.com', 'password123')
+        self.client.force_login(superuser)
+        response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(News.objects.count(), 1)
         self.assertRedirects(response, reverse('webapp:news_list'))
+        self.news.refresh_from_db()
+        self.assertTrue(self.news.is_deleted)
+        self.assertTrue(News.objects.filter(pk=self.news.pk, is_deleted=True).exists())
+        self.assertEqual(News.objects.count(), 1)
+
+    def test_hard_delete_news(self):
+        superuser = User.objects.create_superuser('superuser', 'superuser@test.com', 'password123')
+        self.client.force_login(superuser)
+        url = reverse('webapp:news_hard_delete_one', args=[self.news.pk])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(News.objects.filter(pk=self.news.pk).exists())
+        self.assertEqual(News.objects.count(), 0)
 
