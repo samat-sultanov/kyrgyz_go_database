@@ -39,7 +39,14 @@
 </table>
 {##}
     </div>
-
+{% if messages %}
+  {% for message in messages %}
+    <div style="width: 500px; margin-left: 30%" class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+  <strong>{{ message }}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+</div>
+ {% endfor %}
+{% endif %}
     {% if is_paginated %}
         {% include 'partial/pagination.html' %}
     {% endif %}
