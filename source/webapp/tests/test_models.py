@@ -1,7 +1,8 @@
 from django.test import TestCase
 import accounts.models
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country
+from django.core.exceptions import ValidationError
+from webapp.models import Recommendation, Player, Country, Region, City
 import time
 
 
@@ -94,3 +95,44 @@ class CountryModelTest(TestCase):
 
         country.delete()
         self.assertEqual(len(Country.objects.all()), 0)
+
+
+class CityModelTest(TestCase):
+    def test_create_city_with_correct_parameters(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City.objects.create(city='Bishkek', country=country, region=region)
+        self.assertIsInstance(city, City)
+        self.assertEqual(len(City.objects.all()), 1)
+        self.assertEqual(str(city), 'Bishkek')
+        self.assertLessEqual(len(city.city), 50)
+
+    def test_create_city_with_incorrect_parameters(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City(city='', country=country, region=region)
+        with self.assertRaises(ValidationError):
+            city.full_clean()
+            city.save()
+        city = City(city='a' * 51, country=country, region=region)
+        with self.assertRaises(ValidationError):
+            city.full_clean()
+            city.save()
+        self.assertEqual(len(City.objects.all()), 0)
+
+    def test_update_city(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City.objects.create(city='Bishkek', country=country, region=region)
+        city.city = 'Osh'
+        city.save()
+        updated_city = City.objects.get(id=city.id)
+        self.assertEqual(updated_city.city, 'Osh')
+
+    def test_delete_city(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City.objects.create(city='Bishkek', country=country, region=region)
+        self.assertEqual(len(City.objects.all()), 1)
+        city.delete()
+        self.assertEqual(len(City.objects.all()), 0)
