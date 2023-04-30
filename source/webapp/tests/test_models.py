@@ -11,7 +11,8 @@ class RecommendationModelTest(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='testuser', password='testpass')
         cls.player = Player.objects.create(first_name='Test player', country=Country.objects.create(country_code='kg'))
-        cls.recommendation = Recommendation.objects.create(text='Test recommendation', author=cls.user, player=cls.player)
+        cls.recommendation = Recommendation.objects.create(text='Test recommendation', author=cls.user,
+                                                           player=cls.player)
 
     def test_str_method(self):
         expected_method = f'{self.recommendation.pk}. Test recommendation'
@@ -65,3 +66,31 @@ class RecommendationModelTest(TestCase):
     def test_related_name_parameter(self):
         self.assertIn(self.recommendation, self.user.author.all())
         self.assertIn(self.recommendation, self.player.player.all())
+
+
+class CountryModelTest(TestCase):
+    def test_create_country_with_right_country_code(self):
+        country = Country.objects.create(country_code='kg')
+        self.assertIsInstance(country, Country)
+        self.assertEqual(len(Country.objects.all()), 1)
+        self.assertEqual(str(country), 'kg')
+
+    def test_create_country_with_wrong_parameters(self):
+        with self.assertRaises(Exception):
+            Country.objects.create(country_code='kgz')
+
+    def test_update_country(self):
+        country = Country.objects.create(country_code='us')
+        self.assertEqual(len(Country.objects.all()), 1)
+
+        country.country_code = 'ca'
+        country.save()
+        updated_country = Country.objects.get(pk=country.pk)
+        self.assertEqual(updated_country.country_code, 'ca')
+
+    def test_delete_country(self):
+        country = Country.objects.create(country_code='kg')
+        self.assertEqual(len(Country.objects.all()), 1)
+
+        country.delete()
+        self.assertEqual(len(Country.objects.all()), 0)
