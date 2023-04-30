@@ -45,7 +45,6 @@ def unpack_tournament_to_bd(data):
 
 def unpack_countries_clubs(data):
     my_dict = data['Tournament']
-    new_list = []
     for key, value in my_dict.items():
         if key == 'Country':
             next_list = value
