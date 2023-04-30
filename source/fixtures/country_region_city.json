@@ -1,0 +1,1570 @@
+[
+{
+    "model": "webapp.country",
+    "pk": 1,
+    "fields": {
+        "country_code": "kg"
+    }
+},
+{
+    "model": "webapp.country",
+    "pk": 2,
+    "fields": {
+        "country_code": "kz"
+    }
+},
+{
+    "model": "webapp.country",
+    "pk": 3,
+    "fields": {
+        "country_code": "uz"
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 1,
+    "fields": {
+        "name": "Chui",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 2,
+    "fields": {
+        "name": "Issykkul",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 3,
+    "fields": {
+        "name": "Naryn",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 4,
+    "fields": {
+        "name": "Osh",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 5,
+    "fields": {
+        "name": "Talas",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 6,
+    "fields": {
+        "name": "Jalalabat",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 7,
+    "fields": {
+        "name": "Batken",
+        "country": 1
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 8,
+    "fields": {
+        "name": "Abai",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 9,
+    "fields": {
+        "name": "Akmola",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 10,
+    "fields": {
+        "name": "Aktobe",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 11,
+    "fields": {
+        "name": "Almaty",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 12,
+    "fields": {
+        "name": "Atyrau",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 13,
+    "fields": {
+        "name": "East Kazakhstan",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 14,
+    "fields": {
+        "name": "Jambyl",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 15,
+    "fields": {
+        "name": "Jetisu",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 16,
+    "fields": {
+        "name": "Karaganda",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 17,
+    "fields": {
+        "name": "Kostanay",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 18,
+    "fields": {
+        "name": "Kyzylorda",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 19,
+    "fields": {
+        "name": "Mangystau",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 20,
+    "fields": {
+        "name": "North Kazakhstan",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 21,
+    "fields": {
+        "name": "Pavlodar",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 22,
+    "fields": {
+        "name": "Turkistan",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 23,
+    "fields": {
+        "name": "Ulytau",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 24,
+    "fields": {
+        "name": "West Kazakhstan",
+        "country": 2
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 25,
+    "fields": {
+        "name": "Andijan",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 26,
+    "fields": {
+        "name": "Bukhara",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 27,
+    "fields": {
+        "name": "Fergana",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 28,
+    "fields": {
+        "name": "Jizzakh",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 29,
+    "fields": {
+        "name": "Xorazm",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 30,
+    "fields": {
+        "name": "Namangan",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 31,
+    "fields": {
+        "name": "Navoiy",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 32,
+    "fields": {
+        "name": "Qashqadaryo",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 33,
+    "fields": {
+        "name": "Samarqand",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 34,
+    "fields": {
+        "name": "Sirdaryo",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 35,
+    "fields": {
+        "name": "Surxondaryo",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 36,
+    "fields": {
+        "name": "Tashkent",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.region",
+    "pk": 37,
+    "fields": {
+        "name": "Karakalpakstan",
+        "country": 3
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 1,
+    "fields": {
+        "city": "Bishkek",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 2,
+    "fields": {
+        "city": "Osh",
+        "country": 1,
+        "region": 4
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 3,
+    "fields": {
+        "city": "Aydarken",
+        "country": 1,
+        "region": 7
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 4,
+    "fields": {
+        "city": "Balykchy",
+        "country": 1,
+        "region": 2
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 5,
+    "fields": {
+        "city": "Batken",
+        "country": 1,
+        "region": 7
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 6,
+    "fields": {
+        "city": "Bazar-Korgon",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 7,
+    "fields": {
+        "city": "Cholpon-Ata",
+        "country": 1,
+        "region": 2
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 8,
+    "fields": {
+        "city": "Isfana",
+        "country": 1,
+        "region": 7
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 9,
+    "fields": {
+        "city": "Jalal-Abad",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 10,
+    "fields": {
+        "city": "Kadamjay",
+        "country": 1,
+        "region": 7
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 11,
+    "fields": {
+        "city": "Kant",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 12,
+    "fields": {
+        "city": "Kara-Balta",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 13,
+    "fields": {
+        "city": "Karakol",
+        "country": 1,
+        "region": 2
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 14,
+    "fields": {
+        "city": "Kara-Suu",
+        "country": 1,
+        "region": 4
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 15,
+    "fields": {
+        "city": "Kayyngdy",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 16,
+    "fields": {
+        "city": "Kemin",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 17,
+    "fields": {
+        "city": "Kerben",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 18,
+    "fields": {
+        "city": "Kochkor-Ata",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 19,
+    "fields": {
+        "city": "Kok-Janggak",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 20,
+    "fields": {
+        "city": "Kyzyl-Kiya",
+        "country": 1,
+        "region": 7
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 21,
+    "fields": {
+        "city": "Mayluu-Suu",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 22,
+    "fields": {
+        "city": "Naryn",
+        "country": 1,
+        "region": 3
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 23,
+    "fields": {
+        "city": "Nookat",
+        "country": 1,
+        "region": 4
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 24,
+    "fields": {
+        "city": "Orlovka",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 25,
+    "fields": {
+        "city": "Ozgon",
+        "country": 1,
+        "region": 4
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 26,
+    "fields": {
+        "city": "Shopokov",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 27,
+    "fields": {
+        "city": "Suluktu",
+        "country": 1,
+        "region": 7
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 28,
+    "fields": {
+        "city": "Talas",
+        "country": 1,
+        "region": 5
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 29,
+    "fields": {
+        "city": "Tash-Komur",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 30,
+    "fields": {
+        "city": "Tokmok",
+        "country": 1,
+        "region": 1
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 31,
+    "fields": {
+        "city": "Toktogul",
+        "country": 1,
+        "region": 6
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 33,
+    "fields": {
+        "city": "Almaty",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 34,
+    "fields": {
+        "city": "Astana",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 35,
+    "fields": {
+        "city": "Shymkent",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 36,
+    "fields": {
+        "city": "Aktobe",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 37,
+    "fields": {
+        "city": "Karaganda",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 38,
+    "fields": {
+        "city": "Taraz",
+        "country": 2,
+        "region": 14
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 39,
+    "fields": {
+        "city": "Semey",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 40,
+    "fields": {
+        "city": "Pavlodar",
+        "country": 2,
+        "region": 21
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 41,
+    "fields": {
+        "city": "Oskemen",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 42,
+    "fields": {
+        "city": "Atyrau",
+        "country": 2,
+        "region": 12
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 43,
+    "fields": {
+        "city": "Kostanay",
+        "country": 2,
+        "region": 17
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 44,
+    "fields": {
+        "city": "Kyzylorda",
+        "country": 2,
+        "region": 18
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 45,
+    "fields": {
+        "city": "Oral",
+        "country": 2,
+        "region": 24
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 46,
+    "fields": {
+        "city": "Petropavl",
+        "country": 2,
+        "region": 20
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 47,
+    "fields": {
+        "city": "Aktau",
+        "country": 2,
+        "region": 19
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 48,
+    "fields": {
+        "city": "Zhanaozen",
+        "country": 2,
+        "region": 19
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 49,
+    "fields": {
+        "city": "Temirtau",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 50,
+    "fields": {
+        "city": "Turkistan",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 51,
+    "fields": {
+        "city": "Kokshetau",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 52,
+    "fields": {
+        "city": "Taldykorgan",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 53,
+    "fields": {
+        "city": "Ekibastuz",
+        "country": 2,
+        "region": 21
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 54,
+    "fields": {
+        "city": "Rudny",
+        "country": 2,
+        "region": 17
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 55,
+    "fields": {
+        "city": "Jezkazgan",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 56,
+    "fields": {
+        "city": "Balkash",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 57,
+    "fields": {
+        "city": "Satpayev",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 58,
+    "fields": {
+        "city": "Kentau",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 59,
+    "fields": {
+        "city": "Zhetisay",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 60,
+    "fields": {
+        "city": "Kaskelen",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 61,
+    "fields": {
+        "city": "Stepnogorsk",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 62,
+    "fields": {
+        "city": "Kulsary",
+        "country": 2,
+        "region": 12
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 63,
+    "fields": {
+        "city": "Shakhtinsk",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 64,
+    "fields": {
+        "city": "Ridder",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 65,
+    "fields": {
+        "city": "Saran",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 66,
+    "fields": {
+        "city": "Shchuchinsk",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 67,
+    "fields": {
+        "city": "Qonaev",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 68,
+    "fields": {
+        "city": "Aksu",
+        "country": 2,
+        "region": 21
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 69,
+    "fields": {
+        "city": "Arys",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 70,
+    "fields": {
+        "city": "Talgar",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 71,
+    "fields": {
+        "city": "Zharkent",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 72,
+    "fields": {
+        "city": "Lisakovsk",
+        "country": 2,
+        "region": 17
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 73,
+    "fields": {
+        "city": "Baikonur",
+        "country": 2,
+        "region": 18
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 74,
+    "fields": {
+        "city": "Ayagoz",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 75,
+    "fields": {
+        "city": "Shu",
+        "country": 2,
+        "region": 14
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 76,
+    "fields": {
+        "city": "Zyryanovsk",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 77,
+    "fields": {
+        "city": "Kandyagash",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 78,
+    "fields": {
+        "city": "Aksay",
+        "country": 2,
+        "region": 24
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 79,
+    "fields": {
+        "city": "Zhetikara",
+        "country": 2,
+        "region": 17
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 80,
+    "fields": {
+        "city": "Esik",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 81,
+    "fields": {
+        "city": "Aral",
+        "country": 2,
+        "region": 18
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 82,
+    "fields": {
+        "city": "Tekel",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 83,
+    "fields": {
+        "city": "Karatau",
+        "country": 2,
+        "region": 14
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 84,
+    "fields": {
+        "city": "Saryagash",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 85,
+    "fields": {
+        "city": "Atbasar",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 86,
+    "fields": {
+        "city": "Arkalyk",
+        "country": 2,
+        "region": 17
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 87,
+    "fields": {
+        "city": "Abay",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 88,
+    "fields": {
+        "city": "Shardara",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 89,
+    "fields": {
+        "city": "Shalkar",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 90,
+    "fields": {
+        "city": "Khromtau",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 91,
+    "fields": {
+        "city": "Lenger",
+        "country": 2,
+        "region": 22
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 92,
+    "fields": {
+        "city": "Ushtobe",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 93,
+    "fields": {
+        "city": "Zhanatas",
+        "country": 2,
+        "region": 14
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 94,
+    "fields": {
+        "city": "Alga",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 95,
+    "fields": {
+        "city": "Shemonaikha",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 96,
+    "fields": {
+        "city": "Makinsk",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 97,
+    "fields": {
+        "city": "Usharal",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 98,
+    "fields": {
+        "city": "Zaisan",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 99,
+    "fields": {
+        "city": "Akkol",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 100,
+    "fields": {
+        "city": "Priozersk",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 101,
+    "fields": {
+        "city": "Kurchatov",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 102,
+    "fields": {
+        "city": "Embi",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 103,
+    "fields": {
+        "city": "Sarkand",
+        "country": 2,
+        "region": 11
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 104,
+    "fields": {
+        "city": "Taiynsha",
+        "country": 2,
+        "region": 20
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 105,
+    "fields": {
+        "city": "Esil",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 106,
+    "fields": {
+        "city": "Ereymentau",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 107,
+    "fields": {
+        "city": "Serebryansk",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 108,
+    "fields": {
+        "city": "Karkaraly",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 109,
+    "fields": {
+        "city": "Karazhal",
+        "country": 2,
+        "region": 16
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 110,
+    "fields": {
+        "city": "Bulayevo",
+        "country": 2,
+        "region": 20
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 111,
+    "fields": {
+        "city": "Charsk",
+        "country": 2,
+        "region": 13
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 112,
+    "fields": {
+        "city": "Sergeyevka",
+        "country": 2,
+        "region": 20
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 113,
+    "fields": {
+        "city": "Mamlyutka",
+        "country": 2,
+        "region": 20
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 114,
+    "fields": {
+        "city": "Kazaly",
+        "country": 2,
+        "region": 18
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 115,
+    "fields": {
+        "city": "Derzhavinsk",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 116,
+    "fields": {
+        "city": "Fort-Shevchenko",
+        "country": 2,
+        "region": 19
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 117,
+    "fields": {
+        "city": "Stepnyak",
+        "country": 2,
+        "region": 9
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 118,
+    "fields": {
+        "city": "Temir",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 119,
+    "fields": {
+        "city": "Zhem",
+        "country": 2,
+        "region": 10
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 120,
+    "fields": {
+        "city": "Tashkent",
+        "country": 3,
+        "region": 36
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 121,
+    "fields": {
+        "city": "Samarkand",
+        "country": 3,
+        "region": 33
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 122,
+    "fields": {
+        "city": "Andijan",
+        "country": 3,
+        "region": 25
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 123,
+    "fields": {
+        "city": "Bukhara",
+        "country": 3,
+        "region": 26
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 124,
+    "fields": {
+        "city": "Fergana",
+        "country": 3,
+        "region": 27
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 125,
+    "fields": {
+        "city": "Jizzakh",
+        "country": 3,
+        "region": 28
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 126,
+    "fields": {
+        "city": "Urgench",
+        "country": 3,
+        "region": 29
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 127,
+    "fields": {
+        "city": "Namangan",
+        "country": 3,
+        "region": 30
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 128,
+    "fields": {
+        "city": "Navoiy",
+        "country": 3,
+        "region": 31
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 129,
+    "fields": {
+        "city": "Qarshi",
+        "country": 3,
+        "region": 32
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 130,
+    "fields": {
+        "city": "Guliston",
+        "country": 3,
+        "region": 34
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 131,
+    "fields": {
+        "city": "Termez",
+        "country": 3,
+        "region": 35
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 132,
+    "fields": {
+        "city": "Nurafshon",
+        "country": 3,
+        "region": 36
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 133,
+    "fields": {
+        "city": "Nukus",
+        "country": 3,
+        "region": 37
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 134,
+    "fields": {
+        "city": "Kokand",
+        "country": 3,
+        "region": 27
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 135,
+    "fields": {
+        "city": "Margilan",
+        "country": 3,
+        "region": 27
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 136,
+    "fields": {
+        "city": "Angren",
+        "country": 3,
+        "region": 36
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 137,
+    "fields": {
+        "city": "Chirchiq",
+        "country": 3,
+        "region": 36
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 138,
+    "fields": {
+        "city": "Shahrisabz",
+        "country": 3,
+        "region": 32
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 139,
+    "fields": {
+        "city": "Olmaliq",
+        "country": 3,
+        "region": 36
+    }
+},
+{
+    "model": "webapp.city",
+    "pk": 140,
+    "fields": {
+        "city": "Bekobod",
+        "country": 3,
+        "region": 36
+    }
+}
+]
