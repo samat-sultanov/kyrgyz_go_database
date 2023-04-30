@@ -287,3 +287,6 @@ class TournamentModelTest(TestCase):
         updated_tournament = Tournament.objects.get(pk=self.tournament.pk)
         self.assertEqual(updated_tournament.name, 'Updated Tournament')
 
+    def test_city_deletion(self):
+        self.city.delete()
+        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
