@@ -257,3 +257,6 @@ class TournamentModelTest(TestCase):
         board_size_field = Tournament._meta.get_field('board_size')
         self.assertIsInstance(board_size_field, PositiveIntegerField)
 
+    def test_rounds_positive_integer(self):
+        rounds_field = Tournament._meta.get_field('rounds')
+        self.assertIsInstance(rounds_field, PositiveIntegerField)
