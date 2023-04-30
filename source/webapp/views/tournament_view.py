@@ -113,15 +113,24 @@ class TournamentModerationList(LoginRequiredMixin, ListView):
     paginate_by = 10
 
 
-class CheckCancelModer(LoginRequiredMixin, DeleteView):
-    queryset = Tournament.objects.all()
-    context_object_name = 'Tournament'
-    success_url = reverse_lazy('webapp:moderation_tournaments')
+class DeleteTournamentOnModeration(LoginRequiredMixin, DeleteView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        context['pk'] = pk
+        return context
 
-    def form_valid(self, form):
-        success_url = self.get_success_url()
-        self.object.delete()
-        return HttpResponseRedirect(success_url)
+    def get_success_url(self):
+        return reverse_lazy('webapp:moderation_tournaments')
+
+    def post(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        tournament = get_object_or_404(NotModeratedTournament, pk=pk)
+        file_name = tournament.name
+        file_path = f"uploads/json/{file_name.split('.')[0]}.json"
+        os.remove(file_path)
+        tournament.delete()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class DeleteTournamentBeforeModeration(LoginRequiredMixin, TemplateView):

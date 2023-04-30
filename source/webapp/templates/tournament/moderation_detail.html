@@ -92,7 +92,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
-                    <form method="POST" id="modal_form_link" action="">
+                    <form method="POST" id="modal_form_link" action="{% url 'webapp:delete_tournament_on_moderation' pk %}">
                         {% csrf_token %}<input type="submit" id="confirm_button" class="btn btn-outline-secondary" value="Да">
                     </form>
                 </div>
