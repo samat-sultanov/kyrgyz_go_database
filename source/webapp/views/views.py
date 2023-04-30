@@ -58,10 +58,11 @@ class FileUpload(LoginRequiredMixin, FormView):
         for key, value in data.items():
             if key == 'Name':
                 name = value
-                if name in Tournament.objects.all():
-                    form.add_error(None, 'Действие отклонено! Файл с таким именем уже был загружен!')
+                try:
+                    Tournament.objects.get(name=name)
+                    form.add_error(None, 'Действие отклонено! Турнир с таким именем уже есть в базе данных!')
                     return render(self.request, self.template_name, {'form': form, 'error': form.errors})
-                else:
+                except:
                     json_data = json.dumps(doc, indent=4)
                     with default_storage.open(json_file_path, 'w') as f:
                         f.write(ContentFile(json_data).read())
