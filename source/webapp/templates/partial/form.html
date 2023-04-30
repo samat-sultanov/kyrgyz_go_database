@@ -3,7 +3,7 @@
 
 {#{{ form.as_p }}#}
 {% for error in form.non_field_errors %}
-    <p class="form-error">{{ error }}</p>
+    <p class="form-error" style="color: red">{{ error }}</p>
 {% endfor %}
 
 {% for field in form %}
