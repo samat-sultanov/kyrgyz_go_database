@@ -280,3 +280,10 @@ class TournamentModelTest(TestCase):
         self.assertEqual(self.tournament.tournament_class, 'Test Class')
         self.assertEqual(self.tournament.regulations, 'Test Regulations')
         self.assertEqual(self.tournament.uploaded_by, self.user)
+
+    def test_object_update(self):
+        self.tournament.name = 'Updated Tournament'
+        self.tournament.save()
+        updated_tournament = Tournament.objects.get(pk=self.tournament.pk)
+        self.assertEqual(updated_tournament.name, 'Updated Tournament')
+
