@@ -1,13 +1,14 @@
 import os
 import shutil
 import datetime
+from django.utils import timezone
 
-from django.db.models import PositiveIntegerField
+from django.db.models import PositiveIntegerField, FloatField, DateTimeField
 from django.test import TestCase
 import accounts.models
 from django.core.exceptions import ValidationError
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game
 
 
 class RecommendationModelTest(TestCase):
@@ -308,3 +309,20 @@ class TournamentModelTest(TestCase):
             regulations='Test Regulations'
         )
         self.assertEqual(tournament.uploaded_by_id, 1)
+
+
+class GameModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.country = Country.objects.create(country_code='kg')
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.city = City.objects.create(city='Bishkek', country=cls.country)
+        cls.black_player = Player.objects.create(first_name='Black Player', country=cls.country)
+        cls.white_player = Player.objects.create(first_name='White Player', country=cls.country)
+        cls.tournament = Tournament.objects.create(name='Test Tournament', city=cls.city, rounds=3)
+        cls.game = Game.objects.create(black=cls.black_player, white=cls.white_player,
+                                       result='1-0', black_score=1, white_score=0,
+                                       board_number=1, date=timezone.now(), tournament=cls.tournament,
+                                       round_num=1, black_gor_change=200, white_gor_change=-200)
