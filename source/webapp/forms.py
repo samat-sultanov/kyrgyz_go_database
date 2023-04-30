@@ -146,7 +146,7 @@ class CheckPlayerForm(forms.Form):
     FirstName = forms.CharField(max_length=255, widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
     EgdPin = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
     Club = forms.CharField(max_length=255, widget=forms.widgets.TextInput(attrs={'style': 'width: 150px;'}))
-    Rating = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'style': 'width: 100px;'}))
+    Rating = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'style': 'width: 100px;', 'maxlength': '4'}))
     GoLevel = forms.CharField(max_length=3, widget=forms.widgets.TextInput(attrs={'style': 'width: 100px;'}))
     birth_date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=False)
     id_in_tournament = forms.IntegerField(widget=forms.widgets.TextInput(attrs={'disabled': 'disabled'}))
@@ -156,6 +156,13 @@ class CheckPlayerForm(forms.Form):
         if birth_date and birth_date > timezone.now().date():
             raise forms.ValidationError('Поле даты рождения была некорректна заполнена! Отредактируйте данное поле.')
         return birth_date
+
+    def clean_rating(self):
+        rating = self.cleaned_data.get('Rating')
+        if rating > 4:
+            raise forms.ValidationError('Рейтинг должен быть до 4')
+        return rating
+
 
 
 class CheckTournamentForm(forms.Form):
