@@ -17,7 +17,7 @@ from webapp.models import Tournament, NotModeratedTournament
 from django.contrib.auth.mixins import LoginRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, unpack_data_json_players, \
     parse_results, update_json_tournament
-
+from django.contrib import messages
 
 class TournamentSearch(ListView):
     template_name = 'tournament/tournament_search.html'
@@ -121,6 +121,7 @@ class DeleteTournamentOnModeration(LoginRequiredMixin, DeleteView):
         return context
 
     def get_success_url(self):
+        messages.success(self.request, 'Турнир успешно удален!')
         return reverse_lazy('webapp:moderation_tournaments')
 
     def post(self, request, *args, **kwargs):
@@ -155,7 +156,13 @@ class ModerationTournamentView(LoginRequiredMixin, FormView):
     template_name = 'tournament/moderation_detail.html'
     form_class = CheckTournamentForm
     CheckPlayerFormSet = formset_factory(CheckPlayerForm, extra=0)
-    success_url = '/moderation_tournaments/'
+
+    def get_success_url(self):
+        if self.form_valid:
+            messages.success(self.request, 'Турнир успешно добавлен в базу данных!')
+        else:
+            messages.error(self.request, 'Турнир не был загружен!')
+        return reverse_lazy('webapp:moderation_tournaments')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
