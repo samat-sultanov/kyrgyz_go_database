@@ -58,40 +58,40 @@ def unpack_countries_clubs(data):
                         except:
                             Country.objects.create(country_code=code)
 
-                    elif k == 'Club':
-                        list_of_clubs = v
-                        new_list.append(list_of_clubs)
-
-    for element in new_list:
-        if type(element) == list:
-            for elem in element:
-                name = elem.get('Name')
-                if name in ["Seng", "Sengoku", "Sengoku Go Club"]:
-                    name = "Sengoku Go Club"
-                try:
-                    EGDName = elem.get("EGDName")
-                    if name == "Sengoku Go Club":
-                        EGDName = 'Seng'
-                except:
-                    EGDName = None
-                try:
-                    Club.objects.get(name=name, EGDName=EGDName)
-                except Club.DoesNotExist:
-                    Club.objects.create(name=name, EGDName=EGDName)
-        else:
-            name = element.get('Name')
-            if name in ["Seng", "Sengoku", "Sengoku Go Club"]:
-                name = "Sengoku Go Club"
-            try:
-                EGDName = element.get("EGDName")
-                if name == "Sengoku Go Club":
-                    EGDName = 'Seng'
-            except:
-                EGDName = None
-            try:
-                Club.objects.get(name=name, EGDName=EGDName)
-            except Club.DoesNotExist:
-                Club.objects.create(name=name, EGDName=EGDName)
+    #                 elif k == 'Club':
+    #                     list_of_clubs = v
+    #                     new_list.append(list_of_clubs)
+    #
+    # for element in new_list:
+    #     if type(element) == list:
+    #         for elem in element:
+    #             name = elem.get('Name')
+    #             if name in ["Seng", "Sengoku", "Sengoku Go Club"]:
+    #                 name = "Sengoku Go Club"
+    #             try:
+    #                 EGDName = elem.get("EGDName")
+    #                 if name == "Sengoku Go Club":
+    #                     EGDName = 'Seng'
+    #             except:
+    #                 EGDName = None
+    #             try:
+    #                 Club.objects.get(name=name, EGDName=EGDName)
+    #             except Club.DoesNotExist:
+    #                 Club.objects.create(name=name, EGDName=EGDName)
+    #     else:
+    #         name = element.get('Name')
+    #         if name in ["Seng", "Sengoku", "Sengoku Go Club"]:
+    #             name = "Sengoku Go Club"
+    #         try:
+    #             EGDName = element.get("EGDName")
+    #             if name == "Sengoku Go Club":
+    #                 EGDName = 'Seng'
+    #         except:
+    #             EGDName = None
+    #         try:
+    #             Club.objects.get(name=name, EGDName=EGDName)
+    #         except Club.DoesNotExist:
+    #             Club.objects.create(name=name, EGDName=EGDName)
 
 
 def unpack_players(data, pk):
@@ -115,15 +115,23 @@ def unpack_players(data, pk):
             birth_date = None
         if club_name in ["Seng", "Sengoku", "Sengoku Go Club"]:
             club_name = "Sengoku Go Club"
-            club = get_object_or_404(Club, name=club_name)
-            club.country = country
-            club.save()
+            EGDName = 'Seng'
+            try:
+                club = Club.objects.get(name=club_name)
+            except:
+                club = Club.objects.create(name=club_name, EGDName=EGDName)
+                club.country = country
+                club.save()
         elif not club_name:
             club = None
         else:
-            club = get_object_or_404(Club, name=club_name)
-            club.country = country
-            club.save()
+            EGDName = None
+            try:
+                club = Club.objects.get(name=club_name)
+            except:
+                club = Club.objects.create(name=club_name, EGDName=EGDName)
+                club.country = country
+                club.save()
         try:
             player = get_object_or_404(Player, last_name=last_name, first_name=first_name)
             if country != player.country:
