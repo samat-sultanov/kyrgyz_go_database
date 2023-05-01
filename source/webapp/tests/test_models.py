@@ -1,11 +1,12 @@
 import os
 import shutil
+import datetime
+from django.db.models import PositiveIntegerField
 from django.test import TestCase
 import accounts.models
 from accounts.models import User
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES
 from django.core.exceptions import ValidationError
-import time
-from webapp.models import Recommendation, Player, Country, Region, City, News
 
 
 class RecommendationModelTest(TestCase):
@@ -265,3 +266,85 @@ class NewsModelTest(TestCase):
     def test_author_default_value(self):
         news = News.objects.create(title='Test title', text='Test text')
         self.assertEqual(news.author_id, 1)
+
+
+class TournamentModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.country = Country.objects.create(country_code='kg')
+        cls.city = City.objects.create(city='Test City', country=cls.country)
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.tournament = Tournament.objects.create(name='Test Tournament', city=cls.city, region=cls.region,
+                                                   location='Test Location', board_size=19, rounds=5,
+                                                   date=datetime.date.today(), tournament_class='Test Class',
+                                                   regulations='Test Regulations', uploaded_by=cls.user)
+
+    def test_str_method(self):
+        expected_method = f'{self.tournament.id}. Test Tournament - 19'
+        self.assertEqual(str(self.tournament), expected_method)
+
+    def test_name_max_length(self):
+        max_length = Tournament._meta.get_field('name').max_length
+        self.assertEqual(max_length, 50)
+
+    def test_board_size_default(self):
+        default_size = Tournament._meta.get_field('board_size').default
+        self.assertEqual(default_size, 19)
+
+    def test_board_size_positive_integer(self):
+        board_size_field = Tournament._meta.get_field('board_size')
+        self.assertIsInstance(board_size_field, PositiveIntegerField)
+
+    def test_rounds_positive_integer(self):
+        rounds_field = Tournament._meta.get_field('rounds')
+        self.assertIsInstance(rounds_field, PositiveIntegerField)
+
+    def test_tournament_class_choices(self):
+        choices_field = Tournament._meta.get_field('tournament_class')
+        self.assertEqual(choices_field.choices, CLASS_CHOICES)
+
+    def test_uploaded_by_foreign_key(self):
+        uploaded_by_field = Tournament._meta.get_field('uploaded_by')
+        self.assertEqual(uploaded_by_field.related_model, accounts.models.User)
+
+    def test_object_creation(self):
+        self.assertEqual(self.tournament.name, 'Test Tournament')
+        self.assertEqual(self.tournament.city, self.city)
+        self.assertEqual(self.tournament.region, self.region)
+        self.assertEqual(self.tournament.location, 'Test Location')
+        self.assertEqual(self.tournament.board_size, 19)
+        self.assertEqual(self.tournament.rounds, 5)
+        self.assertEqual(self.tournament.date, datetime.date.today())
+        self.assertEqual(self.tournament.tournament_class, 'Test Class')
+        self.assertEqual(self.tournament.regulations, 'Test Regulations')
+        self.assertEqual(self.tournament.uploaded_by, self.user)
+
+    def test_object_update(self):
+        self.tournament.name = 'Updated Tournament'
+        self.tournament.save()
+        updated_tournament = Tournament.objects.get(pk=self.tournament.pk)
+        self.assertEqual(updated_tournament.name, 'Updated Tournament')
+
+    def test_city_deletion(self):
+        self.city.delete()
+        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+
+    def test_region_deletion(self):
+        self.region.delete()
+        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+
+    def test_author_default_value(self):
+        tournament = Tournament.objects.create(
+            name='Test Tournament',
+            city=self.city,
+            region=self.region,
+            location='Test Location',
+            board_size=19,
+            rounds=5,
+            date=datetime.date.today(),
+            tournament_class='Test Class',
+            regulations='Test Regulations'
+        )
+        self.assertEqual(tournament.uploaded_by_id, 1)
