@@ -1,11 +1,12 @@
 import os
 import shutil
 import datetime
-from django.db.models import PositiveIntegerField
+from django.utils import timezone
+from django.db.models import PositiveIntegerField, FloatField, DateTimeField
 from django.test import TestCase
 import accounts.models
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game
 from django.core.exceptions import ValidationError
 
 
@@ -348,3 +349,83 @@ class TournamentModelTest(TestCase):
             regulations='Test Regulations'
         )
         self.assertEqual(tournament.uploaded_by_id, 1)
+
+
+class GameModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.country = Country.objects.create(country_code='kg')
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.city = City.objects.create(city='Bishkek', country=cls.country)
+        cls.black_player = Player.objects.create(first_name='Black Player', country=cls.country)
+        cls.white_player = Player.objects.create(first_name='White Player', country=cls.country)
+        cls.tournament = Tournament.objects.create(name='Test Tournament', city=cls.city, rounds=3)
+        cls.game = Game.objects.create(black=cls.black_player, white=cls.white_player,
+                                       result='1-0', black_score=1, white_score=0,
+                                       board_number=1, date=timezone.now(), tournament=cls.tournament,
+                                       round_num=1, black_gor_change=200, white_gor_change=-200)
+
+    def test_str_method(self):
+        expected_method = f'{self.game.id}. {self.black_player} : {self.white_player} = 1-0'
+        self.assertEqual(str(self.game), expected_method)
+
+    def test_black_foreign_key(self):
+        black_field = Game._meta.get_field('black')
+        self.assertEqual(black_field.related_model, Player)
+
+    def test_white_foreign_key(self):
+        white_field = Game._meta.get_field('white')
+        self.assertEqual(white_field.related_model, Player)
+
+    def test_board_number_default_value(self):
+        default_value = Game._meta.get_field('board_number').default
+        self.assertEqual(default_value, 0)
+
+    def test_date_field_type(self):
+        date_field = Game._meta.get_field('date')
+        self.assertIsInstance(date_field, DateTimeField)
+
+    def test_tournament_foreign_key(self):
+        tournament_field = Game._meta.get_field('tournament')
+        self.assertEqual(tournament_field.related_model, Tournament)
+
+    def test_round_num_positive_integer(self):
+        round_num_field = Game._meta.get_field('round_num')
+        self.assertIsInstance(round_num_field, PositiveIntegerField)
+
+    def test_black_gor_change_float(self):
+        black_gor_change_field = Game._meta.get_field('black_gor_change')
+        self.assertIsInstance(black_gor_change_field, FloatField)
+
+    def test_white_gor_change_float(self):
+        white_gor_change_field = Game._meta.get_field('white_gor_change')
+        self.assertIsInstance(white_gor_change_field, FloatField)
+
+    def test_object_creation(self):
+        self.assertEqual(self.game.black, self.black_player)
+        self.assertEqual(self.game.white, self.white_player)
+        self.assertEqual(self.game.result, '1-0')
+        self.assertEqual(self.game.black_score, 1)
+        self.assertEqual(self.game.white_score, 0)
+        self.assertEqual(self.game.board_number, 1)
+        self.assertIsNotNone(self.game.date)
+        self.assertEqual(self.game.tournament, self.tournament)
+        self.assertEqual(self.game.round_num, 1)
+        self.assertEqual(self.game.black_gor_change, 200)
+        self.assertEqual(self.game.white_gor_change, -200)
+
+    def test_object_update(self):
+        self.game.black_score = 0
+        self.game.save()
+        updated_game = Game.objects.get(pk=self.game.pk)
+        self.assertEqual(updated_game.black_score, 0)
+
+    def test_black_player_deletion(self):
+        self.black_player.delete()
+        self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
+
+    def test_white_player_deletion(self):
+        self.white_player.delete()
+        self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
