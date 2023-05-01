@@ -5,7 +5,7 @@ from django.test import TestCase
 import accounts.models
 from django.core.exceptions import ValidationError
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News
+from webapp.models import Recommendation, Player, Country, Region, News, Calendar
 
 
 class RecommendationModelTest(TestCase):
@@ -253,13 +253,32 @@ class CalendarModelTest(TestCase):
     def setUpTestData(cls):
         src = os.getcwd() + '/source/webapp/static/images'
         dst = os.getcwd() + '/source/uploads/calendar_images/'
-        shutil.copy2(src + '/sengoku_logo.png', dst)
-        shutil.copy2(src + '/11316.jpg', dst)
+        shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
         cls.user = User.objects.create_user(username='testuser', password='testpass')
-        cls.news = News.objects.create(title="Test news title", text="Test news text", author=cls.user)
-        cls.news_with_image = News.objects.create(title="Test news image",
-                                                  text="Image taken from static. 'sengoku_logo.png'", author=cls.user,
-                                                  news_image='news_images/sengoku_logo.png')
-        cls.news_with_video = News.objects.create(title="Test news video", text="Rick Astley - Never gonna give you up",
-                                                  author=cls.user,
-                                                  video_link='https://www.youtube.com/embed/dQw4w9WgXcQ')
+        cls.calendar = Calendar.objects.create(
+            event_name="Test event",
+            event_city="Bishkek",
+            event_date="2023-03-04",
+            text="Test event text",
+            author=cls.user,
+            deadline="2023-02-01"
+            )
+        cls.calendar_with_image = Calendar.objects.create(
+            event_name="Event with image",
+            event_city="Bishkek",
+            event_date="2023-03-04",
+            text="Test event with image",
+            author=cls.user,
+            calendar_image="calendar_images/sengoku_logo_for_test.png",
+            deadline="2023-02-01"
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        sengoku_logo = os.getcwd() + '/source/uploads/calendar_images/sengoku_logo_for_test.png'
+        dummy = os.getcwd() + '/source/uploads/calendar_images/11316_for_test.jpg'
+        if os.path.isfile(sengoku_logo):
+            os.remove(sengoku_logo)
+        elif os.path.isfile(dummy):
+            os.remove(dummy)
