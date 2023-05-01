@@ -219,7 +219,18 @@ class NewsModelTest(TestCase):
         self.assertEqual(news_with_updated_video.video_link, 'https://www.youtube.com/embed/Zi_XLOBDo_Y')
         self.assertGreater(news_with_updated_video.updated_at, self.news_with_video.created_at)
 
-    def test_delete(self):
+    def test_soft_delete(self):
+        news_to_delete = News.objects.create(title="Test_soft_delete", text="test_soft_delete_text")
+        self.assertTrue(News.objects.filter(pk=news_to_delete.pk).exists())
+        news_to_delete.is_deleted = True
+        news_to_delete.save()
+        self.assertTrue(News.objects.filter(pk=news_to_delete.pk).exists())
+        self.assertTrue(News.objects.filter(is_deleted=True).exists())
+        self.assertIn(news_to_delete, News.objects.filter(is_deleted=True))
+        self.assertNotIn(news_to_delete, News.objects.filter(is_deleted=False))
+
+
+    def test_hard_delete(self):
         news_to_delete = News.objects.create(title="Test_delete", text="test_delete_text")
         self.assertTrue(News.objects.filter(pk=news_to_delete.pk).exists())
         news_to_delete.delete()
