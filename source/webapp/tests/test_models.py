@@ -151,9 +151,8 @@ class NewsModelTest(TestCase):
     def tearDownClass(cls):
         sengoku_logo = os.getcwd() + '/source/uploads/news_images/sengoku_logo_for_test.png'
         dummy = os.getcwd() + '/source/uploads/news_images/11316_for_test.jpg'
-        if os.path.isfile(sengoku_logo):
+        if os.path.isfile(sengoku_logo) or os.path.isfile(dummy):
             os.remove(sengoku_logo)
-        elif os.path.isfile(dummy):
             os.remove(dummy)
 
     def test_str_method(self):
@@ -278,7 +277,39 @@ class CalendarModelTest(TestCase):
     def tearDownClass(cls):
         sengoku_logo = os.getcwd() + '/source/uploads/calendar_images/sengoku_logo_for_test.png'
         dummy = os.getcwd() + '/source/uploads/calendar_images/11316_for_test.jpg'
-        if os.path.isfile(sengoku_logo):
+        if os.path.isfile(sengoku_logo) or os.path.isfile(dummy):
             os.remove(sengoku_logo)
-        elif os.path.isfile(dummy):
             os.remove(dummy)
+
+    def test_author_foreign_key(self):
+        author_field = Calendar._meta.get_field('author')
+        self.assertEqual(author_field.related_model, accounts.models.User)
+
+    def test_created_at_auto_now_add(self):
+        created_at_field = Calendar._meta.get_field('created_at')
+        self.assertTrue(created_at_field.auto_now_add)
+
+    def test_updated_at_auto_now(self):
+        updated_at_field = Calendar._meta.get_field('updated_at')
+        self.assertTrue(updated_at_field.auto_now)
+
+    def test_object_creation_no_image(self):
+        self.assertEqual(self.calendar.event_name, 'Test event')
+        self.assertEqual(self.calendar.event_city, 'Bishkek')
+        self.assertEqual(self.calendar.event_date, '2023-03-04')
+        self.assertEqual(self.calendar.text, 'Test event text')
+        self.assertEqual(self.calendar.author, self.user)
+        self.assertEqual(self.calendar.is_deleted, False)
+        self.assertIsNotNone(self.calendar.created_at)
+        self.assertIsNotNone(self.calendar.updated_at)
+
+    def test_object_creation_with_image(self):
+        self.assertEqual(self.calendar_with_image.event_name, 'Event with image')
+        self.assertEqual(self.calendar_with_image.event_city, 'Bishkek')
+        self.assertEqual(self.calendar_with_image.event_date, '2023-03-04')
+        self.assertEqual(self.calendar_with_image.text, 'Test event with image')
+        self.assertEqual(self.calendar_with_image.author, self.user)
+        self.assertEqual(self.calendar_with_image.calendar_image, 'calendar_images/sengoku_logo_for_test.png')
+        self.assertEqual(self.calendar_with_image.is_deleted, False)
+        self.assertIsNotNone(self.calendar_with_image.created_at)
+        self.assertIsNotNone(self.calendar_with_image.updated_at)
