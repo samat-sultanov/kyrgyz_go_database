@@ -382,3 +382,19 @@ class CalendarModelTest(TestCase):
         self.assertTrue(Calendar.objects.filter(is_deleted=True).exists())
         self.assertIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
         self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
+
+    def test_hard_delete(self):
+        event_to_delete = Calendar.objects.create(
+            event_name="Event with image to hard delete",
+            event_city="Talas",
+            event_date="2025-10-14",
+            text="Test event with image to hard delete",
+            author=self.user,
+            calendar_image="calendar_images/sengoku_logo_for_test.png",
+            deadline="2024-12-13"
+        )
+        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+        event_to_delete.delete()
+        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
+        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
+        self.assertFalse(Calendar.objects.filter(pk=event_to_delete.pk).exists())
