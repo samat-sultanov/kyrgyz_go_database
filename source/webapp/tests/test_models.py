@@ -2,11 +2,13 @@ import os
 import shutil
 import datetime
 
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from django.db.models import PositiveIntegerField, FloatField, DateTimeField
 from django.test import TestCase
 import accounts.models
-from django.core.exceptions import ValidationError
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News, Calendar, get_author
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, Calendar, get_author
 
 
 class RecommendationModelTest(TestCase):
@@ -96,6 +98,47 @@ class CountryModelTest(TestCase):
         self.assertEqual(len(Country.objects.all()), 1)
         country.delete()
         self.assertEqual(len(Country.objects.all()), 0)
+
+
+class CityModelTest(TestCase):
+    def test_create_city_with_correct_parameters(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City.objects.create(city='Bishkek', country=country, region=region)
+        self.assertIsInstance(city, City)
+        self.assertEqual(len(City.objects.all()), 1)
+        self.assertEqual(str(city), 'Bishkek')
+        self.assertLessEqual(len(city.city), 50)
+
+    def test_create_city_with_incorrect_parameters(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City(city='', country=country, region=region)
+        with self.assertRaises(ValidationError):
+            city.full_clean()
+            city.save()
+        city = City(city='a' * 51, country=country, region=region)
+        with self.assertRaises(ValidationError):
+            city.full_clean()
+            city.save()
+        self.assertEqual(len(City.objects.all()), 0)
+
+    def test_update_city(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City.objects.create(city='Bishkek', country=country, region=region)
+        city.city = 'Osh'
+        city.save()
+        updated_city = City.objects.get(id=city.id)
+        self.assertEqual(updated_city.city, 'Osh')
+
+    def test_delete_city(self):
+        country = Country.objects.create(country_code='kg')
+        region = Region.objects.create(name='Chuy', country=country)
+        city = City.objects.create(city='Bishkek', country=country, region=region)
+        self.assertEqual(len(City.objects.all()), 1)
+        city.delete()
+        self.assertEqual(len(City.objects.all()), 0)
 
 
 class RegionModelTest(TestCase):
@@ -245,6 +288,168 @@ class NewsModelTest(TestCase):
     def test_author_default_value(self):
         news = News.objects.create(title='Test title', text='Test text')
         self.assertEqual(news.author_id, 1)
+
+
+class TournamentModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.country = Country.objects.create(country_code='kg')
+        cls.city = City.objects.create(city='Test City', country=cls.country)
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.tournament = Tournament.objects.create(name='Test Tournament', city=cls.city, region=cls.region,
+                                                   location='Test Location', board_size=19, rounds=5,
+                                                   date=datetime.date.today(), tournament_class='Test Class',
+                                                   regulations='Test Regulations', uploaded_by=cls.user)
+
+    def test_str_method(self):
+        expected_method = f'{self.tournament.id}. Test Tournament - 19'
+        self.assertEqual(str(self.tournament), expected_method)
+
+    def test_name_max_length(self):
+        max_length = Tournament._meta.get_field('name').max_length
+        self.assertEqual(max_length, 50)
+
+    def test_board_size_default(self):
+        default_size = Tournament._meta.get_field('board_size').default
+        self.assertEqual(default_size, 19)
+
+    def test_board_size_positive_integer(self):
+        board_size_field = Tournament._meta.get_field('board_size')
+        self.assertIsInstance(board_size_field, PositiveIntegerField)
+
+    def test_rounds_positive_integer(self):
+        rounds_field = Tournament._meta.get_field('rounds')
+        self.assertIsInstance(rounds_field, PositiveIntegerField)
+
+    def test_tournament_class_choices(self):
+        choices_field = Tournament._meta.get_field('tournament_class')
+        self.assertEqual(choices_field.choices, CLASS_CHOICES)
+
+    def test_uploaded_by_foreign_key(self):
+        uploaded_by_field = Tournament._meta.get_field('uploaded_by')
+        self.assertEqual(uploaded_by_field.related_model, accounts.models.User)
+
+    def test_object_creation(self):
+        self.assertEqual(self.tournament.name, 'Test Tournament')
+        self.assertEqual(self.tournament.city, self.city)
+        self.assertEqual(self.tournament.region, self.region)
+        self.assertEqual(self.tournament.location, 'Test Location')
+        self.assertEqual(self.tournament.board_size, 19)
+        self.assertEqual(self.tournament.rounds, 5)
+        self.assertEqual(self.tournament.date, datetime.date.today())
+        self.assertEqual(self.tournament.tournament_class, 'Test Class')
+        self.assertEqual(self.tournament.regulations, 'Test Regulations')
+        self.assertEqual(self.tournament.uploaded_by, self.user)
+
+    def test_object_update(self):
+        self.tournament.name = 'Updated Tournament'
+        self.tournament.save()
+        updated_tournament = Tournament.objects.get(pk=self.tournament.pk)
+        self.assertEqual(updated_tournament.name, 'Updated Tournament')
+
+    def test_city_deletion(self):
+        self.city.delete()
+        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+
+    def test_region_deletion(self):
+        self.region.delete()
+        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+
+    def test_author_default_value(self):
+        tournament = Tournament.objects.create(
+            name='Test Tournament',
+            city=self.city,
+            region=self.region,
+            location='Test Location',
+            board_size=19,
+            rounds=5,
+            date=datetime.date.today(),
+            tournament_class='Test Class',
+            regulations='Test Regulations'
+        )
+        self.assertEqual(tournament.uploaded_by_id, 1)
+
+
+class GameModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.country = Country.objects.create(country_code='kg')
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.city = City.objects.create(city='Bishkek', country=cls.country)
+        cls.black_player = Player.objects.create(first_name='Black Player', country=cls.country)
+        cls.white_player = Player.objects.create(first_name='White Player', country=cls.country)
+        cls.tournament = Tournament.objects.create(name='Test Tournament', city=cls.city, rounds=3)
+        cls.game = Game.objects.create(black=cls.black_player, white=cls.white_player,
+                                       result='1-0', black_score=1, white_score=0,
+                                       board_number=1, date=timezone.now(), tournament=cls.tournament,
+                                       round_num=1, black_gor_change=200, white_gor_change=-200)
+
+    def test_str_method(self):
+        expected_method = f'{self.game.id}. {self.black_player} : {self.white_player} = 1-0'
+        self.assertEqual(str(self.game), expected_method)
+
+    def test_black_foreign_key(self):
+        black_field = Game._meta.get_field('black')
+        self.assertEqual(black_field.related_model, Player)
+
+    def test_white_foreign_key(self):
+        white_field = Game._meta.get_field('white')
+        self.assertEqual(white_field.related_model, Player)
+
+    def test_board_number_default_value(self):
+        default_value = Game._meta.get_field('board_number').default
+        self.assertEqual(default_value, 0)
+
+    def test_date_field_type(self):
+        date_field = Game._meta.get_field('date')
+        self.assertIsInstance(date_field, DateTimeField)
+
+    def test_tournament_foreign_key(self):
+        tournament_field = Game._meta.get_field('tournament')
+        self.assertEqual(tournament_field.related_model, Tournament)
+
+    def test_round_num_positive_integer(self):
+        round_num_field = Game._meta.get_field('round_num')
+        self.assertIsInstance(round_num_field, PositiveIntegerField)
+
+    def test_black_gor_change_float(self):
+        black_gor_change_field = Game._meta.get_field('black_gor_change')
+        self.assertIsInstance(black_gor_change_field, FloatField)
+
+    def test_white_gor_change_float(self):
+        white_gor_change_field = Game._meta.get_field('white_gor_change')
+        self.assertIsInstance(white_gor_change_field, FloatField)
+
+    def test_object_creation(self):
+        self.assertEqual(self.game.black, self.black_player)
+        self.assertEqual(self.game.white, self.white_player)
+        self.assertEqual(self.game.result, '1-0')
+        self.assertEqual(self.game.black_score, 1)
+        self.assertEqual(self.game.white_score, 0)
+        self.assertEqual(self.game.board_number, 1)
+        self.assertIsNotNone(self.game.date)
+        self.assertEqual(self.game.tournament, self.tournament)
+        self.assertEqual(self.game.round_num, 1)
+        self.assertEqual(self.game.black_gor_change, 200)
+        self.assertEqual(self.game.white_gor_change, -200)
+
+    def test_object_update(self):
+        self.game.black_score = 0
+        self.game.save()
+        updated_game = Game.objects.get(pk=self.game.pk)
+        self.assertEqual(updated_game.black_score, 0)
+
+    def test_black_player_deletion(self):
+        self.black_player.delete()
+        self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
+
+    def test_white_player_deletion(self):
+        self.white_player.delete()
+        self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
 
 
 class CalendarModelTest(TestCase):
