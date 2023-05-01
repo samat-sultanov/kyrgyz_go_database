@@ -136,16 +136,25 @@ class NewsModelTest(TestCase):
     def setUpTestData(cls):
         src = os.getcwd() + '/source/webapp/static/images'
         dst = os.getcwd() + '/source/uploads/news_images/'
-        shutil.copy2(src + '/sengoku_logo.png', dst)
-        shutil.copy2(src+'/11316.jpg', dst)
+        shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src+'/11316.jpg', dst + '11316_for_test.jpg')
         cls.user = User.objects.create_user(username='testuser', password='testpass')
         cls.news = News.objects.create(title="Test news title", text="Test news text", author=cls.user)
         cls.news_with_image = News.objects.create(title="Test news image",
-                                                  text="Image taken from static. 'sengoku_logo.png'", author=cls.user,
-                                                  news_image='news_images/sengoku_logo.png')
+                                                  text="Image taken from static. 'sengoku_logo_for_test.png'", author=cls.user,
+                                                  news_image='news_images/sengoku_logo_for_test.png')
         cls.news_with_video = News.objects.create(title="Test news video", text="Rick Astley - Never gonna give you up",
                                                   author=cls.user,
                                                   video_link='https://www.youtube.com/embed/dQw4w9WgXcQ')
+
+    @classmethod
+    def tearDownClass(cls):
+        sengoku_logo = os.getcwd() + '/source/uploads/news_images/sengoku_logo_for_test.png'
+        dummy = os.getcwd() + '/source/uploads/news_images/11316_for_test.jpg'
+        if os.path.isfile(sengoku_logo):
+            os.remove(sengoku_logo)
+        elif os.path.isfile(dummy):
+            os.remove(dummy)
 
     def test_str_method(self):
         expected_str = f"Test news title - {self.news.created_at.strftime('%d-%m-%Y %H:%M:%S')}"
@@ -181,8 +190,8 @@ class NewsModelTest(TestCase):
 
     def test_object_creation_image_no_video(self):
         self.assertEqual(self.news_with_image.title, 'Test news image')
-        self.assertEqual(self.news_with_image.text, "Image taken from static. 'sengoku_logo.png'")
-        self.assertEqual(self.news_with_image.news_image, 'news_images/sengoku_logo.png')
+        self.assertEqual(self.news_with_image.text, "Image taken from static. 'sengoku_logo_for_test.png'")
+        self.assertEqual(self.news_with_image.news_image, 'news_images/sengoku_logo_for_test.png')
         self.assertEqual(self.news_with_image.author, self.user)
         self.assertEqual(self.news_with_image.video_link, None)
         self.assertIsNotNone(self.news_with_image.created_at)
@@ -203,14 +212,11 @@ class NewsModelTest(TestCase):
         self.assertGreater(news_with_updated_text.updated_at, self.news.created_at)
 
     def test_update_image(self):
-        self.news_with_image.news_image = 'news_images/11316.jpg'
+        self.news_with_image.news_image = 'news_images/11316_for_test.jpg'
         self.news_with_image.save()
         news_with_updated_image = News.objects.get(pk=self.news_with_image.pk)
-        self.assertEqual(news_with_updated_image.news_image, 'news_images/11316.jpg')
+        self.assertEqual(news_with_updated_image.news_image, 'news_images/11316_for_test.jpg')
         self.assertGreater(news_with_updated_image.updated_at, self.news_with_image.created_at)
-        src = os.getcwd() + '/source/webapp/static/images/sengoku_logo.png'
-        dst = os.getcwd() + '/source/uploads/news_images/'
-        shutil.copy2(src, dst)
 
     def test_update_video(self):
         self.news_with_video.video_link = 'https://www.youtube.com/embed/Zi_XLOBDo_Y'
@@ -239,3 +245,21 @@ class NewsModelTest(TestCase):
     def test_author_default_value(self):
         news = News.objects.create(title='Test title', text='Test text')
         self.assertEqual(news.author_id, 1)
+
+
+class CalendarModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        src = os.getcwd() + '/source/webapp/static/images'
+        dst = os.getcwd() + '/source/uploads/calendar_images/'
+        shutil.copy2(src + '/sengoku_logo.png', dst)
+        shutil.copy2(src + '/11316.jpg', dst)
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.news = News.objects.create(title="Test news title", text="Test news text", author=cls.user)
+        cls.news_with_image = News.objects.create(title="Test news image",
+                                                  text="Image taken from static. 'sengoku_logo.png'", author=cls.user,
+                                                  news_image='news_images/sengoku_logo.png')
+        cls.news_with_video = News.objects.create(title="Test news video", text="Rick Astley - Never gonna give you up",
+                                                  author=cls.user,
+                                                  video_link='https://www.youtube.com/embed/dQw4w9WgXcQ')
