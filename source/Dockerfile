@@ -9,8 +9,8 @@ RUN addgroup --system kgf_admin && adduser --system kgf_admin --ingroup kgf_admi
 
 # create the appropriate directories
 ENV HOME=/home/kgf_admin
-ENV APP_HOME=/home/kgf_admin/kyrgyz_go_database
-RUN mkdir $APP_HOME
+ENV APP_HOME=/home/kgf_admin/kyrgyz_go_database/source
+RUN -p mkdir $APP_HOME
 RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/uploads
 WORKDIR $APP_HOME
@@ -34,8 +34,8 @@ RUN pip install -r requirements.txt
 
 # copy entrypoint.sh
 COPY /entrypoint.sh ./source/
-RUN sed -i 's/\r$//g' $APP_HOME/source/entrypoint.sh
-RUN chmod +x $APP_HOME/source/entrypoint.sh
+RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.sh
+RUN chmod +x $APP_HOME/entrypoint.sh
 
 # copy project
 COPY . $APP_HOME
