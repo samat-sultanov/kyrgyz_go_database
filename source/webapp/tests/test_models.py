@@ -8,7 +8,8 @@ from django.db.models import PositiveIntegerField, FloatField, DateTimeField
 from django.test import TestCase
 import accounts.models
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, Calendar, get_author
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
+    Calendar, get_author
 
 
 class RecommendationModelTest(TestCase):
@@ -181,11 +182,12 @@ class NewsModelTest(TestCase):
         src = os.getcwd() + '/source/webapp/static/images'
         dst = os.getcwd() + '/source/uploads/news_images/'
         shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
-        shutil.copy2(src+'/11316.jpg', dst + '11316_for_test.jpg')
+        shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
         cls.user = User.objects.create_user(username='testuser', password='testpass')
         cls.news = News.objects.create(title="Test news title", text="Test news text", author=cls.user)
         cls.news_with_image = News.objects.create(title="Test news image",
-                                                  text="Image taken from static. 'sengoku_logo_for_test.png'", author=cls.user,
+                                                  text="Image taken from static. 'sengoku_logo_for_test.png'",
+                                                  author=cls.user,
                                                   news_image='news_images/sengoku_logo_for_test.png')
         cls.news_with_video = News.objects.create(title="Test news video", text="Rick Astley - Never gonna give you up",
                                                   author=cls.user,
@@ -277,7 +279,6 @@ class NewsModelTest(TestCase):
         self.assertTrue(News.objects.filter(is_deleted=True).exists())
         self.assertIn(news_to_delete, News.objects.filter(is_deleted=True))
         self.assertNotIn(news_to_delete, News.objects.filter(is_deleted=False))
-
 
     def test_hard_delete(self):
         news_to_delete = News.objects.create(title="Test_delete", text="test_delete_text")
@@ -468,7 +469,7 @@ class CalendarModelTest(TestCase):
             text="Test event text",
             author=cls.user,
             deadline="2023-02-01"
-            )
+        )
         cls.calendar_with_image = Calendar.objects.create(
             event_name="Event with image",
             event_city="Bishkek",
@@ -612,5 +613,5 @@ class CalendarModelTest(TestCase):
             text="Test event text",
             author=self.user,
             deadline="2023-02-01"
-            )
+        )
         self.assertEqual(event.author_id, get_author().id)
