@@ -6,7 +6,7 @@ from django.test import TestCase
 import accounts.models
 from django.core.exceptions import ValidationError
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News, Calendar
+from webapp.models import Recommendation, Player, Country, Region, News, Calendar, get_author
 
 
 class RecommendationModelTest(TestCase):
@@ -398,3 +398,14 @@ class CalendarModelTest(TestCase):
         self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
         self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
         self.assertFalse(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+
+    def test_author_default_value(self):
+        event = Calendar.objects.create(
+            event_name="Test event",
+            event_city="Bishkek",
+            event_date="2023-03-04",
+            text="Test event text",
+            author=self.user,
+            deadline="2023-02-01"
+            )
+        self.assertEqual(event.author_id, get_author().id)
