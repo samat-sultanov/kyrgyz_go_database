@@ -134,6 +134,10 @@ class NewsModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        src = os.getcwd() + '/source/webapp/static/images'
+        dst = os.getcwd() + '/source/uploads/news_images/'
+        shutil.copy2(src + '/sengoku_logo.png', dst)
+        shutil.copy2(src+'/11316.jpg', dst)
         cls.user = User.objects.create_user(username='testuser', password='testpass')
         cls.news = News.objects.create(title="Test news title", text="Test news text", author=cls.user)
         cls.news_with_image = News.objects.create(title="Test news image",
