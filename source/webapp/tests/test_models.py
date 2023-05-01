@@ -362,3 +362,23 @@ class CalendarModelTest(TestCase):
         self.assertEqual(event_with_updated_image.calendar_image, 'calendar_images/11316_for_test.jpg')
         self.assertEqual(event_with_updated_image.is_deleted, False)
         self.assertGreater(event_with_updated_image.updated_at, self.calendar_with_image.created_at)
+
+    def test_soft_delete(self):
+        event_to_delete = Calendar.objects.create(
+            event_name="Event with image to delete",
+            event_city="Talas",
+            event_date="2025-03-04",
+            text="Test event with image to delete",
+            author=self.user,
+            calendar_image="calendar_images/sengoku_logo_for_test.png",
+            deadline="2024-12-11"
+        )
+        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+        event_to_delete.is_deleted = True
+        event_to_delete.save()
+        sengoku_logo = os.getcwd() + '/source/uploads/calendar_images/sengoku_logo_for_test.png'
+        self.assertTrue(os.path.isfile(sengoku_logo))
+        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+        self.assertTrue(Calendar.objects.filter(is_deleted=True).exists())
+        self.assertIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
+        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
