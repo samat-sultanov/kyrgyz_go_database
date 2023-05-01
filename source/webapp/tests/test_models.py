@@ -1,5 +1,6 @@
 import os
 import shutil
+import datetime
 
 from django.test import TestCase
 import accounts.models
@@ -296,7 +297,7 @@ class CalendarModelTest(TestCase):
     def test_object_creation_no_image(self):
         self.assertEqual(self.calendar.event_name, 'Test event')
         self.assertEqual(self.calendar.event_city, 'Bishkek')
-        self.assertEqual(self.calendar.event_date, '2023-03-04')
+        self.assertEqual(self.calendar.event_date, "2023-03-04")
         self.assertEqual(self.calendar.text, 'Test event text')
         self.assertEqual(self.calendar.author, self.user)
         self.assertEqual(self.calendar.is_deleted, False)
@@ -306,10 +307,58 @@ class CalendarModelTest(TestCase):
     def test_object_creation_with_image(self):
         self.assertEqual(self.calendar_with_image.event_name, 'Event with image')
         self.assertEqual(self.calendar_with_image.event_city, 'Bishkek')
-        self.assertEqual(self.calendar_with_image.event_date, '2023-03-04')
+        self.assertEqual(self.calendar_with_image.event_date, "2023-03-04")
         self.assertEqual(self.calendar_with_image.text, 'Test event with image')
         self.assertEqual(self.calendar_with_image.author, self.user)
         self.assertEqual(self.calendar_with_image.calendar_image, 'calendar_images/sengoku_logo_for_test.png')
         self.assertEqual(self.calendar_with_image.is_deleted, False)
         self.assertIsNotNone(self.calendar_with_image.created_at)
         self.assertIsNotNone(self.calendar_with_image.updated_at)
+
+    def test_update_event_name(self):
+        self.calendar.event_name = 'Updated event name'
+        self.calendar.save()
+        event_with_updated_name = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_name.event_name, 'Updated event name')
+        self.assertEqual(event_with_updated_name.is_deleted, False)
+        self.assertGreater(event_with_updated_name.updated_at, self.calendar.created_at)
+
+    def test_update_event_city(self):
+        self.calendar.event_city = 'Osh'
+        self.calendar.save()
+        event_with_updated_city = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_city.event_city, 'Osh')
+        self.assertEqual(event_with_updated_city.is_deleted, False)
+        self.assertGreater(event_with_updated_city.updated_at, self.calendar.created_at)
+
+    def test_update_event_date(self):
+        self.calendar.event_date = "2024-11-11"
+        self.calendar.save()
+        event_with_updated_date = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_date.event_date, datetime.date(2024, 11, 11))
+        self.assertEqual(event_with_updated_date.is_deleted, False)
+        self.assertGreater(event_with_updated_date.updated_at, self.calendar.created_at)
+
+    def test_update_event_text(self):
+        self.calendar.text = 'Updated event text'
+        self.calendar.save()
+        event_with_updated_text = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_text.text, 'Updated event text')
+        self.assertEqual(event_with_updated_text.is_deleted, False)
+        self.assertGreater(event_with_updated_text.updated_at, self.calendar.created_at)
+
+    def test_update_event_deadline(self):
+        self.calendar.deadline = "2023-12-12"
+        self.calendar.save()
+        event_with_updated_deadline = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_deadline.deadline, datetime.date(2023, 12, 12))
+        self.assertEqual(event_with_updated_deadline.is_deleted, False)
+        self.assertGreater(event_with_updated_deadline.updated_at, self.calendar.created_at)
+
+    def test_update_event_image(self):
+        self.calendar_with_image.calendar_image = 'calendar_images/11316_for_test.jpg'
+        self.calendar_with_image.save()
+        event_with_updated_image = Calendar.objects.get(pk=self.calendar_with_image.pk)
+        self.assertEqual(event_with_updated_image.calendar_image, 'calendar_images/11316_for_test.jpg')
+        self.assertEqual(event_with_updated_image.is_deleted, False)
+        self.assertGreater(event_with_updated_image.updated_at, self.calendar_with_image.created_at)
