@@ -22,7 +22,11 @@
         - а теперь собрать статики: docker-compose exec web python3 manage.py collectstatic
         - создать супер юзера: docker-compose exec web python3 manage.py createsuperuser
         - зарегать job`ы: docker-compose exec web python3 manage.py runapscheduler
-                Да в принципе все и готово.
+        - загрузить данные из фикстур:
+        	- docker-compose exec web python3 manage.py loaddata fixtures/partner.json
+        	- docker-compose exec web python3 manage.py loaddata fixtures/days.json
+         Да в принципе все и готово.
+
 
 
 Шаг 4(доп.): Если надо обновить код (git pull):

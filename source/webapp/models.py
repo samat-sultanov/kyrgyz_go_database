@@ -1,13 +1,15 @@
 import os
 from datetime import datetime as dt
 import datetime
+
+from PIL import Image
+from phonenumber_field.modelfields import PhoneNumberField
+
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
 from django.dispatch import receiver
-from phonenumber_field.modelfields import PhoneNumberField
-from PIL import Image
 
 from accounts.models import User
 
@@ -15,6 +17,7 @@ DEFAULT_CLASS = 'all'
 CLASS_CHOICES = ((DEFAULT_CLASS, 'Все классы'), ('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'),)
 STATUS = [('Confirmed', 'Confirmed'), ('Not confirmed', 'Not confirmed')]
 DAYS = [('Пн', 'Пн'), ('Вт', 'Вт'), ('Ср', 'Ср'), ('Чт', 'Чт'), ('Пт', 'Пт'), ('Сб', 'Сб'), ('Вс', 'Вс')]
+
 
 class Country(models.Model):
     country_code = models.CharField(verbose_name='Country', max_length=2)

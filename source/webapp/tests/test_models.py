@@ -1,13 +1,15 @@
 import os
 import shutil
 import datetime
+
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.db.models import PositiveIntegerField, FloatField, DateTimeField
 from django.test import TestCase
 import accounts.models
 from accounts.models import User
-from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game
-from django.core.exceptions import ValidationError
+from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
+    Calendar, get_author
 
 
 class RecommendationModelTest(TestCase):
@@ -177,14 +179,27 @@ class NewsModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        src = os.getcwd() + '/source/webapp/static/images'
+        dst = os.getcwd() + '/source/uploads/news_images/'
+        shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
         cls.user = User.objects.create_user(username='testuser', password='testpass')
         cls.news = News.objects.create(title="Test news title", text="Test news text", author=cls.user)
         cls.news_with_image = News.objects.create(title="Test news image",
-                                                  text="Image taken from static. 'sengoku_logo.png'", author=cls.user,
-                                                  news_image='news_images/sengoku_logo.png')
+                                                  text="Image taken from static. 'sengoku_logo_for_test.png'",
+                                                  author=cls.user,
+                                                  news_image='news_images/sengoku_logo_for_test.png')
         cls.news_with_video = News.objects.create(title="Test news video", text="Rick Astley - Never gonna give you up",
                                                   author=cls.user,
                                                   video_link='https://www.youtube.com/embed/dQw4w9WgXcQ')
+
+    @classmethod
+    def tearDownClass(cls):
+        sengoku_logo = os.getcwd() + '/source/uploads/news_images/sengoku_logo_for_test.png'
+        dummy = os.getcwd() + '/source/uploads/news_images/11316_for_test.jpg'
+        if os.path.isfile(sengoku_logo) or os.path.isfile(dummy):
+            os.remove(sengoku_logo)
+            os.remove(dummy)
 
     def test_str_method(self):
         expected_str = f"Test news title - {self.news.created_at.strftime('%d-%m-%Y %H:%M:%S')}"
@@ -220,8 +235,8 @@ class NewsModelTest(TestCase):
 
     def test_object_creation_image_no_video(self):
         self.assertEqual(self.news_with_image.title, 'Test news image')
-        self.assertEqual(self.news_with_image.text, "Image taken from static. 'sengoku_logo.png'")
-        self.assertEqual(self.news_with_image.news_image, 'news_images/sengoku_logo.png')
+        self.assertEqual(self.news_with_image.text, "Image taken from static. 'sengoku_logo_for_test.png'")
+        self.assertEqual(self.news_with_image.news_image, 'news_images/sengoku_logo_for_test.png')
         self.assertEqual(self.news_with_image.author, self.user)
         self.assertEqual(self.news_with_image.video_link, None)
         self.assertIsNotNone(self.news_with_image.created_at)
@@ -242,14 +257,11 @@ class NewsModelTest(TestCase):
         self.assertGreater(news_with_updated_text.updated_at, self.news.created_at)
 
     def test_update_image(self):
-        self.news_with_image.news_image = 'news_images/11316.jpg'
+        self.news_with_image.news_image = 'news_images/11316_for_test.jpg'
         self.news_with_image.save()
         news_with_updated_image = News.objects.get(pk=self.news_with_image.pk)
-        self.assertEqual(news_with_updated_image.news_image, 'news_images/11316.jpg')
+        self.assertEqual(news_with_updated_image.news_image, 'news_images/11316_for_test.jpg')
         self.assertGreater(news_with_updated_image.updated_at, self.news_with_image.created_at)
-        src = os.getcwd() + '/source/webapp/static/images/sengoku_logo.png'
-        dst = os.getcwd() + '/source/uploads/news_images/'
-        shutil.copy2(src, dst)
 
     def test_update_video(self):
         self.news_with_video.video_link = 'https://www.youtube.com/embed/Zi_XLOBDo_Y'
@@ -258,7 +270,17 @@ class NewsModelTest(TestCase):
         self.assertEqual(news_with_updated_video.video_link, 'https://www.youtube.com/embed/Zi_XLOBDo_Y')
         self.assertGreater(news_with_updated_video.updated_at, self.news_with_video.created_at)
 
-    def test_delete(self):
+    def test_soft_delete(self):
+        news_to_delete = News.objects.create(title="Test_soft_delete", text="test_soft_delete_text")
+        self.assertTrue(News.objects.filter(pk=news_to_delete.pk).exists())
+        news_to_delete.is_deleted = True
+        news_to_delete.save()
+        self.assertTrue(News.objects.filter(pk=news_to_delete.pk).exists())
+        self.assertTrue(News.objects.filter(is_deleted=True).exists())
+        self.assertIn(news_to_delete, News.objects.filter(is_deleted=True))
+        self.assertNotIn(news_to_delete, News.objects.filter(is_deleted=False))
+
+    def test_hard_delete(self):
         news_to_delete = News.objects.create(title="Test_delete", text="test_delete_text")
         self.assertTrue(News.objects.filter(pk=news_to_delete.pk).exists())
         news_to_delete.delete()
@@ -429,3 +451,167 @@ class GameModelTest(TestCase):
     def test_white_player_deletion(self):
         self.white_player.delete()
         self.assertFalse(Game.objects.filter(pk=self.game.pk).exists())
+
+
+class CalendarModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        src = os.getcwd() + '/source/webapp/static/images'
+        dst = os.getcwd() + '/source/uploads/calendar_images/'
+        shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
+        cls.user = User.objects.create_user(username='testuser', password='testpass')
+        cls.calendar = Calendar.objects.create(
+            event_name="Test event",
+            event_city="Bishkek",
+            event_date="2023-03-04",
+            text="Test event text",
+            author=cls.user,
+            deadline="2023-02-01"
+        )
+        cls.calendar_with_image = Calendar.objects.create(
+            event_name="Event with image",
+            event_city="Bishkek",
+            event_date="2023-03-04",
+            text="Test event with image",
+            author=cls.user,
+            calendar_image="calendar_images/sengoku_logo_for_test.png",
+            deadline="2023-02-01"
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        sengoku_logo = os.getcwd() + '/source/uploads/calendar_images/sengoku_logo_for_test.png'
+        dummy = os.getcwd() + '/source/uploads/calendar_images/11316_for_test.jpg'
+        if os.path.isfile(sengoku_logo) or os.path.isfile(dummy):
+            os.remove(sengoku_logo)
+            os.remove(dummy)
+
+    def test_author_foreign_key(self):
+        author_field = Calendar._meta.get_field('author')
+        self.assertEqual(author_field.related_model, accounts.models.User)
+
+    def test_created_at_auto_now_add(self):
+        created_at_field = Calendar._meta.get_field('created_at')
+        self.assertTrue(created_at_field.auto_now_add)
+
+    def test_updated_at_auto_now(self):
+        updated_at_field = Calendar._meta.get_field('updated_at')
+        self.assertTrue(updated_at_field.auto_now)
+
+    def test_object_creation_no_image(self):
+        self.assertEqual(self.calendar.event_name, 'Test event')
+        self.assertEqual(self.calendar.event_city, 'Bishkek')
+        self.assertEqual(self.calendar.event_date, "2023-03-04")
+        self.assertEqual(self.calendar.text, 'Test event text')
+        self.assertEqual(self.calendar.author, self.user)
+        self.assertEqual(self.calendar.is_deleted, False)
+        self.assertIsNotNone(self.calendar.created_at)
+        self.assertIsNotNone(self.calendar.updated_at)
+
+    def test_object_creation_with_image(self):
+        self.assertEqual(self.calendar_with_image.event_name, 'Event with image')
+        self.assertEqual(self.calendar_with_image.event_city, 'Bishkek')
+        self.assertEqual(self.calendar_with_image.event_date, "2023-03-04")
+        self.assertEqual(self.calendar_with_image.text, 'Test event with image')
+        self.assertEqual(self.calendar_with_image.author, self.user)
+        self.assertEqual(self.calendar_with_image.calendar_image, 'calendar_images/sengoku_logo_for_test.png')
+        self.assertEqual(self.calendar_with_image.is_deleted, False)
+        self.assertIsNotNone(self.calendar_with_image.created_at)
+        self.assertIsNotNone(self.calendar_with_image.updated_at)
+
+    def test_update_event_name(self):
+        self.calendar.event_name = 'Updated event name'
+        self.calendar.save()
+        event_with_updated_name = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_name.event_name, 'Updated event name')
+        self.assertEqual(event_with_updated_name.is_deleted, False)
+        self.assertGreater(event_with_updated_name.updated_at, self.calendar.created_at)
+
+    def test_update_event_city(self):
+        self.calendar.event_city = 'Osh'
+        self.calendar.save()
+        event_with_updated_city = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_city.event_city, 'Osh')
+        self.assertEqual(event_with_updated_city.is_deleted, False)
+        self.assertGreater(event_with_updated_city.updated_at, self.calendar.created_at)
+
+    def test_update_event_date(self):
+        self.calendar.event_date = "2024-11-11"
+        self.calendar.save()
+        event_with_updated_date = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_date.event_date, datetime.date(2024, 11, 11))
+        self.assertEqual(event_with_updated_date.is_deleted, False)
+        self.assertGreater(event_with_updated_date.updated_at, self.calendar.created_at)
+
+    def test_update_event_text(self):
+        self.calendar.text = 'Updated event text'
+        self.calendar.save()
+        event_with_updated_text = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_text.text, 'Updated event text')
+        self.assertEqual(event_with_updated_text.is_deleted, False)
+        self.assertGreater(event_with_updated_text.updated_at, self.calendar.created_at)
+
+    def test_update_event_deadline(self):
+        self.calendar.deadline = "2023-12-12"
+        self.calendar.save()
+        event_with_updated_deadline = Calendar.objects.get(pk=self.calendar.pk)
+        self.assertEqual(event_with_updated_deadline.deadline, datetime.date(2023, 12, 12))
+        self.assertEqual(event_with_updated_deadline.is_deleted, False)
+        self.assertGreater(event_with_updated_deadline.updated_at, self.calendar.created_at)
+
+    def test_update_event_image(self):
+        self.calendar_with_image.calendar_image = 'calendar_images/11316_for_test.jpg'
+        self.calendar_with_image.save()
+        event_with_updated_image = Calendar.objects.get(pk=self.calendar_with_image.pk)
+        self.assertEqual(event_with_updated_image.calendar_image, 'calendar_images/11316_for_test.jpg')
+        self.assertEqual(event_with_updated_image.is_deleted, False)
+        self.assertGreater(event_with_updated_image.updated_at, self.calendar_with_image.created_at)
+
+    def test_soft_delete(self):
+        event_to_delete = Calendar.objects.create(
+            event_name="Event with image to delete",
+            event_city="Talas",
+            event_date="2025-03-04",
+            text="Test event with image to delete",
+            author=self.user,
+            calendar_image="calendar_images/sengoku_logo_for_test.png",
+            deadline="2024-12-11"
+        )
+        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+        event_to_delete.is_deleted = True
+        event_to_delete.save()
+        sengoku_logo = os.getcwd() + '/source/uploads/calendar_images/sengoku_logo_for_test.png'
+        self.assertTrue(os.path.isfile(sengoku_logo))
+        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+        self.assertTrue(Calendar.objects.filter(is_deleted=True).exists())
+        self.assertIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
+        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
+
+    def test_hard_delete(self):
+        event_to_delete = Calendar.objects.create(
+            event_name="Event with image to hard delete",
+            event_city="Talas",
+            event_date="2025-10-14",
+            text="Test event with image to hard delete",
+            author=self.user,
+            calendar_image="calendar_images/sengoku_logo_for_test.png",
+            deadline="2024-12-13"
+        )
+        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+        event_to_delete.delete()
+        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
+        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
+        self.assertFalse(Calendar.objects.filter(pk=event_to_delete.pk).exists())
+
+    def test_author_default_value(self):
+        event = Calendar.objects.create(
+            event_name="Test event",
+            event_city="Bishkek",
+            event_date="2023-03-04",
+            text="Test event text",
+            author=self.user,
+            deadline="2023-02-01"
+        )
+        self.assertEqual(event.author_id, get_author().id)
