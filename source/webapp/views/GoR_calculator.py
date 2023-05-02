@@ -79,35 +79,23 @@ def get_opponent_rating(opponent_id, number_of_round, pk):
 
 
 def get_con(num):
-    if num:
-        con = ((3300 - num) / 200) ** 1.6
-        return con
-    else:
-        return None
+    con = ((3300 - num) / 200) ** 1.6
+    return con
 
 
 def get_bonus(num):
-    if num:
-        bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
-        return bonus
-    else:
-        return None
+    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+    return bonus
 
 
 def get_beta(num):
-    if num is not None:
-        beta = -7 * math.log(3300 - num)
-        return beta
-    else:
-        return None
+    beta = -7 * math.log(3300 - num)
+    return beta
 
 
 def get_se(num1, num2):
-    if num2 and num1:
-        se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
-        return se
-    else:
-        return None
+    se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
+    return se
 
 
 def get_new_rank_from_rating(num):
@@ -156,6 +144,7 @@ def get_new_rating(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.playerintournament_set.all()
     data = get_total_score_for_player(pk)
+    print(data)
     for element in data:
         for item in players:
             if element['player'].pk == item.player.pk:
