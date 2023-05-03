@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from webapp.models import Player
+from webapp.models import Player, Country
 from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
@@ -51,10 +51,11 @@ class PlayerDetail(TemplateView):
 class PlayerSearch(ListView):
     template_name = 'player/player_search.html'
     context_object_name = 'players'
-    queryset = Player.objects.order_by('-current_rating')
     model = Player
     paginate_by = 15
     paginate_orphans = 4
+    country = Country.objects.get(country_code='kg')
+    queryset = Player.objects.filter(country=country).order_by('-current_rating')
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
