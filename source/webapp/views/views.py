@@ -25,11 +25,7 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         calendar = Calendar.objects.filter(is_deleted=False).order_by('event_date')
         context['calendar'] = calendar
-        try:
-            players = get_position_in_kgf()[0:3]
-        except ObjectDoesNotExist:
-            Country.objects.create(country_code='kg')
-            players = get_position_in_kgf()[0:3]
+        players = get_position_in_kgf()[0:3]
         context['position'] = players
         latest_news = News.objects.filter(is_deleted=False).order_by('-created_at')[:3]
         context['latest_news'] = latest_news
