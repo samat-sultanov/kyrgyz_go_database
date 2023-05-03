@@ -14,10 +14,11 @@ from webapp.handle_upload import unpack_tournament_to_bd, unpack_countries_clubs
 from webapp.views.GoR_calculator import get_new_rating, get_current_rating_and_rank
 from webapp.forms import TournamentSearchForm, CheckTournamentForm, CheckPlayerForm
 from webapp.models import Tournament, NotModeratedTournament
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, unpack_data_json_players, \
     parse_results, update_json_tournament
 from django.contrib import messages
+
 
 class TournamentSearch(ListView):
     template_name = 'tournament/tournament_search.html'
@@ -106,19 +107,25 @@ class TournamentDetail(TemplateView):
         return super().get_context_data(**kwargs)
 
 
-class TournamentModerationList(LoginRequiredMixin, ListView):
+class TournamentModerationList(PermissionRequiredMixin, ListView):
     model = NotModeratedTournament
     context_object_name = "tournaments"
     template_name = 'tournament/moderation_list.html'
     paginate_by = 10
 
+    def has_permission(self):
+        return self.request.user.is_superuser == 1
 
-class DeleteTournamentOnModeration(LoginRequiredMixin, DeleteView):
+
+class DeleteTournamentOnModeration(PermissionRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get('pk')
         context['pk'] = pk
         return context
+
+    def has_permission(self):
+        return self.request.user.is_superuser == 1
 
     def get_success_url(self):
         messages.success(self.request, 'Турнир успешно удален!')
@@ -134,13 +141,16 @@ class DeleteTournamentOnModeration(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class DeleteTournamentBeforeModeration(LoginRequiredMixin, TemplateView):
+class DeleteTournamentBeforeModeration(PermissionRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         file_name = self.kwargs.get('file_name')
         file_path = f"uploads/json/{file_name.split('.')[0]}.json"
         context['file_path'] = file_path
         return context
+
+    def has_permission(self):
+        return self.request.user.is_superuser == 1
 
     def get_success_url(self):
         return reverse_lazy('webapp:file_upload')
@@ -152,10 +162,13 @@ class DeleteTournamentBeforeModeration(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ModerationTournamentView(LoginRequiredMixin, FormView):
+class ModerationTournamentView(PermissionRequiredMixin, FormView):
     template_name = 'tournament/moderation_detail.html'
     form_class = CheckTournamentForm
     CheckPlayerFormSet = formset_factory(CheckPlayerForm, extra=0)
+
+    def has_permission(self):
+        return self.request.user.is_superuser == 1
 
     def get_success_url(self):
         if self.form_valid:
