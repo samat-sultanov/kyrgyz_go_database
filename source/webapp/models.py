@@ -384,3 +384,14 @@ def delete_old_image_cache(sender, instance, **kwargs):
             if old_instance.logo != instance.logo:
                 delete(old_instance.logo)
 
+@receiver(models.signals.pre_save, sender=Player)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.avatar:
+            if old_instance.avatar != instance.avatar:
+                delete(old_instance.avatar)
+
