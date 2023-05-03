@@ -19,6 +19,7 @@ from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_t
     parse_results, update_json_tournament
 from django.contrib import messages
 
+
 class TournamentSearch(ListView):
     template_name = 'tournament/tournament_search.html'
     context_object_name = 'tournaments'
