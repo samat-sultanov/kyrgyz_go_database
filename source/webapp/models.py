@@ -1,16 +1,14 @@
 import os
 from datetime import datetime as dt
 import datetime
-
+from sorl.thumbnail import delete
 from PIL import Image
 from phonenumber_field.modelfields import PhoneNumberField
-
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
 from django.dispatch import receiver
-
 from accounts.models import User
 
 DEFAULT_CLASS = 'all'
@@ -362,7 +360,6 @@ def auto_delete_img_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.news_image.path):
             os.remove(instance.news_image.path)
 
-
 @receiver(models.signals.pre_save, sender=News)
 def auto_delete_img_on_change(sender, instance, **kwargs):
     if not instance.pk:
@@ -375,3 +372,15 @@ def auto_delete_img_on_change(sender, instance, **kwargs):
         if not old_img == new_img:
             if os.path.isfile(old_img.path):
                 os.remove(old_img.path)
+
+@receiver(models.signals.pre_save, sender=Club)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = Club.objects.get(pk=instance.pk)
+        except Club.DoesNotExist:
+            return
+        if old_instance.logo:
+            if old_instance.logo != instance.logo:
+                delete(old_instance.logo)
+
