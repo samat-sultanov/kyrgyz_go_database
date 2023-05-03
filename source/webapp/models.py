@@ -406,3 +406,13 @@ def delete_old_image_cache(sender, instance, **kwargs):
             if old_instance.logo != instance.logo:
                 delete(old_instance.logo)
 
+@receiver(models.signals.pre_save, sender=News)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.news_image:
+            if old_instance.news_image != instance.news_image:
+                delete(old_instance.news_image)
