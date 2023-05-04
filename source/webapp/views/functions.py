@@ -168,13 +168,48 @@ def get_data_for_table_games(pk):
     return new_list
 
 
+def get_tournaments_for_gor_evolution(player):
+    tournaments = player.playerintournament_set.all()
+    return tournaments
+
+
+def get_games_for_gor_evolution(tournament):
+    games = Game.objects.filter(tournament=tournament)
+    return games
+
+
+def get_game_result_for_gor_evolution_for_black(data):
+    if data.result is not None:
+        if data.black_score == 0:
+            return 'Loss'
+        elif data.black_score == 1:
+            return 'Win'
+    return None
+
+
+def get_game_result_for_gor_evolution_for_white(data):
+    if data.result is not None:
+        if data.white_score == 0:
+            return 'Loss'
+        elif data.white_score == 1:
+            return 'Win'
+    return None
+
+
+def sort_items_for_gor_evolution(new_list):
+    for item in new_list:
+        if item['opponent'] is None:
+            new_list.remove(item)
+    return new_list
+
+
 def get_data_for_gor_evolution(pk):
     player = Player.objects.get(pk=pk)
-    tournaments = player.playerintournament_set.all()
+    tournaments = get_tournaments_for_gor_evolution(player)
     new_list = []
     for element in tournaments:
         tournament = Tournament.objects.get(pk=element.tournament_id)
-        games = Game.objects.filter(tournament=tournament)
+        games = get_games_for_gor_evolution(tournament)
         for game in games:
             new_dict = dict()
             if game.black == player and game.black_gor_change:
@@ -183,17 +218,14 @@ def get_data_for_gor_evolution(pk):
                 new_dict['gor_change'] = game.black_gor_change
                 opponent = game.white
                 if opponent:
-                    data = opponent.playerintournament_set.filter(tournament=tournament)
+                    data = get_tournaments_for_gor_evolution(opponent)
                     for el in data:
                         new_dict['opponent_rank'] = el.GoLevel
                         new_dict['opponent_rating'] = el.rating
                 new_dict['opponent'] = game.white
                 new_dict['opponent_gor_change'] = game.white_gor_change
                 if game.result is not None:
-                    if game.black_score == 0:
-                        new_dict['result'] = 'Loss'
-                    elif game.black_score == 1:
-                        new_dict['result'] = 'Win'
+                    new_dict['result'] = get_game_result_for_gor_evolution_for_black(game)
                 new_dict['color'] = 'b'
                 new_list.append(new_dict)
             elif game.white == player and game.white_gor_change:
@@ -202,24 +234,19 @@ def get_data_for_gor_evolution(pk):
                 new_dict['gor_change'] = game.white_gor_change
                 opponent = game.black
                 if opponent:
-                    data = opponent.playerintournament_set.filter(tournament=tournament)
+                    data = get_tournaments_for_gor_evolution(opponent)
                     for el in data:
                         new_dict['opponent_rank'] = el.GoLevel
                         new_dict['opponent_rating'] = el.rating
                 new_dict['opponent'] = game.black
                 new_dict['opponent_gor_change'] = game.black_gor_change
                 if game.result is not None:
-                    if game.white_score == 0:
-                        new_dict['result'] = 'Loss'
-                    elif game.white_score == 1:
-                        new_dict['result'] = 'Win'
+                    new_dict['result'] = get_game_result_for_gor_evolution_for_white(game)
                 new_dict['color'] = 'w'
                 new_list.append(new_dict)
             else:
                 pass
-    for item in new_list:
-        if item['opponent'] is None:
-            new_list.remove(item)
+    sort_items_for_gor_evolution(new_list)
     return new_list
 
 
@@ -234,12 +261,11 @@ def get_tournaments_list_for_gor_evolution(pk):
         for el in total_score:
             if el['player'] == player:
                 new_dict['total'] = el['total']
-        if element.rating != 0:
-            new_dict['tournament'] = tournament
-            new_dict['rating_before'] = element.rating
-            new_dict['rating_after'] = element.rating_after
-            new_dict['rank_after'] = element.GoLevel_after
-            new_list.append(new_dict)
+        new_dict['tournament'] = tournament
+        new_dict['rating_before'] = element.rating
+        new_dict['rating_after'] = element.rating_after
+        new_dict['rank_after'] = element.GoLevel_after
+        new_list.append(new_dict)
     return new_list
 
 
@@ -405,24 +431,30 @@ def unpack_data_json_games(list_of_rounds, list_of_players):
 
                                 if game.get('Black') == id_in_tournament:
                                     if black == '1' and white == '0':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
                                         new_dict['font_color'] = 'green'
                                     elif black == '0' and white == '1':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
                                         new_dict['font_color'] = 'red'
                                     else:
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
                                         new_dict['font_color'] = 'black'
 
                                 elif game.get('White') == id_in_tournament:
                                     if white == '1' and black == '0':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
                                         new_dict['font_color'] = 'green'
                                     elif white == '0' and black == '1':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
                                         new_dict['font_color'] = 'red'
                                     else:
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
                                         new_dict['font_color'] = 'black'
                             else:
                                 if id_in_tournament in (game.get('Black'), game.get('White')):
@@ -575,7 +607,7 @@ def player_rating_for_chart(pk):
 
 
 def _sort_lod(lop):
-    #lop = list of players (list of dictionaries)
+    # lop = list of players (list of dictionaries)
     unsorted_players_list = []
     by_rating = False
     for person in lop:
@@ -605,7 +637,7 @@ def _sort_lod(lop):
 
 
 def _sort_ipl(lopit):
-    #lopit = list of players in tournament(from json)
+    # lopit = list of players in tournament(from json)
     unsorted_players_list = []
     by_rating = False
     for element in lopit:
@@ -640,7 +672,7 @@ def _sort_ipl(lopit):
 
 
 def parse_results(array):
-    #функция меняет значение поля "results" со строки в список со словарями
+    # функция меняет значение поля "results" со строки в список со словарями
 
     players_data = array
     for pl in players_data:
