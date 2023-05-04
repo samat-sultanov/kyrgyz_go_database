@@ -51,8 +51,7 @@ async function setPCity(){
 }
 
 async function getCities(event){
-    event.preventDefault();
-
+    window.console.log("function started");
     let pCity = document.getElementById("city_p_id");
     if (pCity){
         await deletePCity(pCity);
@@ -81,6 +80,7 @@ async function getCities(event){
     }
 
     let url = pRegion.dataset['getCitiesLink'];
+    window.console.log(url);
     let raw_response = await makeRequest(url, settings);
     if (raw_response.ok){
         response = await raw_response.json();
@@ -117,6 +117,7 @@ async function setPRegion(){
     selectRegion.setAttribute('onchange', 'getCities()');
     pRegions.appendChild(selectRegion);
     pRegions.setAttribute('id', 'region_p_id');
+    pRegions.setAttribute('data-get-cities-link', `/api/v1/get_cities/`);
 
     let parent = pCountry.parentNode;
     parent.insertBefore(pRegions, pCountry.nextSibling);

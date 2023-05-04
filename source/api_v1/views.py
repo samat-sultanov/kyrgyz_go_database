@@ -56,3 +56,21 @@ def get_region(request, *args, **kwargs):
             return JsonResponse(for_response)
     else:
         return HttpResponseNotAllowed(['POST'])
+
+
+def get_cities(request, *args, **kwargs):
+    if request.method == "POST":
+        if request.body:
+            received = json.loads(request.body)
+            country = received.get("country")
+            country_id = Country.objects.get(country_code=country)
+            region_id = received.get("region")
+            cities = City.objects.all().filter(Q(country_id=country_id) & Q(region_id=region_id))
+
+            for_response = dict()
+            for city in cities:
+                for_response[city.pk] = city.city
+
+            return JsonResponse(for_response)
+    else:
+        return HttpResponseNotAllowed(['POST'])
