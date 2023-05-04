@@ -1,5 +1,4 @@
 from urllib.parse import urlencode
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -17,6 +16,8 @@ class ClubsListView(ListView):
     context_object_name = 'clubs'
     paginate_by = 15
     paginate_orphans = 4
+    country = Country.objects.get(country_code='kg')
+    queryset = Club.objects.filter(country=country)
 
     def get_ordering(self):
         ordering = '-num_players'
@@ -25,13 +26,6 @@ class ClubsListView(ListView):
         return ordering
 
     def get(self, request, *args, **kwargs):
-        try:
-            country = Country.objects.get(country_code='kg')
-        except ObjectDoesNotExist:
-            Country.objects.create(country_code='kg')
-            country = Country.objects.get(country_code='kg')
-
-        self.queryset = Club.objects.filter(country=country)
         self.form = self.get_search_form()
         self.search_name = self.get_search_name()
         self.search_city = self.get_search_city()
@@ -60,9 +54,9 @@ class ClubsListView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         context['data'] = average_go_level()
-        # country = Country.objects.get(country_code='kg')
-        # clubs = Club.objects.filter(country=country)
-        # context['wins'] = get_total_wins(clubs)
+        country = Country.objects.get(country_code='kg')
+        clubs = Club.objects.filter(country=country)
+        context['wins'] = get_total_wins(clubs)
         if self.search_name:
             context['query'] = urlencode({'search_name': self.search_name})
             context['search_name'] = self.search_name
