@@ -129,6 +129,8 @@ async function getRegions(event){
     let pRegion = document.getElementById("region_p_id");
     if (pRegion){
         await deletePRegion(pRegion);
+        let pCity = document.getElementById("city_p_id");
+        if (pCity){await deletePCity(pCity);}
         await setPRegion();
     }else{
         await setPRegion();
