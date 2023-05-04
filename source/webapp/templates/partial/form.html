@@ -1,7 +1,6 @@
 {% csrf_token %}
 {% load static %}
 
-{#{{ form.as_p }}#}
 {% for error in form.non_field_errors %}
     <p class="form-error" style="color: red">{{ error }}</p>
 {% endfor %}
@@ -13,7 +12,6 @@
     {% endfor %}
     <p>{{ field }}</p>
 {% endfor %}
-{#<p><input class="btn" style="background: #9400D3;color: white;" type="submit" value="{{ button_text }}"></p>#}
 
 <!-- Открывает модалку подтверждения -->
 <button class="btn kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal" style="background: #9400D3;color: white;"

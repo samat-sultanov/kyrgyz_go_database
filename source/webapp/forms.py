@@ -205,8 +205,8 @@ class ClubForm(forms.ModelForm):
             'address': "Адрес:",
             'phonenumber': "Номер телефона:",
             'web_link': "Web-site:",
-            'schedule_from': "Работаем С (Время)",
-            'schedule_to': "До (Время)",
+            'schedule_from': "Работаем С",
+            'schedule_to': "До",
             'breakfast_from': "Обед с",
             'breakfast_to': "До",
         }
@@ -250,8 +250,8 @@ class ClubCreateForm(forms.ModelForm):
             'address': "Адрес",
             'phonenumber': "Номер телефона",
             'web_link': "Ссылка на соц. сети или сайт",
-            'schedule_from': "Работаем С (Время)",
-            'schedule_to': "До (Время)",
+            'schedule_from': "Работаем С",
+            'schedule_to': "До",
             'breakfast_from': "Обед с",
             'breakfast_to': "До",
         }
