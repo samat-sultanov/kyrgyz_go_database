@@ -42,5 +42,5 @@ def get_token_view(request, *args, **kwargs):
 
 
 def get_region(request, *args, **kwargs):
-    if request.method == "GET":
+    if request.method == "POST":
         pass
