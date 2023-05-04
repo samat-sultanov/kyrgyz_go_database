@@ -10,6 +10,7 @@
 
 {% block content %}
     <div class="container">
+        {% if news_list %}
         <div class=" mt-4" style="text-align: center">
             <h2 class="title">Новости</h2>
         </div>
@@ -31,6 +32,11 @@
             {% endfor %}
         </div>
         <br/>
+        {% else %}
+        <div class=" mt-4" style="text-align: center">
+            <h3 class="title">Нет новостей для отображения</h3>
+        </div>
+        {% endif %}
     </div>
 
 {% endblock %}

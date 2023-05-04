@@ -47,7 +47,7 @@
     </div>
 
     <div class="mx-5 mt-5 mb-3">
-        <div class="row row-cols-1 row-cols-md-2 ">
+        <div class="row row-cols-1 row-cols-md-2">
             <div class="col-12 col-sm-12 col-md-12 col-lg-8">
                 <h3 class="title">Последние новости:</h3>
                 {% for news in latest_news %}
@@ -70,9 +70,9 @@
                                         allowfullscreen></iframe>
                             </div>
                         {% endif %}
+                        <p>{{ news.text|truncatechars:100 }}</p>
                     </div>
 
-                    <p>{{ news.text|truncatechars:400 }}</p>
                     <i>{{ news.created_at|date:"d F Y" }}</i>
                     <a class="btn btn-light ms-4" href="{{ news.get_absolute_url }}">Читать далее >></a>
                     <div class="mb-4 mt-4"></div>

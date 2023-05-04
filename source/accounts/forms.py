@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.forms import EmailField, BooleanField
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
 
 from webapp.models import Country
 
@@ -45,12 +44,7 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    try:
-        kg = Country.objects.get(country_code='kg')
-    except ObjectDoesNotExist:
-        Country.objects.create(country_code='kg')
-        kg = Country.objects.get(country_code='kg')
-
+    kg = Country.objects.get(country_code='kg')
     clubs = []
     for i in kg.city_set.all():
         for c in i.club_set.all():
