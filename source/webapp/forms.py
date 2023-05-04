@@ -18,7 +18,7 @@ latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
 def get_countries():
     base_url = 'https://restcountries.com/v3.1/alpha/'
-    list_of_countries = [('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
+    list_of_countries = [("", "  -----  "), ('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
     countries = []
     for player in Player.objects.all():
         if player.country not in countries:

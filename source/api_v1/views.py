@@ -43,4 +43,7 @@ def get_token_view(request, *args, **kwargs):
 
 def get_region(request, *args, **kwargs):
     if request.method == "POST":
-        pass
+        if request.body:
+            received = json.loads(request.body)
+            country = received.get("country")
+            print(country)
