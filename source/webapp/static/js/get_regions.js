@@ -32,6 +32,81 @@ async function deletePRegion(pRegion){
     pRegion.remove();
 }
 
+async function deletePCity(pCity){
+    pCity.remove();
+}
+
+async function setPCity(){
+    let pRegions = document.getElementById('region_p_id');
+    let pCities = document.createElement("p");
+    let selectCity = document.createElement("select");
+    pCities.innerText = 'Город';
+    selectCity.setAttribute('name', 'city');
+    selectCity.setAttribute('id', 'id_city');
+    pCities.appendChild(selectCity);
+    pCities.setAttribute('id', 'city_p_id');
+
+    let parent = pRegions.parentNode;
+    parent.insertBefore(pCities, pRegions.nextSibling);
+}
+
+async function getCities(event){
+    event.preventDefault();
+
+    let pCity = document.getElementById("city_p_id");
+    if (pCity){
+        await deletePCity(pCity);
+        await setPCity();
+    }else{
+        await setPCity();
+    }
+
+    let pCountry = document.getElementById('country_p_id');
+    let select = document.getElementById('id_country');
+    let selectedCountry = select.value;
+
+    let pRegion = document.getElementById('region_p_id');
+    let selectRegion = document.getElementById('id_region');
+    let selectedRegion = selectRegion.value;
+
+    let inputs = {"country": selectedCountry, "region": selectedRegion};
+
+    const settings = {
+        method:'POST',
+        headers:{
+            "Content-Type":"application/json;charset=utf-8",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify(inputs)
+    }
+
+    let url = pRegion.dataset['getCitiesLink'];
+    let raw_response = await makeRequest(url, settings);
+    if (raw_response.ok){
+        response = await raw_response.json();
+        const entries = Object.entries(response);
+        let selectCity = document.getElementById("id_city");
+        let dummyOption = document.createElement("option");
+        dummyOption.innerText = "  -----  ";
+        dummyOption.setAttribute('value', '');
+        selectCity.appendChild(dummyOption);
+
+        for (let [key, value] of entries){
+            let option = document.createElement('option');
+            option.innerText = value;
+            option.setAttribute('value', key);
+            selectCity.appendChild(option);
+        }
+    }else if(raw_response.status === 400){
+        response = await raw_response.json();
+        let formTop = document.getElementsByClassName('form-group')[0];
+        let error = document.createElement('h4');
+        error.innerText = response.error;
+        error.className = "text-bg-danger";
+        formTop.appendChild(error);
+    }
+}
+
 async function setPRegion(){
     let pCountry = document.getElementById('country_p_id');
     let pRegions = document.createElement("p");
@@ -39,6 +114,7 @@ async function setPRegion(){
     pRegions.innerText = 'Регион';
     selectRegion.setAttribute('name', 'region');
     selectRegion.setAttribute('id', 'id_region');
+    selectRegion.setAttribute('onchange', 'getCities()');
     pRegions.appendChild(selectRegion);
     pRegions.setAttribute('id', 'region_p_id');
 
@@ -94,21 +170,15 @@ async function getRegions(event){
         let formTop = document.getElementsByClassName('form-group')[0];
         let error = document.createElement('h4');
         error.innerText = response.error;
-        error.className = "card-title text-bg-danger";
+        error.className = "text-bg-danger";
         formTop.appendChild(error);
     }
-}
-
-
-async function getCities(event){
-    pass
 }
 
 
 async function onLoad(){
     let selectCountry = document.getElementById('id_country');
     if (selectCountry != null){
-        window.console.log(selectCountry);
         selectCountry.onchange = getRegions;
     }
     else {
