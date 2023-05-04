@@ -258,18 +258,18 @@ class ClubCreateForm(forms.ModelForm):
 
 
 class ParticipantForm(forms.ModelForm):
-    name = forms.CharField(validators=[validate_latin_chars], label='',
+    name = forms.CharField(validators=[validate_latin_chars], label='Имя',
                            widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
                                "First name", "id": "id_name", 'style': "width:200px"}))
-    surname = forms.CharField(validators=[validate_latin_chars], label='',
+    surname = forms.CharField(validators=[validate_latin_chars], label='Фамилия',
                               widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
                                   "Last name", "id": "id_surname", 'style': "width:200px"}))
-    rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+    rank = forms.CharField(label='Ранг', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Rank", "id": "id_rank", 'style': "width:200px"}))
-    city = forms.CharField(required=False, validators=[validate_latin_chars], label='',
+    city = forms.CharField(required=False, validators=[validate_latin_chars], label='Город',
                               widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
                                   "City", "id": "id_city", 'style': "width:200px"}))
-    phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+    phonenumber = forms.CharField(label='Номер телефона', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
 
     class Meta:
