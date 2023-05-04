@@ -1,11 +1,16 @@
+import json
+
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
+
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.viewsets import ModelViewSet
-from webapp.models import Player
-from api_v1.serializers import PlayerSerializer
 from rest_framework import filters
+
+from webapp.models import Player, City, Region, Country
+from api_v1.serializers import PlayerSerializer
+
 
 class PlayerSerView(ModelViewSet):
     queryset = Player.objects.all()
@@ -29,10 +34,13 @@ class PlayerSerView(ModelViewSet):
         return super().get_permissions()
 
 
-
 @ensure_csrf_cookie
 def get_token_view(request, *args, **kwargs):
     if request.method == 'GET':
         return HttpResponse()
     return HttpResponseNotAllowed(['GET'])
 
+
+def get_region(request, *args, **kwargs):
+    if request.method == "GET":
+        pass
