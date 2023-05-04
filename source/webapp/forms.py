@@ -7,9 +7,7 @@ from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tou
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from datetime import datetime
 import re
-
 
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
@@ -117,7 +115,6 @@ class NewsForm(forms.ModelForm):
         return cleaned_data
 
 
-
 class NewsBulkDeleteForm(forms.Form):
     checkboxes = forms.ModelMultipleChoiceField(News.objects.all(), widget=forms.CheckboxSelectMultiple)
 
@@ -164,7 +161,6 @@ class CheckPlayerForm(forms.Form):
         return rating
 
 
-
 class CheckTournamentForm(forms.Form):
     Name = forms.CharField(max_length=255)
     location = forms.CharField(max_length=255, required=False)
@@ -183,8 +179,10 @@ class CheckTournamentForm(forms.Form):
 
 
 class ClubForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
+                                                 widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
+                                                  widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -226,8 +224,10 @@ class ClubForm(forms.ModelForm):
 
 
 class ClubCreateForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
+                                                 widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
+                                                  widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -267,10 +267,11 @@ class ParticipantForm(forms.ModelForm):
     rank = forms.CharField(label='Ранг', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Rank", "id": "id_rank", 'style': "width:200px"}))
     city = forms.CharField(required=False, validators=[validate_latin_chars], label='Город',
-                              widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-                                  "City", "id": "id_city", 'style': "width:200px"}))
-    phonenumber = forms.CharField(label='Номер телефона', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
+                           widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                               "City", "id": "id_city", 'style': "width:200px"}))
+    phonenumber = forms.CharField(label='Номер телефона',
+                                  widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                                      "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
 
     class Meta:
         model = Participant
