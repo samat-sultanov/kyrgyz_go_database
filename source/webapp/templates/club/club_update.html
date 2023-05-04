@@ -5,8 +5,100 @@
         <h3 class="title">Редактировать клуб: {{ club.name }}</h3>
 
         <form action="" method="post" enctype="multipart/form-data">
-            {% include 'partial/form.html' with button_text="Сохранить" %}
+                        {% csrf_token %}
+            {% load static %}
+
+            {% for error in form.non_field_errors %}
+                <p class="form-error" style="color: red">{{ error }}</p>
+            {% endfor %}
+
+            {% for field in form %}
+             {% if field == form.breakfast_from %}
+                    <div style="display: flex">
+                    <div>
+                        <p style="padding-right: 59px"><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
+                    {% for error in field.errors %}
+                        <p class="form-error text-danger">{{ error }}</p>
+                    {% endfor %}
+                        <p>{{ form.breakfast_from  }}</p>
+                    </div>
+                    <div>
+                               <p><label>{{ form.breakfast_to.label }}</label></p>
+                    {% for error in field.errors %}
+                        <p class="form-error text-danger">{{ error }}</p>
+                    {% endfor %}
+                    <p>{{ form.breakfast_to }}</p>
+                    </div>
+                    </div>
+                {% elif field == form.breakfast_to %}
+               {% elif field == form.schedule_from %}
+                    <div style="display: flex">
+                    <div>
+                        <p style="padding-right: 20px"><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
+                    {% for error in field.errors %}
+                        <p class="form-error text-danger">{{ error }}</p>
+                    {% endfor %}
+                        <p>{{ form.schedule_from  }}</p>
+                    </div>
+                    <div>
+                               <p><label>{{ form.schedule_to.label }}</label></p>
+                    {% for error in field.errors %}
+                        <p class="form-error text-danger">{{ error }}</p>
+                    {% endfor %}
+                    <p>{{ form.schedule_to }}</p>
+                    </div>
+                    </div>
+                {% elif field == form.schedule_to %}
+                {% elif field == form.days_of_work %}
+                    <div style="display: flex">
+                    <div>
+                        <p style="padding-right: 20px"><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
+                    {% for error in field.errors %}
+                        <p class="form-error text-danger">{{ error }}</p>
+                    {% endfor %}
+                        <p>{{ form.days_of_work }}</p>
+                    </div>
+                    <div>
+                               <p><label>{{ form.day_of_week.label }}</label></p>
+                    {% for error in field.errors %}
+                        <p class="form-error text-danger">{{ error }}</p>
+                    {% endfor %}
+                    <p>{{ form.day_of_week }}</p>
+                    </div>
+                    </div>
+                {% elif field == form.day_of_week %}
+                {% else %}
+                   <p><label for="{{ field.id_for_label }}">{{ field.label }}</label></p>
+                {% for error in field.errors %}
+                    <p class="form-error text-danger">{{ error }}</p>
+                {% endfor %}
+                    <p>{{ field }}</p>
+                {% endif %}
+            {% endfor %}
+
+
+            <!-- Открывает модалку подтверждения -->
+            <button class="btn kgf_modal" data-bs-toggle="modal" data-bs-target="#myModal" style="background: #9400D3;color: white;"
+                    type="button">
+                Cохранить
+            </button>
+
+            <!-- Модалка подтверждения -->
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title fs-5" id="myModalLabel">Подтвердить изменения?</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет</button>
+                            <input type="submit" id="confirm_button" class="btn btn-outline-secondary" value="Да">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
-
 {% endblock %}
