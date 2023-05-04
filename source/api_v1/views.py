@@ -46,4 +46,13 @@ def get_region(request, *args, **kwargs):
         if request.body:
             received = json.loads(request.body)
             country = received.get("country")
-            print(country)
+            country_id = Country.objects.get(country_code=country)
+            regions = Region.objects.all().filter(country_id=country_id)
+
+            for_response = dict()
+            for region in regions:
+                for_response[region.pk] = region.name
+
+            return JsonResponse(for_response)
+    else:
+        return HttpResponseNotAllowed(['POST'])

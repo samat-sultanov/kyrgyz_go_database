@@ -28,11 +28,11 @@ async function makeRequest(url, settings) {
     }
 }
 
+async function deletePRegion(pRegion){
+    pRegion.remove();
+}
 
-async function getRegions(event){
-    event.preventDefault();
-    window.console.log("function started");
-
+async function setPRegion(){
     let pCountry = document.getElementById('country_p_id');
     let pRegions = document.createElement("p");
     let selectRegion = document.createElement("select");
@@ -43,12 +43,24 @@ async function getRegions(event){
     pRegions.setAttribute('id', 'region_p_id');
 
     let parent = pCountry.parentNode;
-    console.log(parent);
     parent.insertBefore(pRegions, pCountry.nextSibling);
+}
+
+async function getRegions(event){
+    event.preventDefault();
+
+    let pRegion = document.getElementById("region_p_id");
+    if (pRegion){
+        await deletePRegion(pRegion);
+        await setPRegion();
+    }else{
+        await setPRegion();
+    }
+
+    let pCountry = document.getElementById('country_p_id');
 
     let select = document.getElementById('id_country');
     let selectedCountry = select.value;
-    window.console.log(selectedCountry);
     let input = {"country": selectedCountry};
 
     const settings = {
@@ -61,11 +73,15 @@ async function getRegions(event){
     }
 
     let url = pCountry.dataset['getRegionsLink'];
-    console.log(url);
     let raw_response = await makeRequest(url, settings);
     if (raw_response.ok){
         response = await raw_response.json();
         const entries = Object.entries(response);
+        let selectRegion = document.getElementById("id_region");
+        let dummyOption = document.createElement("option");
+        dummyOption.innerText = "  -----  ";
+        dummyOption.setAttribute('value', '');
+        selectRegion.appendChild(dummyOption);
 
         for (let [key, value] of entries){
             let option = document.createElement('option');
