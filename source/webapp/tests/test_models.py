@@ -4,7 +4,7 @@ import datetime
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.db.models import PositiveIntegerField, FloatField, DateTimeField
+from django.db.models import PositiveIntegerField, FloatField, DateTimeField, ProtectedError
 from django.test import TestCase
 import accounts.models
 from accounts.models import User
@@ -351,12 +351,12 @@ class TournamentModelTest(TestCase):
         self.assertEqual(updated_tournament.name, 'Updated Tournament')
 
     def test_city_deletion(self):
-        self.city.delete()
-        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+        with self.assertRaises(ProtectedError):
+            self.city.delete()
 
     def test_region_deletion(self):
-        self.region.delete()
-        self.assertFalse(Tournament.objects.filter(pk=self.tournament.pk).exists())
+        with self.assertRaises(ProtectedError):
+            self.region.delete()
 
     def test_author_default_value(self):
         tournament = Tournament.objects.create(

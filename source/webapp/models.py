@@ -123,8 +123,8 @@ class Game(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament name", max_length=50, null=True, blank=True)
-    city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
-    region = models.ForeignKey('webapp.Region', on_delete=models.CASCADE, null=True, blank=True)
+    city = models.ForeignKey('webapp.City', on_delete=models.PROTECT, null=True, blank=True)
+    region = models.ForeignKey('webapp.Region', on_delete=models.PROTECT, null=True, blank=True)
     location = models.CharField(verbose_name="Место проведения", max_length=100, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
