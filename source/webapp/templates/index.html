@@ -73,7 +73,7 @@
                         <p>{{ news.text|truncatechars:100 }}</p>
                     </div>
 
-                    <i>{{ news.created_at|date:"d F Y" }}</i>
+                    <i>{{ news.created_at|date:"d E Y" }}</i>
                     <a class="btn btn-light ms-4" href="{{ news.get_absolute_url }}">Читать далее >></a>
                     <div class="mb-4 mt-4"></div>
                 {% endfor %}
