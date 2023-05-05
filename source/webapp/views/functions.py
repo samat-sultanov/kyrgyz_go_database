@@ -168,86 +168,144 @@ def get_data_for_table_games(pk):
     return new_list
 
 
-def get_tournaments_for_gor_evolution(player):
-    tournaments = player.playerintournament_set.all()
-    return tournaments
-
-
-def get_games_for_gor_evolution(tournament):
-    games = Game.objects.filter(tournament=tournament)
+def get_games_for_player(player):
+    games = Game.objects.filter(
+        Q(black=player) | Q(white=player),
+        tournament__playerintournament__player=player
+    )
     return games
 
 
-def get_game_result_for_gor_evolution_for_black(data):
-    if data.result is not None:
-        if data.black_score == 0:
-            return 'Loss'
-        elif data.black_score == 1:
+def get_game_result_for_player(game, player):
+    if game.result is not None:
+        if game.black == player and game.black_score == 1 or game.white == player and game.white_score == 1:
             return 'Win'
+        elif game.black == player and game.black_score == 0 or game.white == player and game.white_score == 0:
+            return 'Loss'
     return None
 
 
-def get_game_result_for_gor_evolution_for_white(data):
-    if data.result is not None:
-        if data.white_score == 0:
-            return 'Loss'
-        elif data.white_score == 1:
-            return 'Win'
-    return None
+def get_game_data_for_player(game, player):
+    opponent = game.white if game.black == player else game.black
+    opponent_data = PlayerInTournament.objects.filter(
+        tournament=game.tournament,
+        player=opponent
+    ).first()
+    if opponent_data:
+        opponent_rank = opponent_data.GoLevel
+        opponent_rating = opponent_data.rating
+    else:
+        opponent_rank = None
+        opponent_rating = None
 
-
-def sort_items_for_gor_evolution(new_list):
-    for item in new_list:
-        if item['opponent'] is None:
-            new_list.remove(item)
-    return new_list
+    return {
+        'tournament': game.tournament,
+        'round': game.round_num,
+        'gor_change': game.black_gor_change if game.black == player else game.white_gor_change,
+        'opponent_rank': opponent_rank,
+        'opponent_rating': opponent_rating,
+        'opponent': opponent,
+        'opponent_gor_change': game.white_gor_change if game.black == player else game.black_gor_change,
+        'result': get_game_result_for_player(game, player),
+        'color': 'b' if game.black == player else 'w'
+    }
 
 
 def get_data_for_gor_evolution(pk):
     player = Player.objects.get(pk=pk)
-    tournaments = get_tournaments_for_gor_evolution(player)
-    new_list = []
-    for element in tournaments:
-        tournament = Tournament.objects.get(pk=element.tournament_id)
-        games = get_games_for_gor_evolution(tournament)
-        for game in games:
-            new_dict = dict()
-            if game.black == player and game.black_gor_change:
-                new_dict['tournament'] = tournament
-                new_dict['round'] = game.round_num
-                new_dict['gor_change'] = game.black_gor_change
-                opponent = game.white
-                if opponent:
-                    data = get_tournaments_for_gor_evolution(opponent)
-                    for el in data:
-                        new_dict['opponent_rank'] = el.GoLevel
-                        new_dict['opponent_rating'] = el.rating
-                new_dict['opponent'] = game.white
-                new_dict['opponent_gor_change'] = game.white_gor_change
-                if game.result is not None:
-                    new_dict['result'] = get_game_result_for_gor_evolution_for_black(game)
-                new_dict['color'] = 'b'
-                new_list.append(new_dict)
-            elif game.white == player and game.white_gor_change:
-                new_dict['tournament'] = tournament
-                new_dict['round'] = game.round_num
-                new_dict['gor_change'] = game.white_gor_change
-                opponent = game.black
-                if opponent:
-                    data = get_tournaments_for_gor_evolution(opponent)
-                    for el in data:
-                        new_dict['opponent_rank'] = el.GoLevel
-                        new_dict['opponent_rating'] = el.rating
-                new_dict['opponent'] = game.black
-                new_dict['opponent_gor_change'] = game.black_gor_change
-                if game.result is not None:
-                    new_dict['result'] = get_game_result_for_gor_evolution_for_white(game)
-                new_dict['color'] = 'w'
-                new_list.append(new_dict)
-            else:
-                pass
-    sort_items_for_gor_evolution(new_list)
-    return new_list
+    games = get_games_for_player(player)
+    game_data_list = []
+    for game in games:
+        result = get_game_result_for_player(game, player)
+        if result:
+            game_data = get_game_data_for_player(game, player)
+            game_data_list.append(game_data)
+
+    game_data_list = sorted(filter(lambda x: x['opponent'], game_data_list), key=lambda x: x['opponent'].last_name)
+    return game_data_list
+
+
+
+# def get_tournaments_for_gor_evolution(player):
+#     tournaments = player.playerintournament_set.all()
+#     return tournaments
+#
+#
+# def get_games_for_gor_evolution(tournament):
+#     games = Game.objects.filter(tournament=tournament)
+#     return games
+#
+#
+# def get_game_result_for_gor_evolution_for_black(data):
+#     if data.result is not None:
+#         if data.black_score == 0:
+#             return 'Loss'
+#         elif data.black_score == 1:
+#             return 'Win'
+#     return None
+#
+#
+# def get_game_result_for_gor_evolution_for_white(data):
+#     if data.result is not None:
+#         if data.white_score == 0:
+#             return 'Loss'
+#         elif data.white_score == 1:
+#             return 'Win'
+#     return None
+#
+#
+# def sort_items_for_gor_evolution(new_list):
+#     for item in new_list:
+#         if item['opponent'] is None:
+#             new_list.remove(item)
+#     return new_list
+#
+#
+# def get_data_for_gor_evolution(pk):
+#     player = Player.objects.get(pk=pk)
+#     tournaments = get_tournaments_for_gor_evolution(player)
+#     new_list = []
+#     for element in tournaments:
+#         tournament = Tournament.objects.get(pk=element.tournament_id)
+#         games = get_games_for_gor_evolution(tournament)
+#         for game in games:
+#             new_dict = dict()
+#             if game.black == player and game.black_gor_change:
+#                 new_dict['tournament'] = tournament
+#                 new_dict['round'] = game.round_num
+#                 new_dict['gor_change'] = game.black_gor_change
+#                 opponent = game.white
+#                 if opponent:
+#                     data = get_tournaments_for_gor_evolution(opponent)
+#                     for el in data:
+#                         new_dict['opponent_rank'] = el.GoLevel
+#                         new_dict['opponent_rating'] = el.rating
+#                 new_dict['opponent'] = game.white
+#                 new_dict['opponent_gor_change'] = game.white_gor_change
+#                 if game.result is not None:
+#                     new_dict['result'] = get_game_result_for_gor_evolution_for_black(game)
+#                 new_dict['color'] = 'b'
+#                 new_list.append(new_dict)
+#             elif game.white == player and game.white_gor_change:
+#                 new_dict['tournament'] = tournament
+#                 new_dict['round'] = game.round_num
+#                 new_dict['gor_change'] = game.white_gor_change
+#                 opponent = game.black
+#                 if opponent:
+#                     data = get_tournaments_for_gor_evolution(opponent)
+#                     for el in data:
+#                         new_dict['opponent_rank'] = el.GoLevel
+#                         new_dict['opponent_rating'] = el.rating
+#                 new_dict['opponent'] = game.black
+#                 new_dict['opponent_gor_change'] = game.black_gor_change
+#                 if game.result is not None:
+#                     new_dict['result'] = get_game_result_for_gor_evolution_for_white(game)
+#                 new_dict['color'] = 'w'
+#                 new_list.append(new_dict)
+#             else:
+#                 pass
+#     sort_items_for_gor_evolution(new_list)
+#     return new_list
 
 
 def get_tournaments_list_for_gor_evolution(pk):
