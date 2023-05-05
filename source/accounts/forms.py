@@ -11,9 +11,9 @@ User = get_user_model()
 
 class CustomUserCreationForm(UserCreationForm):
     email = EmailField(
-        label="Email",
+        label="Электронная почта",
         required=True,
-        help_text="Required. Enter a valid email address."
+        help_text="Обязательное поле. Введите электронную почту."
     )
     send_email = BooleanField(
         label="Send email",
@@ -26,8 +26,8 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'avatar', 'send_email')
         labels = {
-            'phone': 'Phone number',
-            'avatar': 'Avatar'
+            'phone': 'Номер телефона',
+            'avatar': 'Аватар'
         }
 
 
