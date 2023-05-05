@@ -1,9 +1,13 @@
 from random import randint
 from operator import itemgetter
 from collections import Counter
+import requests
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+
 from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS, PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
@@ -539,11 +543,37 @@ def update_json_tournament(data, some_dict, some_list):
     return updated_data
 
 
+def get_country_name_from_code(code):
+    base_url = 'https://restcountries.com/v3.1/alpha/'
+
+    raw_response = requests.get(base_url + code)
+    if raw_response.status_code == 200:
+        response = raw_response.json()
+        for element in response:
+            for k, v in element.items():
+                if k == "translations":
+                    try:
+                        rus_names = v.get("rus")
+                        name_to_return = rus_names.get("common")
+                        if name_to_return:
+                            if name_to_return == 'Киргизия':
+                                return 'Кыргызстан'
+                            else:
+                                return name_to_return
+                        else:
+                            return rus_names.get("official")
+                    except ObjectDoesNotExist:
+                        common = response[0].get("common")
+                        return common
+    else:
+        return f'Страна не найдена по коду из json - {code}'
+
+
 def unpack_data_for_moderation_tournament(data):
     new_dict = {}
     for k, v in data.get('Tournament', {}).items():
-        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'city', 'regulations'}:
-            new_dict[k] = int(v) if k == 'NumberOfRounds' or k == 'Boardsize' else v
+        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'country_code', 'region_id', 'city_id', 'regulations'}:
+            new_dict[k] = int(v) if k in ('NumberOfRounds', 'Boardsize', 'region_id', 'city_id') else v
     return new_dict
 
 
