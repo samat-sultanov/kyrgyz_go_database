@@ -214,6 +214,7 @@ class CheckTournamentForm(forms.Form):
     regulations = forms.CharField(max_length=255, required=False)
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=True)
     country = forms.ChoiceField(choices=COUNTRIES)
+    region = forms.CharField(max_length=100, required=False)
     city = forms.CharField(max_length=255, required=False)
     tournament_class = forms.ChoiceField(choices=CLASS_CHOICES, required=True)
 

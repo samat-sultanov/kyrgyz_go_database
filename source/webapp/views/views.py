@@ -93,7 +93,9 @@ class TournamentCheckView(LoginRequiredMixin, FormView):
             'NumberOfRounds': form.cleaned_data['NumberOfRounds'],
             'Boardsize': form.cleaned_data['Boardsize'],
             'date': form.cleaned_data['date'].isoformat(),
-            'city': form.cleaned_data['city'],
+            'country_code': form.cleaned_data.get('country', ''),
+            'region_id': form.cleaned_data.get('region', 0),
+            'city_id': form.cleaned_data.get('city', 0),
             'tournament_class': form.cleaned_data['tournament_class'],
             'regulations': form.cleaned_data['regulations'],
             'uploaded_by': self.request.user.username
