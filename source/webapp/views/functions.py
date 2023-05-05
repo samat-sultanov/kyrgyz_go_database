@@ -572,11 +572,16 @@ def get_country_name_from_code(code):
 def unpack_data_for_moderation_tournament(data):
     new_dict = {}
     for k, v in data.get('Tournament', {}).items():
-        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'region_id', 'city_id', 'regulations'}:
-            new_dict[k] = int(v) if k in ('NumberOfRounds', 'Boardsize', 'region_id', 'city_id') else v
+        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'regulations'}:
+            new_dict[k] = int(v) if k in ('NumberOfRounds', 'Boardsize') else v
         elif k == 'country_code':
             new_dict[k] = v
             new_dict['country'] = get_country_name_from_code(v)
+        elif k in ('region_id', 'city_id'):
+            if v != '':
+                new_dict[k] = int(v)
+            else:
+                new_dict[k] = v
     return new_dict
 
 

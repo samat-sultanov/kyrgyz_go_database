@@ -182,6 +182,18 @@ async function getRegions(event){
 async function onLoad(){
     let selectCountry = document.getElementById('id_country');
     if (selectCountry != null){
+        let pCountry = document.getElementById('country_p_id');
+        if (pCountry.dataset['countryCode']){
+           let options = selectCountry.children;
+           for (let i=0; i < options.length; i++){
+                if (options[i].value === pCountry.dataset['countryCode']){
+                    options[i].setAttribute('selected', '');
+                }
+           }
+        }else{
+            let dummyOption = selectCountry.children[0];
+            dummyOption.setAttribute('selected', '');
+        }
         selectCountry.onchange = getRegions;
     }
     else {
