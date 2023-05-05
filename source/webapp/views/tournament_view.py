@@ -186,6 +186,7 @@ class ModerationTournamentView(PermissionRequiredMixin, FormView):
         with default_storage.open(json_file_path, 'r') as f:
             data = json.load(f)
         tournament_data = unpack_data_for_moderation_tournament(data)
+        print(tournament_data)
         players = unpack_data_json_players(data)
         players_data = parse_results(players)
         list_of_rounds = []

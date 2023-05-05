@@ -14,7 +14,13 @@
                 <p>Количество раундов: {{ form1.NumberOfRounds }}</p>
                 <p>Размер доски: {{ form1.Boardsize }}</p>
                 <p>Дата: {{ form1.date }}</p>
-                <p>Город: {{ form1.city }}</p>
+                <p>Страна: </p>
+                {% if tournament.region_id %}
+                    <p>Регион: </p>
+                {% endif %}
+                {% if tournament.city_id %}
+                    <p>Город: </p>
+                {% endif %}
                 <p>Класс: {{ form1.tournament_class }}</p>
                 <p>Регламент: {{ form1.regulations }}</p>
                 <p>Location: {{ form1.location }}</p>
