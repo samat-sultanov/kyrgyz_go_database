@@ -36,7 +36,7 @@
                         <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:club_create' %}">Добавить клуб</a>
                     {% endif %}
                     {% if request.user.is_superuser %}
-                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:moderation_tournaments' %}">турниры на модерацию</a>
+                        <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:moderation_tournaments' %}">Турниры на модерацию</a>
                         <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:deleted_news_list' %}">Удаленные новости</a>
                         <a class="btn btn-md rounded mb-1" style="background-color: #b36aff; color: white" href="{% url 'webapp:deleted_calendar_list' %}">Удаленные анонсы турниров/ивентов</a>
                     {% endif %}
