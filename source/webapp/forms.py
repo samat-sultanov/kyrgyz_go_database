@@ -213,7 +213,7 @@ class CheckTournamentForm(forms.Form):
     NumberOfRounds = forms.IntegerField()
     regulations = forms.CharField(max_length=255, required=False)
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=True)
-    country = forms.ChoiceField(choices=COUNTRIES)
+    country = forms.ChoiceField(choices=COUNTRIES, required=True)
     region = forms.CharField(max_length=100, required=False)
     city = forms.CharField(max_length=255, required=False)
     tournament_class = forms.ChoiceField(choices=CLASS_CHOICES, required=True)
@@ -223,6 +223,12 @@ class CheckTournamentForm(forms.Form):
         if tournament_class == DEFAULT_CLASS:
             self.add_error('tournament_class', 'Выберите корректный класс турнира!')
         return tournament_class
+
+    def clean_country(self):
+        country = self.cleaned_data.get('country')
+        if country == '':
+            self.add_error('country', 'Выберите страну проведения турнира!')
+        return country
 
 
 class ClubForm(forms.ModelForm):
