@@ -98,6 +98,7 @@ class TournamentCheckView(LoginRequiredMixin, FormView):
             'city': form.cleaned_data.get('city', 0),
             'tournament_class': form.cleaned_data['tournament_class'],
             'regulations': form.cleaned_data['regulations'],
+            'location': form.cleaned_data['location'],
             'uploaded_by': self.request.user.username
         }
         players_data = []

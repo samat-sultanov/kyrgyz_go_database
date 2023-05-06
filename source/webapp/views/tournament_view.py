@@ -208,6 +208,7 @@ class ModerationTournamentView(PermissionRequiredMixin, FormView):
             'country': form.cleaned_data['country'],
             'region': form.cleaned_data['region'],
             'city': form.cleaned_data['city'],
+            'location': form.cleaned_data['location'],
             'tournament_class': form.cleaned_data['tournament_class'],
             'regulations': form.cleaned_data['regulations'],
             'uploaded_by': self.request.user.username

@@ -14,6 +14,7 @@ def unpack_tournament_to_bd(data):
         'city': 'city',
         'region': 'region',
         'country': 'country',
+        'location': 'location',
         "regulations": "regulations",
         "uploaded_by": "uploaded_by",
         'date': 'date',

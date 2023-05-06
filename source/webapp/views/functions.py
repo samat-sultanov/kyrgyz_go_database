@@ -494,6 +494,7 @@ def get_position(array, id_num):
 
 
 def update_json_tournament(data, some_dict, some_list):
+    print(some_dict)
     updated_data = {}
     for key, value in data.items():
         if key == "Tournament":
@@ -513,6 +514,8 @@ def update_json_tournament(data, some_dict, some_list):
                     'regulations': some_dict['regulations'],
                     'uploaded_by': some_dict['uploaded_by'],
                 })
+
+            element['location'] = some_dict['location']
             updated_data['Tournament'] = element
             if 'IndividualParticipant' in items:
                 list_of_players = items['IndividualParticipant']

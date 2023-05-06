@@ -17,7 +17,7 @@
                     г.{{ tournament.city }}
                 {% endif %}
                 {% if tournament.location %}
-                    {{ tournament.location }}</p>
+                    ({{ tournament.location }})</p>
                 {% endif %}
             <p>Число участников: {{ tournament.player_set.count }}</p>
             <p>Раунды: {{ tournament.rounds }}</p>
