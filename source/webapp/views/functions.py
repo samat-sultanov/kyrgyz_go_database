@@ -506,9 +506,9 @@ def update_json_tournament(data, some_dict, some_list):
                     'NumberOfRounds': some_dict['NumberOfRounds'],
                     'Boardsize': some_dict['Boardsize'],
                     'date': some_dict['date'],
-                    'country_code': some_dict['country_code'],
-                    'region_id': some_dict['region_id'],
-                    'city_id': some_dict['city_id'],
+                    'country': some_dict['country'],
+                    'region': some_dict['region'],
+                    'city': some_dict['city'],
                     'tournament_class': some_dict['tournament_class'],
                     'regulations': some_dict['regulations'],
                     'uploaded_by': some_dict['uploaded_by'],
@@ -574,10 +574,10 @@ def unpack_data_for_moderation_tournament(data):
     for k, v in data.get('Tournament', {}).items():
         if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'regulations'}:
             new_dict[k] = int(v) if k in ('NumberOfRounds', 'Boardsize') else v
-        elif k == 'country_code':
+        elif k == 'country':
             new_dict[k] = v
-            new_dict['country'] = get_country_name_from_code(v)
-        elif k in ('region_id', 'city_id'):
+            new_dict['country_name'] = get_country_name_from_code(v)
+        elif k in ('region', 'city'):
             if v != '':
                 new_dict[k] = int(v)
             else:

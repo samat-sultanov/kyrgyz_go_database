@@ -21,7 +21,7 @@ class Country(models.Model):
     country_code = models.CharField(verbose_name='Country', max_length=2)
 
     def __str__(self):
-        return f'{self.country_code}'
+        return f'код страны: {self.country_code}'
 
     class Meta:
         verbose_name = "Страна"
@@ -125,6 +125,7 @@ class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament name", max_length=50, null=True, blank=True)
     city = models.ForeignKey('webapp.City', on_delete=models.PROTECT, null=True, blank=True)
     region = models.ForeignKey('webapp.Region', on_delete=models.PROTECT, null=True, blank=True)
+    country = models.ForeignKey('webapp.Country', on_delete=models.PROTECT, default=1)
     location = models.CharField(verbose_name="Место проведения", max_length=100, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
