@@ -1,14 +1,18 @@
 import os
+import requests
 from datetime import datetime as dt
 import datetime
 from sorl.thumbnail import delete
 from PIL import Image
 from phonenumber_field.modelfields import PhoneNumberField
+
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.dispatch import receiver
+
 from accounts.models import User
 
 DEFAULT_CLASS = 'all'
@@ -22,6 +26,31 @@ class Country(models.Model):
 
     def __str__(self):
         return f'код страны: {self.country_code}'
+
+    def get_name(self):
+        base_url = 'https://restcountries.com/v3.1/alpha/'
+
+        raw_response = requests.get(base_url + self.country_code)
+        if raw_response.status_code == 200:
+            response = raw_response.json()
+            for element in response:
+                for k, v in element.items():
+                    if k == "translations":
+                        try:
+                            rus_names = v.get("rus")
+                            name_to_return = rus_names.get("common")
+                            if name_to_return:
+                                if name_to_return == 'Киргизия':
+                                    return 'Кыргызстан'
+                                else:
+                                    return name_to_return
+                            else:
+                                return rus_names.get("official")
+                        except ObjectDoesNotExist:
+                            common = response[0].get("common")
+                            return common
+        else:
+            return f'Страна не найдена по коду - {self.country_code}'
 
     class Meta:
         verbose_name = "Страна"
