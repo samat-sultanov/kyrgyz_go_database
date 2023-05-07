@@ -393,3 +393,17 @@ class CalendarUpdateForm(forms.ModelForm):
     class Meta:
         model = Calendar
         fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline', 'calendar_image']
+
+    def clean_deadline(self):
+        deadline = self.cleaned_data.get('deadline')
+        if deadline == None:
+            raise ValidationError(
+                'Поля deadline обязателен к заполнению!')
+        return deadline
+
+    def clean_event_date(self):
+        event_date = self.cleaned_data.get('event_date')
+        if event_date == None:
+            raise ValidationError(
+                'Поля event_date обязателен к заполнению!')
+        return event_date
