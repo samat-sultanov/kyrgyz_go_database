@@ -164,7 +164,9 @@
                             <td>Пока</td>
                             <td>анонсов</td>
                             <td>нет</td>
+                            {% if request.user.is_authenticated %}
                             <td></td>
+                            {% endif %}
                         </tr>
                     {% endif %}
                     </tbody>
