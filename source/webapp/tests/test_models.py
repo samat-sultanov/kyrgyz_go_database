@@ -9,7 +9,7 @@ from django.test import TestCase
 import accounts.models
 from accounts.models import User
 from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
-    Calendar, get_author
+    Calendar, get_author, Partner
 
 
 class RecommendationModelTest(TestCase):
@@ -615,3 +615,68 @@ class CalendarModelTest(TestCase):
             deadline="2023-02-01"
         )
         self.assertEqual(event.author_id, get_author().id)
+
+
+class PartnerModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        src = os.getcwd() + '/source/webapp/static/images'
+        dst = os.getcwd() + '/source/uploads/partner_logo/'
+        shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src + '/no_image.jpg', dst + 'no_image_for_test.jpg')
+        shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
+        cls.partner = Partner.objects.create(
+            name="Partner with image",
+            logo="partner_logo/sengoku_logo_for_test.png"
+        )
+        cls.partner_with_link = Partner.objects.create(
+            name="Test partner",
+            logo="partner_logo/no_image_for_test.jpg",
+            web_link="https://www.europeangodatabase.eu/"
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        sengoku_logo = os.getcwd() + '/source/uploads/partner_logo/sengoku_logo_for_test.png'
+        dummy = os.getcwd() + '/source/uploads/partner_logo/11316_for_test.jpg'
+        if os.path.isfile(sengoku_logo) or os.path.isfile(dummy):
+            os.remove(sengoku_logo)
+            os.remove(dummy)
+
+    def test_object_creation(self):
+        self.assertEqual(self.partner.name, 'Test partner')
+        self.assertEqual(self.partner.logo, 'partner_logo/sengoku_logo_for_test.png')
+
+    def test_object_creation_with_link(self):
+        self.assertEqual(self.partner_with_link.name, 'Partner with image')
+        self.assertEqual(self.partner_with_link.logo, "partner_logo/no_image_for_test.jpg")
+        self.assertEqual(self.partner_with_link.web_link, "https://www.europeangodatabase.eu/")
+
+    def test_update_partner_name(self):
+        self.partner.name = 'Updated partner name'
+        self.partner.save()
+        partner_with_updated_name = Partner.objects.get(pk=self.partner.pk)
+        self.assertEqual(partner_with_updated_name.name, 'Updated partner name')
+        self.assertEqual(partner_with_updated_name.logo, "partner_logo/sengoku_logo_for_test.png")
+
+    def test_update_partner_logo(self):
+        self.partner.logo = 'partner_logo/11316_for_test.jpg'
+        self.partner.save()
+        partner_with_updated_logo = Partner.objects.get(pk=self.partner.pk)
+        self.assertEqual(partner_with_updated_logo.logo, 'partner_logo/11316_for_test.jpg')
+
+    def test_update_partner_link(self):
+        self.partner_with_link.web_link = "https://www.kyrgyzgodatabase.kg/"
+        self.partner_with_link.save()
+        partner_with_updated_link = Partner.objects.get(pk=self.partner_with_link.pk)
+        self.assertEqual(partner_with_updated_link.web_link, "https://www.kyrgyzgodatabase.kg/")
+
+    def test_hard_delete(self):
+        partner_to_delete = Partner.objects.create(
+            name="Partner to delete",
+            logo="partner_logo/sengoku_logo_for_test.png"
+        )
+        self.assertTrue(Partner.objects.filter(pk=partner_to_delete.pk).exists())
+        partner_to_delete.delete()
+        self.assertFalse(Calendar.objects.filter(pk=partner_to_delete.pk).exists())
