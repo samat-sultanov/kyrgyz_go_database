@@ -23,6 +23,11 @@
                     <th scope="col">Номер</th>
                 {% endif %}
                 <th scope="col">Статус</th>
+                {% if request.user.is_authenticated %}
+                    <th scope="col">Подтвердить</th>
+                    <th scope="col">Удалить</th>
+                    <th scope="col">Редактировать</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
