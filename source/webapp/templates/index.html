@@ -56,7 +56,7 @@
                 {% for news in latest_news %}
                     <div class="border-bottom mb-4"></div>
 
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-4" style="margin-bottom: 5px">
+                    <div class="col-12 col-sm-8 col-md-10 col-lg-12" style="margin-bottom: 5px">
                         <h5 class="news-title">{{ news.title|truncatechars:60 }}</h5>
                         {% if news.news_image %}
                             {% thumbnail news.news_image "400x400" as im %}
@@ -73,7 +73,7 @@
                                         allowfullscreen></iframe>
                             </div>
                         {% endif %}
-                        <p>{{ news.text|truncatechars:100 }}</p>
+                        <p>{{ news.text|truncatechars:200 }}</p>
                     </div>
 
                     <i>{{ news.created_at|date:"d E Y" }}</i>
