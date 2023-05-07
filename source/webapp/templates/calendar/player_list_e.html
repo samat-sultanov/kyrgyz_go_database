@@ -41,7 +41,7 @@
                     <td data-label="Фамилия">{{ players.surname }}</td>
                     {% endif %}
                     <td data-label="Имя">{{ players.name }}</td>
-                    <td data-label="Город">{{ players.city }}</td>
+                    <td data-label="Город">{% if players.city %}{{ players.city }}{% else %}Город не указан{% endif %}</td>
                     <td data-label="Ранг">{{ players.rank }}</td>
                     {% if request.user.is_authenticated %}
                         <td data-label="Номер Телефона">{{ players.phonenumber }}</td>
