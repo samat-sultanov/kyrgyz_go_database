@@ -18,19 +18,16 @@
 </head>
 <body>
 
-<div class="container d-grid gap-2 d-md-flex justify-content-md-end">
-    {% if request.user.is_authenticated %}
-        <p class="ms-auto d-inline-block my-0 py-auto mt-1">Привет, <a href="{% url 'accounts:detail' request.user.pk %}"
-                                                                  class="text-decoration-none link-dark">{{ request.user.username }}</a>
-        </p>
-        <a class="btn btn-light btn-sm ms-2"
-           href="{% url 'accounts:logout' %}?next={% url 'webapp:index' %}">Выйти</a>
-    {% else %}
-        {% block login %}
-            <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:login' %}">Войти</a>
-        {% endblock %}
-    {% endif %}
-</div>
+{% if request.user.is_authenticated %}
+        <div class="container d-grid gap-2 d-md-flex justify-content-md-end">
+                <p class="ms-auto d-inline-block my-0 py-auto mt-1"><a href="{% url 'accounts:detail' request.user.pk %}"
+                                                                          class="link-dark">{{ request.user.username }}</a>
+                </p>
+                <a class="btn btn-light btn-sm ms-2"
+                   href="{% url 'accounts:logout' %}?next={% url 'webapp:index' %}">Выйти</a>
+        </div>
+{% endif %}
+
 
 <header class="header pb-2 sticky-top" style="opacity: 0.9;">
     <nav class="navbar navbar-expand-lg navbar-dark">
