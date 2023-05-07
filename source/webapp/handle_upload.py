@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from accounts.models import User
-from webapp.models import Game, Player, Country, Club, Tournament, PlayerInTournament, City
+from webapp.models import Game, Player, Country, Club, Tournament, PlayerInTournament, City, Region
 from webapp.views.functions import unpack_data_json_players
 
 
@@ -12,6 +12,9 @@ def unpack_tournament_to_bd(data):
         'Boardsize': 'board_size',
         'tournament_class': 'tournament_class',
         'city': 'city',
+        'region': 'region',
+        'country': 'country',
+        'location': 'location',
         "regulations": "regulations",
         "uploaded_by": "uploaded_by",
         'date': 'date',
@@ -23,18 +26,30 @@ def unpack_tournament_to_bd(data):
             for k, v in pack.items():
                 if k in tournament_data:
                     tournament_args[tournament_data[k]] = v
-                    try:
-                        city = get_object_or_404(City, city=tournament_args['city'])
-                        tournament_args['city'] = city
-                    except:
-                        city = None
-                        tournament_args['city'] = city
-                    try:
-                        uploaded_by = get_object_or_404(User, username=tournament_args['uploaded_by'])
-                        tournament_args['uploaded_by'] = uploaded_by
-                    except:
-                        uploaded_by = get_object_or_404(User, pk=1)
-                        tournament_args['uploaded_by'] = uploaded_by
+            try:
+                city = get_object_or_404(City, id=int(tournament_args['city']))
+                tournament_args['city'] = city
+            except:
+                city = None
+                tournament_args['city'] = city
+            try:
+                region = get_object_or_404(Region, id=int(tournament_args['region']))
+                tournament_args['region'] = region
+            except:
+                region = None
+                tournament_args['region'] = region
+            try:
+                country = get_object_or_404(Country, country_code=tournament_args['country'])
+                tournament_args['country'] = country
+            except:
+                country = Country.objects.get(id=1)
+                tournament_args['country'] = country
+            try:
+                uploaded_by = get_object_or_404(User, username=tournament_args['uploaded_by'])
+                tournament_args['uploaded_by'] = uploaded_by
+            except:
+                uploaded_by = get_object_or_404(User, pk=1)
+                tournament_args['uploaded_by'] = uploaded_by
         try:
             existing_tournament = Tournament.objects.get(name=tournament_args['name'])
             raise ValidationError("Турнир с таким именем уже загружен в базу данных.")
