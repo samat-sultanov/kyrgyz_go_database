@@ -624,14 +624,16 @@ class PartnerModelTest(TestCase):
         src = os.getcwd() + '/source/webapp/static/images'
         dst = os.getcwd() + '/source/uploads/partner_logo/'
         shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src + '/no_image.jpg', dst + 'no_image_for_test.jpg')
         shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
         cls.partner = Partner.objects.create(
-            name="Test partner",
-            web_link="https://www.europeangodatabase.eu/"
-        )
-        cls.partner_with_image = Partner.objects.create(
             name="Partner with image",
             logo="partner_logo/sengoku_logo_for_test.png"
+        )
+        cls.partner_with_link = Partner.objects.create(
+            name="Test partner",
+            logo="partner_logo/no_image_for_test.jpg",
+            web_link="https://www.europeangodatabase.eu/"
         )
 
     @classmethod
@@ -642,38 +644,14 @@ class PartnerModelTest(TestCase):
             os.remove(sengoku_logo)
             os.remove(dummy)
 
-    def test_author_foreign_key(self):
-        author_field = Calendar._meta.get_field('author')
-        self.assertEqual(author_field.related_model, accounts.models.User)
+    def test_object_creation(self):
+        self.assertEqual(self.partner.name, 'Test partner')
+        self.assertEqual(self.partner.logo, 'partner_logo/sengoku_logo_for_test.png')
 
-    def test_created_at_auto_now_add(self):
-        created_at_field = Calendar._meta.get_field('created_at')
-        self.assertTrue(created_at_field.auto_now_add)
-
-    def test_updated_at_auto_now(self):
-        updated_at_field = Calendar._meta.get_field('updated_at')
-        self.assertTrue(updated_at_field.auto_now)
-
-    def test_object_creation_no_image(self):
-        self.assertEqual(self.calendar.event_name, 'Test event')
-        self.assertEqual(self.calendar.event_city, 'Bishkek')
-        self.assertEqual(self.calendar.event_date, "2023-03-04")
-        self.assertEqual(self.calendar.text, 'Test event text')
-        self.assertEqual(self.calendar.author, self.user)
-        self.assertEqual(self.calendar.is_deleted, False)
-        self.assertIsNotNone(self.calendar.created_at)
-        self.assertIsNotNone(self.calendar.updated_at)
-
-    def test_object_creation_with_image(self):
-        self.assertEqual(self.calendar_with_image.event_name, 'Event with image')
-        self.assertEqual(self.calendar_with_image.event_city, 'Bishkek')
-        self.assertEqual(self.calendar_with_image.event_date, "2023-03-04")
-        self.assertEqual(self.calendar_with_image.text, 'Test event with image')
-        self.assertEqual(self.calendar_with_image.author, self.user)
-        self.assertEqual(self.calendar_with_image.calendar_image, 'calendar_images/sengoku_logo_for_test.png')
-        self.assertEqual(self.calendar_with_image.is_deleted, False)
-        self.assertIsNotNone(self.calendar_with_image.created_at)
-        self.assertIsNotNone(self.calendar_with_image.updated_at)
+    def test_object_creation_with_link(self):
+        self.assertEqual(self.partner_with_link.name, 'Partner with image')
+        self.assertEqual(self.partner_with_link.logo, "partner_logo/no_image_for_test.jpg")
+        self.assertEqual(self.partner_with_link.web_link, "https://www.europeangodatabase.eu/")
 
     def test_update_event_name(self):
         self.calendar.event_name = 'Updated event name'
