@@ -14,7 +14,9 @@
                 <p>Количество раундов: {{ form1.NumberOfRounds }}</p>
                 <p>Размер доски: {{ form1.Boardsize }}</p>
                 <p>Дата: {{ form1.date }}</p>
-                <p>Город: {{ form1.city }}</p>
+                <p id="country_p_id" data-country-code="{{ tournament.country }}" data-get-regions-link="{% url 'api_v1:get_regions' %}">Страна: {{ form1.country }}</p>
+                <p id="region_p_id" data-region-id="{{ tournament.region }}" data-get-cities-link="{% url 'api_v1:get_cities' %}">Регион: </p>
+                <p id="city_p_id" data-city-id="{{ tournament.city }}">Город: </p>
                 <p>Класс: {{ form1.tournament_class }}</p>
                 <p>Регламент: {{ form1.regulations }}</p>
                 <p>Location: {{ form1.location }}</p>
@@ -101,4 +103,8 @@
     </div>
 
 </div>
+{% endblock %}
+
+{% block src %}
+    <script src="{% static "js/regions_n_cities_for_moderation_detail.js" %}"></script>
 {% endblock %}
