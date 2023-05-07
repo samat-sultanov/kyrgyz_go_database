@@ -384,3 +384,12 @@ class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
         fields = ['name', 'logo', 'web_link']
+
+class CalendarUpdateForm(forms.ModelForm):
+    event_date = forms.DateField(required=False, widget=widgets.TextInput(
+        attrs={'type': "date"}))
+    deadline = forms.DateField(required=False, widget=widgets.TextInput(
+        attrs={'type': "date"}))
+    class Meta:
+        model = Calendar
+        fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline', 'calendar_image']
