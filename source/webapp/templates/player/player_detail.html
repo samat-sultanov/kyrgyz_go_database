@@ -75,11 +75,11 @@
                            type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
                 </div>
                 <div class="btn-group-vertical" style="max-width: 244px">
-                    <a href="{% url "webapp:competitor_search" player.pk %}" class="btn rounded ms-1 mt-2 button-hover"
+                    <a href="{% url "webapp:competitor_search" player.pk %}" class="btn btn-light rounded ms-1 mt-2 button-hover"
                        id="slide_stop_button">Поиск соперников</a>
                     {% if request.user.is_authenticated and same_club %}
                         <a href="{% url "webapp:recommendation_add" player.pk %}"
-                           class="btn rounded ms-1 mt-2 button-hover"
+                           class="btn btn-light rounded ms-1 mt-2 button-hover"
                            id="slide_stop_button">Добавить
                             рекомендацию</a>
                     {% endif %}
