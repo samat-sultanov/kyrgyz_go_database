@@ -225,7 +225,6 @@ def get_data_for_gor_evolution(pk):
     return game_data_list
 
 
-
 # def get_tournaments_for_gor_evolution(player):
 #     tournaments = player.playerintournament_set.all()
 #     return tournaments
