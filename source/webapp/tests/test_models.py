@@ -653,97 +653,30 @@ class PartnerModelTest(TestCase):
         self.assertEqual(self.partner_with_link.logo, "partner_logo/no_image_for_test.jpg")
         self.assertEqual(self.partner_with_link.web_link, "https://www.europeangodatabase.eu/")
 
-    def test_update_event_name(self):
-        self.calendar.event_name = 'Updated event name'
-        self.calendar.save()
-        event_with_updated_name = Calendar.objects.get(pk=self.calendar.pk)
-        self.assertEqual(event_with_updated_name.event_name, 'Updated event name')
-        self.assertEqual(event_with_updated_name.is_deleted, False)
-        self.assertGreater(event_with_updated_name.updated_at, self.calendar.created_at)
+    def test_update_partner_name(self):
+        self.partner.name = 'Updated partner name'
+        self.partner.save()
+        partner_with_updated_name = Partner.objects.get(pk=self.partner.pk)
+        self.assertEqual(partner_with_updated_name.name, 'Updated partner name')
+        self.assertEqual(partner_with_updated_name.logo, "partner_logo/sengoku_logo_for_test.png")
 
-    def test_update_event_city(self):
-        self.calendar.event_city = 'Osh'
-        self.calendar.save()
-        event_with_updated_city = Calendar.objects.get(pk=self.calendar.pk)
-        self.assertEqual(event_with_updated_city.event_city, 'Osh')
-        self.assertEqual(event_with_updated_city.is_deleted, False)
-        self.assertGreater(event_with_updated_city.updated_at, self.calendar.created_at)
+    def test_update_partner_logo(self):
+        self.partner.logo = 'partner_logo/11316_for_test.jpg'
+        self.partner.save()
+        partner_with_updated_logo = Partner.objects.get(pk=self.partner.pk)
+        self.assertEqual(partner_with_updated_logo.logo, 'partner_logo/11316_for_test.jpg')
 
-    def test_update_event_date(self):
-        self.calendar.event_date = "2024-11-11"
-        self.calendar.save()
-        event_with_updated_date = Calendar.objects.get(pk=self.calendar.pk)
-        self.assertEqual(event_with_updated_date.event_date, datetime.date(2024, 11, 11))
-        self.assertEqual(event_with_updated_date.is_deleted, False)
-        self.assertGreater(event_with_updated_date.updated_at, self.calendar.created_at)
-
-    def test_update_event_text(self):
-        self.calendar.text = 'Updated event text'
-        self.calendar.save()
-        event_with_updated_text = Calendar.objects.get(pk=self.calendar.pk)
-        self.assertEqual(event_with_updated_text.text, 'Updated event text')
-        self.assertEqual(event_with_updated_text.is_deleted, False)
-        self.assertGreater(event_with_updated_text.updated_at, self.calendar.created_at)
-
-    def test_update_event_deadline(self):
-        self.calendar.deadline = "2023-12-12"
-        self.calendar.save()
-        event_with_updated_deadline = Calendar.objects.get(pk=self.calendar.pk)
-        self.assertEqual(event_with_updated_deadline.deadline, datetime.date(2023, 12, 12))
-        self.assertEqual(event_with_updated_deadline.is_deleted, False)
-        self.assertGreater(event_with_updated_deadline.updated_at, self.calendar.created_at)
-
-    def test_update_event_image(self):
-        self.calendar_with_image.calendar_image = 'calendar_images/11316_for_test.jpg'
-        self.calendar_with_image.save()
-        event_with_updated_image = Calendar.objects.get(pk=self.calendar_with_image.pk)
-        self.assertEqual(event_with_updated_image.calendar_image, 'calendar_images/11316_for_test.jpg')
-        self.assertEqual(event_with_updated_image.is_deleted, False)
-        self.assertGreater(event_with_updated_image.updated_at, self.calendar_with_image.created_at)
-
-    def test_soft_delete(self):
-        event_to_delete = Calendar.objects.create(
-            event_name="Event with image to delete",
-            event_city="Talas",
-            event_date="2025-03-04",
-            text="Test event with image to delete",
-            author=self.user,
-            calendar_image="calendar_images/sengoku_logo_for_test.png",
-            deadline="2024-12-11"
-        )
-        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
-        event_to_delete.is_deleted = True
-        event_to_delete.save()
-        sengoku_logo = os.getcwd() + '/source/uploads/calendar_images/sengoku_logo_for_test.png'
-        self.assertTrue(os.path.isfile(sengoku_logo))
-        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
-        self.assertTrue(Calendar.objects.filter(is_deleted=True).exists())
-        self.assertIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
-        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
+    def test_update_partner_link(self):
+        self.partner_with_link.web_link = "https://www.kyrgyzgodatabase.kg/"
+        self.partner_with_link.save()
+        partner_with_updated_link = Partner.objects.get(pk=self.partner_with_link.pk)
+        self.assertEqual(partner_with_updated_link.web_link, "https://www.kyrgyzgodatabase.kg/")
 
     def test_hard_delete(self):
-        event_to_delete = Calendar.objects.create(
-            event_name="Event with image to hard delete",
-            event_city="Talas",
-            event_date="2025-10-14",
-            text="Test event with image to hard delete",
-            author=self.user,
-            calendar_image="calendar_images/sengoku_logo_for_test.png",
-            deadline="2024-12-13"
+        partner_to_delete = Partner.objects.create(
+            name="Partner to delete",
+            logo="partner_logo/sengoku_logo_for_test.png"
         )
-        self.assertTrue(Calendar.objects.filter(pk=event_to_delete.pk).exists())
-        event_to_delete.delete()
-        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=True))
-        self.assertNotIn(event_to_delete, Calendar.objects.filter(is_deleted=False))
-        self.assertFalse(Calendar.objects.filter(pk=event_to_delete.pk).exists())
-
-    def test_author_default_value(self):
-        event = Calendar.objects.create(
-            event_name="Test event",
-            event_city="Bishkek",
-            event_date="2023-03-04",
-            text="Test event text",
-            author=self.user,
-            deadline="2023-02-01"
-        )
-        self.assertEqual(event.author_id, get_author().id)
+        self.assertTrue(Partner.objects.filter(pk=partner_to_delete.pk).exists())
+        partner_to_delete.delete()
+        self.assertFalse(Calendar.objects.filter(pk=partner_to_delete.pk).exists())
