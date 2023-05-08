@@ -8,31 +8,32 @@
   const ctx = document.getElementById('myChart');
 
   new Chart(ctx, {
-    type: 'doughnut',
+    type: 'pie',
     data: {
-      labels: ['{{ player_wins_stronger}} Побед над более сильными противниками',
+      labels: [
+          '{{ player_wins_stronger}} Побед над более сильными противниками',
+          '{{ player_wins_equal }} Побед над равными противниками',
           '{{ player_wins_weaker }} Побед над более слабыми противниками',
           '{{ player_losses_stronger }} Поражений от более сильных противников',
+          '{{ player_losses_equal }} Поражений от равных противников',
           '{{ player_losses_weaker }} Поражений от более слабых противников',
-          '{{ player_wins_equal }} Побед над равными противниками',
-          '{{ player_losses_equal }} Поражений от равных противников'
       ],
         datasets: [{
             data: [
                 {{ player_wins_stronger}},
+                {{ player_wins_equal }},
                 {{ player_wins_weaker }},
                 {{ player_losses_stronger }},
+                {{ player_losses_equal }},
                 {{ player_losses_weaker }},
-                {{ player_wins_equal }},
-                {{ player_losses_equal }}
             ],
             backgroundColor: [
                 'rgb(113,193,80)',
-                'rgb(240,133,61)',
+                'rgba(113,193,80,0.6)',
+                'rgb(113,193,80,0.3)',
                 'rgb(167,31,145)',
-                'rgb(5,106,176)',
-                'rgb(249,239,74)',
-                'rgb(247,57,67)'
+                'rgba(167,31,145,0.6)',
+                'rgba(167,31,145,0.3)'
             ],
             hoverOffset: 4
           }]
