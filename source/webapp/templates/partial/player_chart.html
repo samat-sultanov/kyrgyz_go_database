@@ -5,31 +5,36 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1/dist/chart.umd.min.js"></script>
 
 <script>
-	new Chart(document.getElementById("line-chart"), {
-		type : 'line',
-		data : {
-			datasets: [{
-                label: 'Rating',
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: '{{ player.last_name }} {{ player.first_name }}',
                 data: [{% for date , rating in chart %}{
-                    x: '{{ date }}',
-                    y: {{ rating }}
-                },
-                {% endfor %}
-                ]
+                        x: '{{ date }}',
+                        y: {{ rating }}
+                        },
+                    {% endfor %}
+                ],
+                borderColor: 'rgb(76,97,115)'
             }],
-		},
-		options: {
-          scales: {
-            y: {
-            title: {
-              display: true,
-              text: 'Gor'
-            },
-            ticks: {
-                stepSize: 100
-            }
+        },
+        options: {
+            hitRadius: '2',
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Gor'
+                    },
+                    ticks: {
+                        stepSize: 100
+                    }
 
-          },
-        },}
-	});
+                },
+            },
+        }
+    });
+
+
 </script>

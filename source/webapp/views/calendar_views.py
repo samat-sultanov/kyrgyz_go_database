@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, SearchParPlayer, \
-    EmailToChangeRegInfoFrom
+    EmailToChangeRegInfoFrom, CalendarUpdateForm
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, DetailView, View
 
@@ -36,7 +36,7 @@ class CalendarCreateView(LoginRequiredMixin, CreateView):
 class CalendarUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'calendar/calendar_update.html'
     model = Calendar
-    form_class = CalendarForm
+    form_class = CalendarUpdateForm
 
     def get_success_url(self):
         return reverse('webapp:index')

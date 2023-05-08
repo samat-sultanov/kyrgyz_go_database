@@ -101,20 +101,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                <button class="share-btn" id="shareBtn">
-                        <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
-                        <span class="social-icons">
-                        <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
-                            <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
-                        </a>
-                        <a href="https://api.whatsapp.com/send/?text=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
-                            <i style="color: #40C351" class="fa-brands fa-whatsapp"></i></a>
-                         <a href="http://vkontakte.ru/share.php?url=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
-                             <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
-                         <a href="https://telegram.me/share/url?url=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
-                             <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
-                  </span>
-                    </button>
+
                 </div>
             </div>
 
@@ -176,6 +163,20 @@
                     </div>
                 </div>
             </div>
+            <button class="share-btn" id="shareBtn">
+                <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
+                <span class="social-icons">
+                        <a href="https://www.facebook.com/dialog/share?app_id=87741124305&href=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
+                            <i style="color: #3b5998" class="fa-brands fa-facebook"></i>
+                        </a>
+                        <a href="https://api.whatsapp.com/send/?text=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
+                            <i style="color: #40C351" class="fa-brands fa-whatsapp"></i></a>
+                         <a href="http://vkontakte.ru/share.php?url=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
+                             <i style="color:#4C75A3;" class="fa-brands fa-vk"></i></a>
+                         <a href="https://telegram.me/share/url?url=http://{{ request.get_host }}/player_detail/{{ player.pk }}">
+                             <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
+                  </span>
+            </button>
             {% include "partial/player_chart.html" %}
         </div>
 
