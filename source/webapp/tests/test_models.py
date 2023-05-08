@@ -716,3 +716,10 @@ class ClubModelTest(TestCase):
         self.assertEqual(club.coaches.through.__name__, 'Club_coaches')
         self.assertEqual(club.coaches.through._meta.get_field('club').related_model.__name__, 'Club')
         self.assertEqual(club.coaches.through._meta.get_field('user').related_model.__name__, 'User')
+
+    def test_create_club_with_required_fields(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        self.assertIsNotNone(club.id)
