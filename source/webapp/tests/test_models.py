@@ -710,3 +710,9 @@ class ClubModelTest(TestCase):
             breakfast_to='09:00:00',
         )
         cls.club.coaches.add(cls.user)
+
+    def test_coaches_field(self):
+        club = Club.objects.get(name='Test Club')
+        self.assertEqual(club.coaches.through.__name__, 'Club_coaches')
+        self.assertEqual(club.coaches.through._meta.get_field('club').related_model.__name__, 'Club')
+        self.assertEqual(club.coaches.through._meta.get_field('user').related_model.__name__, 'User')
