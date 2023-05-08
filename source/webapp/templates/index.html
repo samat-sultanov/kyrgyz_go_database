@@ -161,10 +161,12 @@
                         {% endfor %}
                     {% else %}
                         <tr class="table-light">
-                            <td>Пока</td>
-                            <td>анонсов</td>
-                            <td>нет</td>
                             <td></td>
+                            <td>Пока анонсов нет</td>
+                            <td></td>
+                            {% if request.user.is_authenticated %}
+                            <td></td>
+                            {% endif %}
                         </tr>
                     {% endif %}
                     </tbody>

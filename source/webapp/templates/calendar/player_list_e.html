@@ -14,7 +14,7 @@
         <table class="table adaptive-t">
             <thead>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col"><i style="font-size: 20px;" class="bi bi-list-ol"></i></th>
                 <th scope="col">Фамилия</th>
                 <th scope="col">Имя</th>
                 <th scope="col">Город</th>
@@ -23,6 +23,11 @@
                     <th scope="col">Номер</th>
                 {% endif %}
                 <th scope="col">Статус</th>
+                {% if request.user.is_authenticated %}
+                    <th scope="col">Подтвердить</th>
+                    <th scope="col">Удалить</th>
+                    <th scope="col">Редактировать</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -36,7 +41,7 @@
                     <td data-label="Фамилия">{{ players.surname }}</td>
                     {% endif %}
                     <td data-label="Имя">{{ players.name }}</td>
-                    <td data-label="Город">{{ players.city }}</td>
+                    <td data-label="Город">{% if players.city %}{{ players.city }}{% else %}Город не указан{% endif %}</td>
                     <td data-label="Ранг">{{ players.rank }}</td>
                     {% if request.user.is_authenticated %}
                         <td data-label="Номер Телефона">{{ players.phonenumber }}</td>
