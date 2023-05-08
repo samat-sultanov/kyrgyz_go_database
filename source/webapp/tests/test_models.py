@@ -1,6 +1,7 @@
 import os
 import shutil
 import datetime
+from phonenumbers import parse, PhoneNumberFormat
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -9,7 +10,7 @@ from django.test import TestCase
 import accounts.models
 from accounts.models import User
 from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
-    Calendar, get_author, Partner
+    Calendar, get_author, Partner, Club, DayOfWeek
 
 
 class RecommendationModelTest(TestCase):
@@ -680,3 +681,32 @@ class PartnerModelTest(TestCase):
         self.assertTrue(Partner.objects.filter(pk=partner_to_delete.pk).exists())
         partner_to_delete.delete()
         self.assertFalse(Calendar.objects.filter(pk=partner_to_delete.pk).exists())
+
+
+class ClubModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='testuser',
+            password='testpass'
+        )
+        cls.country = Country.objects.create(country_code='kg')
+        cls.city = City.objects.create(city='Test City', country=cls.country)
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.club = Club.objects.create(
+            name='Test Club',
+            EGDName='123456',
+            city=cls.city,
+            country=cls.country,
+            region=cls.region,
+            num_players=10,
+            address='Test Address',
+            phonenumber='+996555123456',
+            web_link='https://www.example.com',
+            schedule_from='10:00:00',
+            schedule_to='18:00:00',
+            breakfast_from='08:00:00',
+            breakfast_to='09:00:00',
+        )
+        cls.club.coaches.add(cls.user)
