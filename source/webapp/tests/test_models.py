@@ -759,3 +759,11 @@ class ClubModelTest(TestCase):
         club.save()
         updated_club = Club.objects.get(id=club.id)
         self.assertEqual(updated_club.name, 'Updated Club Name')
+
+    def test_delete_club(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        club.delete()
+        self.assertFalse(Club.objects.filter(id=club.id).exists())
