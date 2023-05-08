@@ -318,3 +318,46 @@ h1 {
 
     }
 }
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-label-col {
+    width: 200px;
+    display: inline-block;
+}
+
+.form-value-col {
+    display: inline-block;
+}
+
+.tournament-title {
+  font-size: 22px;
+}
+
+@media screen and (max-width: 768px) {
+  .tournament-title {
+    font-size: 20px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .tournament-title {
+    font-size: 18px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    font-size: 14px;
+  }
+}
