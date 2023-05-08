@@ -27,7 +27,7 @@
                     </div>
                 {% endif %}
                 <p>{% if request.user.is_authenticated %}{{ news.author.username }}
-                    / {% endif %}{{ news.created_at|date:"d F Y H:i" }}</p>
+                    / {% endif %}{{ news.created_at|date:"d E Y H:i" }}</p>
                 <hr>
             {% endfor %}
         </div>
