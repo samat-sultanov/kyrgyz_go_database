@@ -749,3 +749,13 @@ class ClubModelTest(TestCase):
         club.days_of_work.add(day_of_week)
         club.day_of_week.add(day_of_week)
         self.assertIsNotNone(club.id)
+
+    def test_update_club(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        club.name = 'Updated Club Name'
+        club.save()
+        updated_club = Club.objects.get(id=club.id)
+        self.assertEqual(updated_club.name, 'Updated Club Name')
