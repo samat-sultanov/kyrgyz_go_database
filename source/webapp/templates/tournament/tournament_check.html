@@ -9,7 +9,7 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="container mt-4 mb-4">
-            <h2 class="title">
+            <h2 class="title tournament-title">
                 Турнир: <input type="text" name="{{ form1.Name.name }}" value="{{ form1.Name.value }}"
                        size="{{ form1.Name.value|length }}">
             </h2>
