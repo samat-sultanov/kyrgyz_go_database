@@ -723,3 +723,29 @@ class ClubModelTest(TestCase):
         region = Region.objects.create(name='Test Region', country=country)
         club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
         self.assertIsNotNone(club.id)
+
+    def test_create_club_with_all_fields(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        user = User.objects.create_user(username='testuser1', email='user1@example.com', password='testpass1')
+        day_of_week = DayOfWeek.objects.create(name='Monday')
+        club = Club.objects.create(
+            name='Test Club',
+            EGDName='test',
+            city=city,
+            country=country,
+            region=region,
+            num_players=10,
+            address='Test Address',
+            phonenumber='+996555123456',
+            web_link='http://www.testclub.com',
+            schedule_from=datetime.time(9, 0),
+            schedule_to=datetime.time(18, 0),
+            breakfast_from=datetime.time(12, 0),
+            breakfast_to=datetime.time(13, 0)
+        )
+        club.coaches.add(user)
+        club.days_of_work.add(day_of_week)
+        club.day_of_week.add(day_of_week)
+        self.assertIsNotNone(club.id)
