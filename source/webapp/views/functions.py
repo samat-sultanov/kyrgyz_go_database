@@ -611,14 +611,14 @@ def player_rating_for_chart(pk):
     date = []
     rating = []
     for tournament in tournaments:
-        date.append(str(tournament.tournament.date))
+        date.append(tournament.tournament.date)
         rating.append(tournament.rating)
     total = zip(date, rating)
     return total
 
 
 def _sort_lod(lop):
-    #lop = list of players (list of dictionaries)
+    # lop = list of players (list of dictionaries)
     unsorted_players_list = []
     by_rating = False
     for person in lop:
@@ -648,7 +648,7 @@ def _sort_lod(lop):
 
 
 def _sort_ipl(lopit):
-    #lopit = list of players in tournament(from json)
+    # lopit = list of players in tournament(from json)
     unsorted_players_list = []
     by_rating = False
     for element in lopit:
@@ -683,7 +683,7 @@ def _sort_ipl(lopit):
 
 
 def parse_results(array):
-    #функция меняет значение поля "results" со строки в список со словарями
+    # функция меняет значение поля "results" со строки в список со словарями
 
     players_data = array
     for pl in players_data:

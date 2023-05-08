@@ -304,6 +304,7 @@ h1 {
     color: white;
     opacity: 0.8;
 }
+
 .button-hover:hover{
     opacity: 1;
     background-color: #9400D3;
