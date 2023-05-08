@@ -15,39 +15,64 @@
             </h2>
             <div class="form-group">
                 <div class="form-row">
-                    <div class="form-label-col"><p class="form-label">Количество раундов:</p></div>
-                    <div class="form-value-col"><p class="form-value">{{ form1.NumberOfRounds }}</p></div>
+                    <div class="form-label-col">
+                        <p class="form-label">Количество раундов:</p>
+                    </div>
+                    <div class="form-value-col">
+                        <p class="form-value">{{ form1.NumberOfRounds }}</p>
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-label-col"><p class="form-label">Размер доски:</p></div>
-                    <div class="form-value-col"><p class="form-value">{{ form1.Boardsize }}</p></div>
+                    <div class="form-label-col">
+                        <p class="form-label">Размер доски:</p>
+                    </div>
+                    <div class="form-value-col">
+                        <p class="form-value">{{ form1.Boardsize }}</p>
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-label-col"><p class="form-label">Дата:</p></div>
-                    <div class="form-value-col"><p class="form-value">{{ form1.date }}</p></div>
+                    <div class="form-label-col">
+                        <p class="form-label">Дата:</p>
+                    </div>
+                    <div class="form-value-col">
+                        <p class="form-value">{{ form1.date }}</p>
+                    </div>
                 </div>
                 <div class="form-container" style="display: flex; flex-direction: column;">
                     <div class="form-row">
                         <div class="form-label-col" data-get-regions-link="{% url 'api_v1:get_regions' %}"
-                             id="country_p_id"><p class="form-label">Страна:</p></div>
-                        <div class="form-value-col" style="width: 200px;"><p class="form-value"
-                                                                             id="country_value_id">{{ form1.country }}</p>
+                             id="country_p_id">
+                            <p class="form-label">Страна:</p>
+                        </div>
+                        <div class="form-value-col" style="width: 200px;">
+                            <p class="form-value" id="country_value_id">{{ form1.country }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="form-label-col" id="class_p_id"><p class="form-label">Класс:</p></div>
-                    <div class="form-value-col"><p class="form-value"
-                                                   id="class_value_id">{{ form1.tournament_class }}</p></div>
+                    <div class="form-label-col" id="class_p_id">
+                        <p class="form-label">Класс:</p>
+                    </div>
+                    <div class="form-value-col">
+                        <p class="form-value" id="class_value_id">{{ form1.tournament_class }}</p>
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-label-col"><p class="form-label">Регламент:</p></div>
-                    <div class="form-value-col"><p class="form-value">{{ form1.regulations }}</p></div>
+                    <div class="form-label-col">
+                        <p class="form-label">Регламент:</p>
+                    </div>
+                    <div class="form-value-col">
+                        <p class="form-value">{{ form1.regulations }}</p>
+                    </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-label-col"><p class="form-label">Локация:</p></div>
-                    <div class="form-value-col"><p class="form-value">{{ form1.location }}</p></div>
+                    <div class="form-label-col">
+                        <p class="form-label">Локация:</p>
+                    </div>
+                    <div class="form-value-col">
+                        <p class="form-value">{{ form1.location }}</p>
+                    </div>
                 </div>
                 <p>{{ form1.uploaded_by.as_hidden }}</p>
             </div>
