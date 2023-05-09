@@ -27,6 +27,6 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
     path('', include('webapp.urls')),
     path('', include('accounts.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('django.contrib.auth.urls')),
     path('api/', include(api_url)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
