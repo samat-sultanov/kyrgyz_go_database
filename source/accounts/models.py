@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image
+from sorl.thumbnail import delete
+from django.dispatch import receiver
 
 
 class User(AbstractUser):
@@ -20,3 +22,14 @@ class User(AbstractUser):
                 output_size = (500, 500)
                 img.thumbnail(output_size)
                 img.save(self.avatar.path)
+
+@receiver(models.signals.pre_save, sender=User)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.avatar:
+            if old_instance.avatar != instance.avatar:
+                delete(old_instance.avatar)
