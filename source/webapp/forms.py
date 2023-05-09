@@ -1,15 +1,57 @@
 from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
+import requests
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner, DEFAULT_CLASS, DayOfWeek
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
+    Partner, DEFAULT_CLASS, DayOfWeek, Country
 import re
 
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
+
+
+def get_countries():
+    base_url = 'https://restcountries.com/v3.1/alpha/'
+    list_of_countries = [("", "  -----  "), ('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
+    countries = []
+    for player in Player.objects.all():
+        if player.country not in countries:
+            countries.append(player.country)
+    for country in countries:
+        raw_response = requests.get(base_url + country.country_code)
+        if raw_response.status_code == 200:
+            response = raw_response.json()
+            for element in response:
+                for k, v in element.items():
+                    if k == "translations":
+                        try:
+                            rus_names = v.get("rus")
+                            name_to_append = rus_names.get("common")
+                            if name_to_append:
+                                if name_to_append == 'Киргизия':
+                                    name_to_append = 'Кыргызстан'
+                                to_append = (country.country_code, name_to_append)
+                                if to_append not in list_of_countries:
+                                    list_of_countries.append(to_append)
+                            else:
+                                to_append = (country.country_code, rus_names.get("official"))
+                                if to_append not in list_of_countries:
+                                    list_of_countries.append(to_append)
+                        except ObjectDoesNotExist:
+                            common = response[0].get("common")
+                            to_append = (country.country_code, common)
+                            if to_append not in list_of_countries:
+                                list_of_countries.append(to_append)
+        else:
+            continue
+    return list_of_countries
+
+
+COUNTRIES = get_countries()
+
 
 def validate_latin_chars(value):
     if not latin_regex.match(value):
@@ -168,6 +210,8 @@ class CheckTournamentForm(forms.Form):
     NumberOfRounds = forms.IntegerField()
     regulations = forms.CharField(max_length=255, required=False)
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=True)
+    country = forms.ChoiceField(choices=COUNTRIES, required=True)
+    region = forms.CharField(max_length=100, required=False)
     city = forms.CharField(max_length=255, required=False)
     tournament_class = forms.ChoiceField(choices=CLASS_CHOICES, required=True)
 
@@ -177,12 +221,16 @@ class CheckTournamentForm(forms.Form):
             self.add_error('tournament_class', 'Выберите корректный класс турнира!')
         return tournament_class
 
+    def clean_country(self):
+        country = self.cleaned_data.get('country')
+        if country == '':
+            self.add_error('country', 'Выберите страну проведения турнира!')
+        return country
+
 
 class ClubForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
-                                                 widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
-                                                  widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -336,3 +384,27 @@ class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
         fields = ['name', 'logo', 'web_link']
+
+
+class CalendarUpdateForm(forms.ModelForm):
+    event_date = forms.DateField(required=False, widget=widgets.TextInput(
+        attrs={'type': "date"}))
+    deadline = forms.DateField(required=False, widget=widgets.TextInput(
+        attrs={'type': "date"}))
+    class Meta:
+        model = Calendar
+        fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline', 'calendar_image']
+
+    def clean_deadline(self):
+        deadline = self.cleaned_data.get('deadline')
+        if deadline == None:
+            raise ValidationError(
+                'Поля deadline обязателен к заполнению!')
+        return deadline
+
+    def clean_event_date(self):
+        event_date = self.cleaned_data.get('event_date')
+        if event_date == None:
+            raise ValidationError(
+                'Поля event_date обязателен к заполнению!')
+        return event_date

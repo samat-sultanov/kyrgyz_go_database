@@ -1,6 +1,7 @@
 import os
 import shutil
 import datetime
+from phonenumbers import parse, PhoneNumberFormat
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -9,7 +10,7 @@ from django.test import TestCase
 import accounts.models
 from accounts.models import User
 from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
-    Calendar, get_author
+    Calendar, get_author, Partner, Club, DayOfWeek
 
 
 class RecommendationModelTest(TestCase):
@@ -615,3 +616,154 @@ class CalendarModelTest(TestCase):
             deadline="2023-02-01"
         )
         self.assertEqual(event.author_id, get_author().id)
+
+
+class PartnerModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        src = os.getcwd() + '/source/webapp/static/images'
+        dst = os.getcwd() + '/source/uploads/partner_logo/'
+        shutil.copy2(src + '/sengoku_logo.png', dst + 'sengoku_logo_for_test.png')
+        shutil.copy2(src + '/no_image.jpg', dst + 'no_image_for_test.jpg')
+        shutil.copy2(src + '/11316.jpg', dst + '11316_for_test.jpg')
+        cls.partner = Partner.objects.create(
+            name="Partner with image",
+            logo="partner_logo/sengoku_logo_for_test.png"
+        )
+        cls.partner_with_link = Partner.objects.create(
+            name="Test partner",
+            logo="partner_logo/no_image_for_test.jpg",
+            web_link="https://www.europeangodatabase.eu/"
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        sengoku_logo = os.getcwd() + '/source/uploads/partner_logo/sengoku_logo_for_test.png'
+        dummy = os.getcwd() + '/source/uploads/partner_logo/11316_for_test.jpg'
+        if os.path.isfile(sengoku_logo) or os.path.isfile(dummy):
+            os.remove(sengoku_logo)
+            os.remove(dummy)
+
+    def test_object_creation(self):
+        self.assertEqual(self.partner.name, 'Test partner')
+        self.assertEqual(self.partner.logo, 'partner_logo/sengoku_logo_for_test.png')
+
+    def test_object_creation_with_link(self):
+        self.assertEqual(self.partner_with_link.name, 'Partner with image')
+        self.assertEqual(self.partner_with_link.logo, "partner_logo/no_image_for_test.jpg")
+        self.assertEqual(self.partner_with_link.web_link, "https://www.europeangodatabase.eu/")
+
+    def test_update_partner_name(self):
+        self.partner.name = 'Updated partner name'
+        self.partner.save()
+        partner_with_updated_name = Partner.objects.get(pk=self.partner.pk)
+        self.assertEqual(partner_with_updated_name.name, 'Updated partner name')
+        self.assertEqual(partner_with_updated_name.logo, "partner_logo/sengoku_logo_for_test.png")
+
+    def test_update_partner_logo(self):
+        self.partner.logo = 'partner_logo/11316_for_test.jpg'
+        self.partner.save()
+        partner_with_updated_logo = Partner.objects.get(pk=self.partner.pk)
+        self.assertEqual(partner_with_updated_logo.logo, 'partner_logo/11316_for_test.jpg')
+
+    def test_update_partner_link(self):
+        self.partner_with_link.web_link = "https://www.kyrgyzgodatabase.kg/"
+        self.partner_with_link.save()
+        partner_with_updated_link = Partner.objects.get(pk=self.partner_with_link.pk)
+        self.assertEqual(partner_with_updated_link.web_link, "https://www.kyrgyzgodatabase.kg/")
+
+    def test_hard_delete(self):
+        partner_to_delete = Partner.objects.create(
+            name="Partner to delete",
+            logo="partner_logo/sengoku_logo_for_test.png"
+        )
+        self.assertTrue(Partner.objects.filter(pk=partner_to_delete.pk).exists())
+        partner_to_delete.delete()
+        self.assertFalse(Calendar.objects.filter(pk=partner_to_delete.pk).exists())
+
+
+class ClubModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='testuser',
+            password='testpass'
+        )
+        cls.country = Country.objects.create(country_code='kg')
+        cls.city = City.objects.create(city='Test City', country=cls.country)
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.club = Club.objects.create(
+            name='Test Club',
+            EGDName='123456',
+            city=cls.city,
+            country=cls.country,
+            region=cls.region,
+            num_players=10,
+            address='Test Address',
+            phonenumber='+996555123456',
+            web_link='https://www.example.com',
+            schedule_from='10:00:00',
+            schedule_to='18:00:00',
+            breakfast_from='08:00:00',
+            breakfast_to='09:00:00',
+        )
+        cls.club.coaches.add(cls.user)
+
+    def test_coaches_field(self):
+        club = Club.objects.get(name='Test Club')
+        self.assertEqual(club.coaches.through.__name__, 'Club_coaches')
+        self.assertEqual(club.coaches.through._meta.get_field('club').related_model.__name__, 'Club')
+        self.assertEqual(club.coaches.through._meta.get_field('user').related_model.__name__, 'User')
+
+    def test_create_club_with_required_fields(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        self.assertIsNotNone(club.id)
+
+    def test_create_club_with_all_fields(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        user = User.objects.create_user(username='testuser1', email='user1@example.com', password='testpass1')
+        day_of_week = DayOfWeek.objects.create(name='Monday')
+        club = Club.objects.create(
+            name='Test Club',
+            EGDName='test',
+            city=city,
+            country=country,
+            region=region,
+            num_players=10,
+            address='Test Address',
+            phonenumber='+996555123456',
+            web_link='http://www.testclub.com',
+            schedule_from=datetime.time(9, 0),
+            schedule_to=datetime.time(18, 0),
+            breakfast_from=datetime.time(12, 0),
+            breakfast_to=datetime.time(13, 0)
+        )
+        club.coaches.add(user)
+        club.days_of_work.add(day_of_week)
+        club.day_of_week.add(day_of_week)
+        self.assertIsNotNone(club.id)
+
+    def test_update_club(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        club.name = 'Updated Club Name'
+        club.save()
+        updated_club = Club.objects.get(id=club.id)
+        self.assertEqual(updated_club.name, 'Updated Club Name')
+
+    def test_delete_club(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        club.delete()
+        self.assertFalse(Club.objects.filter(id=club.id).exists())
