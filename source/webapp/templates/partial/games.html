@@ -25,7 +25,7 @@
             <td data-label="Оппонент"><a style="text-decoration: underline dotted ghostwhite; color: black;"
                    href="{% url "webapp:player_detail" element.opponent.pk %}">{{ element.opponent.last_name }} {{ element.opponent.first_name }}</a></td>
             <td data-label="EGDPin">{{ element.opponent.EgdPin }}</td>
-            <td data-label="Страна">{{ element.opponent.country }}</td>
+            <td data-label="Страна">{{ element.opponent.country.country_code }}</td>
             <td data-label="Клуб">{{ element.club }}</td>
             <td data-label="Ранг">{{ element.rank }}</td>
             <td data-label="Цвет">{{ element.color}}</td>
