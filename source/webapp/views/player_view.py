@@ -21,8 +21,8 @@ class PlayerDetail(TemplateView):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get(self.key_kwarg)
         context[self.context_key] = self.get_object()
+        context['pk'] = pk
         context['position'] = get_position_in_kgf()
-        context['games'] = get_data_for_table_games(pk)
         context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
         context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
         context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
@@ -30,8 +30,6 @@ class PlayerDetail(TemplateView):
         context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
         context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
         context['all'] = player_wins_loses(pk)['all']
-        context['evolution'] = get_data_for_gor_evolution(pk)
-        context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
         player = get_object_or_404(Player, pk=pk)
         player_tournaments = player.tournaments.order_by("-date")
         context['tab_tournaments'] = player_tournaments
@@ -46,6 +44,65 @@ class PlayerDetail(TemplateView):
     def get_object(self):
         pk = self.kwargs.get(self.key_kwarg)
         return get_object_or_404(self.model, pk=pk)
+
+
+class PlayerDetailGames(TemplateView):
+    context_key = 'player'
+    key_kwarg = 'pk'
+    template_name = 'player/player_detail_games.html'
+    model = Player
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get(self.key_kwarg)
+        player = get_object_or_404(Player, pk=pk)
+        context['player'] = player
+        context['position'] = get_position_in_kgf()
+        context['games'] = get_data_for_table_games(pk)
+        context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
+        context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
+        context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
+        context['player_losses_stronger'] = player_wins_loses(pk)['losses_stronger']
+        context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
+        context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
+        context['all'] = player_wins_loses(pk)['all']
+        context['chart'] = player_rating_for_chart(pk)
+        if not self.request.user.is_anonymous:
+            player_clubs = get_object_or_404(Player, pk=self.kwargs.get('pk')).clubs.all()
+            coach_clubs = self.request.user.clubs.all()
+            if list(set(player_clubs) & set(coach_clubs)):
+                context['same_club'] = 1
+        return context
+
+
+class PlayerDetailGorEvolution(TemplateView):
+    context_key = 'player'
+    key_kwarg = 'pk'
+    template_name = 'player/player_gor_evolution.html'
+    model = Player
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get(self.key_kwarg)
+        player = get_object_or_404(Player, pk=pk)
+        context['player'] = player
+        context['position'] = get_position_in_kgf()
+        context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
+        context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
+        context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
+        context['player_losses_stronger'] = player_wins_loses(pk)['losses_stronger']
+        context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
+        context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
+        context['all'] = player_wins_loses(pk)['all']
+        context['evolution'] = get_data_for_gor_evolution(pk)
+        context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
+        context['chart'] = player_rating_for_chart(pk)
+        if not self.request.user.is_anonymous:
+            player_clubs = get_object_or_404(Player, pk=self.kwargs.get('pk')).clubs.all()
+            coach_clubs = self.request.user.clubs.all()
+            if list(set(player_clubs) & set(coach_clubs)):
+                context['same_club'] = 1
+        return context
 
 
 class PlayerSearch(ListView):

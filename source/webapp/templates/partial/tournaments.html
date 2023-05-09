@@ -1,12 +1,5 @@
-<div class="tabs">
-  <div class="tabs__nav">
-    <button class="tabs__btn tabs__btn_active">Турниры</button>
-    <button class="tabs__btn">Игры</button>
-    <button class="tabs__btn">Gor evolution</button>
-  </div>
-  <div class="tabs__content">
-    <div class="tabs__pane tabs__pane_show">
-        <table class="table adaptive">
+{% load static %}
+<table class="table adaptive">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -40,10 +33,4 @@
                 </tr>
             {% endfor %}
             </tbody>
-        </table>    </div>
-    <div class="tabs__pane">
-    </div>
-    <div class="tabs__pane" id="content-3">
-    </div>
-  </div>
-</div>
+        </table>
