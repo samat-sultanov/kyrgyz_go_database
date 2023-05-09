@@ -223,6 +223,7 @@ class CompetitorSearch(ListView):
             return self.form.cleaned_data['search_country']
 
     def get_queryset(self, *args, **kwargs):
+        print(self.search_country)
         queryset = super().get_queryset()
         rating = get_rating_from_rank(self.search_rank)
         if self.search_rank:

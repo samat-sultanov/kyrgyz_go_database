@@ -133,9 +133,7 @@ class CompetitorSearchForm(forms.Form):
     search_city = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(
                                       attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
-    search_country = forms.CharField(max_length=50, required=False, label='Найти',
-                                     widget=widgets.TextInput(
-                                         attrs={'class': "form-control w-30", 'placeholder': 'Страна'}))
+    search_country = forms.ChoiceField(choices=COUNTRIES, required=False)
 
 
 class NewsForm(forms.ModelForm):
@@ -229,8 +227,10 @@ class CheckTournamentForm(forms.Form):
 
 
 class ClubForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
+                                                 widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
+                                                  widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -391,6 +391,7 @@ class CalendarUpdateForm(forms.ModelForm):
         attrs={'type': "date"}))
     deadline = forms.DateField(required=False, widget=widgets.TextInput(
         attrs={'type': "date"}))
+
     class Meta:
         model = Calendar
         fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline', 'calendar_image']

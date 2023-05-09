@@ -20,11 +20,11 @@
                     </div>
                     <br/>
                     <div style="display: flex; justify-content: center;">
-                        {{ form.search_city }}
+                        {{ form.search_country }}
                     </div>
                     <br/>
                     <div style="display: flex; justify-content: center;">
-                        {{ form.search_country }}
+                        {{ form.search_city }}
                     </div>
                     <br/>
                     <div class="d-flex justify-content-center">
@@ -47,4 +47,16 @@
         </div>
         <br/>
     </div>
+{% endblock %}
+
+{% block src %}
+<script>
+async function onLoad(){
+    let selectCountry = document.getElementById('id_search_country');
+    selectCountry.setAttribute('class', 'form-control w-30');
+}
+
+    window.addEventListener('load', onLoad);
+
+</script>
 {% endblock %}
