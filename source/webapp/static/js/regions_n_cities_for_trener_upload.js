@@ -37,21 +37,35 @@ async function deletePCity(pCity){
 }
 
 async function setPCity(){
-    let pRegions = document.getElementById('region_p_id');
-    let pCities = document.createElement("p");
+    let divRegions = document.getElementById('region_p_id');
+    let divCities = document.createElement("div");
+    divCities.setAttribute('class', 'form-row');
+    divCities.setAttribute('id', 'city_p_id');
+
+    let divLabelCity = document.createElement("div");
+    let pLabelCity = document.createElement("p");
+    divLabelCity.setAttribute('class', 'form-label-col');
+    pLabelCity.setAttribute('class', 'form-label');
+    pLabelCity.innerText = 'Город: ';
+    divLabelCity.appendChild(pLabelCity);
+    divCities.appendChild(divLabelCity);
+
+    let divValueCity = document.createElement("div");
+    divValueCity.setAttribute('class', 'form-value-col');
+    let pValueCity = document.createElement("p");
+    pValueCity.setAttribute('class', 'form-value');
     let selectCity = document.createElement("select");
-    pCities.innerText = 'Город';
     selectCity.setAttribute('name', 'city');
     selectCity.setAttribute('id', 'id_city');
-    pCities.appendChild(selectCity);
-    pCities.setAttribute('id', 'city_p_id');
+    pValueCity.appendChild(selectCity);
+    divValueCity.appendChild(pValueCity);
+    divCities.appendChild(divValueCity);
 
-    let parent = pRegions.parentNode;
-    parent.insertBefore(pCities, pRegions.nextSibling);
+    let parent = divRegions.parentNode;
+    parent.insertBefore(divCities, divRegions.nextSibling);
 }
 
 async function getCities(event){
-    window.console.log("function started");
     let pCity = document.getElementById("city_p_id");
     if (pCity){
         await deletePCity(pCity);
@@ -80,7 +94,6 @@ async function getCities(event){
     }
 
     let url = pRegion.dataset['getCitiesLink'];
-    window.console.log(url);
     let raw_response = await makeRequest(url, settings);
     if (raw_response.ok){
         response = await raw_response.json();
@@ -108,19 +121,34 @@ async function getCities(event){
 }
 
 async function setPRegion(){
-    let pCountry = document.getElementById('country_p_id');
-    let pRegions = document.createElement("p");
+    let divCountry = document.getElementById('country_p_id');
+    let divRegions = document.createElement("div");
+    divRegions.setAttribute('id', 'region_p_id');
+    divRegions.setAttribute('data-get-cities-link', `/api/v1/get_cities/`);
+    divRegions.setAttribute('class', 'form-row');
+
+    let divLabelRegions = document.createElement('div');
+    divLabelRegions.setAttribute('class', 'form-label-col');
+    let pLabelRegions = document.createElement('p');
+    pLabelRegions.setAttribute('class', 'form-label');
+    pLabelRegions.innerText = 'Регион: ';
+    divLabelRegions.appendChild(pLabelRegions);
+    divRegions.appendChild(divLabelRegions);
+
+    let divValueRegions = document.createElement('div');
+    divValueRegions.setAttribute('class', 'form-value-col');
+    let pValueRegions = document.createElement('p');
+    pValueRegions.setAttribute('class', 'form-value');
     let selectRegion = document.createElement("select");
-    pRegions.innerText = 'Регион';
     selectRegion.setAttribute('name', 'region');
     selectRegion.setAttribute('id', 'id_region');
     selectRegion.setAttribute('onchange', 'getCities()');
-    pRegions.appendChild(selectRegion);
-    pRegions.setAttribute('id', 'region_p_id');
-    pRegions.setAttribute('data-get-cities-link', `/api/v1/get_cities/`);
+    pValueRegions.appendChild(selectRegion);
+    divValueRegions.appendChild(pValueRegions);
+    divRegions.appendChild(divValueRegions);
 
-    let parent = pCountry.parentNode;
-    parent.insertBefore(pRegions, pCountry.nextSibling);
+    let parent = divCountry.parentNode;
+    parent.insertBefore(divRegions, divCountry.nextSibling);
 }
 
 async function getRegions(event){

@@ -501,7 +501,6 @@ def get_position(array, id_num):
 
 
 def update_json_tournament(data, some_dict, some_list):
-    print(some_dict)
     updated_data = {}
     for key, value in data.items():
         if key == "Tournament":
