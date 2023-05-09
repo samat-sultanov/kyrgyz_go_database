@@ -17,26 +17,26 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{% static "images/1.jpg" %}" class="d-block w-100 h-50" alt="slide1">
+                <img src="{% static "images/third.jpg" %}" class="d-block w-100 h-50" alt="slide1">
                 <div class="carousel-caption d-none d-md-block mb-4">
-                    <h1>Клубы Кыргызстана</h1>
-                    <a style="color: white; text-decoration: none;" href="">Читать далее <i
+                    <h1 class="p-1" style="background-color: rgba(211, 211, 211, 0.6)"><span style="background-color: rgba(39,196, 71, 0.6); padding: 3px 6px">Клубы</span> Кыргызстана</h1>
+                    <a style="color: white; text-decoration: none;" href="{% url 'webapp:clubs_list' %}">Узнать больше <i
                             class="bi bi-chevron-double-right"></i></a>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="{% static "images/1.jpg" %}" class="d-block w-100" alt="slide2">
+                <img src="{% static "images/second.jpg" %}" class="d-block w-100" alt="slide2">
                 <div class="carousel-caption d-none d-md-block mb-4">
-                    <h1>История игры Го</h1>
-                    <a style="color: white; text-decoration: none;" href="">Читать далее <i
+                    <h1 class="p-1" style="background-color: rgba(211, 211, 211, 0.6)">О <span style="background-color: rgba(39,196, 71, 0.6); padding: 3px 6px">федерации</span> Кыргызстана</h1>
+                    <a style="color: white; text-decoration: none;" href="{% url 'webapp:about' %}">Читать подробно <i
                             class="bi bi-chevron-double-right"></i></a>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="{% static "images/1.jpg" %}" class="d-block w-100" alt="slide3">
+                <img src="{% static "images/first.jpg" %}" class="d-block w-100" alt="slide3">
                 <div class="carousel-caption d-none d-md-block mb-4">
-                    <h1>О федерации Кыргызстана</h1>
-                    <a style="color: white; text-decoration: none;" href="{% url 'webapp:about' %}">Читать далее <i
+                    <h1 class="p-1" style="background-color: rgba(211, 211, 211, 0.6)">Наш <span style="background-color: rgba(39,196, 71, 0.6); padding: 3px 6px">канал</span> на YouTube</h1>
+                    <a style="color: white; text-decoration: none;" href="https://www.youtube.com/@SengokuKg">Перейти по ссылке <i
                             class="bi bi-chevron-double-right"></i></a>
                 </div>
             </div>
