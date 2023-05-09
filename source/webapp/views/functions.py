@@ -225,7 +225,7 @@ def get_data_for_gor_evolution(pk):
             game_data = get_game_data_for_player(game, player)
             game_data_list.append(game_data)
 
-    game_data_list = sorted(filter(lambda x: x['opponent'], game_data_list), key=lambda x: x['opponent'].last_name)
+    game_data_list = sorted(filter(lambda x: x['round'], game_data_list), key=lambda x: x['round'])
     return game_data_list
 
 
