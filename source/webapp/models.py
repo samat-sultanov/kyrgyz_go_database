@@ -105,10 +105,8 @@ class Club(models.Model):
     schedule_to = models.TimeField(verbose_name='До', null=True, blank=True)
     breakfast_from = models.TimeField(verbose_name='Обед c', null=True, blank=True)
     breakfast_to = models.TimeField(verbose_name='до', null=True, blank=True)
-    days_of_work = models.ManyToManyField(DayOfWeek, related_name='days_of_work', blank=True, null=True)
-    day_of_week = models.ManyToManyField(DayOfWeek, related_name='day_of_week', blank=True, null=True)
-
-
+    days_of_work = models.ManyToManyField('webapp.DayOfWeek', related_name='days_of_work', blank=True)
+    day_of_week = models.ManyToManyField('webapp.DayOfWeek', related_name='day_of_week', blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
@@ -390,6 +388,7 @@ def auto_delete_img_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.news_image.path):
             os.remove(instance.news_image.path)
 
+
 @receiver(models.signals.pre_save, sender=News)
 def auto_delete_img_on_change(sender, instance, **kwargs):
     if not instance.pk:
@@ -403,6 +402,7 @@ def auto_delete_img_on_change(sender, instance, **kwargs):
             if os.path.isfile(old_img.path):
                 os.remove(old_img.path)
 
+
 @receiver(models.signals.pre_save, sender=Club)
 def delete_old_image_cache(sender, instance, **kwargs):
     if instance.pk:
@@ -413,6 +413,7 @@ def delete_old_image_cache(sender, instance, **kwargs):
         if old_instance.logo:
             if old_instance.logo != instance.logo:
                 delete(old_instance.logo)
+
 
 @receiver(models.signals.pre_save, sender=Player)
 def delete_old_image_cache(sender, instance, **kwargs):
@@ -425,6 +426,7 @@ def delete_old_image_cache(sender, instance, **kwargs):
             if old_instance.avatar != instance.avatar:
                 delete(old_instance.avatar)
 
+
 @receiver(models.signals.pre_save, sender=Partner)
 def delete_old_image_cache(sender, instance, **kwargs):
     if instance.pk:
@@ -435,6 +437,7 @@ def delete_old_image_cache(sender, instance, **kwargs):
         if old_instance.logo:
             if old_instance.logo != instance.logo:
                 delete(old_instance.logo)
+
 
 @receiver(models.signals.pre_save, sender=News)
 def delete_old_image_cache(sender, instance, **kwargs):

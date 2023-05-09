@@ -1,17 +1,14 @@
 from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
-import re
 import requests
-
 from django import forms
 from django.forms import FileInput, widgets
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
     Partner, DEFAULT_CLASS, DayOfWeek, Country
-
+import re
 
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
@@ -275,8 +272,10 @@ class ClubForm(forms.ModelForm):
 
 
 class ClubCreateForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
+                                                 widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
+                                                  widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -316,10 +315,11 @@ class ParticipantForm(forms.ModelForm):
     rank = forms.CharField(label='Ранг', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Rank", "id": "id_rank", 'style': "width:200px"}))
     city = forms.CharField(required=False, validators=[validate_latin_chars], label='Город',
-                              widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-                                  "City", "id": "id_city", 'style': "width:200px"}))
-    phonenumber = forms.CharField(label='Номер телефона', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
+                           widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                               "City", "id": "id_city", 'style': "width:200px"}))
+    phonenumber = forms.CharField(label='Номер телефона',
+                                  widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                                      "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
 
     class Meta:
         model = Participant
@@ -384,6 +384,7 @@ class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
         fields = ['name', 'logo', 'web_link']
+
 
 class CalendarUpdateForm(forms.ModelForm):
     event_date = forms.DateField(required=False, widget=widgets.TextInput(

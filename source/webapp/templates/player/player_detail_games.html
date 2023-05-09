@@ -15,24 +15,27 @@
 
 {% block content %}
     <div class="container mt-3">
-        <div class="row mb-4 boxShadow">
-            <div class="col-12 col-sm-6 col-md-6 col-lg-4" style="padding:0px;">
+        <div class=" mt-4">
+            <h2 class="title">Страница профиля игрокa:</h2>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                 {% if player.avatar %}
                     {% thumbnail player.avatar "500x500" crop="center" as im %}
-                        <img style="width: 100%;border-right:1px solid rgba(190, 190, 190,0.5);"
+                        <img style="width: 100%; border: solid; border-color: grey; border-width: 1px"
                              src="{{ im.url }}" alt="avatar">
                     {% endthumbnail %}
                 {% else %}
-                    <img style="width: 100%;border-right:1px solid rgba(190, 190, 190,0.5);"
+                    <img style="width: 100%; border: solid; border-color: grey; border-width: 1px;"
                          src="{% static "images/11316.jpg" %}" alt="no_pic_avatar">
                 {% endif %}
                 {% if perms.webapp.change_player %}
-                    <a class="btn btn-light rounded-0" style="width: 100%;border:1px solid rgba(190, 190, 190,0.5);" href="{% url "webapp:update_player" player.pk %}">Редактировать
+                    <a class="btn btn-light mt-3 mb-3" href="{% url "webapp:update_player" player.pk %}">Редактировать
                         профиль</a>
                 {% endif %}
                 {% if perms.webapp.delete_player %}
-                    <button type="button" class="btn btn-light rounded-0 kgf_modal" data-bs-toggle="modal"
-                            data-bs-target="#myModal" style="width: 100%;border:1px solid rgba(190, 190, 190,0.5);">
+                    <button type="button" class="btn btn-light mt-2 kgf_modal" data-bs-toggle="modal"
+                            data-bs-target="#myModal" style="display: none;">
                         Удалить профиль
                     </button>
                 {% endif %}
@@ -60,109 +63,73 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-12 col-sm-6 col-md-6 col-lg-8 text-center my-auto">
-
-                <div class="mt-2">
-                    <h2 class="title"
-                        style="padding-bottom: 0px;display: inline-block">{{ player.last_name }} {{ player.first_name }}</h2>
-                    <a style="padding-left: 12px" onclick="copyfunc()">
-                        <img
-                                style="width: 37px;"
-                                src="{% static 'images/copy.png' %}"></a>
-
-                    <input readonly="readonly" style="width: 0.1%;border:none;color: white"
-                           type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 mt-3">
+                <div>
+                    <p style="font-size: 24px;display: inline-block;"><span
+                            style="font-weight: bold">Фамилия:</span> {{ player.last_name }}
+                    </p></br>
+                    <p style="font-size: 24px;display: inline-block;"><span
+                            style="font-weight: bold">Имя:</span> {{ player.first_name }}</p></br>
+                    <p style="font-size: 20px;display: inline-block;">Страна: </p>
                 </div>
-                <div class="btn-group-vertical" style="max-width: 244px">
-                    <a href="{% url "webapp:competitor_search" player.pk %}" class="btn btn-light rounded ms-1 mt-2 button-hover"
-                       id="slide_stop_button">Поиск соперников</a>
-                    {% if request.user.is_authenticated and same_club %}
-                        <a href="{% url "webapp:recommendation_add" player.pk %}"
-                           class="btn btn-light rounded ms-1 mt-2 button-hover"
-                           id="slide_stop_button">Добавить
-                            рекомендацию</a>
-                    {% endif %}
-                    <button class="btn rounded btn-secondary dropdown-toggle mt-2 ms-1 button-hover" type="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            id="slide_start_button">
-                        {% if player.get_total_clubs >= 1 %}Клубы: состоит в {{ player.get_total_clubs }}
-                            {% if player.get_total_clubs == 1 %} клубе {% else %} клубах {% endif %}
-                        {% else %}
-                            Клубы: Не состоит в клубах
-                        {% endif %}
-                    </button>
-                    {% if player.clubs.all %}
-                        <ul class="dropdown-menu">
-                            {% for club in player.clubs.all %}
-                                <li><a class="dropdown-item button-hover" href="{% url 'webapp:club_view' club.pk %}"
-                                >{{ club.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-
+                <div id="flag" style="width: 300px;">
+                    <p id="country_code">{{ player.country.country_code }}</p>
                 </div>
             </div>
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                {% include "partial/charts.html" %}
+            </div>
 
+            <div class="col-12 col-sm-4 col-md-4 col-lg-12 mt-2">
+                {% if request.user.is_authenticated %}
+                    {% if player.birth_date %}
+                        <p>Возраст: {{ player.get_age_date }} лет</p>
+                    {% else %}
+                        <p><span style="font-weight: bold">Возраст:</span> N/A</p>
+                    {% endif %}
+                {% endif %}
+                {% for element in position %}
+                    {% if player.pk == element.player.pk %}
+                        <p><span style="font-weight: bold">Позиция в KGF:</span> {{ element.position }}</p>
+                    {% endif %}
+                {% endfor %}
+                <p><span style="font-weight: bold">Ранг: </span>{{ player.current_rank }}</p>
+                {% if player.EgdPin %}
+                    <p><span style="font-weight: bold">EgdPin: </span> {{ player.EgdPin }}</p>
+                {% else %}
+                    <p><span style="font-weight: bold">EgdPin: </span> Не присвоен</p>
+                {% endif %}
+            </div>
+        {% include "partial/player_chart.html" %}
         </div>
-        <div class="row">
-            <div class="col-12 col-sm-8 col-md-6 col-lg-5">
-                <div class="card boxShadow" style="border-radius: 2px;border: none;">
-                    <div class="card-body">
-                        {% include "partial/charts.html" %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-8 col-md-6 col-lg-7" style="">
-                <div class="card boxShadow" style="border-radius: 2px;border: none;height: 382px;">
-                    <div class="" style="margin-bottom: 0px">
-                        <div class="d-flex flex-row mb-5 text-center"
-                             style="margin-top: 15%;justify-content: space-evenly;">
-                            {% if request.user.is_authenticated %}
-                                {% if player.birth_date %}
-                                    <div>
-                                        <p class="mb-1 h5">{{ player.get_age_date }}</p>
-                                        <p class="small text-muted mb-0">Лет</p>
-                                    </div>
-                                {% else %}
-                                    <div>
-                                        <p class="mb-1 h5">N/A</p>
-                                        <p class="small text-muted mb-0">Лет</p>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                            {% for element in position %}
-                                {% if player.pk == element.player.pk %}
-                                    <div class="">
-                                        <p class="mb-1 h5">{{ element.position }}</p>
-                                        <p class="small text-muted mb-0">Позиция </br>в KGF</p>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                            <div class="">
-                                <p class="mb-1 h5">{{ player.current_rank }}</p>
-                                <p class="small text-muted mb-0">Ранг</p>
-                            </div>
-                            {% if player.EgdPin %}
-                                <div>
-                                    <p class="mb-1 h5">{{ player.EgdPin }}</p>
-                                    <p class="small text-muted mb-0">EgdPin</p>
-                                </div>
-                            {% else %}
-                                <div>
-                                    <p class="mb-1 h5">Не присвоен</p>
-                                    <p class="small text-muted mb-0">EgdPin</p>
-                                </div>
-                            {% endif %}
 
-                        </div>
-                    </div>
-                    <div id="flag" style="max-width: 300px;font-weight: bold;" class="mx-auto text-center mt-4">
-                        <p id="country_code">{{ player.country.country_code }}</p>
-                    </div>
-                </div>
-            </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary dropdown-toggle mt-2 ms-1" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" style="background-color: #9400D3; color: white"
+                    id="slide_start_button">
+                {% if player.get_total_clubs >= 1 %}Клубы: состоит в {{ player.get_total_clubs }}
+                    {% if player.get_total_clubs == 1 %} клубе {% else %} клубах {% endif %}
+                {% else %}
+                    Клубы: Не состоит в клубах
+                {% endif %}
+            </button>
+            {% if player.clubs.all %}
+                <ul class="dropdown-menu">
+                    {% for club in player.clubs.all %}
+                        <li><a class="dropdown-item" href="{% url 'webapp:club_view' club.pk %}"
+                               style="background-color: #9400D3; color: white">{{ club.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <a href="{% url "webapp:competitor_search" player.pk %}" class="btn ms-1 mt-2"
+           style="background-color: #9400D3; color: white" id="slide_stop_button">Поиск соперников</a>
+        {% if request.user.is_authenticated and same_club %}
+            <a href="{% url "webapp:recommendation_add" player.pk %}" class="btn ms-1 mt-2"
+               style="background-color: #9400D3; color: white" id="slide_stop_button">Добавить рекомендацию</a>
+        {% endif %}
+        <div>
             <button class="share-btn" id="shareBtn">
                 <i style="z-index: 5" class="fa-solid fa-arrow-up-right-from-square share-icon"></i>
                 <span class="social-icons">
@@ -177,20 +144,27 @@
                              <i style="color:#4C75A3;" class="fa-brands fa-telegram"></i></a>
                   </span>
             </button>
-            {% include "partial/player_chart.html" %}
-        </div>
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <a style="padding-left: 12px" onclick="copyfunc()">
+                    <img
+                            style="width: 37px;"
+                            src="{% static 'images/copy.png' %}"></a>
 
+                <input readonly="readonly" style="width: 75%; border-radius: 5px; border-color: #9400D3"
+                       type="text" value="http://127.0.0.1:8000/player_detail/{{ player.pk }}" id="myInput">
+            </div>
+        </div>
 
     </div>
 
     <div class="container mt-5 mb-5">
     <div class="btn-group">
-        <a href="#" class="btn btn-light mt-3 mb-3 ps-5 pe-5 active" aria-current="page">Турниры</a>
-        <a href="{% url 'webapp:player_detail_games' player.pk %}" class="btn btn-light mt-3 mb-3 ps-5 pe-5">Игры</a>
+        <a href="{% url 'webapp:player_detail' player.pk %}" class="btn btn-light mt-3 mb-3 ps-5 pe-5" aria-current="page">Турниры</a>
+        <a href="#" class="btn btn-light mt-3 mb-3 ps-5 pe-5 active">Игры</a>
         <a href="{% url 'webapp:player_gor_evolution' player.pk %}" class="btn btn-light mt-3 mb-3 ps-5 pe-5">Gor evolution</a>
     </div>
     <div>
-        {% include 'partial/tournaments.html' %}
+        {% include 'partial/games.html' %}
     </div>
 
     </div>
