@@ -1,6 +1,7 @@
 import os
 import shutil
 import datetime
+from phonenumbers import parse, PhoneNumberFormat
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -9,7 +10,7 @@ from django.test import TestCase
 import accounts.models
 from accounts.models import User
 from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
-    Calendar, get_author, Partner
+    Calendar, get_author, Partner, Club, DayOfWeek
 
 
 class RecommendationModelTest(TestCase):
@@ -680,3 +681,89 @@ class PartnerModelTest(TestCase):
         self.assertTrue(Partner.objects.filter(pk=partner_to_delete.pk).exists())
         partner_to_delete.delete()
         self.assertFalse(Calendar.objects.filter(pk=partner_to_delete.pk).exists())
+
+
+class ClubModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='testuser',
+            password='testpass'
+        )
+        cls.country = Country.objects.create(country_code='kg')
+        cls.city = City.objects.create(city='Test City', country=cls.country)
+        cls.region = Region.objects.create(name='Test Region', country=cls.country)
+        cls.club = Club.objects.create(
+            name='Test Club',
+            EGDName='123456',
+            city=cls.city,
+            country=cls.country,
+            region=cls.region,
+            num_players=10,
+            address='Test Address',
+            phonenumber='+996555123456',
+            web_link='https://www.example.com',
+            schedule_from='10:00:00',
+            schedule_to='18:00:00',
+            breakfast_from='08:00:00',
+            breakfast_to='09:00:00',
+        )
+        cls.club.coaches.add(cls.user)
+
+    def test_coaches_field(self):
+        club = Club.objects.get(name='Test Club')
+        self.assertEqual(club.coaches.through.__name__, 'Club_coaches')
+        self.assertEqual(club.coaches.through._meta.get_field('club').related_model.__name__, 'Club')
+        self.assertEqual(club.coaches.through._meta.get_field('user').related_model.__name__, 'User')
+
+    def test_create_club_with_required_fields(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        self.assertIsNotNone(club.id)
+
+    def test_create_club_with_all_fields(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        user = User.objects.create_user(username='testuser1', email='user1@example.com', password='testpass1')
+        day_of_week = DayOfWeek.objects.create(name='Monday')
+        club = Club.objects.create(
+            name='Test Club',
+            EGDName='test',
+            city=city,
+            country=country,
+            region=region,
+            num_players=10,
+            address='Test Address',
+            phonenumber='+996555123456',
+            web_link='http://www.testclub.com',
+            schedule_from=datetime.time(9, 0),
+            schedule_to=datetime.time(18, 0),
+            breakfast_from=datetime.time(12, 0),
+            breakfast_to=datetime.time(13, 0)
+        )
+        club.coaches.add(user)
+        club.days_of_work.add(day_of_week)
+        club.day_of_week.add(day_of_week)
+        self.assertIsNotNone(club.id)
+
+    def test_update_club(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        club.name = 'Updated Club Name'
+        club.save()
+        updated_club = Club.objects.get(id=club.id)
+        self.assertEqual(updated_club.name, 'Updated Club Name')
+
+    def test_delete_club(self):
+        country = Country.objects.create(country_code='KG')
+        city = City.objects.create(city='Test City', country=country)
+        region = Region.objects.create(name='Test Region', country=country)
+        club = Club.objects.create(name='Test Club', city=city, country=country, region=region)
+        club.delete()
+        self.assertFalse(Club.objects.filter(id=club.id).exists())
