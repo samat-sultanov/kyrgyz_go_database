@@ -169,6 +169,7 @@ def get_data_for_table_games(pk):
     for item in new_list:
         if item['opponent'] is None:
             new_list.remove(item)
+    new_list = sorted(new_list, key=lambda x: (x['tournament'].date, -x['round']), reverse=True)
     return new_list
 
 
@@ -245,6 +246,7 @@ def get_tournaments_list_for_gor_evolution(pk):
         new_dict['rating_after'] = element.rating_after
         new_dict['rank_after'] = element.GoLevel_after
         new_list.append(new_dict)
+    new_list = sorted(filter(lambda x: x['tournament'], new_list), key=lambda x: x['tournament'].date, reverse=True)
     return new_list
 
 
@@ -501,7 +503,6 @@ def get_position(array, id_num):
 
 
 def update_json_tournament(data, some_dict, some_list):
-    print(some_dict)
     updated_data = {}
     for key, value in data.items():
         if key == "Tournament":
