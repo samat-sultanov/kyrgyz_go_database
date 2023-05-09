@@ -1,6 +1,6 @@
 from urllib.parse import urlencode
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
 from webapp.models import Player, Country
 from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
@@ -112,7 +112,8 @@ class PlayerSearch(ListView):
     paginate_by = 15
     paginate_orphans = 4
     country = Country.objects.get(country_code='kg')
-    queryset = Player.objects.filter(country=country).order_by('-current_rating')
+    queryset = Player.objects.filter(country=country).annotate(num_tournaments=Count('tournaments')).filter(
+        num_tournaments__gt=0).order_by('-current_rating')
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
