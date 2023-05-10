@@ -29,39 +29,41 @@ def get_data(pk):
         for element in players:
             new_dict = dict()
             if element.player.pk == game.black_id:
-                new_dict['player'] = element.player
-                new_dict['rating'] = element.rating
-                con = get_con(element.rating)
-                bonus = get_bonus(element.rating)
-                se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num, pk))
-                score = get_score(con, game.black_score, se, bonus)
-                if score:
-                    score_with_class = score * class_value
-                    game.black_gor_change = score_with_class
-                else:
-                    game.black_gor_change = score
-                game.save()
-                new_dict['score'] = score
-                new_dict['result'] = game.black_score
-                new_dict['opponent'] = game.white
-                new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num, pk)
                 if game.white_id:
+                    new_dict['player'] = element.player
+                    new_dict['rating'] = element.rating
+                    con = get_con(element.rating)
+                    bonus = get_bonus(element.rating)
+
+                    se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num, pk))
+                    score = get_score(con, game.black_score, se, bonus)
+                    if score:
+                        score_with_class = score * class_value
+                        game.black_gor_change = score_with_class
+                    else:
+                        game.black_gor_change = score
+                    game.save()
+                    new_dict['score'] = score
+                    new_dict['result'] = game.black_score
+                    new_dict['opponent'] = game.white
+                    new_dict['opponent_rating'] = get_opponent_rating(game.white_id, game.round_num, pk)
                     opponent_rating = get_opponent_rating(game.white_id, game.round_num, pk)
                     opponent_con = get_con(opponent_rating)
                     opponent_bonus = get_bonus(opponent_rating)
                     opponent_se = get_se(opponent_rating, element.rating)
                     opponent_score = get_score(opponent_con, game.white_score, opponent_se, opponent_bonus)
                     new_dict['opponent_score'] = opponent_score
+                    new_dict['round'] = game.round_num
                     if opponent_score:
                         score_with_class = opponent_score * class_value
                         game.white_gor_change = score_with_class
                     else:
                         game.white_gor_change = opponent_score
                     game.save()
+                    new_list.append(new_dict)
                 else:
                     pass
-                new_dict['round'] = game.round_num
-                new_list.append(new_dict)
+
     return new_list
 
 
@@ -79,35 +81,23 @@ def get_opponent_rating(opponent_id, number_of_round, pk):
 
 
 def get_con(num):
-    if num:
-        con = ((3300 - num) / 200) ** 1.6
-        return con
-    else:
-        return None
+    con = ((3300 - num) / 200) ** 1.6
+    return con
 
 
 def get_bonus(num):
-    if num:
-        bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
-        return bonus
-    else:
-        return None
+    bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
+    return bonus
 
 
 def get_beta(num):
-    if num is not None:
-        beta = -7 * math.log(3300 - num)
-        return beta
-    else:
-        return None
+    beta = -7 * math.log(3300 - num)
+    return beta
 
 
 def get_se(num1, num2):
-    if num2 and num1:
-        se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
-        return se
-    else:
-        return None
+    se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
+    return se
 
 
 def get_new_rank_from_rating(num):
@@ -159,10 +149,6 @@ def get_new_rating(pk):
     for element in data:
         for item in players:
             if element['player'].pk == item.player.pk:
-                if item.rating == 0:
-                    item.GoLevel_after = item.GoLevel
-                    item.rating_after = 0
-                    item.save()
                 if item.rating >= 100:
                     new_rating = item.rating + element['total']
                     new_rank = get_new_rank_from_rating(new_rating)

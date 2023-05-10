@@ -10,12 +10,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, FormView
-from django.core.exceptions import ObjectDoesNotExist
-
-from webapp.models import Calendar, News, Partner, NotModeratedTournament, Country, Tournament
+from webapp.models import Calendar, News, Partner, NotModeratedTournament, Tournament
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
-from webapp.views.functions import get_position_in_kgf, \
-    unpack_data_json_tournament, unpack_data_json_players, update_json_tournament, unpack_data_for_moderation_tournament
+from webapp.views.functions import get_position_in_kgf, unpack_data_json_tournament, unpack_data_json_players, \
+    update_json_tournament
 
 
 class IndexView(TemplateView):
@@ -25,11 +23,7 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         calendar = Calendar.objects.filter(is_deleted=False).order_by('event_date')
         context['calendar'] = calendar
-        try:
-            players = get_position_in_kgf()[0:3]
-        except ObjectDoesNotExist:
-            Country.objects.create(country_code='kg')
-            players = get_position_in_kgf()[0:3]
+        players = get_position_in_kgf()[0:3]
         context['position'] = players
         latest_news = News.objects.filter(is_deleted=False).order_by('-created_at')[:3]
         context['latest_news'] = latest_news
@@ -97,9 +91,12 @@ class TournamentCheckView(LoginRequiredMixin, FormView):
             'NumberOfRounds': form.cleaned_data['NumberOfRounds'],
             'Boardsize': form.cleaned_data['Boardsize'],
             'date': form.cleaned_data['date'].isoformat(),
-            'city': form.cleaned_data['city'],
+            'country': form.cleaned_data.get('country', ''),
+            'region': form.cleaned_data.get('region', 0),
+            'city': form.cleaned_data.get('city', 0),
             'tournament_class': form.cleaned_data['tournament_class'],
             'regulations': form.cleaned_data['regulations'],
+            'location': form.cleaned_data['location'],
             'uploaded_by': self.request.user.username
         }
         players_data = []

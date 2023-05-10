@@ -1,13 +1,13 @@
 from urllib.parse import urlencode
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import get_object_or_404
-from webapp.models import Player
+from webapp.models import Player, Country
 from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from webapp.views.functions import get_position_in_kgf, get_data_for_table_games, get_data_for_gor_evolution, \
-    get_tournaments_list_for_gor_evolution, player_wins_loses, player_rating_for_chart
+    get_tournaments_list_for_gor_evolution, player_wins_loses, player_rating_for_chart, _adapt_go_level
 from webapp.views.GoR_calculator import get_rating_from_rank
 
 
@@ -21,8 +21,8 @@ class PlayerDetail(TemplateView):
         context = super().get_context_data(**kwargs)
         pk = self.kwargs.get(self.key_kwarg)
         context[self.context_key] = self.get_object()
+        context['pk'] = pk
         context['position'] = get_position_in_kgf()
-        context['games'] = get_data_for_table_games(pk)
         context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
         context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
         context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
@@ -30,8 +30,6 @@ class PlayerDetail(TemplateView):
         context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
         context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
         context['all'] = player_wins_loses(pk)['all']
-        context['evolution'] = get_data_for_gor_evolution(pk)
-        context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
         player = get_object_or_404(Player, pk=pk)
         player_tournaments = player.tournaments.order_by("-date")
         context['tab_tournaments'] = player_tournaments
@@ -48,13 +46,74 @@ class PlayerDetail(TemplateView):
         return get_object_or_404(self.model, pk=pk)
 
 
+class PlayerDetailGames(TemplateView):
+    context_key = 'player'
+    key_kwarg = 'pk'
+    template_name = 'player/player_detail_games.html'
+    model = Player
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get(self.key_kwarg)
+        player = get_object_or_404(Player, pk=pk)
+        context['player'] = player
+        context['position'] = get_position_in_kgf()
+        context['games'] = get_data_for_table_games(pk)
+        context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
+        context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
+        context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
+        context['player_losses_stronger'] = player_wins_loses(pk)['losses_stronger']
+        context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
+        context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
+        context['all'] = player_wins_loses(pk)['all']
+        context['chart'] = player_rating_for_chart(pk)
+        if not self.request.user.is_anonymous:
+            player_clubs = get_object_or_404(Player, pk=self.kwargs.get('pk')).clubs.all()
+            coach_clubs = self.request.user.clubs.all()
+            if list(set(player_clubs) & set(coach_clubs)):
+                context['same_club'] = 1
+        return context
+
+
+class PlayerDetailGorEvolution(TemplateView):
+    context_key = 'player'
+    key_kwarg = 'pk'
+    template_name = 'player/player_gor_evolution.html'
+    model = Player
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get(self.key_kwarg)
+        player = get_object_or_404(Player, pk=pk)
+        context['player'] = player
+        context['position'] = get_position_in_kgf()
+        context['player_wins_weaker'] = player_wins_loses(pk)['wins_weaker']
+        context['player_wins_stronger'] = player_wins_loses(pk)['wins_stronger']
+        context['player_losses_weaker'] = player_wins_loses(pk)['losses_weaker']
+        context['player_losses_stronger'] = player_wins_loses(pk)['losses_stronger']
+        context['player_losses_equal'] = player_wins_loses(pk)['losses_equal']
+        context['player_wins_equal'] = player_wins_loses(pk)['wins_equal']
+        context['all'] = player_wins_loses(pk)['all']
+        context['evolution'] = get_data_for_gor_evolution(pk)
+        context['tournaments'] = get_tournaments_list_for_gor_evolution(pk)
+        context['chart'] = player_rating_for_chart(pk)
+        if not self.request.user.is_anonymous:
+            player_clubs = get_object_or_404(Player, pk=self.kwargs.get('pk')).clubs.all()
+            coach_clubs = self.request.user.clubs.all()
+            if list(set(player_clubs) & set(coach_clubs)):
+                context['same_club'] = 1
+        return context
+
+
 class PlayerSearch(ListView):
     template_name = 'player/player_search.html'
     context_object_name = 'players'
-    queryset = Player.objects.order_by('-current_rating')
     model = Player
     paginate_by = 15
     paginate_orphans = 4
+    country = Country.objects.get(country_code='kg')
+    queryset = Player.objects.filter(country=country).annotate(num_tournaments=Count('tournaments')).filter(
+        num_tournaments__gt=0).order_by('-current_rating')
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -176,7 +235,7 @@ class CompetitorSearch(ListView):
         if self.search_country:
             queryset = queryset.filter(Q(country__country_code__istartswith=self.search_country))
         player_exclude = self.kwargs.get('pk')
-        return queryset.exclude(id__in=[player_exclude])
+        return queryset.exclude(id__in=[player_exclude]).order_by('current_rating')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)

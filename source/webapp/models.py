@@ -1,13 +1,15 @@
 import os
+import requests
 from datetime import datetime as dt
 import datetime
-
+from sorl.thumbnail import delete
 from PIL import Image
 from phonenumber_field.modelfields import PhoneNumberField
 
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.dispatch import receiver
 
@@ -23,7 +25,32 @@ class Country(models.Model):
     country_code = models.CharField(verbose_name='Country', max_length=2)
 
     def __str__(self):
-        return f'{self.country_code}'
+        return f'код страны: {self.country_code}'
+
+    def get_name(self):
+        base_url = 'https://restcountries.com/v3.1/alpha/'
+
+        raw_response = requests.get(base_url + self.country_code)
+        if raw_response.status_code == 200:
+            response = raw_response.json()
+            for element in response:
+                for k, v in element.items():
+                    if k == "translations":
+                        try:
+                            rus_names = v.get("rus")
+                            name_to_return = rus_names.get("common")
+                            if name_to_return:
+                                if name_to_return == 'Киргизия':
+                                    return 'Кыргызстан'
+                                else:
+                                    return name_to_return
+                            else:
+                                return rus_names.get("official")
+                        except ObjectDoesNotExist:
+                            common = response[0].get("common")
+                            return common
+        else:
+            return f'Страна не найдена по коду - {self.country_code}'
 
     class Meta:
         verbose_name = "Страна"
@@ -78,10 +105,8 @@ class Club(models.Model):
     schedule_to = models.TimeField(verbose_name='До', null=True, blank=True)
     breakfast_from = models.TimeField(verbose_name='Обед c', null=True, blank=True)
     breakfast_to = models.TimeField(verbose_name='до', null=True, blank=True)
-    days_of_work = models.ManyToManyField(DayOfWeek, related_name='days_of_work', blank=True, null=True)
-    day_of_week = models.ManyToManyField(DayOfWeek, related_name='day_of_week', blank=True, null=True)
-
-
+    days_of_work = models.ManyToManyField('webapp.DayOfWeek', related_name='days_of_work', blank=True)
+    day_of_week = models.ManyToManyField('webapp.DayOfWeek', related_name='day_of_week', blank=True)
 
     def __str__(self):
         return f'{self.id}. {self.name} - {self.EGDName}'
@@ -125,8 +150,9 @@ class Game(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament name", max_length=50, null=True, blank=True)
-    city = models.ForeignKey('webapp.City', on_delete=models.CASCADE, null=True, blank=True)
-    region = models.ForeignKey('webapp.Region', on_delete=models.CASCADE, null=True, blank=True)
+    city = models.ForeignKey('webapp.City', on_delete=models.PROTECT, null=True, blank=True)
+    region = models.ForeignKey('webapp.Region', on_delete=models.PROTECT, null=True, blank=True)
+    country = models.ForeignKey('webapp.Country', on_delete=models.PROTECT, default=1)
     location = models.CharField(verbose_name="Место проведения", max_length=100, null=True, blank=True)
     board_size = models.PositiveIntegerField(verbose_name="Board size", default=19)
     rounds = models.PositiveIntegerField(verbose_name='Total rounds')
@@ -375,3 +401,51 @@ def auto_delete_img_on_change(sender, instance, **kwargs):
         if not old_img == new_img:
             if os.path.isfile(old_img.path):
                 os.remove(old_img.path)
+
+
+@receiver(models.signals.pre_save, sender=Club)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = Club.objects.get(pk=instance.pk)
+        except Club.DoesNotExist:
+            return
+        if old_instance.logo:
+            if old_instance.logo != instance.logo:
+                delete(old_instance.logo)
+
+
+@receiver(models.signals.pre_save, sender=Player)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.avatar:
+            if old_instance.avatar != instance.avatar:
+                delete(old_instance.avatar)
+
+
+@receiver(models.signals.pre_save, sender=Partner)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.logo:
+            if old_instance.logo != instance.logo:
+                delete(old_instance.logo)
+
+
+@receiver(models.signals.pre_save, sender=News)
+def delete_old_image_cache(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.news_image:
+            if old_instance.news_image != instance.news_image:
+                delete(old_instance.news_image)

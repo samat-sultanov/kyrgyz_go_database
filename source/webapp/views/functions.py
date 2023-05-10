@@ -1,9 +1,13 @@
 from random import randint
 from operator import itemgetter
 from collections import Counter
+import requests
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+
 from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS, PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
@@ -165,62 +169,65 @@ def get_data_for_table_games(pk):
     for item in new_list:
         if item['opponent'] is None:
             new_list.remove(item)
+    new_list = sorted(new_list, key=lambda x: (x['tournament'].date, -x['round']), reverse=True)
     return new_list
+
+
+def get_games_for_player(player):
+    games = Game.objects.filter(
+        Q(black=player) | Q(white=player),
+        tournament__playerintournament__player=player
+    )
+    return games
+
+
+def get_game_result_for_player(game, player):
+    if game.result is not None:
+        if game.black == player and game.black_score == 1 or game.white == player and game.white_score == 1:
+            return 'Win'
+        elif game.black == player and game.black_score == 0 or game.white == player and game.white_score == 0:
+            return 'Loss'
+    return None
+
+
+def get_game_data_for_player(game, player):
+    opponent = game.white if game.black == player else game.black
+    opponent_data = PlayerInTournament.objects.filter(
+        tournament=game.tournament,
+        player=opponent
+    ).first()
+    if opponent_data:
+        opponent_rank = opponent_data.GoLevel
+        opponent_rating = opponent_data.rating
+    else:
+        opponent_rank = None
+        opponent_rating = None
+
+    return {
+        'tournament': game.tournament,
+        'round': game.round_num,
+        'gor_change': game.black_gor_change if game.black == player else game.white_gor_change,
+        'opponent_rank': opponent_rank,
+        'opponent_rating': opponent_rating,
+        'opponent': opponent,
+        'opponent_gor_change': game.white_gor_change if game.black == player else game.black_gor_change,
+        'result': get_game_result_for_player(game, player),
+        'color': 'b' if game.black == player else 'w'
+    }
 
 
 def get_data_for_gor_evolution(pk):
     player = Player.objects.get(pk=pk)
-    tournaments = player.playerintournament_set.all()
-    new_list = []
-    for element in tournaments:
-        tournament = Tournament.objects.get(pk=element.tournament_id)
-        games = Game.objects.filter(tournament=tournament)
-        for game in games:
-            new_dict = dict()
-            if game.black == player and game.black_gor_change:
-                new_dict['tournament'] = tournament
-                new_dict['round'] = game.round_num
-                new_dict['gor_change'] = game.black_gor_change
-                opponent = game.white
-                if opponent:
-                    data = opponent.playerintournament_set.filter(tournament=tournament)
-                    for el in data:
-                        new_dict['opponent_rank'] = el.GoLevel
-                        new_dict['opponent_rating'] = el.rating
-                new_dict['opponent'] = game.white
-                new_dict['opponent_gor_change'] = game.white_gor_change
-                if game.result is not None:
-                    if game.black_score == 0:
-                        new_dict['result'] = 'Loss'
-                    elif game.black_score == 1:
-                        new_dict['result'] = 'Win'
-                new_dict['color'] = 'b'
-                new_list.append(new_dict)
-            elif game.white == player and game.white_gor_change:
-                new_dict['tournament'] = tournament
-                new_dict['round'] = game.round_num
-                new_dict['gor_change'] = game.white_gor_change
-                opponent = game.black
-                if opponent:
-                    data = opponent.playerintournament_set.filter(tournament=tournament)
-                    for el in data:
-                        new_dict['opponent_rank'] = el.GoLevel
-                        new_dict['opponent_rating'] = el.rating
-                new_dict['opponent'] = game.black
-                new_dict['opponent_gor_change'] = game.black_gor_change
-                if game.result is not None:
-                    if game.white_score == 0:
-                        new_dict['result'] = 'Loss'
-                    elif game.white_score == 1:
-                        new_dict['result'] = 'Win'
-                new_dict['color'] = 'w'
-                new_list.append(new_dict)
-            else:
-                pass
-    for item in new_list:
-        if item['opponent'] is None:
-            new_list.remove(item)
-    return new_list
+    games = get_games_for_player(player)
+    game_data_list = []
+    for game in games:
+        result = get_game_result_for_player(game, player)
+        if result:
+            game_data = get_game_data_for_player(game, player)
+            game_data_list.append(game_data)
+
+    game_data_list = sorted(filter(lambda x: x['round'], game_data_list), key=lambda x: x['round'])
+    return game_data_list
 
 
 def get_tournaments_list_for_gor_evolution(pk):
@@ -234,12 +241,12 @@ def get_tournaments_list_for_gor_evolution(pk):
         for el in total_score:
             if el['player'] == player:
                 new_dict['total'] = el['total']
-        if element.rating != 0:
-            new_dict['tournament'] = tournament
-            new_dict['rating_before'] = element.rating
-            new_dict['rating_after'] = element.rating_after
-            new_dict['rank_after'] = element.GoLevel_after
-            new_list.append(new_dict)
+        new_dict['tournament'] = tournament
+        new_dict['rating_before'] = element.rating
+        new_dict['rating_after'] = element.rating_after
+        new_dict['rank_after'] = element.GoLevel_after
+        new_list.append(new_dict)
+    new_list = sorted(filter(lambda x: x['tournament'], new_list), key=lambda x: x['tournament'].date, reverse=True)
     return new_list
 
 
@@ -247,7 +254,7 @@ def player_wins_loses(pk):
     player = Player.objects.get(pk=pk)
     games = Game.objects.filter(Q(black=player) | Q(white=player))
     wl = []
-    total_games = games.count()
+    total_games = 0
     for game in games:
         new_dict = dict()
         wins_stronger = 0
@@ -259,28 +266,40 @@ def player_wins_loses(pk):
         if game.result:
             if game.black == player and game.black_score > 0 and game.black.current_rating > game.white.current_rating:
                 wins_weaker += game.black_score
+                total_games += 1
             elif game.black == player and game.black_score > 0 and game.black.current_rating < game.white.current_rating:
                 wins_stronger += game.black_score
+                total_games += 1
             elif game.white == player and game.white_score > 0 and game.white.current_rating > game.black.current_rating:
                 wins_weaker += game.white_score
+                total_games += 1
             elif game.white == player and game.white_score > 0 and game.white.current_rating < game.black.current_rating:
                 wins_stronger += game.white_score
+                total_games += 1
             elif game.black == player and game.white_score > 0 and game.black.current_rating > game.white.current_rating:
                 losses_weaker += 1
+                total_games += 1
             elif game.black == player and game.white_score > 0 and game.black.current_rating < game.white.current_rating:
                 losses_stronger += 1
+                total_games += 1
             elif game.white == player and game.black_score > 0 and game.white.current_rating > game.black.current_rating:
                 losses_weaker += 1
+                total_games += 1
             elif game.white == player and game.black_score > 0 and game.white.current_rating < game.black.current_rating:
                 losses_stronger += 1
+                total_games += 1
             elif game.black == player and game.white_score > 0 and game.black.current_rating == game.white.current_rating:
                 losses_equal += 1
+                total_games += 1
             elif game.black == player and game.black_score > 0 and game.black.current_rating == game.white.current_rating:
                 wins_equal += 1
+                total_games += 1
             elif game.white == player and game.black_score > 0 and game.white.current_rating == game.black.current_rating:
                 losses_equal += 1
+                total_games += 1
             elif game.white == player and game.white_score > 0 and game.white.current_rating == game.black.current_rating:
                 wins_equal += 1
+                total_games += 1
         new_dict['player'] = player.pk
         new_dict['wins_weaker'] = wins_weaker
         new_dict['wins_stronger'] = wins_stronger
@@ -393,24 +412,30 @@ def unpack_data_json_games(list_of_rounds, list_of_players):
 
                                 if game.get('Black') == id_in_tournament:
                                     if black == '1' and white == '0':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}+/b'
                                         new_dict['font_color'] = 'green'
                                     elif black == '0' and white == '1':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}-/b'
                                         new_dict['font_color'] = 'red'
                                     else:
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("White"))}=/b'
                                         new_dict['font_color'] = 'black'
 
                                 elif game.get('White') == id_in_tournament:
                                     if white == '1' and black == '0':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}+/w'
                                         new_dict['font_color'] = 'green'
                                     elif white == '0' and black == '1':
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}-/w'
                                         new_dict['font_color'] = 'red'
                                     else:
-                                        new_dict['result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
+                                        new_dict[
+                                            'result_to_display'] = f'{get_position(list_of_players, game.get("Black"))}=/w'
                                         new_dict['font_color'] = 'black'
                             else:
                                 if id_in_tournament in (game.get('Black'), game.get('White')):
@@ -490,11 +515,15 @@ def update_json_tournament(data, some_dict, some_list):
                     'NumberOfRounds': some_dict['NumberOfRounds'],
                     'Boardsize': some_dict['Boardsize'],
                     'date': some_dict['date'],
+                    'country': some_dict['country'],
+                    'region': some_dict['region'],
                     'city': some_dict['city'],
                     'tournament_class': some_dict['tournament_class'],
                     'regulations': some_dict['regulations'],
                     'uploaded_by': some_dict['uploaded_by'],
                 })
+
+            element['location'] = some_dict['location']
             updated_data['Tournament'] = element
             if 'IndividualParticipant' in items:
                 list_of_players = items['IndividualParticipant']
@@ -525,11 +554,45 @@ def update_json_tournament(data, some_dict, some_list):
     return updated_data
 
 
+def get_country_name_from_code(code):
+    base_url = 'https://restcountries.com/v3.1/alpha/'
+
+    raw_response = requests.get(base_url + code)
+    if raw_response.status_code == 200:
+        response = raw_response.json()
+        for element in response:
+            for k, v in element.items():
+                if k == "translations":
+                    try:
+                        rus_names = v.get("rus")
+                        name_to_return = rus_names.get("common")
+                        if name_to_return:
+                            if name_to_return == 'Киргизия':
+                                return 'Кыргызстан'
+                            else:
+                                return name_to_return
+                        else:
+                            return rus_names.get("official")
+                    except ObjectDoesNotExist:
+                        common = response[0].get("common")
+                        return common
+    else:
+        return f'Страна не найдена по коду из json - {code}'
+
+
 def unpack_data_for_moderation_tournament(data):
     new_dict = {}
     for k, v in data.get('Tournament', {}).items():
-        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'city', 'regulations'}:
-            new_dict[k] = int(v) if k == 'NumberOfRounds' or k == 'Boardsize' else v
+        if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'regulations'}:
+            new_dict[k] = int(v) if k in ('NumberOfRounds', 'Boardsize') else v
+        elif k == 'country':
+            new_dict[k] = v
+            new_dict['country_name'] = get_country_name_from_code(v)
+        elif k in ('region', 'city'):
+            if v != '':
+                new_dict[k] = int(v)
+            else:
+                new_dict[k] = v
     return new_dict
 
 
@@ -556,14 +619,14 @@ def player_rating_for_chart(pk):
     date = []
     rating = []
     for tournament in tournaments:
-        date.append(str(tournament.tournament.date))
+        date.append(tournament.tournament.date)
         rating.append(tournament.rating)
     total = zip(date, rating)
     return total
 
 
 def _sort_lod(lop):
-    #lop = list of players (list of dictionaries)
+    # lop = list of players (list of dictionaries)
     unsorted_players_list = []
     by_rating = False
     for person in lop:
@@ -593,7 +656,7 @@ def _sort_lod(lop):
 
 
 def _sort_ipl(lopit):
-    #lopit = list of players in tournament(from json)
+    # lopit = list of players in tournament(from json)
     unsorted_players_list = []
     by_rating = False
     for element in lopit:
@@ -628,7 +691,7 @@ def _sort_ipl(lopit):
 
 
 def parse_results(array):
-    #функция меняет значение поля "results" со строки в список со словарями
+    # функция меняет значение поля "results" со строки в список со словарями
 
     players_data = array
     for pl in players_data:

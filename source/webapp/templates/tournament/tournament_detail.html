@@ -9,7 +9,16 @@
         <div class="mb-4">
             <h2 class="title">Турнир: {{ tournament.name }}</h2>
             <p>Дата: {{ tournament.date }}</p>
-            <p>Город: {{ tournament.city }}</p>
+            <p>Место проведения: {{ tournament.country.get_name }},
+                {% if tournament.region %}
+                    {{ tournament.region }},
+                {% endif %}
+                {% if tournament.city %}
+                    г.{{ tournament.city }}
+                {% endif %}
+                {% if tournament.location %}
+                    ({{ tournament.location }})</p>
+                {% endif %}
             <p>Число участников: {{ tournament.player_set.count }}</p>
             <p>Раунды: {{ tournament.rounds }}</p>
             <p>Размер доски: {{ tournament.board_size }}</p>
@@ -36,15 +45,16 @@
             </tr>
             </thead>
             <tbody>
-                {% for el in players %}
+            {% for el in players %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td data-label="EgdPin">{{ el.player.EgdPin }}</td>
                     <td data-label="Last Name"><a style="color: black"
-                           href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a></td>
+                                                  href="{% url "webapp:player_detail" el.player.pk %}">{{ el.player.last_name }}</a>
+                    </td>
                     <td data-label="First Name">{{ el.player.first_name }}</td>
                     {% if el.club %}
-                    <td data-label="Club">{{ el.club.name }}</td>
+                        <td data-label="Club">{{ el.club.name }}</td>
                     {% else %}
                         <td data-label="Club"></td>
                     {% endif %}
@@ -56,10 +66,11 @@
                         {% endif %}
                     {% endfor %}
                     {% for result in el.results %}
-                        <td data-label="result" style="color: {{ result.font_color }}">{{ result.result_to_display }}</td>
+                        <td data-label="result"
+                            style="color: {{ result.font_color }}">{{ result.result_to_display }}</td>
                     {% endfor %}
                 </tr>
-                {% endfor %}
+            {% endfor %}
             </tbody>
         </table>
     </div>

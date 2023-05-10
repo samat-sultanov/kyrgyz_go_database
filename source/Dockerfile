@@ -10,7 +10,7 @@ RUN addgroup --system kgf_admin && adduser --system kgf_admin --ingroup kgf_admi
 # create the appropriate directories
 ENV HOME=/home/kgf_admin
 ENV APP_HOME=/home/kgf_admin/kyrgyz_go_database/source
-RUN -p mkdir $APP_HOME
+RUN mkdir -p $APP_HOME
 RUN mkdir $APP_HOME/static
 RUN mkdir $APP_HOME/uploads
 WORKDIR $APP_HOME

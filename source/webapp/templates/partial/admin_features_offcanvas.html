@@ -1,26 +1,20 @@
 <a data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"
-   class="btn btn-md rounded me-1" style="background-color: #b36aff; color: white">
-    Возможности админа
+   class="btn btn-md rounded-0 button-hover" style="width: 100%;">
+    Редактировать профиль
 </a>
 
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Доп. возможности админа</h5>
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Редактировать профиль</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
         <div>
-            Кнопка "возможности админа" видна только админу (superuser). Открывает возможность просмотреть скрытые от
-            всех остальных страницы и дает возможность на определенные действия
+            Перейдя по кнопкам ниже, вы сможете либо отредактировать профиль - поменять свои персональные данные; или изменить пароль.
         </div>
-        <div class="dropdown mt-3">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                Страницы удаленных:
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'webapp:deleted_news_list' %}">Статей/новостей</a></li>
-                <li><a class="dropdown-item" href="{% url 'webapp:deleted_calendar_list' %}">Ивентов(мероприятий и турниров)</a></li>
-            </ul>
+        <div class="buttons mt-4">
+            <a class="btn btn-secondary mb-1" href="{% url 'accounts:change' %}">Редактировать профиль</a>
+            <a class="btn btn-secondary mb-1" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
         </div>
     </div>
 </div>

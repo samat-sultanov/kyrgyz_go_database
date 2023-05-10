@@ -38,11 +38,12 @@
                     {% if request.user.is_superuser %}
                         <p>Автор: <a href="#">{{ single_news.author.username }}</a></p>
                     {% endif %}
-                    <p>Дата создания: {{ single_news.created_at|date:"d F Y H:i" }}</p><br>
+                    <p>Дата создания: {{ single_news.created_at|date:"d E Y H:i" }}</p><br>
 
                     <a href="{% url 'webapp:news_update' single_news.pk %}"
                        class="btn btn-outline-secondary">Редактировать</a>
-                    <a class="btn btn-outline-secondary" href="{% url 'webapp:news_list' %}">Все новости >></a>
+                    <a class="btn btn-outline-secondary" href="{% url 'webapp:news_list' %}">Все новости <i
+                            class="bi bi-chevron-double-right"></i></a>
 
                     <!-- Открывает модалку подтверждения -->
                     {% if request.user.is_superuser %}

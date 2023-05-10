@@ -182,14 +182,15 @@
 
     </div>
 
+
     <div class="container mt-5 mb-5">
     <div class="btn-group">
-        <a href="#" class="btn btn-light mt-3 mb-3 ps-5 pe-5 active" aria-current="page">Турниры</a>
+        <a href="{% url 'webapp:player_detail' player.pk %}" class="btn btn-light mt-3 mb-3 ps-5 pe-5" aria-current="page">Турниры</a>
         <a href="{% url 'webapp:player_detail_games' player.pk %}" class="btn btn-light mt-3 mb-3 ps-5 pe-5">Игры</a>
-        <a href="{% url 'webapp:player_gor_evolution' player.pk %}" class="btn btn-light mt-3 mb-3 ps-5 pe-5">Gor evolution</a>
+        <a href="#" class="btn btn-light mt-3 mb-3 ps-5 pe-5 active">Gor evolution</a>
     </div>
     <div>
-        {% include 'partial/tournaments.html' %}
+        {% include 'partial/Gor_evolution.html' %}
     </div>
 
     </div>

@@ -1,17 +1,57 @@
 from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
+import requests
 from django import forms
 from django.forms import FileInput, widgets
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner, DEFAULT_CLASS, DayOfWeek
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from datetime import datetime
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
+    Partner, DEFAULT_CLASS, DayOfWeek, Country
 import re
 
-
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
+
+
+def get_countries():
+    base_url = 'https://restcountries.com/v3.1/alpha/'
+    list_of_countries = [("", "  -----  "), ('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
+    countries = []
+    for player in Player.objects.all():
+        if player.country not in countries:
+            countries.append(player.country)
+    for country in countries:
+        raw_response = requests.get(base_url + country.country_code)
+        if raw_response.status_code == 200:
+            response = raw_response.json()
+            for element in response:
+                for k, v in element.items():
+                    if k == "translations":
+                        try:
+                            rus_names = v.get("rus")
+                            name_to_append = rus_names.get("common")
+                            if name_to_append:
+                                if name_to_append == 'Киргизия':
+                                    name_to_append = 'Кыргызстан'
+                                to_append = (country.country_code, name_to_append)
+                                if to_append not in list_of_countries:
+                                    list_of_countries.append(to_append)
+                            else:
+                                to_append = (country.country_code, rus_names.get("official"))
+                                if to_append not in list_of_countries:
+                                    list_of_countries.append(to_append)
+                        except ObjectDoesNotExist:
+                            common = response[0].get("common")
+                            to_append = (country.country_code, common)
+                            if to_append not in list_of_countries:
+                                list_of_countries.append(to_append)
+        else:
+            continue
+    return list_of_countries
+
+
+COUNTRIES = get_countries()
+
 
 def validate_latin_chars(value):
     if not latin_regex.match(value):
@@ -93,9 +133,37 @@ class CompetitorSearchForm(forms.Form):
     search_city = forms.CharField(max_length=50, required=False, label='Найти',
                                   widget=widgets.TextInput(
                                       attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
-    search_country = forms.CharField(max_length=50, required=False, label='Найти',
-                                     widget=widgets.TextInput(
-                                         attrs={'class': "form-control w-30", 'placeholder': 'Страна'}))
+    search_country = forms.ChoiceField(choices=COUNTRIES, required=False)
+
+    def clean_search_rank(self):
+        search_rank = self.cleaned_data.get('search_rank')
+        if len(search_rank) > 3:
+            raise forms.ValidationError("Ранг не может быть больше 3 знаков!")
+
+        if search_rank.lower()[-1] == "k":
+            try:
+                digit_part = int(search_rank[:-1])
+                if digit_part > 29:
+                    raise forms.ValidationError("Кью не может быть больше 29!")
+            except:
+                raise forms.ValidationError(
+                    "Пишите ранг в формате ЦЦБ, где Ц - это цифра а Б - это буква! Например 20k. Кью не может быть больше 29!")
+        elif search_rank.lower()[-1] == "d":
+            if len(search_rank) > 2:
+                raise forms.ValidationError("Ранг с даном не может быть больше 2 знаков! Например, 2d - OK, а 10d уже нет.")
+            else:
+                try:
+                    digit_part = int(search_rank[:-1])
+                    if digit_part == 0:
+                        print(f"{digit_part}____{type(digit_part)}")
+                        raise forms.ValidationError("Дан не может быть 0!")
+                except:
+                    raise forms.ValidationError(
+                        "Пишите ранг в формате ЦБ, где Ц - это цифра а Б - это буква! Например 3d. Дан не может быть равно 0!")
+        else:
+            raise forms.ValidationError("Дан(d) и Кью(k) должны присутствовать в запросе по рангу!")
+
+        return search_rank
 
 
 class NewsForm(forms.ModelForm):
@@ -115,7 +183,6 @@ class NewsForm(forms.ModelForm):
             raise forms.ValidationError('Вы можете заполнить только одно из полей "Видео" или "Картинка".')
 
         return cleaned_data
-
 
 
 class NewsBulkDeleteForm(forms.Form):
@@ -164,7 +231,6 @@ class CheckPlayerForm(forms.Form):
         return rating
 
 
-
 class CheckTournamentForm(forms.Form):
     Name = forms.CharField(max_length=255)
     location = forms.CharField(max_length=255, required=False)
@@ -172,6 +238,8 @@ class CheckTournamentForm(forms.Form):
     NumberOfRounds = forms.IntegerField()
     regulations = forms.CharField(max_length=255, required=False)
     date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), required=True)
+    country = forms.ChoiceField(choices=COUNTRIES, required=True)
+    region = forms.CharField(max_length=100, required=False)
     city = forms.CharField(max_length=255, required=False)
     tournament_class = forms.ChoiceField(choices=CLASS_CHOICES, required=True)
 
@@ -181,10 +249,18 @@ class CheckTournamentForm(forms.Form):
             self.add_error('tournament_class', 'Выберите корректный класс турнира!')
         return tournament_class
 
+    def clean_country(self):
+        country = self.cleaned_data.get('country')
+        if country == '':
+            self.add_error('country', 'Выберите страну проведения турнира!')
+        return country
+
 
 class ClubForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
+                                                 widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
+                                                  widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -207,8 +283,8 @@ class ClubForm(forms.ModelForm):
             'address': "Адрес:",
             'phonenumber': "Номер телефона:",
             'web_link': "Web-site:",
-            'schedule_from': "Работаем С (Время)",
-            'schedule_to': "До (Время)",
+            'schedule_from': "Работаем С",
+            'schedule_to': "До",
             'breakfast_from': "Обед с",
             'breakfast_to': "До",
         }
@@ -226,8 +302,10 @@ class ClubForm(forms.ModelForm):
 
 
 class ClubCreateForm(forms.ModelForm):
-    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Выходные', widget=forms.CheckboxSelectMultiple())
-    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False,label='Рабочие дни', widget=forms.CheckboxSelectMultiple())
+    day_of_week = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Выходные',
+                                                 widget=forms.CheckboxSelectMultiple())
+    days_of_work = forms.ModelMultipleChoiceField(queryset=DayOfWeek.objects.all(), required=False, label='Рабочие дни',
+                                                  widget=forms.CheckboxSelectMultiple())
 
     class Meta:
         model = Club
@@ -250,27 +328,28 @@ class ClubCreateForm(forms.ModelForm):
             'address': "Адрес",
             'phonenumber': "Номер телефона",
             'web_link': "Ссылка на соц. сети или сайт",
-            'schedule_from': "Работаем С (Время)",
-            'schedule_to': "До (Время)",
+            'schedule_from': "Работаем С",
+            'schedule_to': "До",
             'breakfast_from': "Обед с",
             'breakfast_to': "До",
         }
 
 
 class ParticipantForm(forms.ModelForm):
-    name = forms.CharField(validators=[validate_latin_chars], label='',
+    name = forms.CharField(validators=[validate_latin_chars], label='Имя',
                            widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
                                "First name", "id": "id_name", 'style': "width:200px"}))
-    surname = forms.CharField(validators=[validate_latin_chars], label='',
+    surname = forms.CharField(validators=[validate_latin_chars], label='Фамилия',
                               widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
                                   "Last name", "id": "id_surname", 'style': "width:200px"}))
-    rank = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+    rank = forms.CharField(label='Ранг', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
         "Rank", "id": "id_rank", 'style': "width:200px"}))
-    city = forms.CharField(required=False, validators=[validate_latin_chars], label='',
-                              widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-                                  "City", "id": "id_city", 'style': "width:200px"}))
-    phonenumber = forms.CharField(label='', widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
-        "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
+    city = forms.CharField(required=False, validators=[validate_latin_chars], label='Город',
+                           widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                               "City", "id": "id_city", 'style': "width:200px"}))
+    phonenumber = forms.CharField(label='Номер телефона',
+                                  widget=forms.TextInput(attrs={'class': "form-control", 'placeholder':
+                                      "Phone number", "id": "id_phonenumber", 'style': "width:200px"}))
 
     class Meta:
         model = Participant
@@ -335,3 +414,28 @@ class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
         fields = ['name', 'logo', 'web_link']
+
+
+class CalendarUpdateForm(forms.ModelForm):
+    event_date = forms.DateField(required=False, widget=widgets.TextInput(
+        attrs={'type': "date"}))
+    deadline = forms.DateField(required=False, widget=widgets.TextInput(
+        attrs={'type': "date"}))
+
+    class Meta:
+        model = Calendar
+        fields = ['event_name', 'event_city', 'event_date', 'text', 'deadline', 'calendar_image']
+
+    def clean_deadline(self):
+        deadline = self.cleaned_data.get('deadline')
+        if deadline == None:
+            raise ValidationError(
+                'Поля deadline обязателен к заполнению!')
+        return deadline
+
+    def clean_event_date(self):
+        event_date = self.cleaned_data.get('event_date')
+        if event_date == None:
+            raise ValidationError(
+                'Поля event_date обязателен к заполнению!')
+        return event_date

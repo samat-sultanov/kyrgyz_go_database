@@ -9,12 +9,12 @@ app_name = 'accounts'
 urlpatterns = [
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('<int:pk>/', UserDetailView.as_view(), name='detail'),
+    path('user/<int:pk>/', UserDetailView.as_view(), name='detail'),
     path('change/',  UserChangeView.as_view(), name='change'),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(
         template_name='email_registration/password_reset.html',
-        success_url='/accounts/reset_password_sent/'),
+        success_url='/reset_password_sent/'),
          name='reset_password'),
 
     path('reset_password_sent/',
@@ -23,7 +23,7 @@ urlpatterns = [
 
     path('reset/<uidb64>/<token>/',
          auth_views.PasswordResetConfirmView.as_view(template_name='email_registration/password_reset_form.html',
-                                                     success_url='/accounts/reset_password_complete/'),
+                                                     success_url='/reset_password_complete/'),
          name="password_reset_confirm"),
 
     path('reset_password_complete/',
@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('change_password/',
          auth_views.PasswordChangeView.as_view(template_name='email_registration/change_password.html',
-                                               success_url='/accounts/change_password_done/'),
+                                               success_url='/change_password_done/'),
          name='change_password'),
 
     path('change_password_done/',

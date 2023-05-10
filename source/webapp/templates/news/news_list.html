@@ -10,6 +10,7 @@
 
 {% block content %}
     <div class="container">
+        {% if news_list %}
         <div class=" mt-4" style="text-align: center">
             <h2 class="title">Новости</h2>
         </div>
@@ -26,11 +27,16 @@
                     </div>
                 {% endif %}
                 <p>{% if request.user.is_authenticated %}{{ news.author.username }}
-                    / {% endif %}{{ news.created_at|date:"d F Y H:i" }}</p>
+                    / {% endif %}{{ news.created_at|date:"d E Y H:i" }}</p>
                 <hr>
             {% endfor %}
         </div>
         <br/>
+        {% else %}
+        <div class=" mt-4" style="text-align: center">
+            <h3 class="title">Нет новостей для отображения</h3>
+        </div>
+        {% endif %}
     </div>
 
 {% endblock %}
