@@ -25,6 +25,7 @@
         - загрузить данные из фикстур:
         	- docker-compose exec web python3 manage.py loaddata fixtures/partner.json
         	- docker-compose exec web python3 manage.py loaddata fixtures/days.json
+        	- docker-compose exec web python3 manage.py loaddata fixtures/country_region_city.json
          Да в принципе все и готово.
 
 

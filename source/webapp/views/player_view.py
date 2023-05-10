@@ -7,7 +7,7 @@ from webapp.forms import PlayerSearchForm, CompetitorSearchForm, PlayerForm
 from django.views.generic import ListView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse
 from webapp.views.functions import get_position_in_kgf, get_data_for_table_games, get_data_for_gor_evolution, \
-    get_tournaments_list_for_gor_evolution, player_wins_loses, player_rating_for_chart
+    get_tournaments_list_for_gor_evolution, player_wins_loses, player_rating_for_chart, _adapt_go_level
 from webapp.views.GoR_calculator import get_rating_from_rank
 
 
@@ -235,7 +235,7 @@ class CompetitorSearch(ListView):
         if self.search_country:
             queryset = queryset.filter(Q(country__country_code__istartswith=self.search_country))
         player_exclude = self.kwargs.get('pk')
-        return queryset.exclude(id__in=[player_exclude])
+        return queryset.exclude(id__in=[player_exclude]).order_by('current_rating')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
