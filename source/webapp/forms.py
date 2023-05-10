@@ -135,6 +135,36 @@ class CompetitorSearchForm(forms.Form):
                                       attrs={'class': "form-control w-30", 'placeholder': 'Город'}))
     search_country = forms.ChoiceField(choices=COUNTRIES, required=False)
 
+    def clean_search_rank(self):
+        search_rank = self.cleaned_data.get('search_rank')
+        if len(search_rank) > 3:
+            raise forms.ValidationError("Ранг не может быть больше 3 знаков!")
+
+        if search_rank.lower()[-1] == "k":
+            try:
+                digit_part = int(search_rank[:-1])
+                if digit_part > 29:
+                    raise forms.ValidationError("Кью не может быть больше 29!")
+            except:
+                raise forms.ValidationError(
+                    "Пишите ранг в формате ЦЦБ, где Ц - это цифра а Б - это буква! Например 20k. Кью не может быть больше 29!")
+        elif search_rank.lower()[-1] == "d":
+            if len(search_rank) > 2:
+                raise forms.ValidationError("Ранг с даном не может быть больше 2 знаков! Например, 2d - OK, а 10d уже нет.")
+            else:
+                try:
+                    digit_part = int(search_rank[:-1])
+                    if digit_part == 0:
+                        print(f"{digit_part}____{type(digit_part)}")
+                        raise forms.ValidationError("Дан не может быть 0!")
+                except:
+                    raise forms.ValidationError(
+                        "Пишите ранг в формате ЦБ, где Ц - это цифра а Б - это буква! Например 3d. Дан не может быть равно 0!")
+        else:
+            raise forms.ValidationError("Дан(d) и Кью(k) должны присутствовать в запросе по рангу!")
+
+        return search_rank
+
 
 class NewsForm(forms.ModelForm):
     class Meta:
