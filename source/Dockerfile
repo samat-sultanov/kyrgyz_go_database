@@ -33,7 +33,7 @@ COPY /requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy entrypoint.sh
-COPY /entrypoint.sh ./source/
+COPY /entrypoint.sh .
 RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.sh
 RUN chmod +x $APP_HOME/entrypoint.sh
 
