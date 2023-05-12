@@ -1,5 +1,6 @@
 import xmltodict
 import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -10,6 +11,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, FormView
+
 from webapp.models import Calendar, News, Partner, NotModeratedTournament, Tournament
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.functions import get_position_in_kgf, unpack_data_json_tournament, unpack_data_json_players, \
@@ -146,7 +148,7 @@ def formset_errors(formset):
 def about_us_view(request, *args, **kwargs):
     if request.method == 'GET':
         form = FeedbackToEmailForm()
-        context = {'form': form}
+        context = {'form': form, 'email': settings.EMAIL_HOST_USER}
         return render(request, 'about_us.html', context)
 
 
