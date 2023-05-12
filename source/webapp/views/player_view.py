@@ -111,9 +111,12 @@ class PlayerSearch(ListView):
     model = Player
     paginate_by = 15
     paginate_orphans = 4
-    country = Country.objects.get(country_code='kg')
-    queryset = Player.objects.filter(country=country).annotate(num_tournaments=Count('tournaments')).filter(
-        num_tournaments__gt=0).order_by('-current_rating')
+    try:
+        country = Country.objects.get(country_code='kg')
+        queryset = Player.objects.filter(country=country).annotate(num_tournaments=Count('tournaments')).filter(
+            num_tournaments__gt=0).order_by('-current_rating')
+    except:
+        pass
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
