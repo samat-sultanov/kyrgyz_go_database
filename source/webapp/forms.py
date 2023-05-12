@@ -17,9 +17,14 @@ def get_countries():
     base_url = 'https://restcountries.com/v3.1/alpha/'
     list_of_countries = [("", "  -----  "), ('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
     countries = []
-    for player in Player.objects.all():
-        if player.country not in countries:
-            countries.append(player.country)
+
+    try:
+        for player in Player.objects.all():
+            if player.country not in countries:
+                countries.append(player.country)
+    except:
+        pass
+
     for country in countries:
         raw_response = requests.get(base_url + country.country_code)
         if raw_response.status_code == 200:
