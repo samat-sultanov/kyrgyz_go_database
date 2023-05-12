@@ -44,16 +44,19 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class UserChangeForm(forms.ModelForm):
-    kg = Country.objects.get(country_code='kg')
-    clubs = []
-    for i in kg.city_set.all():
-        for c in i.club_set.all():
-            club = c.pk, c.name
-            clubs.append(club)
-    s_clubs = sorted(clubs, key=lambda tup: tup[1])
+    try:
+        kg = Country.objects.get(country_code='kg')
+        clubs = []
+        for i in kg.city_set.all():
+            for c in i.club_set.all():
+                club = c.pk, c.name
+                clubs.append(club)
+        s_clubs = sorted(clubs, key=lambda tup: tup[1])
 
-    coach_club = forms.MultipleChoiceField(choices=s_clubs, label='Клуб', widget=forms.SelectMultiple(),
-                                           required=False)
+        coach_club = forms.MultipleChoiceField(choices=s_clubs, label='Клуб', widget=forms.SelectMultiple(),
+                                               required=False)
+    except:
+        pass
 
     class Meta:
         model = User
