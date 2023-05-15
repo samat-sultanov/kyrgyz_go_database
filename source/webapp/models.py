@@ -382,6 +382,20 @@ class NotModeratedTournament(models.Model):
         verbose_name_plural = "TournamentsForModeration"
 
 
+class Carousel(models.Model):
+    title = models.CharField(max_length=100, verbose_name="Title", null=False, blank=False)
+    photo = models.ImageField(verbose_name='Carousel', null=False, blank=False, upload_to='carousel')
+    web_link = models.URLField(verbose_name='Web link', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}. {self.title[:30]}'
+
+    class Meta:
+        db_table = "carousel"
+        verbose_name = "Карусель"
+        verbose_name_plural = "Карусели"
+
+
 @receiver(models.signals.post_delete, sender=News)
 def auto_delete_img_on_delete(sender, instance, **kwargs):
     if instance.news_image:
