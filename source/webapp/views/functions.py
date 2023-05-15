@@ -621,7 +621,8 @@ def player_rating_for_chart(pk):
     for tournament in tournaments:
         date.append(tournament.tournament.date)
         rating.append(tournament.rating)
-    total = zip(date, rating)
+    zipped = list(zip(date, rating))
+    total = sorted(zipped)
     return total
 
 
