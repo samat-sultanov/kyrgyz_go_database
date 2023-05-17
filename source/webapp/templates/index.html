@@ -19,6 +19,10 @@
             <div class="carousel-caption d-none d-md-block mb-4">
                 <h1 class="p-1" style="background-color: rgba(211, 211, 211, 0.6)">{{ item.title }}</h1>
                 <a style="color: white; text-decoration: none;" href="{{ item.web_link }}">Узнать больше <i class="bi bi-chevron-double-right"></i></a>
+                <br>
+                {% if request.user.is_authenticated %}
+                    <a style="color: white" class="ms-2" href="{% url 'webapp:update_carousel' item.pk %}"><i class="bi bi-pencil-fill"></i></a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}

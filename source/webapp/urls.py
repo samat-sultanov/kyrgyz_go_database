@@ -9,7 +9,7 @@ from .views import FileUpload, TournamentCheckView, IndexView, NewsListView, Pla
     RecommendationDeleteView, StatusChange, DeletePlayerFromEvent, calendar_player_list, PartnerCreateView, \
     PartnersListView, PartnerDetailView, PartnerUpdateView, PartnerDeleteView, UpdateParticipant, ClubCreate, \
     TournamentModerationList, DeleteTournamentBeforeModeration, ModerationTournamentView, DeleteTournamentOnModeration, \
-    PlayerDetailGames, PlayerDetailGorEvolution, CarouselCreateView
+    PlayerDetailGames, PlayerDetailGorEvolution, CarouselCreateView, CarouselUpdateView
 
 app_name = 'webapp'
 
@@ -64,7 +64,8 @@ urlpatterns = [
     path('moderation_tournaments/<int:pk>/', ModerationTournamentView.as_view(), name='tournament_moderation_detail'),
     path('player_detail/<int:pk>/games/', PlayerDetailGames.as_view(), name='player_detail_games'),
     path('player_detail/<int:pk>/evolution/', PlayerDetailGorEvolution.as_view(), name='player_gor_evolution'),
-    path('carousel_create/', CarouselCreateView.as_view(), name='create_carousel')
+    path('carousel_create/', CarouselCreateView.as_view(), name='create_carousel'),
+    path('carousel_update/<int:pk>/', CarouselUpdateView.as_view(), name='update_carousel')
 ]
 
 handler400 = 'webapp.views.error_views.custom_handler400'
