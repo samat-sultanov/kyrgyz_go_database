@@ -9,7 +9,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.urls import reverse
 from django.dispatch import receiver
 
@@ -380,6 +380,46 @@ class NotModeratedTournament(models.Model):
         db_table = "moderation"
         verbose_name = "TournamentForModeration"
         verbose_name_plural = "TournamentsForModeration"
+
+
+def validate_image_size(image):
+    max_size = 5 * 1024 * 1024
+    if image.size > max_size:
+        raise ValidationError(f"Размер картинки должен быть не более {max_size} байт.")
+
+
+class Carousel(models.Model):
+    title = models.CharField(max_length=100, verbose_name="Заголовок", null=False, blank=False)
+    photo = models.ImageField(verbose_name='Картинка', null=False, blank=False, upload_to='carousel',
+                              validators=[validate_image_size])
+    web_link = models.URLField(verbose_name='Ссылка', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.id}. {self.title[:30]}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        image = Image.open(self.photo.path)
+        width, height = 1200, 400
+        aspect_ratio = image.width / image.height
+        desired_ratio = width / height
+
+        if aspect_ratio > desired_ratio:
+            new_width = int(image.height * desired_ratio)
+            offset = (image.width - new_width) // 2
+            image = image.crop((offset, 0, offset + new_width, image.height))
+        else:
+            new_height = int(image.width / desired_ratio)
+            offset = (image.height - new_height) // 2
+            image = image.crop((0, offset, image.width, offset + new_height))
+
+        image = image.resize((width, height), Image.ANTIALIAS)
+        image.save(self.photo.path)
+
+    class Meta:
+        db_table = "carousel"
+        verbose_name = "Карусель"
+        verbose_name_plural = "Карусели"
 
 
 @receiver(models.signals.post_delete, sender=News)

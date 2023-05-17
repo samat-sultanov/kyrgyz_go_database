@@ -41,6 +41,8 @@
                         <a class="btn btn-md rounded mb-1 button-hover"
                            href="{% url 'webapp:news_create' %}">Добавить новость</a>
                         <a class="btn btn-md rounded mb-1 button-hover"
+                           href="{% url 'webapp:create_carousel' %}">Добавить фото в карусель</a>
+                        <a class="btn btn-md rounded mb-1 button-hover"
                            href="{% url 'webapp:partners_list' %}">Добавить партнера</a>
                     {% endif %}
                     {% if request.user.is_authenticated %}

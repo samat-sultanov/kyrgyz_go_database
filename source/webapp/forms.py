@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner, DEFAULT_CLASS, DayOfWeek, Country
+    Partner, DEFAULT_CLASS, DayOfWeek, Country, Carousel
 import re
 
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
@@ -444,3 +444,13 @@ class CalendarUpdateForm(forms.ModelForm):
             raise ValidationError(
                 'Поля event_date обязателен к заполнению!')
         return event_date
+
+
+class CarouselForm(forms.ModelForm):
+    class Meta:
+        model = Carousel
+        fields = ['title', 'photo', 'web_link']
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Введите заголовок'}),
+            'web_link': forms.URLInput(attrs={'placeholder': 'Введите веб-ссылку'}),
+        }
