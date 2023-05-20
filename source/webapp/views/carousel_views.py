@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
-from django.views.generic import CreateView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, UpdateView, DeleteView
 from webapp.forms import CarouselForm
 from webapp.models import Carousel
 
@@ -21,3 +21,8 @@ class CarouselUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('webapp:index')
+
+
+class CarouselDeleteView(LoginRequiredMixin, DeleteView):
+    model = Carousel
+    success_url = reverse_lazy('webapp:index')
