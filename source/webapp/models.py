@@ -389,7 +389,7 @@ def validate_image_size(image):
 
 
 class Carousel(models.Model):
-    title = models.CharField(max_length=100, verbose_name="Заголовок", null=False, blank=False)
+    title = models.CharField(max_length=55, verbose_name="Заголовок", null=False, blank=False)
     photo = models.ImageField(verbose_name='Картинка', null=False, blank=False, upload_to='carousel',
                               validators=[validate_image_size])
     web_link = models.URLField(verbose_name='Ссылка', null=True, blank=True)
