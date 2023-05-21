@@ -41,6 +41,9 @@ def get_token_view(request, *args, **kwargs):
     return HttpResponseNotAllowed(['GET'])
 
 
+# end point below receives the country code from front-end (used by both static/js/regions_n_cities_for_trener_upload.js
+# and regions_n_cities_for_moderation_detail.js) and returns all regions of that country (a dictionary of
+# key = region id value = regions name)
 def get_region(request, *args, **kwargs):
     if request.method == "POST":
         if request.body:
@@ -58,6 +61,9 @@ def get_region(request, *args, **kwargs):
         return HttpResponseNotAllowed(['POST'])
 
 
+# end point below receives the country code and the region code from front-end (used by both
+# static/js/regions_n_cities_for_trener_upload.js and regions_n_cities_for_moderation_detail.js) and returns all
+# cities of that country's region (a dictionary of key = city id value = city's name)
 def get_cities(request, *args, **kwargs):
     if request.method == "POST":
         if request.body:
