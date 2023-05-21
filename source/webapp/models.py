@@ -422,6 +422,7 @@ class Carousel(models.Model):
         verbose_name_plural = "Карусели"
 
 
+# function below deletes an image file of the News from uploads folder if the News instance is deleted from db
 @receiver(models.signals.post_delete, sender=News)
 def auto_delete_img_on_delete(sender, instance, **kwargs):
     if instance.news_image:
@@ -429,6 +430,7 @@ def auto_delete_img_on_delete(sender, instance, **kwargs):
             os.remove(instance.news_image.path)
 
 
+# function below deletes an old image file of the News from uploads folder if the News instance's image is updated
 @receiver(models.signals.pre_save, sender=News)
 def auto_delete_img_on_change(sender, instance, **kwargs):
     if not instance.pk:
