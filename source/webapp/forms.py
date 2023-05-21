@@ -2,6 +2,7 @@ from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
 import requests
 import re
+from typing import List, Tuple
 
 from django import forms
 from django.forms import FileInput, widgets
@@ -15,7 +16,15 @@ from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Par
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
 
-def get_countries():
+# function below doesn't take any input.
+# Steps:
+# 1 - creates at the beginning a list of tuples with predefined 4 tuples: "empty", "kg", "uz" and "kz"
+# 2 - goes through all registered players and gets their countries(country codes) into one list.
+# 3 - goes through all country codes collected and makes request to an outside web api for each. From outside resource
+# the common full name of the country is gathered and appended to a list "list_of_countries" as a tuple of (code, name)
+# If country is already in the list, it will not add it
+# Finally a list of countries(tuples) is returned
+def get_countries() -> List[Tuple]:
     base_url = 'https://restcountries.com/v3.1/alpha/'
     list_of_countries = [("", "  -----  "), ('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
     countries = []
