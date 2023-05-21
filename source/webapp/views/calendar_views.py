@@ -1,17 +1,17 @@
-import json
-import itertools
 import re
 from datetime import datetime
+
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, View
+
 from webapp.models import Calendar, Participant, Player
 from webapp.forms import CalendarForm, CalendarBulkDeleteForm, ParticipantForm, SearchParPlayer, \
     EmailToChangeRegInfoFrom, CalendarUpdateForm
-from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView, TemplateView, FormView, DetailView, View
 
 
 class CalendarDetailView(TemplateView):

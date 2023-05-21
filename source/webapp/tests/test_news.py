@@ -2,8 +2,7 @@ from django.contrib.auth.models import Permission
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client
 from django.urls import reverse
-from selenium.webdriver import Chrome
-from selenium.webdriver.common.by import By
+
 from accounts.models import User
 from webapp.models import News
 

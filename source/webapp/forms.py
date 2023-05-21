@@ -1,14 +1,16 @@
 from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
 import requests
+import re
+
 from django import forms
 from django.forms import FileInput, widgets
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner, DEFAULT_CLASS, DayOfWeek, Country, Carousel
-import re
+
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Participant, Recommendation, Partner, \
+    DEFAULT_CLASS, DayOfWeek, Carousel
 
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
@@ -155,7 +157,8 @@ class CompetitorSearchForm(forms.Form):
                     "Пишите ранг в формате ЦЦБ, где Ц - это цифра а Б - это буква! Например 20k. Кью не может быть больше 29!")
         elif search_rank.lower()[-1] == "d":
             if len(search_rank) > 2:
-                raise forms.ValidationError("Ранг с даном не может быть больше 2 знаков! Например, 2d - OK, а 10d уже нет.")
+                raise forms.ValidationError(
+                    "Ранг с даном не может быть больше 2 знаков! Например, 2d - OK, а 10d уже нет.")
             else:
                 try:
                     digit_part = int(search_rank[:-1])

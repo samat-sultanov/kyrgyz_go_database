@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from accounts.models import User
+
 from webapp.models import Player, City, Country, Club
 
 
@@ -61,7 +61,6 @@ class PlayerTestsForSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.test_player_1.last_name)
         self.assertNotContains(response, self.test_player_2.last_name)
-
 
     def test_search_all_fields(self):
         url = reverse('webapp:player_search') + \
