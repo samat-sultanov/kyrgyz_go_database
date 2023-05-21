@@ -2,6 +2,7 @@ from random import randint
 from operator import itemgetter
 from collections import Counter
 import requests
+from typing import List, Dict
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -349,7 +350,10 @@ def club_active_players(pk):
     return all_players
 
 
-def unpack_data_json_tournament(data):
+# function below takes complex dictionary of tournament whole data (which came from turning json into dict.
+# That json came from direct parsing of tournament xml file) and returns simple dictionary with the
+# information only about the tournament. And adds some new fields to get data from trainer.
+def unpack_data_json_tournament(data: Dict) -> Dict:
     new_dict = dict()
     for key, value in data.items():
         if key == "Tournament":
@@ -372,7 +376,10 @@ def unpack_data_json_tournament(data):
     return new_dict
 
 
-def unpack_data_json_players(data):
+# function below takes complex dictionary of tournament whole data and returns a list of dictionary. Each dictionary
+# contains information about player from original xml file and plus some more from calculations in the functions.
+# Some empty fields are also included, so that they will be filled by trainer
+def unpack_data_json_players(data: Dict) -> List[Dict]:
     new_list = []
     for key, value in data.items():
         if key == "Tournament":
@@ -390,7 +397,13 @@ def unpack_data_json_players(data):
     return new_list
 
 
-def unpack_data_json_games(list_of_rounds, list_of_players):
+# function below takes two lists of dictionaries. One list contains information about each player who
+# participated in the tournament as separate dictionaries. The other list contains information about each round and
+# each game that took place in the tournament. Function "merges" these two lists into one in a way that now each
+# dictionary about player contains also new key/value with info about his games and their results in a string format.
+# returned is the new "list_of_players" with new key called "results". Value of "results" is the
+# string like this: "8-/w#12-/w#13+/b#9-/b"
+def unpack_data_json_games(list_of_rounds: List[Dict], list_of_players: List[Dict]) -> List[Dict]:
     list_of_players = list_of_players
     for player in list_of_players:
         list_of_results_by_round = []
@@ -492,7 +505,9 @@ def unpack_data_json_games(list_of_rounds, list_of_players):
     return list_of_players
 
 
-def get_position(array, id_num):
+# function below takes a list of players(dictionaries) and an id of the player within the certain tournament(str).
+# This function simply returns the value of the key "position" in a dictionary of a player.
+def get_position(array: List[Dict], id_num: str) -> str:
     flag = False
     for player in array:
         if player.get('id_in_tournament') == id_num:
@@ -502,7 +517,11 @@ def get_position(array, id_num):
         return f'id: {id_num}'
 
 
-def update_json_tournament(data, some_dict, some_list):
+# function below takes "data" = direct transformation of tournament json into dict; "some_dict" = a dictionary with the
+# updated information about the tournament only(from form.data); "some_list" = a list of dictionaries/players, where
+# each dict is an updated information about the player(from form.data). Returns "updated_data", which is then will be
+# used to update the actual json file
+def update_json_tournament(data: Dict, some_dict: Dict, some_list: List[Dict]) -> Dict:
     updated_data = {}
     for key, value in data.items():
         if key == "Tournament":
@@ -554,7 +573,9 @@ def update_json_tournament(data, some_dict, some_list):
     return updated_data
 
 
-def get_country_name_from_code(code):
+# function below takes country code (mainly 2 symbol str) and makes request to the outside web-api using it. This
+# function returns common full name of that country.
+def get_country_name_from_code(code: str) -> str:
     base_url = 'https://restcountries.com/v3.1/alpha/'
 
     raw_response = requests.get(base_url + code)
@@ -580,7 +601,9 @@ def get_country_name_from_code(code):
         return f'Страна не найдена по коду из json - {code}'
 
 
-def unpack_data_for_moderation_tournament(data):
+# function below takes a whole dict of tournament and returns a dict of only tournament info with some adaptions of
+# some fields
+def unpack_data_for_moderation_tournament(data: Dict) -> Dict:
     new_dict = {}
     for k, v in data.get('Tournament', {}).items():
         if k in {'Name', 'NumberOfRounds', 'Boardsize', 'date', 'tournament_class', 'location', 'regulations'}:
@@ -596,7 +619,9 @@ def unpack_data_for_moderation_tournament(data):
     return new_dict
 
 
-def unpack_data_for_moderation_players(data):
+# function below takes a whole dict of tournament and returns only a list of dicts. Where each dict contains info about
+# each player. Types of values of some fields are changed/adapted.
+def unpack_data_for_moderation_players(data: Dict) -> List[Dict]:
     new_list = []
     for player in data.get('Tournament', {}).get('IndividualParticipant', []):
         person = player.get('GoPlayer', {})
@@ -626,8 +651,9 @@ def player_rating_for_chart(pk):
     return total
 
 
-def _sort_lod(lop):
-    # lop = list of players (list of dictionaries)
+# function below takes a list of players(dicts) and returns a sorted list of players with additional 2 fields
+# lop = list of players (list of dictionaries)
+def _sort_lod(lop: List[Dict]) -> List[Dict]:
     unsorted_players_list = []
     by_rating = False
     for person in lop:
@@ -656,8 +682,11 @@ def _sort_lod(lop):
     return sorted_initial_players_list
 
 
-def _sort_ipl(lopit):
-    # lopit = list of players in tournament(from json)
+# function below takes a list of players(dicts) and returns a sorted list of players with additional 2 fields.
+# This function is differs from _sort_lod in a way that it takes list of players in a format that appears in json file.
+# In other words dicts here are more threaded.
+# lopit = list of players in tournament(from json)
+def _sort_ipl(lopit: List[Dict]) -> List[Dict]:
     unsorted_players_list = []
     by_rating = False
     for element in lopit:
@@ -722,7 +751,9 @@ def parse_results(array):
     return players_data
 
 
-def _adapt_go_level(strr):
+# function below is used to adapt the str GoLevel to an int adapated_level. So that it is easier to sort players by
+# their GoLevel
+def _adapt_go_level(strr: str) -> int:
     adapted_level = 35
 
     if strr[-1] == 'k':
@@ -733,7 +764,9 @@ def _adapt_go_level(strr):
     return adapted_level
 
 
-def _quicksort_ipl(array, by_rating):
+# function below takes a list of players(dicts) and boolean parameter to determine if the sorting will be by_rating.
+# If by_rating is False, then the sorting will be held by GoLevel. Quicksort algorithm is used.
+def _quicksort_ipl(array: List[Dict], by_rating: bool) -> List[Dict]:
     if len(array) < 2:
         return array
 
@@ -768,7 +801,8 @@ def _quicksort_ipl(array, by_rating):
     return _quicksort_ipl(high, by_rating) + same + _quicksort_ipl(low, by_rating)
 
 
-def _sort_by_last_name(array):
+# function below takes a list of players(dicts) and sorts the list by last name. Quicksort algorithm is used.
+def _sort_by_last_name(array: List[Dict]) -> List[Dict]:
     if len(array) < 2:
         return array
 
@@ -790,7 +824,8 @@ def _sort_by_last_name(array):
     return _sort_by_last_name(low) + same + _sort_by_last_name(high)
 
 
-def _sort_by_first_name(array):
+# function below takes a list of players(dicts) and sorts the list by first name. Quicksort algorithm is used.
+def _sort_by_first_name(array: List[Dict]) -> List[Dict]:
     if len(array) < 2:
         return array
 
