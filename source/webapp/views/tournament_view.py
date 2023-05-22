@@ -10,14 +10,15 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, DeleteView, FormView
 from django.db.models import Q
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib import messages
+
 from webapp.handle_upload import unpack_tournament_to_bd, unpack_countries_clubs, unpack_players, unpack_games
 from webapp.views.GoR_calculator import get_new_rating, get_current_rating_and_rank
 from webapp.forms import TournamentSearchForm, CheckTournamentForm, CheckPlayerForm
 from webapp.models import Tournament, NotModeratedTournament
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from webapp.views.functions import get_wins_losses, unpack_data_for_moderation_tournament, unpack_data_json_players, \
     parse_results, update_json_tournament
-from django.contrib import messages
 
 
 class TournamentSearch(ListView):

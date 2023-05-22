@@ -1,12 +1,12 @@
 import os
 import shutil
 import datetime
-from phonenumbers import parse, PhoneNumberFormat
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.models import PositiveIntegerField, FloatField, DateTimeField, ProtectedError
 from django.test import TestCase
+
 import accounts.models
 from accounts.models import User
 from webapp.models import Recommendation, Player, Country, Region, News, Tournament, City, CLASS_CHOICES, Game, \
