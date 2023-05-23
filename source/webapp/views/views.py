@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, FormView
 
-from webapp.models import Calendar, News, Partner, NotModeratedTournament, Tournament
+from webapp.models import Calendar, News, Partner, NotModeratedTournament, Tournament, Carousel
 from webapp.forms import FileForm, CheckTournamentForm, CheckPlayerForm, FeedbackToEmailForm
 from webapp.views.functions import get_position_in_kgf, unpack_data_json_tournament, unpack_data_json_players, \
     update_json_tournament
@@ -31,6 +31,8 @@ class IndexView(TemplateView):
         context['latest_news'] = latest_news
         partners = Partner.objects.all()
         context['partners'] = partners
+        carousel = Carousel.objects.all()
+        context['carousel'] = carousel
         return context
 
 

@@ -1,19 +1,30 @@
 from captcha.fields import CaptchaField
 from phonenumber_field.formfields import PhoneNumberField
 import requests
+import re
+from typing import List, Tuple
+
 from django import forms
 from django.forms import FileInput, widgets
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Tournament, Participant, Recommendation, \
-    Partner, DEFAULT_CLASS, DayOfWeek, Country
-import re
+
+from webapp.models import File, CLASS_CHOICES, Calendar, News, Player, Club, Participant, Recommendation, Partner, \
+    DEFAULT_CLASS, DayOfWeek, Carousel
 
 latin_regex = re.compile('^[a-zA-Z_.,\\- ]+$')
 
 
-def get_countries():
+# function below doesn't take any input.
+# Steps:
+# 1 - creates at the beginning a list of tuples with predefined 4 tuples: "empty", "kg", "uz" and "kz"
+# 2 - goes through all registered players and gets their countries(country codes) into one list.
+# 3 - goes through all country codes collected and makes request to an outside web api for each. From outside resource
+# the common full name of the country is gathered and appended to a list "list_of_countries" as a tuple of (code, name)
+# If country is already in the list, it will not add it
+# Finally a list of countries(tuples) is returned
+def get_countries() -> List[Tuple]:
     base_url = 'https://restcountries.com/v3.1/alpha/'
     list_of_countries = [("", "  -----  "), ('kg', 'Кыргызстан'), ('uz', 'Узбекистан'), ('kz', 'Казахстан')]
     countries = []
@@ -155,7 +166,8 @@ class CompetitorSearchForm(forms.Form):
                     "Пишите ранг в формате ЦЦБ, где Ц - это цифра а Б - это буква! Например 20k. Кью не может быть больше 29!")
         elif search_rank.lower()[-1] == "d":
             if len(search_rank) > 2:
-                raise forms.ValidationError("Ранг с даном не может быть больше 2 знаков! Например, 2d - OK, а 10d уже нет.")
+                raise forms.ValidationError(
+                    "Ранг с даном не может быть больше 2 знаков! Например, 2d - OK, а 10d уже нет.")
             else:
                 try:
                     digit_part = int(search_rank[:-1])
@@ -444,3 +456,13 @@ class CalendarUpdateForm(forms.ModelForm):
             raise ValidationError(
                 'Поля event_date обязателен к заполнению!')
         return event_date
+
+
+class CarouselForm(forms.ModelForm):
+    class Meta:
+        model = Carousel
+        fields = ['title', 'photo', 'web_link']
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Введите заголовок'}),
+            'web_link': forms.URLInput(attrs={'placeholder': 'Введите веб-ссылку'}),
+        }

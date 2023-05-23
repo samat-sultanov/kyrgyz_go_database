@@ -1,14 +1,49 @@
 .frame_blc{
   overflow:hidden;
   position:relative;
-  padding-bottom:56.25%;
+  padding-bottom:200px;
   padding-top:30px;
-  height:0;
 }
 .frame_blc iframe {
   position:absolute;
-  width:100%;
-  height:100%;
   left:0;
   top:0;
+  right:0;
+  bottom:0;
+}
+
+@media (min-width: 1200px) {
+  .news-col {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .news-col img {
+    width: 40%;
+    height: 230px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+  }
+
+  .news-col iframe {
+    width: 95%;
+    height: 95%;
+  }
+
+  .news-col div {
+    flex: 1;
+  }
+}
+
+@media (max-width: 1199px) {
+  .news-col {
+    flex-direction: column;
+  }
+
+  .news-col img,
+  .news-col iframe {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
 }
