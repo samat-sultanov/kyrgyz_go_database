@@ -361,13 +361,3 @@ h1 {
     font-size: 14px;
   }
 }
-
-@media (max-width: 800px) {
-  .news-col {
-    display: flex;
-    flex-direction: column;
-  }
-  img {
-    margin-bottom: 10px;
-  }
-}
