@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS, PlayerInTournament
-from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
+from webapp.views.GoR_calculator import get_new_rank_from_rating
 
 
 # A function below gives back a list of dictionaries with club's pk and its average rank
@@ -255,10 +255,8 @@ def get_tournaments_list_for_gor_evolution(pk):
     for element in tournaments:
         new_dict = dict()
         tournament = Tournament.objects.get(pk=element.tournament_id)
-        total_score = get_total_score_for_player(tournament.pk)
-        for el in total_score:
-            if el['player'] == player:
-                new_dict['total'] = el['total']
+        total_score = get_total(tournament, player)
+        new_dict['total'] = total_score
         new_dict['tournament'] = tournament
         new_dict['rating_before'] = element.rating
         new_dict['rating_after'] = element.rating_after
@@ -266,6 +264,22 @@ def get_tournaments_list_for_gor_evolution(pk):
         new_list.append(new_dict)
     new_list = sorted(filter(lambda x: x['tournament'], new_list), key=lambda x: x['tournament'].date, reverse=True)
     return new_list
+
+
+# A function below finds a total score for each player in each tournament. It is used in previous function
+def get_total(tournament, player):
+    games = Game.objects.filter(tournament=tournament)
+    total = 0.0
+    for game in games:
+        if game.black == player:
+            if game.black_gor_change:
+                total += game.black_gor_change
+        elif game.white == player:
+            if game.white_gor_change:
+                total += game.white_gor_change
+        else:
+            pass
+    return total
 
 
 def player_wins_loses(pk):
