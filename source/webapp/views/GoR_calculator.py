@@ -19,6 +19,10 @@ def get_class(x):
             return value
 
 
+# A function below takes a tournament's pk, calls all the necessary functions and collects a list of dictionaries with
+# information about each round of a game, opponents and each score they got for each round. This function provides
+# information about each round separately that is why it is called in get_total_score_for_player to count total score
+# for each player. In this specific function we update gor_change in database table 'game' too.
 def get_data(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     class_value = get_class(tournament.tournament_class)
@@ -34,7 +38,6 @@ def get_data(pk):
                     new_dict['rating'] = element.rating
                     con = get_con(element.rating)
                     bonus = get_bonus(element.rating)
-
                     se = get_se(element.rating, get_opponent_rating(game.white_id, game.round_num, pk))
                     score = get_score(con, game.black_score, se, bonus)
                     if score:
@@ -63,10 +66,11 @@ def get_data(pk):
                     new_list.append(new_dict)
                 else:
                     pass
-
     return new_list
 
 
+# A function below is used in get_data. It gives back opponent's rating for every round he/she had played in a current
+# tournament
 def get_opponent_rating(opponent_id, number_of_round, pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     games = Game.objects.all().filter(tournament_id=tournament.pk)
@@ -80,26 +84,31 @@ def get_opponent_rating(opponent_id, number_of_round, pk):
                 pass
 
 
+# A function below is used in get_data. Takes rating as num, gives back con
 def get_con(num):
     con = ((3300 - num) / 200) ** 1.6
     return con
 
 
+# A function below is used in get_data. Takes rating as num, gives back bonus
 def get_bonus(num):
     bonus = math.log(1 + math.exp((2300 - num) / 80)) / 5
     return bonus
 
 
+# A function below is used in get_data. Takes rating as num, gives back beta
 def get_beta(num):
     beta = -7 * math.log(3300 - num)
     return beta
 
 
+# A function below is used in get_data. Takes 2 ratings as num1, num2, gives back se
 def get_se(num1, num2):
     se = 1 / (1 + math.exp(get_beta(num2) - get_beta(num1)))
     return se
 
 
+# A function below takes any rating as num, gives back an equal rank
 def get_new_rank_from_rating(num):
     for element in RANK_FROM_RATING:
         for k, v in element.items():
@@ -107,6 +116,7 @@ def get_new_rank_from_rating(num):
                 return v
 
 
+# A function below takes 4 arguments that were found in previous functions and gives back a score
 def get_score(con, result, se, bonus):
     if se:
         score = con * (result - se) + bonus
@@ -115,6 +125,8 @@ def get_score(con, result, se, bonus):
         return None
 
 
+# A function below takes a tournament's pk, calls get_data and forms a new list of dictionaries with total score for
+# each player in the current tournament.
 def get_total_score_for_player(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.player_set.all()
@@ -142,6 +154,10 @@ def get_rating_from_rank(x):
                 return k
 
 
+# A function bellow is callable while a moderation of a tournament if admin decides to approve it. It calls another
+# function, goes through the data and checks if player's rating was less or equal to 100 and if after a tournament it
+# became less than 100 it is supposed to stay the same as it was before the tournament. If player's rating was more
+# than 100, it changes accordingly its total score. Database is being updated while calling this function.
 def get_new_rating(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.playerintournament_set.all()
@@ -168,6 +184,9 @@ def get_new_rating(pk):
                     item.save()
 
 
+# A function below is callable each time a new tournament is being accepted and approved by the admin. It goes through
+# all the queryset of players of current tournament, gets the last played tournament for each player and updates current
+# rank and current rating of each player due to the information it got.
 def get_current_rating_and_rank(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.player_set.all()
@@ -178,4 +197,3 @@ def get_current_rating_and_rank(pk):
             player.current_rank = element.GoLevel_after
             player.current_rating = element.rating_after
             player.save()
-

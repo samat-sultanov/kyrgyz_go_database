@@ -3,18 +3,16 @@ from operator import itemgetter
 from collections import Counter
 import requests
 from typing import List, Dict
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
-
 from webapp.models import Country, Player, Tournament, Club, Game, DEFAULT_CLASS, PlayerInTournament
 from webapp.views.GoR_calculator import get_new_rank_from_rating, get_total_score_for_player
 
 
-# Функция считает средний ранг игроков одного клуба. Возвращает список, в котором словарь с ключами club
-# (содержит pk клуба) и average (посчитанное значение)
+# A function below gives back a list of dictionaries with club's pk and its average rank
+# It calls another function inside to get a rank from rating
 def average_go_level():
     clubs = Club.objects.all()
     club_list = []
@@ -36,6 +34,8 @@ def average_go_level():
     return club_list
 
 
+# A function below takes queryset of clubs filtered by country 'kg'. Gives back a list of dictionaries with clubs and
+# amount of wins their players got for a whole period of time
 def get_total_wins(data):
     new_list = []
     for club in data:
@@ -59,6 +59,9 @@ def get_total_wins(data):
     return new_list
 
 
+# A function below gives back a list of dictionaries with players and their positions in KGF. Note: if there is no
+# rating mentioned the function will provide a reverse version (by alphabet) of all the players of KG. If players
+# have same rating, the position will be given by alphabet order too
 def get_position_in_kgf():
     country = Country.objects.get(country_code='kg')
     players = Player.objects.filter(country=country)
@@ -78,8 +81,8 @@ def get_position_in_kgf():
     return new_list
 
 
-# Функция принимает pk турнира и возвращает список из словарей с ключами - player, wins (победы в этом турнире), losses
-# (поражения в рамках турнира)
+# A function below takes a tournament's pk and gives back a list of dictionaries with information about players and
+# their wins and losses in the current tournament
 def get_wins_losses(pk):
     tournament = get_object_or_404(Tournament, pk=pk)
     players = tournament.player_set.all()
@@ -123,6 +126,9 @@ def get_rank_for_json(data):
     return new_list
 
 
+# A function below takes a player's pk, gives back a list of dictionaries with information about each tournament and all
+# the games that were played in each tournament by given player, including information about opponents that he/she had,
+# color he/she used, result of a round and a number of a round itself.
 def get_data_for_table_games(pk):
     player = Player.objects.get(pk=pk)
     tournaments = player.playerintournament_set.all().order_by('-tournament__date')
@@ -174,6 +180,7 @@ def get_data_for_table_games(pk):
     return new_list
 
 
+# A function below is used in get_data_for_gor_evolution. It takes a player object and uses it to filter games
 def get_games_for_player(player):
     games = Game.objects.filter(
         Q(black=player) | Q(white=player),
@@ -182,6 +189,8 @@ def get_games_for_player(player):
     return games
 
 
+# A function below is used in get_data_for_gor_evolution. Takes an object of a game and an object of a player, checks
+# whether the player won the round or not and gives back a string "Win" or "Loss"
 def get_game_result_for_player(game, player):
     if game.result is not None:
         if game.black == player and game.black_score == 1 or game.white == player and game.white_score == 1:
@@ -191,6 +200,9 @@ def get_game_result_for_player(game, player):
     return None
 
 
+# A function below is used in get_data_for_gor_evolution. Takes an object of a game and an object of a player, finds
+# his/her opponent in the game, collects all the information about the round and gives back a dictionary with all the
+# data for each round
 def get_game_data_for_player(game, player):
     opponent = game.white if game.black == player else game.black
     opponent_data = PlayerInTournament.objects.filter(
@@ -217,6 +229,9 @@ def get_game_data_for_player(game, player):
     }
 
 
+# A function below takes pk of a player, calls 3 more functions and gives back a list of dictionaries with information
+# about each round that was played by our player in his/her tournaments and all the total data of GOR change he/she got
+# after the tournament.
 def get_data_for_gor_evolution(pk):
     player = Player.objects.get(pk=pk)
     games = get_games_for_player(player)
@@ -231,6 +246,8 @@ def get_data_for_gor_evolution(pk):
     return game_data_list
 
 
+# A function below is used to be displayed in gor_evolution tab too. It takes a player's pk and gives back a list of
+# dictionaries with information about rank and rating of our player before and after each tournament he/she had played
 def get_tournaments_list_for_gor_evolution(pk):
     player = Player.objects.get(pk=pk)
     tournaments = player.playerintournament_set.all()
@@ -350,9 +367,9 @@ def club_active_players(pk):
     return all_players
 
 
-# function below takes complex dictionary of tournament whole data (which came from turning json into dict.
+# A function below takes complex dictionary of tournament whole data (which came from turning json into dict.
 # That json came from direct parsing of tournament xml file) and returns simple dictionary with the
-# information only about the tournament. And adds some new fields to get data from trainer.
+# information only about the tournament. And adds some new fields to get data from a coach.
 def unpack_data_json_tournament(data: Dict) -> Dict:
     new_dict = dict()
     for key, value in data.items():
@@ -376,9 +393,9 @@ def unpack_data_json_tournament(data: Dict) -> Dict:
     return new_dict
 
 
-# function below takes complex dictionary of tournament whole data and returns a list of dictionary. Each dictionary
+# A function below takes complex dictionary of tournament whole data and returns a list of dictionary. Each dictionary
 # contains information about player from original xml file and plus some more from calculations in the functions.
-# Some empty fields are also included, so that they will be filled by trainer
+# Some empty fields are also included, so that they will be filled by a coach
 def unpack_data_json_players(data: Dict) -> List[Dict]:
     new_list = []
     for key, value in data.items():
@@ -397,7 +414,7 @@ def unpack_data_json_players(data: Dict) -> List[Dict]:
     return new_list
 
 
-# function below takes two lists of dictionaries. One list contains information about each player who
+# A function below takes two lists of dictionaries. One list contains information about each player who
 # participated in the tournament as separate dictionaries. The other list contains information about each round and
 # each game that took place in the tournament. Function "merges" these two lists into one in a way that now each
 # dictionary about player contains also new key/value with info about his games and their results in a string format.
